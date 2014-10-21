@@ -40,6 +40,7 @@ int main (int argc, char *argv[])
     ReadSimControl (project, &Cycles->SimControl);
     ReadSoil (project, &Cycles->Soil);
     ReadCrop (project, Cycles->Crop);
+    ReadOperation (project, &Cycles->FieldOperation);
 
     return 0;
 }

@@ -256,5 +256,6 @@ typedef struct CyclesStruct
 int ReadSimControl (char *project, SimControlClass *SimControl);
 int ReadSoil (char *project, SoilClass *Soil);
 int ReadCrop (char *project, CropClass *Crop);
+int ReadOperation (char *project, FieldOperationList *FieldOperation);
 
 #endif
