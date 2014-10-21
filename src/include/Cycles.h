@@ -97,14 +97,164 @@ typedef struct SoilClass_type
     double NH4_Volatilization;
 } SoilClass;
 
+typedef struct CropClass
+{
+    /*
+     * Instance of a crop that has been planted
+     * Instance should be deleted once the crop fallow or killed
+     */
+    char    cropName[128];
+
+    /* User Defined Auto Irrigation */
+    int    autoIrrigationUsed;
+    int    autoIrrigationStartDay;
+    int    autoIrrigationStopDay;
+    double    autoIrrigationWaterDepletion;
+    int    autoIrrigationLastSoilLayer;
+
+    /* User Defined Auto Fertilization */
+    int    autoFetilizationUsed;
+    int    autoFetilizationStartDay;
+    int    autoFetilizationStopDay;
+    double    autoFetilizationMass;
+    char    autoFetilizationSource;
+    char     autoFetilizationForm;
+    int     autoFetilizationMethod;
+
+    /* Crop Status Flags */
+    int     *cropGrowing;
+    int     *cropMature;
+
+    /* State Variables */
+    double  *svTT_Daily;
+    double  *svTT_Cumulative;
+    double  *svRadiationInterception;
+    double  *svBiomass;
+    double  *svShoot;
+    double  *svRoot;
+    double  *svRizho;
+    double  *svShootDailyGrowth;
+    double  *svRootDailyGrowth;
+    double  *svRizhoDailyDeposition;
+    double  *svUnstressedShootDailyGrowth;
+    double  *svUnstressedRootDailyGrowth;
+    double  *svPostFloweringShootBiomass;
+    double  *svRootingDepth;
+    double  *svTranspiration;
+    double  *svTranspirationPotential;
+    double  *svN_Shoot;
+    double  *svN_Root;
+    double  *svN_Rhizo;
+    double  *svN_RizhoDailyDeposition;
+    double  *svN_AutoAdded;
+    double  *svN_Fixation;
+    double *svWaterStressFactor;
+    double *svN_StressFactor;
+
+    double *svShootUnstressed;
+    double *svN_StressCumulative;
+
+    /* User Defined Data */
+    int     userSeedingDate;
+    int     userFloweringDate;
+    int     userMaturityDate;
+    double  userMaximumSoilCoverage;
+    double  userMaximumRootingDepth;
+    double  userExpectedYieldAvg;
+    double  userExpectedYieldMax;
+    double  userExpectedYieldMin;
+    double   userPercentMoistureInYield;
+    double  userFractionResidueStanding;
+    double userFractionResidueRemoved;
+    double userClippingTiming;
+    double userTranspirationMinTemperature;
+    double userTranspirationThresholdTemperature;
+    double userColdDamageMinTemperature;
+    double userColdDamageThresholdTemperature;
+    double userTemperatureBase;
+    double userTemperatureOptimum;
+    double userTemperatureMaximum;
+    double userShootPartitionInitial;
+    double userShootPartitionFinal;
+    double userRadiationUseEfficiency;
+    double userTranspirationUseEfficiency;
+    double userHIx;
+    double userHIo;        /* intercept harvest index */
+    double userHIk;
+    double userEmergenceTT;
+    double userNMaxConcentration;
+    double userNDilutionSlope;
+    double userKc;
+    int userAnnual;
+    int userLegume;
+    int userC3orC4;
+
+    int *harvestDateFinal;
+    int *harvestCount;
+    char *stageGrowth;
+} CropClass;
+
+enum opEnumType {PLANTING, TILLAGE, IRRIGATION, FERTILIZATION};
+
+typedef struct FieldOperationClass
+{
+    int opYear;
+    int opDay;
+
+    
+    enum opEnumType opType;
+
+    /* Tillage */
+    char    opToolName[MAXSTRING];
+    double  opDepth;
+    double  opSDR;
+    double  opMixingEfficiency;
+
+    /* Planting */
+    char     cropName[MAXSTRING];
+
+    /* Irrigation */
+    double  volume;
+
+    /* Fertilization */
+    char    opsource[MAXSTRING];
+    double  opMass;
+    char    opForm[MAXSTRING];
+    char    opMethod[MAXSTRING];
+    int     opLayer;
+    double  opC_Organic;
+    double  opC_Charcoal;
+    double  opN_Organic;
+    double  opN_Charcoal;
+    double  opN_NH4;
+    double  opN_NO3;
+    double  opP_Organic;
+    double  opP_Charcoal;
+    double  opP_Inorganic;
+    double  opK;
+    double  opS;
+
+    struct FieldOperationClass *NextOperation;
+} *OperationNode;
+
+typedef struct FieldOperationList
+{
+    OperationNode  FirstOperation;
+    int n;
+} FieldOperationList;
+
 typedef struct CyclesStruct
 {
+    int             NumCrop;
     SimControlClass SimControl;
-    SoilClass        Soil;
+    SoilClass       Soil;
+    CropClass       *Crop;
+    FieldOperationList  FieldOperation;
 } *CyclesStruct;
 
 /* Declare Cycles functions */
 int ReadSimControl (char *project, SimControlClass *SimControl);
 int ReadSoil (char *project, SoilClass *Soil);
+int ReadCrop (char *project, CropClass *Crop);
 
 #endif

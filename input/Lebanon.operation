@@ -2,4 +2,4 @@ YEAR    DOY     TYPE            OPTION
 1       105     TILLAGE         FERT_APPLIC_DEEP_PLCMT_HVY_SHNK     0.15    16      0.371806
 1       110     PLANTING        Maize
 1       110     TILLAGE         DRILL_AIRSEEDER_DOUBLE_DISK         0.08    17      0.05
-1       305     FERTILIZATION   82-00-00_ANHYDROUS_AMMONIA          205     LIQUID  INCORP      3       0       0
+1       305     FERTILIZATION   82-00-00_ANHYDROUS_AMMONIA          205     LIQUID  INCORP  3   0   0   0   0   0.82    0   0   0   0   0   0

@@ -10,7 +10,7 @@ CFLAGS = -g -O0
 SRCDIR = ./src
 INCDIR = ./src/include
 
-SRCS_ =  Cycles.c Read_SimCtrl.c Read_Soil.c
+SRCS_ =  Cycles.c Read_SimCtrl.c Read_Soil.c Read_Crop.c
 HEADERS_ = Cycles.h
 
 EXECUTABLE = Cycles
@@ -19,6 +19,7 @@ MSG = "...  Compiling Cycles  ..."
 LIBS = -lm
 INCLUDES = 
 LFLAGS = 
+SFLAGS = -D_DEBUG_
 
 SRCS = $(patsubst %,$(SRCDIR)/%,$(SRCS_))
 HEADERS = $(patsubst %,$(INCDIR)/%,$(HEADERS_))

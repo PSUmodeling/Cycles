@@ -53,7 +53,9 @@ int ReadSoil (char *project, SoilClass *Soil)
     {
         fgets (cmdstr, MAXSTRING, soil_file);
         sscanf (cmdstr, "%*d %lf %lf %lf %lf %lf %lf %lf %lf %lf", &Soil->layerThickness[iLayer], &Soil->Clay[iLayer], &Soil->Sand[iLayer], &Soil->IOM[iLayer], &Soil->BD[iLayer], &Soil->FC[iLayer], &Soil->PWP[iLayer], &Soil->NO3[iLayer], &Soil->NH4[iLayer]);
+#ifdef _DEBUG_
         printf ("%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", Soil->layerThickness[iLayer], Soil->Clay[iLayer], Soil->Sand[iLayer], Soil->IOM[iLayer], Soil->BD[iLayer], Soil->FC[iLayer], Soil->PWP[iLayer], Soil->NO3[iLayer], Soil->NH4[iLayer]);
+#endif
     }
 
     fclose(soil_file);

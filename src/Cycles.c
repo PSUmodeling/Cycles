@@ -26,18 +26,20 @@ int main (int argc, char *argv[])
         strcpy (project, argv[1]);
     }
 
+    system ("clear");
     printf ("\n\n");
-    printf (" ######  ##    ##  ######  ##       ########  ######\n"
-            "##    ##  ##  ##  ##    ## ##       ##       ##    ##\n"
-            "##         ####   ##       ##       ##       ##\n"
-            "##          ##    ##       ##       ######    ######\n"  
-            "##          ##    ##       ##       ##             ##\n"
-            "##    ##    ##    ##    ## ##       ##       ##    ##\n"
-            " ######     ##     ######  ######## ########  ######\n\n\n");
-    printf("Copyright(c)2010-2015 PSU / WSU All rights reserved\n\n\n");
+    printf ("\t\t ######  ##    ##  ######  ##       ########  ######\n"
+            "\t\t##    ##  ##  ##  ##    ## ##       ##       ##    ##\n"
+            "\t\t##         ####   ##       ##       ##       ##\n"
+            "\t\t##          ##    ##       ##       ######    ######\n"  
+            "\t\t##          ##    ##       ##       ##             ##\n"
+            "\t\t##    ##    ##    ##    ## ##       ##       ##    ##\n"
+            "\t\t ######     ##     ######  ######## ########  ######\n\n\n");
+    printf("\t\t Copyright(c)2010-2015 PSU / WSU All rights reserved\n\n\n");
 
     ReadSimControl (project, &Cycles->SimControl);
     ReadSoil (project, &Cycles->Soil);
+    ReadCrop (project, Cycles->Crop);
 
     return 0;
 }
