@@ -7,12 +7,15 @@
 
 #include "include/Cycles.h"
 
-int ReadSimControl (char *project, SimControlClass *SimControl)
+int ReadSimControl (char *project, CyclesStruct Cycles)
 {
-    FILE    *simctrl_file;
-    char    *filename;
+    FILE           *simctrl_file;
+    char           *filename;
+    SimControlClass *SimControl;
 
-    printf("Read simulation control file.\n");
+    SimControl = &Cycles->SimControl;
+
+    printf ("Read simulation control file.\n");
 
     /* Open simulation control file */
     filename = (char *)malloc ((strlen (project) + 12) * sizeof (char));
@@ -45,10 +48,8 @@ int ReadSimControl (char *project, SimControlClass *SimControl)
     fscanf (simctrl_file, "%*s %d", &SimControl->Annual_Soil_Output);
     fscanf (simctrl_file, "%*s %d", &SimControl->Profile_Output);
     fscanf (simctrl_file, "%*s %d", &SimControl->Season_Output);
-#ifdef _DEBUG_
-    printf("%d %d %d %d %d  %d  %d  %d  %d  %d  %d  %d  %d  %d  %d  %d  %d  %d\n", SimControl->Sim_Start_Year, SimControl->Sim_End_Year, SimControl->Years_in_Rotation, SimControl->Adjusted_Yields, SimControl->Hourly_Infiltration, SimControl->Automatic_Nitrogen, SimControl->Automatic_Phosphorus, SimControl->Automatic_Sulfur, SimControl->Weather_Daily_Output, SimControl->Crop_Daily_Output, SimControl->Residue_Daily_Output, SimControl->Water_Daily_Output, SimControl->Nitrogen_Daily_Output,  SimControl->SoilCarbon_Daily_Output, SimControl->Soil_Daily_Output, SimControl->Annual_Soil_Output, SimControl->Profile_Output, SimControl->Season_Output);  
-#endif
-    fclose(simctrl_file);
-     
+
+    fclose (simctrl_file);
+
     return 0;
 }
