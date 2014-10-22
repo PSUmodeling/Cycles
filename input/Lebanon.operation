@@ -3,3 +3,22 @@ YEAR    DOY     TYPE            OPTION
 1       110     PLANTING        Maize
 1       110     TILLAGE         DRILL_AIRSEEDER_DOUBLE_DISK         0.08    17      0.05
 1       305     FERTILIZATION   82-00-00_ANHYDROUS_AMMONIA          205     LIQUID  INCORP  3   0   0   0   0   0.82    0   0   0   0   0   0
+
+###############
+# Operation 1 #
+###############
+YEAR            1
+DOY             105
+TYPE            TILLAGE
+TOOL            FERT_APPLIC_DEEP_PLCMT_HVY_SHNK
+DEPTH           0.15
+SDR             16
+MIXING_EFF      0.371806
+
+###############
+# Operation 2 #
+###############
+YEAR            1
+DOY             110
+TYPE            PLANTING
+CROP            Maize
