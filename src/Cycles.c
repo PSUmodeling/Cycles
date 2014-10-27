@@ -73,6 +73,7 @@ int main (int argc, char *argv[])
         p = p->NextOperation;
     }
 #endif
+    ReadWeather (project, Cycles);
 
     return 0;
 }

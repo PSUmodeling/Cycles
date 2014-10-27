@@ -242,6 +242,28 @@ typedef struct FieldOperationList
     int             n;
 } FieldOperationList;
 
+typedef struct WeatherClass
+{
+    double      locationAltitude;
+    double      locationLatitude;
+    double      screeningHeight;
+    int         length;
+    int        *year;
+    int        *jday;
+    double     *time;
+    double     *yearlyAmplitude;
+    double     *annualAverageTemperature;
+    double     *wind;
+    double     *ETref;
+    double     *precipitation;
+    double     *RHmax;
+    double     *RHmin;
+    double     *solarRadiation;
+    double     *tMax;
+    double     *tMin;
+    double      pAtm;
+} WeatherClass;
+
 typedef struct CyclesStruct
 {
     int             NumCrop;
@@ -249,6 +271,7 @@ typedef struct CyclesStruct
     SoilClass       Soil;
     CropClass      *Crop;
     FieldOperationList FieldOperation;
+    WeatherClass    Weather;
 } *CyclesStruct;
 
 /* Declare Cycles functions */
