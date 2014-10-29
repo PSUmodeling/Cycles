@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <time.h>
-#include <sys/stat.h>
-
 #include "include/Cycles.h"
 
 int main (int argc, char *argv[])
@@ -64,16 +57,15 @@ int main (int argc, char *argv[])
 #endif
     ReadOperation (project, Cycles);
 #ifdef _DEBUG_
-    printf ("Number of field operations: %d\n", Cycles->FieldOperation.n);
-    printf ("%d %d\n", Cycles->FieldOperation.FirstOperation->opType, Cycles->FieldOperation.FirstOperation->opDay);
-    p = Cycles->FieldOperation.FirstOperation->NextOperation;
-    for (i = 0; i < Cycles->FieldOperation.n; i++)
+    printf ("Number of field operations: %d\n", Cycles->NumOp);
+    for (i = 0; i < Cycles->NumOp; i++)
     {
-        printf ("%d %d\n", p->opType, p->opDay);
-        p = p->NextOperation;
+        p = &Cycles->FieldOperation[i];
+        printf ("%d %d %d\n", p->opYear, p->opType, p->opDay);
     }
 #endif
     ReadWeather (project, Cycles);
 
+    Initialize (Cycles);
     return 0;
 }

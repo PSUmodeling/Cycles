@@ -16,6 +16,8 @@ YEAR                1
 DOY                 110
 TYPE                PLANTING
 CROP                Maize
+AUTO_IRRIGATION     0
+AUTO_FERTILIAZATION 0
 
 ###############
 # Operation 3 #

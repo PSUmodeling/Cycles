@@ -41,15 +41,15 @@ int ReadSoil (char *project, CyclesStruct Cycles)
     sscanf (cmdstr, "%*s %d", &Soil->totalLayers);
 
     /* Allocate memories for soil class */
-    Soil->layerThickness = (double *)malloc (Soil->totalLayers * sizeof (double *));
-    Soil->Clay = (double *)malloc (Soil->totalLayers * sizeof (double *));
-    Soil->Sand = (double *)malloc (Soil->totalLayers * sizeof (double *));
-    Soil->IOM = (double *)malloc (Soil->totalLayers * sizeof (double *));
-    Soil->BD = (double *)malloc (Soil->totalLayers * sizeof (double *));
-    Soil->FC = (double *)malloc (Soil->totalLayers * sizeof (double *));
-    Soil->PWP = (double *)malloc (Soil->totalLayers * sizeof (double *));
-    Soil->NO3 = (double *)malloc (Soil->totalLayers * sizeof (double *));
-    Soil->NH4 = (double *)malloc (Soil->totalLayers * sizeof (double *));
+    Soil->layerThickness = (double *)malloc (Soil->totalLayers * sizeof (double));
+    Soil->Clay = (double *)malloc (Soil->totalLayers * sizeof (double));
+    Soil->Sand = (double *)malloc (Soil->totalLayers * sizeof (double));
+    Soil->IOM = (double *)malloc (Soil->totalLayers * sizeof (double));
+    Soil->BD = (double *)malloc (Soil->totalLayers * sizeof (double));
+    Soil->FC = (double *)malloc (Soil->totalLayers * sizeof (double));
+    Soil->PWP = (double *)malloc (Soil->totalLayers * sizeof (double));
+    Soil->NO3 = (double *)malloc (Soil->totalLayers * sizeof (double));
+    Soil->NH4 = (double *)malloc (Soil->totalLayers * sizeof (double));
 
     fgets (cmdstr, MAXSTRING, soil_file);   /* skip header line */
     for (iLayer = 0; iLayer < Soil->totalLayers; iLayer++)

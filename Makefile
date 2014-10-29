@@ -10,7 +10,7 @@ CFLAGS = -g -O0
 SRCDIR = ./src
 INCDIR = ./src/include
 
-SRCS_ =  Cycles.c ReadSimCtrl.c ReadSoil.c ReadCrop.c ReadOperation.c ReadWeather.c
+SRCS_ =  Cycles.c ReadSimCtrl.c ReadSoil.c ReadCrop.c ReadOperation.c ReadWeather.c Initialize.c Soil.c
 HEADERS_ = Cycles.h
 
 EXECUTABLE = Cycles

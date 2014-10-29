@@ -1,7 +1,15 @@
 #ifndef CYCLES_HEADER
 #define CYCLES_HEADER
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+#include <time.h>
+#include <sys/stat.h>
+
 #define MAXSTRING 1024
+#define BADVAL  -999
 typedef struct SimControlClass
 {
     int            *yearSpecificLastDOY;
@@ -28,7 +36,7 @@ typedef struct SimControlClass
     int             Season_Output;
 } SimControlClass;
 
-typedef struct SoilClass_type
+typedef struct SoilClass
 {
     //double *Sand;
 
@@ -236,18 +244,12 @@ typedef struct FieldOperationClass
     struct FieldOperationClass *NextOperation;
 } FieldOperationClass;
 
-typedef struct FieldOperationList
-{
-    FieldOperationClass *FirstOperation;
-    int             n;
-} FieldOperationList;
-
 typedef struct WeatherClass
 {
     double      locationAltitude;
     double      locationLatitude;
     double      screeningHeight;
-    int         length;
+    int         record;
     int        *year;
     int        *jday;
     double     *time;
@@ -267,10 +269,11 @@ typedef struct WeatherClass
 typedef struct CyclesStruct
 {
     int             NumCrop;
+    int             NumOp;
     SimControlClass SimControl;
     SoilClass       Soil;
     CropClass      *Crop;
-    FieldOperationList FieldOperation;
+    FieldOperationClass *FieldOperation;
     WeatherClass    Weather;
 } *CyclesStruct;
 
@@ -279,5 +282,16 @@ int             ReadSimControl (char *project, CyclesStruct Cycles);
 int             ReadSoil (char *project, CyclesStruct Cycles);
 int             ReadCrop (char *project, CyclesStruct Cycles);
 int             ReadOperation (char *project, CyclesStruct Cycles);
+int             ReadWeather (char *project, CyclesStruct Cycles);
+void            Initialize (CyclesStruct Cycles);
+void            InitializeSoil (SoilClass *Soil, WeatherClass *Weather);
+double SoilWaterPotential(double SaturationWC, double AirEntryPot, double Campbell_b, double WC);
+double VolumetricWCAt33Jkg (double Clay, double Sand, double OM);
+double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM);
+double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential);
+double BulkDensity (double Clay, double Sand, double OM);
+
+
+
 
 #endif
