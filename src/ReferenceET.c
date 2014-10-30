@@ -7,7 +7,7 @@ double CalculatePMET (double lat, double pAtm, double screeningHeight, double Tm
     //double rc = 0.00058;  /* surface resistance to vapor flow, day/m (0.00058 for 280 ppm) */
     //double rc = 0.00157;  /* surface resistance to vapor flow, day/m (0.00157 for 500 ppm) */
     double CP = 0.001013;   /* specific heat of dry air, J/(kg C) */
-    double R = 0.28704      /* specific gas constant for dry air, kJ/(kg degree C) (recall that Patm is in kPa) */
+    double R = 0.28704;      /* specific gas constant for dry air, kJ/(kg degree C) (recall that Patm is in kPa) */
 
     double esTmax;          /* saturation vapor pressure at Tmax, kPa */
     double esTmin;          /* saturation vapor pressure at Tmin, kPa */
@@ -69,7 +69,7 @@ double NetRadiation(double Pot_Rad, double Solar_Rad, double Actual_VP, double T
     return Rns - Rnl;       /* calculate Rn */
 }
 
-double Aero_Res(double uz, double z);
+double Aero_Res(double uz, double z)
 {
     double u2, d, zom, zoh, zm, zh;
     double VK = 0.41;   /* von Karman's constant */

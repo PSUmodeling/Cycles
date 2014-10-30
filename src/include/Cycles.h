@@ -8,8 +8,10 @@
 #include <time.h>
 #include <sys/stat.h>
 
+#define PI 3.14159265358979
 #define MAXSTRING 1024
 #define BADVAL  -999
+
 typedef struct SimControlClass
 {
     int            *yearSpecificLastDOY;
@@ -45,7 +47,7 @@ typedef struct SoilClass
     double          Percent_Slope;
 
     int             annualTemperaturePhase;
-    int             dampingDepth;
+    double          dampingDepth;
 
     double         *cumulativeDepth;    /* depth, in meters, to the bottom of that layer */
     double         *nodeDepth;
@@ -219,6 +221,8 @@ typedef struct FieldOperationClass
 
     /* Planting */
     char            cropName[MAXSTRING];
+    int             usingAutoIrr;
+    int             usingAutoFert;
 
     /* Irrigation */
     double          volume;
@@ -249,7 +253,7 @@ typedef struct WeatherClass
     double      locationAltitude;
     double      locationLatitude;
     double      screeningHeight;
-    int         record;
+    int         length;
     int        *year;
     int        *jday;
     double     *time;
@@ -290,6 +294,13 @@ double VolumetricWCAt33Jkg (double Clay, double Sand, double OM);
 double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM);
 double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential);
 double BulkDensity (double Clay, double Sand, double OM);
+double SatVP (double T);
+void CalculateDerivedWeather(WeatherClass *Weather, SimControlClass *SimControl);
+double CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
+double SaturatedVaporPressure (double T);
+double PotentialRadiation (double Lat, int doy);
+double NetRadiation(double Pot_Rad, double Solar_Rad, double Actual_VP, double TMax, double TMin);
+double Aero_Res(double uz, double z);
 
 
 

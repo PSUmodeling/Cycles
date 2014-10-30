@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <time.h>
-#include <sys/stat.h>
-
 #include "include/Cycles.h"
 
 int ReadCrop (char *project, CyclesStruct Cycles)

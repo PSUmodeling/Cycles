@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <time.h>
-#include <sys/stat.h>
-
 #include "include/Cycles.h"
 
 int ReadWeather (char *project, CyclesStruct Cycles)
@@ -26,13 +19,14 @@ int ReadWeather (char *project, CyclesStruct Cycles)
     filename = (char *)malloc ((strlen (project) + 15) * sizeof (char));
     sprintf (filename, "input/%s.weather", project);
     weather_file = fopen (filename, "r");
-    free (filename);
 
     if (weather_file == NULL)
     {
         printf ("\nError: Cannot find the weather file %s!\n", filename);
         exit (1);
     }
+
+    free (filename);
 
     /* Read weather file */
     fgets (cmdstr, MAXSTRING, weather_file);
@@ -56,9 +50,12 @@ int ReadWeather (char *project, CyclesStruct Cycles)
         fgets (cmdstr, MAXSTRING, weather_file);
     }
 
-    printf ("%d\n", counter);
+    printf("%lf %lf %lf\n", Weather->locationAltitude, Weather->locationLatitude, Weather->screeningHeight);
 
-    Weather->record = counter;
+    Weather->length = counter;
+    printf ("Weather record %d\n", counter);
+
+    /* Allocate memories for weather forcing */
     Weather->wind           = (double *) malloc (counter * sizeof (double));
     Weather->ETref          = (double *) malloc (counter * sizeof (double));
     Weather->precipitation  = (double *) malloc (counter * sizeof (double));
@@ -72,7 +69,7 @@ int ReadWeather (char *project, CyclesStruct Cycles)
     Weather->year           = (int *) malloc (counter * sizeof (int));
     Weather->jday          = (int *) malloc (counter * sizeof (int));
 
-    /* Rewind to the beginning of file */
+    /* Rewind to the beginning of file and read weather records */
     rewind (weather_file);
     fgets (cmdstr, MAXSTRING, weather_file);
     fgets (cmdstr, MAXSTRING, weather_file);
@@ -93,7 +90,7 @@ int ReadWeather (char *project, CyclesStruct Cycles)
 //    weather_file = fopen("weather.txt", "w");
 //    for (i = 0; i < counter; i++)
 //        fprintf (weather_file, "%-7d\t%-7d\t%-7.1lf\t%-7.1lf\t%-7.1lf\t%-7.2lf\t%-7.2lf\t%-7.2lf\t%-7.2lf\n", Weather->year[i], Weather->jday[i], Weather->precipitation[i], Weather->tMax[i], Weather->tMin[i], Weather->solarRadiation[i], Weather->RHmax[i], Weather->RHmin[i],   Weather->wind[i]);
-    fclose (weather_file);
+ //   fclose (weather_file);
 
     return 0;
 }

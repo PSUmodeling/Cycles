@@ -23,9 +23,9 @@ void CalculateDerivedWeather(WeatherClass *Weather, SimControlClass *SimControl)
     double annualMaxTemperatureSum;
     double annualMinTemperatureSum;
 
-    Weather->pAtm = 101.325 * exp(-Weather.locationAltitude / 8200.)    /* P = 101.3 * ((293 - 0.0065 * Altitude) / 293) ^ 5.26 */
+    Weather->pAtm = 101.325 * exp(-Weather->locationAltitude / 8200.);   /* P = 101.3 * ((293 - 0.0065 * Altitude) / 293) ^ 5.26 */
 
-    for (i = 0; i < Weather->record; i++)
+    for (i = 0; i < Weather->length; i++)
     {
         Weather->ETref[i] = CalculatePMET(Weather->locationLatitude, Weather->pAtm, Weather->screeningHeight, Weather->tMax[i], Weather->tMin[i], Weather->solarRadiation[i], Weather->RHmax[i], Weather->RHmin[i], Weather->wind[i], Weather->jday[i]);
         if (i == 0)
@@ -35,7 +35,7 @@ void CalculateDerivedWeather(WeatherClass *Weather, SimControlClass *SimControl)
             annualMaxTemperatureSum = Weather->tMax[i];
             annualMinTemperatureSum = Weather->tMin[i];
         }
-        else if (i == Weather->record - 1)
+        else if (i == Weather->length - 1)
         {
             i++;
             for (j = year_start; j < i; j++)

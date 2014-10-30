@@ -3,9 +3,10 @@
 void Initialize (CyclesStruct Cycles)
 {
 
-//    CalculateDerivedWeather ();
+    /* Initialize weather variables */
+    CalculateDerivedWeather (&Cycles->Weather, &Cycles->SimControl);
 
-    /* Initialize soil vairables */
+    /* Initialize soil variables */
     InitializeSoil (&Cycles->Soil, &Cycles->Weather);
 }
 

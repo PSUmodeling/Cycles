@@ -3,6 +3,7 @@
 int main (int argc, char *argv[])
 {
     CyclesStruct    Cycles;
+
 #ifdef _DEBUG_
     int             crop_counter;
     int             i;
@@ -11,8 +12,12 @@ int main (int argc, char *argv[])
 
     char           *project;
 
-    Cycles = (CyclesStruct) malloc (sizeof *Cycles);
+    Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
+#ifdef _DEBUG_
+        project = (char *)malloc (8*sizeof (char));
+        strcpy(project, "Lebanon");
+#else
     if (argc < 2)
     {
         printf ("Error: Please specify the name of project!\n");
@@ -26,6 +31,7 @@ int main (int argc, char *argv[])
         project = (char *)malloc ((strlen (argv[1]) + 1) * sizeof (char));
         strcpy (project, argv[1]);
     }
+#endif
 
     system ("clear");
     printf ("\n\n");
@@ -55,15 +61,15 @@ int main (int argc, char *argv[])
         printf ("%d\n", Cycles->Crop[crop_counter].userC3orC4);
     }
 #endif
-    ReadOperation (project, Cycles);
-#ifdef _DEBUG_
-    printf ("Number of field operations: %d\n", Cycles->NumOp);
-    for (i = 0; i < Cycles->NumOp; i++)
-    {
-        p = &Cycles->FieldOperation[i];
-        printf ("%d %d %d\n", p->opYear, p->opType, p->opDay);
-    }
-#endif
+//    ReadOperation (project, Cycles);
+//#ifdef _DEBUG_
+//    printf ("Number of field operations: %d\n", Cycles->NumOp);
+//    for (i = 0; i < Cycles->NumOp; i++)
+//    {
+//        p = &Cycles->FieldOperation[i];
+//        printf ("%d %d %d\n", p->opYear, p->opType, p->opDay);
+//    }
+//#endif
     ReadWeather (project, Cycles);
 
     Initialize (Cycles);
