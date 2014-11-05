@@ -8,9 +8,9 @@
 #include <time.h>
 #include <sys/stat.h>
 
-#define PI 3.14159265358979
-#define MAXSTRING 1024
-#define BADVAL  -999
+#define PI          3.14159265358979
+#define MAXSTRING   1024
+#define BADVAL      -999
 
 typedef struct SimControlClass
 {
@@ -47,51 +47,57 @@ typedef struct SoilClass
     int             annualTemperaturePhase;
     double          dampingDepth;
 
-    double         *cumulativeDepth;    /* depth, in meters, to the bottom of that layer */
+    double         *cumulativeDepth;    /* depth, in meters
+                                         * to the bottom of that layer */
     double         *nodeDepth;
-    double         *layerThickness; /* Measured in Meters */
-    double         *Clay;       /* Clay fraction, reads clay % from spreadsheet */
-    double         *Sand;
-    double         *IOM;        /* Initial Organic Matter */
-    double         *NO3;        /* Nitrate(kg/ha) */
-    double         *NH4;        /* Ammonium(kg/ha) */
-    double         *BD;         /* Bulk Density (Mg/m3) */
-    double         *FC;         /* Field Capacity water content */
-    double         *PWP;        /* Permanent Wilting Point */
-    double         *Porosity;   /* Saturation water content (m3/m3) */
-    double         *PAW;        /* Maximum plant available water */
-    double         *FC_WaterPotential;  /* Estimate water potential at field capacity */
+    double         *layerThickness;     /* Measured in Meters */
+    double         *Clay;               /* Clay fraction */
+    double         *Sand;               /* Sand fraction */
+    double         *IOM;                /* Initial Organic Matter */
+    double         *NO3;                /* Nitrate(kg/ha) */
+    double         *NH4;                /* Ammonium(kg/ha) */
+    double         *BD;                 /* Bulk Density (Mg/m3) */
+    double         *FC;                 /* Field Capacity water content */
+    double         *PWP;                /* Permanent Wilting Point */
+    double         *Porosity;           /* Saturation water content (m3/m3) */
+    double         *PAW;                /* Maximum plant available water */
+    double         *FC_WaterPotential;  /* Estimate water potential at field
+                                         * capacity */
     double         *airEntryPotential;  /* Calculate Air Entry Potential */
-    double         *B_Value;    /* Calculated "B" value */
-    double         *M_Value;    /* Calculated "M" value */
+    double         *B_Value;            /* Calculated "B" value */
+    double         *M_Value;            /* Calculated "M" value */
 
-    double         *n2o;        /* temporary output of n2o per layer */
+    double         *n2o;                /* temporary output of n2o/layer */
 
-    double         *SOC_Conc;   /* g C / kg soil */
-    double         *SOC_Mass;   /* Soil Organic Carbon, Mg/ha, factor 0.58 converts SOM to SOC */
-    double         *SON_Mass;   /* Soil Organic Nitrogen, Mg/ha */
-    double         *MBC_Mass;   /* Microbial Biomass Carbon, Mg/ha */
-    double         *MBN_Mass;   /* Microbial Biomass Nitrogen, Mg/ha */
+    double         *SOC_Conc;           /* g C / kg soil */
+    double         *SOC_Mass;           /* Soil Organic Carbon, Mg/ha
+                                         * factor 0.58 converts SOM to SOC */
+    double         *SON_Mass;           /* Soil Organic Nitrogen, Mg/ha */
+    double         *MBC_Mass;           /* Microbial Biomass Carbon, Mg/ha */
+    double         *MBN_Mass;           /* Microbial Biomass Nitrogen, Mg/ha */
     double          SOCProfile;
     double          SONProfile;
 
-    double          C_Humified; /* Carbon humified from residues, roots, rizho, and manure */
-    double          C_ResidueRespired;  /* Carbon respired from residues, roots, rizho, and manure */
-    double          C_SoilRespired; /* Carbon respired from soil organic carbon only */
+    double          C_Humified;         /* Carbon humified from residues,
+                                         * roots, rizho, and manure */
+    double          C_ResidueRespired;  /* Carbon respired from residues,
+                                         * roots, rizho, and manure */
+    double          C_SoilRespired;     /* Carbon respired from soil organic
+                                         * carbon only */
 
     double         *soilTemperature;    /* Celsius */
-    double         *waterContent;   /* Volumetric water content, m3/m3 */
-    double         *waterUptake;    /* layer water uptake  */
+    double         *waterContent;       /* Volumetric water content, m3/m3 */
+    double         *waterUptake;        /* layer water uptake  */
     double         *pH;
 
-    double          evaporationVol; /* mm of water */
+    double          evaporationVol;     /* mm of water */
     double          residueEvaporationVol;  /* mm of water */
     double          infiltrationVol;    /* mm of water */
-    double          runoffVol;  /* mm of water */
-    double          irrigationVol;  /* mm of water */
-    double          drainageVol;    /* mm of water */
-    double          NO3Leaching;    /* Mg N/ha */
-    double          NH4Leaching;    /* Mg N/ha */
+    double          runoffVol;          /* mm of water */
+    double          irrigationVol;      /* mm of water */
+    double          drainageVol;        /* mm of water */
+    double          NO3Leaching;        /* Mg N/ha */
+    double          NH4Leaching;        /* Mg N/ha */
 
     double          NO3Profile;
     double          NH4Profile;
@@ -222,7 +228,8 @@ typedef struct CropClass
     char           *stageGrowth;
 } CropClass;
 
-enum opEnumType { OP_PLANTING, OP_TILLAGE, OP_IRRIGATION, OP_FERTILIZATION };
+enum opEnumType
+{ OP_PLANTING, OP_TILLAGE, OP_IRRIGATION, OP_FERTILIZATION };
 
 typedef struct FieldOperationClass
 {
@@ -262,30 +269,30 @@ typedef struct FieldOperationClass
 typedef struct FieldOperationListClass
 {
     FieldOperationClass *firstOperation;
-//    FieldOperationClass *lastOperation;
-//    FieldOperationClass *currentOperation;
+    //    FieldOperationClass *lastOperation;
+    //    FieldOperationClass *currentOperation;
 } FieldOperationListClass;
 
 typedef struct WeatherClass
 {
-    double      siteAltitude;
-    double      siteLatitude;
-    double      screeningHeight;
-    int         length;
-    int        *year;
-    int        *jday;
-    double     *time;
-    double     *yearlyAmplitude;
-    double     *annualAverageTemperature;
-    double     *wind;
-    double     *ETref;
-    double     *precipitation;
-    double     *RHmax;
-    double     *RHmin;
-    double     *solarRadiation;
-    double     *tMax;
-    double     *tMin;
-    double      atmosphericPressure;
+    double          siteAltitude;
+    double          siteLatitude;
+    double          screeningHeight;
+    int             length;
+    int            *year;
+    int            *jday;
+    double         *time;
+    double         *yearlyAmplitude;
+    double         *annualAverageTemperature;
+    double         *wind;
+    double         *ETref;
+    double         *precipitation;
+    double         *RHmax;
+    double         *RHmin;
+    double         *solarRadiation;
+    double         *tMax;
+    double         *tMin;
+    double          atmosphericPressure;
 } WeatherClass;
 
 typedef struct CyclesStruct
@@ -309,15 +316,15 @@ typedef struct CyclesStruct
 
     WeatherClass    Weather;
 
-    plantingOrderStruct *plantedCrops;      /* Struct to read in data */
+    plantingOrderStruct *plantedCrops;  /* Struct to read in data */
     plantingOrderStruct *plantingOrder;
     int             plantingIndex;
 
     describedCropsStruct *describedCrops;
     int             describedIndex;
 
-//    autoIrrigationStruct *autoIrrigation;
-//    autoFertilizationStruct *autoFertilization;
+    //    autoIrrigationStruct *autoIrrigation;
+    //    autoFertilizationStruct *autoFertilization;
     int             usingAutoIrr;
     int             usingAutoFert;
 
@@ -326,9 +333,12 @@ typedef struct CyclesStruct
     char            nextCropName[128];
     int             nextCropSeedingDate;
     int             nextCropSeedingYear;
-} *CyclesStruct;
+}              *CyclesStruct;
 
-/* Declare Cycles functions */
+/*
+ * Declare Cycles functions
+ */
+
 /* ReadSimControl.c */
 int             ReadSimControl (char *project, CyclesStruct Cycles);
 
@@ -348,48 +358,48 @@ int             ReadWeather (char *project, CyclesStruct Cycles);
 void            Initialize (CyclesStruct Cycles);
 
 /* Soil.c */
-void            InitializeSoil (SoilClass *Soil, WeatherClass *Weather, SimControlClass *SimControl);
-double SoilWaterPotential(double SaturationWC, double AirEntryPot, double Campbell_b, double WC);
-double VolumetricWCAt33Jkg (double Clay, double Sand, double OM);
-double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM);
-double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential);
-double BulkDensity (double Clay, double Sand, double OM);
+void            InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass * SimControl);
+double          SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campbell_b, double WC);
+double          VolumetricWCAt33Jkg (double Clay, double Sand, double OM);
+double          VolumetricWCAt1500Jkg (double Clay, double Sand, double OM);
+double          SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential);
+double          BulkDensity (double Clay, double Sand, double OM);
 
 /* LinkedList.c */
-void InsertOperation (FieldOperationListClass *OperationList, FieldOperationClass *Operation);
+void            InsertOperation (FieldOperationListClass * OperationList, FieldOperationClass * Operation);
 
 /* ReferenceET.c */
-double CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
-double SaturatedVaporPressure (double T);
-double PotentialRadiation (double Lat, int doy);
-double NetRadiation(double Pot_Rad, double Solar_Rad, double Actual_VP, double TMax, double TMin);
-double Aero_Res(double uz, double z);
+double          CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
+double          SaturatedVaporPressure (double T);
+double          PotentialRadiation (double Lat, int doy);
+double          NetRadiation (double Pot_Rad, double Solar_Rad, double Actual_VP, double TMax, double TMin);
+double          Aero_Res (double uz, double z);
 
 /* Weather.c */
-double SatVP (double T);
-void CalculateDerivedWeather(WeatherClass *Weather, SimControlClass *SimControl);
-double annualAvgTemperature (WeatherClass *Weather, int yr);
-double annualAmplitude (WeatherClass *Weather, int yr);
-double dailyETref (WeatherClass *Weather, int yr, int dy);
-double dailyPrecipitation (WeatherClass *Weather, int yr, int dy);
-double dailyRelativeHumidityMax (WeatherClass *Weather, int yr, int dy);
-double dailyRelativeHumidityMin (WeatherClass *Weather, int yr, int dy);
-double dailySolarRadiation (WeatherClass *Weather, int yr, int dy);
-double dailyTemperatureMax (WeatherClass *Weather, int yr, int dy);
-double dailyTemperatureMin (WeatherClass *Weather, int yr, int dy);
-double dailyWindSpeed (WeatherClass *Weather, int yr, int dy);
+double          SatVP (double T);
+void            CalculateDerivedWeather (WeatherClass * Weather, SimControlClass * SimControl);
+double          annualAvgTemperature (WeatherClass * Weather, int yr);
+double          annualAmplitude (WeatherClass * Weather, int yr);
+double          dailyETref (WeatherClass * Weather, int yr, int dy);
+double          dailyPrecipitation (WeatherClass * Weather, int yr, int dy);
+double          dailyRelativeHumidityMax (WeatherClass * Weather, int yr, int dy);
+double          dailyRelativeHumidityMin (WeatherClass * Weather, int yr, int dy);
+double          dailySolarRadiation (WeatherClass * Weather, int yr, int dy);
+double          dailyTemperatureMax (WeatherClass * Weather, int yr, int dy);
+double          dailyTemperatureMin (WeatherClass * Weather, int yr, int dy);
+double          dailyWindSpeed (WeatherClass * Weather, int yr, int dy);
 
 /* SoilTemperature.c */
-double HeatCapacity(double bulkDensity, double volumetricWC);
-double HeatConductivity(double bulkDensity, double volumetricWC, double fractionClay);
-double EstimatedSoilTemperature(double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth);
+double          HeatCapacity (double bulkDensity, double volumetricWC);
+double          HeatConductivity (double bulkDensity, double volumetricWC, double fractionClay);
+double          EstimatedSoilTemperature (double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth);
 
 #ifdef _DEBUG_
-void PrintSimContrl(SimControlClass SimControl);
-void PrintSoil (SoilClass Soil);
-void PrintCrop (describedCropsStruct *describedCrops, int NumCrop);
-void PrintOperation (plantingOrderStruct *plantedCrops, int NumPlanting, FieldOperationListClass TillageList, FieldOperationListClass FixedIrrigationList, FieldOperationListClass FixedFertilizationList);
-void PrintWeather (WeatherClass Weather);
+void            PrintSimContrl (SimControlClass SimControl);
+void            PrintSoil (SoilClass Soil);
+void            PrintCrop (describedCropsStruct * describedCrops, int NumCrop);
+void            PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationListClass TillageList, FieldOperationListClass FixedIrrigationList, FieldOperationListClass FixedFertilizationList);
+void            PrintWeather (WeatherClass Weather);
 #endif
 
 

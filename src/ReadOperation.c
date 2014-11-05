@@ -121,7 +121,8 @@ int ReadOperation (char *project, CyclesStruct Cycles)
 
     if (irrigation_counter)
     {
-        /* Rewind to the beginning of file and read all irrigation operations */
+        /* Rewind to the beginning of file and read all irrigation
+         * operations */
         rewind (operation_file);
 
         fgets (cmdstr, MAXSTRING, operation_file);
@@ -130,7 +131,7 @@ int ReadOperation (char *project, CyclesStruct Cycles)
             if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
             {
                 sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("TILLAGE", optstr) == 0)
+                if (strcasecmp ("IRRIGATION", optstr) == 0)
                 {
                     q = (FieldOperationClass *) malloc (sizeof (FieldOperationClass));
                     fgets (cmdstr, MAXSTRING, operation_file);
@@ -148,7 +149,8 @@ int ReadOperation (char *project, CyclesStruct Cycles)
 
     if (fertilization_counter)
     {
-        /* Rewind to the beginning of file and read all irrigation operations */
+        /* Rewind to the beginning of file and read all fertilization
+         * operations */
         rewind (operation_file);
 
         fgets (cmdstr, MAXSTRING, operation_file);
@@ -167,7 +169,7 @@ int ReadOperation (char *project, CyclesStruct Cycles)
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %s", &q->opSource);
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf",&q->opMass);
+                    sscanf (cmdstr, "%*s %lf", &q->opMass);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %s", &q->opForm);
                     fgets (cmdstr, MAXSTRING, operation_file);

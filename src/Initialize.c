@@ -8,17 +8,3 @@ void Initialize (CyclesStruct Cycles)
     /* Initialize soil variables */
     InitializeSoil (&Cycles->Soil, &Cycles->Weather, &Cycles->SimControl);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -24,7 +24,7 @@ int ReadSoil (char *project, CyclesStruct Cycles)
         exit (1);
     }
 
-    /* Read simulation control file */
+    /* Read soil file */
     fgets (cmdstr, MAXSTRING, soil_file);
     sscanf (cmdstr, "%*s %d", &Soil->Curve_Number);
     fgets (cmdstr, MAXSTRING, soil_file);
