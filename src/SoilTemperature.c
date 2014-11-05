@@ -106,7 +106,6 @@ double HeatConductivity(double bulkDensity, double volumetricWC, double fraction
 
 double EstimatedSoilTemperature(double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth)
 {
-    printf("%lf %d %lf %lf %d %lf\n", nodeDepth, doy, annualAvgTemperature, yearlyAmplitude, phase, dampingDepth);
-    return annualAvgTemperature + yearlyAmplitude * exp(-nodeDepth / dampingDepth) * sin(2 * PI / 365. * (double)(doy - phase) - nodeDepth / dampingDepth);
+    return annualAvgTemperature + yearlyAmplitude * exp(-nodeDepth / dampingDepth) * sin(2. * PI / 365. * (double)(doy - phase) - nodeDepth / dampingDepth);
 }
 

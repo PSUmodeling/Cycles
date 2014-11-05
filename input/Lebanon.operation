@@ -1,41 +1,29 @@
-###############
-# Operation 1 #
-###############
+TILLAGE
 YEAR                1
 DOY                 105
-TYPE                TILLAGE
 TOOL                FERT_APPLIC_DEEP_PLCMT_HVY_SHNK
 DEPTH               0.15
 SOIL_DISTURB_RATIO  16
 MIXING_EFFICIENCY   0.371806
 
-###############
-# Operation 2 #
-###############
+PLANTING
 YEAR                1
 DOY                 110
-TYPE                PLANTING
 CROP                Maize
 AUTO_IRRIGATION     0
 AUTO_FERTILIAZATION 0
 
-###############
-# Operation 3 #
-###############
+TILLAGE
 YEAR                1
 DOY                 110
-TYPE                TILLAGE
 TOOL                DRILL_AIRSEEDER_DOUBLE_DISK
 DEPTH               0.08
 SOIL_DISTURB_RATIO  17
 MIXING_EFFICIENCY   0.05
 
-###############
-# Operation 4 #
-###############
+FERTILIZATION
 YEAR                1
 DOY                 305
-TYPE                FERTILIZATION
 SOURCE              82-00-00_ANHYDROUS_AMMONIA
 MASS                205
 FORM                LIQUID
@@ -52,3 +40,7 @@ P_CHARCOOAL         0
 P_INORGANIC         0
 K                   0
 S                   0
+
+#AUTO_IRRIGATION
+#
+#AUTO_FERTILIZATION

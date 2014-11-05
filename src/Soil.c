@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void InitializeSoil (SoilClass *Soil, WeatherClass *Weather)
+void InitializeSoil (SoilClass *Soil, WeatherClass *Weather, SimControlClass *SimControl)
 {
     double          WC33;       /* volumetric water content at 33 J/kg */
     double          WC1500;     /* volumetric water contetn at 1500 J/kg */
@@ -38,9 +38,9 @@ void InitializeSoil (SoilClass *Soil, WeatherClass *Weather)
         Soil->IOM[i] = Soil->IOM[i];
         Soil->NO3[i] = Soil->NO3[i] / 1000.;
         Soil->NH4[i] = Soil->NH4[i] / 1000.;
-        Soil->nodeDepth[i] = Soil->cumulativeDepth[i] + Soil->layerThickness[i] / 2.;
         if (i > 0)
             Soil->cumulativeDepth[i] = Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i];    
+        Soil->nodeDepth[i] = Soil->cumulativeDepth[i] + Soil->layerThickness[i] / 2.;
     }
 
     Soil->nodeDepth[Soil->totalLayers] = Soil->cumulativeDepth[Soil->totalLayers - 1] + Soil->layerThickness[Soil->totalLayers - 1] / 2.;
@@ -90,8 +90,8 @@ void InitializeSoil (SoilClass *Soil, WeatherClass *Weather)
     /* initializes soil temperature in first day of simulation */
     Soil->dampingDepth = 2.;
 
-    printf ("Latitude = %lf\n", Weather->locationLatitude);
-    if (Weather->locationLatitude >= 0)
+    printf ("Latitude = %lf\n", Weather->siteLatitude);
+    if (Weather->siteLatitude >= 0)
         Soil->annualTemperaturePhase = 100;
     else
         Soil->annualTemperaturePhase = 280;
@@ -101,12 +101,13 @@ void InitializeSoil (SoilClass *Soil, WeatherClass *Weather)
     Soil->soilTemperature = (double *) malloc ((Soil->totalLayers + 1) * sizeof (double));
     for (i = 0; i < Soil->totalLayers + 1; i++)
     {
-        Soil->soilTemperature[i] = EstimatedSoilTemperature(Soil->nodeDepth[i], 1, Weather->annualAverageTemperature, Weather->yearlyAmplitude, Soil->annualTemperaturePhase, Soil->dampingDepth);
-        printf("STC = %lf; %lf %d %lf %d %lf \n", Soil->soilTemperature[i], Soil->nodeDepth[i], 1, Weather->annualAverageTemperature[1], Soil->annualTemperaturePhase, Soil->dampingDepth);
+        Soil->soilTemperature[i] = EstimatedSoilTemperature(Soil->nodeDepth[i], 1, annualAvgTemperature (Weather, SimControl->simStartYear), annualAmplitude (Weather, SimControl->simStartYear), Soil->annualTemperaturePhase, Soil->dampingDepth);
+        printf("return value %lf\n", EstimatedSoilTemperature(Soil->nodeDepth[i], 1, annualAvgTemperature (Weather, SimControl->simStartYear), annualAmplitude (Weather, SimControl->simStartYear), Soil->annualTemperaturePhase, Soil->dampingDepth));
+        printf("STC = %lf; %lf %d %lf %d %lf \n", Soil->soilTemperature[i], Soil->nodeDepth[i], 1, annualAvgTemperature (Weather, SimControl->simStartYear), annualAmplitude (Weather, SimControl->simStartYear), Soil->annualTemperaturePhase, Soil->dampingDepth);
     }
 
 #ifdef _DEBUG_
-    printf("clay\t\tsand\t\tiom\t\tno3\t\tnh4\t\tnoded\t\tcumud\t\tbd\t\tporos\t\tb\t\taep\t\tm  \t\tfc_p\t\tfc\t\tpwp\t\tsoc_c\t\tsoc_m\t\tson_m\t\tmbc_m\t\tmbn_m\t\tpaw\t\twc\n");
+    printf("Clay\t\tSand\t\tIOM\t\tNO3\t\tNH4\t\tnodeDepth\t\tcumulativeD\t\tBD\t\tPorosity\t\tb\t\tairEntryPot\t\tm\t\tFC_pot\t\tFC\t\tPWP\t\tSOC_c\t\tSOC_m\t\tSON_m\t\tMBC_m\t\tMBN_m\t\tPAW\t\twaterContent\n");
     for (i = 0; i < Soil->totalLayers; i++)
     {
         printf("%lf\t", Soil->Clay[i]);

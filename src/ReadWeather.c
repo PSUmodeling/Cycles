@@ -37,9 +37,9 @@ int ReadWeather (char *project, CyclesStruct Cycles)
         {
             sscanf (cmdstr, "%s", optstr);
             if (strcasecmp ("LATITUDE", optstr) == 0)
-                sscanf (cmdstr, "%*s %lf", &Weather->locationLatitude);
+                sscanf (cmdstr, "%*s %lf", &Weather->siteLatitude);
             else if (strcasecmp ("ALTITUDE", optstr) == 0)
-                sscanf (cmdstr, "%*s %lf", &Weather->locationAltitude);
+                sscanf (cmdstr, "%*s %lf", &Weather->siteAltitude);
             else if (strcasecmp ("SCREENING_HEIGHT", optstr) == 0)
                 sscanf (cmdstr, "%*s %lf", &Weather->screeningHeight);
             else if (strcasecmp ("YEAR", optstr)==0)
@@ -50,10 +50,8 @@ int ReadWeather (char *project, CyclesStruct Cycles)
         fgets (cmdstr, MAXSTRING, weather_file);
     }
 
-    printf("%lf %lf %lf\n", Weather->locationAltitude, Weather->locationLatitude, Weather->screeningHeight);
 
     Weather->length = counter;
-    printf ("Weather record %d\n", counter);
 
     /* Allocate memories for weather forcing */
     Weather->wind           = (double *) malloc (counter * sizeof (double));
@@ -82,15 +80,7 @@ int ReadWeather (char *project, CyclesStruct Cycles)
 //        printf("%4.4d-%3.3d %lf %lf %lf %lf %lf %lf %lf %lf %lf\n", Weather->year[i], Weather->jday[i], Weather->yearlyAmplitude[i], Weather->annualAverageTemperature[i], Weather->tMax[i], Weather->tMin[i], Weather->RHmax[i], Weather->RHmin[i], Weather->precipitation[i], Weather->solarRadiation[i], Weather->wind[i]);
     }
     
-//    for (i = 0; i < counter; i++)
-//        printf("%4.4d-%3.3d %lf %lf %lf %lf %lf %lf %lf %lf %lf\n", Weather->year[i], Weather->jday[i], Weather->yearlyAmplitude[i], Weather->annualAverageTemperature[i], Weather->tMax[i], Weather->tMin[i], Weather->RHmax[i], Weather->RHmin[i], Weather->precipitation[i], Weather->solarRadiation[i], Weather->wind[i]);
     fclose (weather_file);
-
-
-//    weather_file = fopen("weather.txt", "w");
-//    for (i = 0; i < counter; i++)
-//        fprintf (weather_file, "%-7d\t%-7d\t%-7.1lf\t%-7.1lf\t%-7.1lf\t%-7.2lf\t%-7.2lf\t%-7.2lf\t%-7.2lf\n", Weather->year[i], Weather->jday[i], Weather->precipitation[i], Weather->tMax[i], Weather->tMin[i], Weather->solarRadiation[i], Weather->RHmax[i], Weather->RHmin[i],   Weather->wind[i]);
- //   fclose (weather_file);
 
     return 0;
 }

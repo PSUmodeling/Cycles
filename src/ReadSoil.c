@@ -28,7 +28,7 @@ int ReadSoil (char *project, CyclesStruct Cycles)
     fgets (cmdstr, MAXSTRING, soil_file);
     sscanf (cmdstr, "%*s %d", &Soil->Curve_Number);
     fgets (cmdstr, MAXSTRING, soil_file);
-    sscanf (cmdstr, "%*s %d", &Soil->Percent_Slope);
+    sscanf (cmdstr, "%*s %lf", &Soil->Percent_Slope);
     Soil->Percent_Slope = Soil->Percent_Slope / 100.;
     fgets (cmdstr, MAXSTRING, soil_file);
     sscanf (cmdstr, "%*s %d", &Soil->totalLayers);

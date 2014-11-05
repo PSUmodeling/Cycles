@@ -46,31 +46,29 @@ int main (int argc, char *argv[])
 
     ReadSimControl (project, Cycles);
 #ifdef _DEBUG_
-    printf ("%d %d\n", Cycles->SimControl.Sim_Start_Year, Cycles->SimControl.Season_Output);
+    PrintSimContrl (Cycles->SimControl);
 #endif
+
     ReadSoil (project, Cycles);
 #ifdef _DEBUG_
-    printf ("%lf\n", Cycles->Soil.layerThickness[Cycles->Soil.totalLayers - 1]);
+    PrintSoil (Cycles->Soil);
 #endif
+
     ReadCrop (project, Cycles);
 #ifdef _DEBUG_
-    for (crop_counter = 0; crop_counter < 3; crop_counter++)
-    {
-        printf ("%s\t", Cycles->Crop[crop_counter].cropName);
-        printf ("%d\t", Cycles->Crop[crop_counter].userSeedingDate);
-        printf ("%d\n", Cycles->Crop[crop_counter].userC3orC4);
-    }
+    PrintCrop (Cycles->describedCrops, Cycles->NumDescribedCrop);
 #endif
-//    ReadOperation (project, Cycles);
-//#ifdef _DEBUG_
-//    printf ("Number of field operations: %d\n", Cycles->NumOp);
-//    for (i = 0; i < Cycles->NumOp; i++)
-//    {
-//        p = &Cycles->FieldOperation[i];
-//        printf ("%d %d %d\n", p->opYear, p->opType, p->opDay);
-//    }
-//#endif
+
+    ReadOperation (project, Cycles);
+#ifdef _DEBUG_
+    PrintOperation (Cycles->plantedCrops, Cycles->NumPlantedCrop, Cycles->TillageList, Cycles->FixedIrrigationList, Cycles->FixedFertilizationList);
+#endif
+
     ReadWeather (project, Cycles);
+#ifdef _DEBUG_
+    PrintWeather (Cycles->Weather);
+    printf("%lf %lf %lf %lf %lf\n", dailyPrecipitation (&Cycles->Weather, 2001, 23), dailyRelativeHumidityMin (&Cycles->Weather, 2001, 23), dailySolarRadiation (&Cycles->Weather, 2001, 23), dailyTemperatureMin (&Cycles->Weather, 2001, 23), dailyWindSpeed (&Cycles->Weather, 2001, 23));
+#endif
 
     Initialize (Cycles);
     return 0;

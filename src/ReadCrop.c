@@ -42,9 +42,8 @@ int ReadCrop (char *project, CyclesStruct Cycles)
     }
 
     /* Allocate memories for Crop classes */
-    printf ("  Crop description file contains descriptions of %d crop types.\n", crop_counter);
-
-    Cycles->Crop = (CropClass *) malloc (crop_counter * sizeof (CropClass));
+    Cycles->NumDescribedCrop = crop_counter;
+    Cycles->describedCrops = (describedCropsStruct *) malloc (crop_counter * sizeof (describedCropsStruct));
 
     /* Rewind to the beginning of file and reset crop_counter */
     rewind (crop_file);
@@ -60,73 +59,73 @@ int ReadCrop (char *project, CyclesStruct Cycles)
             sscanf (cmdstr, "%s", optstr);
             if (strcasecmp ("NAME", optstr) == 0)
             {
-                sscanf (cmdstr, "%*s %s", &Cycles->Crop[crop_counter].cropName);
+                sscanf (cmdstr, "%*s %s", &Cycles->describedCrops[crop_counter].userCropName);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->Crop[crop_counter].userSeedingDate);
+                sscanf (cmdstr, "%*s %d", &Cycles->describedCrops[crop_counter].userSeedingDate);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->Crop[crop_counter].userFloweringDate);
+                sscanf (cmdstr, "%*s %d", &Cycles->describedCrops[crop_counter].userFloweringDate);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->Crop[crop_counter].userMaturityDate);
+                sscanf (cmdstr, "%*s %d", &Cycles->describedCrops[crop_counter].userMaturityDate);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userMaximumSoilCoverage);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userMaximumSoilCoverage);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userMaximumRootingDepth);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userMaximumRootingDepth);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userExpectedYieldAvg);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userExpectedYieldAvg);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userExpectedYieldMax);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userExpectedYieldMax);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userExpectedYieldMin);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userExpectedYieldMin);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userPercentMoistureInYield);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userPercentMoistureInYield);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userFractionResidueStanding);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userFractionResidueStanding);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userFractionResidueRemoved);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userFractionResidueRemoved);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userClippingTiming);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userClippingTiming);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userTranspirationMinTemperature);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userTranspirationMinTemperature);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userTranspirationThresholdTemperature);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userTranspirationThresholdTemperature);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userColdDamageMinTemperature);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userColdDamageMinTemperature);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userColdDamageThresholdTemperature);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userColdDamageThresholdTemperature);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userTemperatureBase);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userTemperatureBase);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userTemperatureOptimum);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userTemperatureOptimum);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userTemperatureMaximum);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userTemperatureMaximum);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userShootPartitionInitial);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userShootPartitionInitial);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userShootPartitionFinal);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userShootPartitionFinal);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userRadiationUseEfficiency);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userRadiationUseEfficiency);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userTranspirationUseEfficiency);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userTranspirationUseEfficiency);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userHIx);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userHIx);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userHIo);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userHIo);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userHIk);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userHIk);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userEmergenceTT);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userEmergenceTT);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userNMaxConcentration);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userNMaxConcentration);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userNDilutionSlope);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userNDilutionSlope);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &Cycles->Crop[crop_counter].userKc);
+                sscanf (cmdstr, "%*s %lf", &Cycles->describedCrops[crop_counter].userKc);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->Crop[crop_counter].userAnnual);
+                sscanf (cmdstr, "%*s %d", &Cycles->describedCrops[crop_counter].userAnnual);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->Crop[crop_counter].userLegume);
+                sscanf (cmdstr, "%*s %d", &Cycles->describedCrops[crop_counter].userLegume);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->Crop[crop_counter].userC3orC4);
+                sscanf (cmdstr, "%*s %d", &Cycles->describedCrops[crop_counter].userC3orC4);
 
                 crop_counter = crop_counter + 1;
             }

@@ -23,26 +23,28 @@ int ReadSimControl (char *project, CyclesStruct Cycles)
     }
 
     /* Read simulation control file */
-    fscanf (simctrl_file, "%*s %d", &SimControl->Sim_Start_Year);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Sim_End_Year);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Years_in_Rotation);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Adjusted_Yields);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Hourly_Infiltration);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Automatic_Nitrogen);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Automatic_Phosphorus);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Automatic_Sulfur);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Weather_Daily_Output);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Crop_Daily_Output);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Residue_Daily_Output);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Water_Daily_Output);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Nitrogen_Daily_Output);
-    fscanf (simctrl_file, "%*s %d", &SimControl->SoilCarbon_Daily_Output);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Soil_Daily_Output);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Annual_Soil_Output);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Profile_Output);
-    fscanf (simctrl_file, "%*s %d", &SimControl->Season_Output);
+    fscanf (simctrl_file, "%*s %d", &SimControl->simStartYear);
+    fscanf (simctrl_file, "%*s %d", &SimControl->simEndYear);
+    fscanf (simctrl_file, "%*s %d", &SimControl->yearsInRotation);
+    fscanf (simctrl_file, "%*s %d", &SimControl->adjustedYields);
+    fscanf (simctrl_file, "%*s %d", &SimControl->hourlyInfiltration);
+    fscanf (simctrl_file, "%*s %d", &SimControl->automaticNitrogen);
+    fscanf (simctrl_file, "%*s %d", &SimControl->automaticPhosphorus);
+    fscanf (simctrl_file, "%*s %d", &SimControl->automaticSulfur);
+    fscanf (simctrl_file, "%*s %d", &SimControl->weatherDailyOutput);
+    fscanf (simctrl_file, "%*s %d", &SimControl->cropDailyOutput);
+    fscanf (simctrl_file, "%*s %d", &SimControl->residueDailyOutput);
+    fscanf (simctrl_file, "%*s %d", &SimControl->waterDailyOutput);
+    fscanf (simctrl_file, "%*s %d", &SimControl->nitrogenDailyOutput);
+    fscanf (simctrl_file, "%*s %d", &SimControl->soilCarbonDailyOutput);
+    fscanf (simctrl_file, "%*s %d", &SimControl->soilDailyOutput);
+    fscanf (simctrl_file, "%*s %d", &SimControl->annualSoilOutput);
+    fscanf (simctrl_file, "%*s %d", &SimControl->profileOutput);
+    fscanf (simctrl_file, "%*s %d", &SimControl->seasonOutput);
 
     fclose (simctrl_file);
+
+    SimControl->totalYears = SimControl->simEndYear - SimControl->simStartYear + 1;
 
     return 0;
 }

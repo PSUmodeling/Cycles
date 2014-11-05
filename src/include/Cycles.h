@@ -16,32 +16,30 @@ typedef struct SimControlClass
 {
     int            *yearSpecificLastDOY;
 
-    int             Sim_Start_Year;
-    int             Sim_End_Year;
-    int             Total_Years;
-    int             Years_in_Rotation;
+    int             simStartYear;
+    int             simEndYear;
+    int             totalYears;
+    int             yearsInRotation;
 
-    int             Adjusted_Yields;
-    int             Hourly_Infiltration;
-    int             Automatic_Nitrogen;
-    int             Automatic_Phosphorus;
-    int             Automatic_Sulfur;
-    int             Crop_Daily_Output;
-    int             Soil_Daily_Output;
-    int             Nitrogen_Daily_Output;
-    int             Water_Daily_Output;
-    int             Weather_Daily_Output;
-    int             Residue_Daily_Output;
-    int             SoilCarbon_Daily_Output;
-    int             Annual_Soil_Output;
-    int             Profile_Output;
-    int             Season_Output;
+    int             adjustedYields;
+    int             hourlyInfiltration;
+    int             automaticNitrogen;
+    int             automaticPhosphorus;
+    int             automaticSulfur;
+    int             cropDailyOutput;
+    int             soilDailyOutput;
+    int             nitrogenDailyOutput;
+    int             waterDailyOutput;
+    int             weatherDailyOutput;
+    int             residueDailyOutput;
+    int             soilCarbonDailyOutput;
+    int             annualSoilOutput;
+    int             profileOutput;
+    int             seasonOutput;
 } SimControlClass;
 
 typedef struct SoilClass
 {
-    //double *Sand;
-
     int             totalLayers;
     int             Curve_Number;
     double          Percent_Slope;
@@ -107,12 +105,67 @@ typedef struct SoilClass
     double          NH4_Volatilization;
 } SoilClass;
 
+typedef struct plantingOrderStruct
+{
+    int             seedingYear;
+    int             seedingDate;
+    char            cropName[128];
+    int             usesAutoIrrigation;
+    int             usesAutoFertilization;
+    int             plantID;
+} plantingOrderStruct;
+
+typedef struct describedCropsStruct
+{
+    /* User Defined Data */
+    char            userCropName[128];
+    int             userSeedingDate;
+    int             userFloweringDate;
+    int             userMaturityDate;
+    double          userMaximumSoilCoverage;
+    double          userMaximumRootingDepth;
+    double          userExpectedYieldAvg;
+    double          userExpectedYieldMax;
+    double          userExpectedYieldMin;
+    double          userPercentMoistureInYield;
+    double          userFractionResidueStanding;
+    double          userFractionResidueRemoved;
+    double          userClippingTiming;
+    double          userTranspirationMinTemperature;
+    double          userTranspirationThresholdTemperature;
+    double          userColdDamageMinTemperature;
+    double          userColdDamageThresholdTemperature;
+    double          userTemperatureBase;
+    double          userTemperatureOptimum;
+    double          userTemperatureMaximum;
+    double          userShootPartitionInitial;
+    double          userShootPartitionFinal;
+    double          userRadiationUseEfficiency;
+    double          userTranspirationUseEfficiency;
+    double          userHIx;
+    double          userHIo;    /* intercept harvest index */
+    double          userHIk;
+    double          userEmergenceTT;
+    double          userNMaxConcentration;
+    double          userNDilutionSlope;
+    double          userKc;
+    int             userAnnual;
+    int             userLegume;
+    int             userC3orC4;
+    double          calculatedFloweringTT;
+    double          calculatedMaturityTT;
+    double          calculatedSimAvgYield;
+    double          calculatedSimMaxYield;
+    double          calculatedSimMinYield;
+} describedCropsStruct;
+
 typedef struct CropClass
 {
     /*
      * Instance of a crop that has been planted
      * Instance should be deleted once the crop fallow or killed
      */
+
     char            cropName[128];
 
     /* User Defined Auto Irrigation */
@@ -164,41 +217,6 @@ typedef struct CropClass
     double         *svShootUnstressed;
     double         *svN_StressCumulative;
 
-    /* User Defined Data */
-    int             userSeedingDate;
-    int             userFloweringDate;
-    int             userMaturityDate;
-    double          userMaximumSoilCoverage;
-    double          userMaximumRootingDepth;
-    double          userExpectedYieldAvg;
-    double          userExpectedYieldMax;
-    double          userExpectedYieldMin;
-    double          userPercentMoistureInYield;
-    double          userFractionResidueStanding;
-    double          userFractionResidueRemoved;
-    double          userClippingTiming;
-    double          userTranspirationMinTemperature;
-    double          userTranspirationThresholdTemperature;
-    double          userColdDamageMinTemperature;
-    double          userColdDamageThresholdTemperature;
-    double          userTemperatureBase;
-    double          userTemperatureOptimum;
-    double          userTemperatureMaximum;
-    double          userShootPartitionInitial;
-    double          userShootPartitionFinal;
-    double          userRadiationUseEfficiency;
-    double          userTranspirationUseEfficiency;
-    double          userHIx;
-    double          userHIo;    /* intercept harvest index */
-    double          userHIk;
-    double          userEmergenceTT;
-    double          userNMaxConcentration;
-    double          userNDilutionSlope;
-    double          userKc;
-    int             userAnnual;
-    int             userLegume;
-    int             userC3orC4;
-
     int            *harvestDateFinal;
     int            *harvestCount;
     char           *stageGrowth;
@@ -211,24 +229,17 @@ typedef struct FieldOperationClass
     int             opYear;
     int             opDay;
 
-    enum opEnumType opType;
-
     /* Tillage */
     char            opToolName[MAXSTRING];
     double          opDepth;
     double          opSDR;
     double          opMixingEfficiency;
 
-    /* Planting */
-    char            cropName[MAXSTRING];
-    int             usingAutoIrr;
-    int             usingAutoFert;
+    /* Fixed Irrigation */
+    double          opVolume;
 
-    /* Irrigation */
-    double          volume;
-
-    /* Fertilization */
-    char            opsource[MAXSTRING];
+    /* Fixed Fertilization */
+    char            opSource[MAXSTRING];
     double          opMass;
     char            opForm[MAXSTRING];
     char            opMethod[MAXSTRING];
@@ -248,10 +259,17 @@ typedef struct FieldOperationClass
     struct FieldOperationClass *NextOperation;
 } FieldOperationClass;
 
+typedef struct FieldOperationListClass
+{
+    FieldOperationClass *firstOperation;
+//    FieldOperationClass *lastOperation;
+//    FieldOperationClass *currentOperation;
+} FieldOperationListClass;
+
 typedef struct WeatherClass
 {
-    double      locationAltitude;
-    double      locationLatitude;
+    double      siteAltitude;
+    double      siteLatitude;
     double      screeningHeight;
     int         length;
     int        *year;
@@ -267,41 +285,112 @@ typedef struct WeatherClass
     double     *solarRadiation;
     double     *tMax;
     double     *tMin;
-    double      pAtm;
+    double      atmosphericPressure;
 } WeatherClass;
 
 typedef struct CyclesStruct
 {
-    int             NumCrop;
+    int             NumDescribedCrop;
+    int             NumPlantedCrop;
     int             NumOp;
     SimControlClass SimControl;
     SoilClass       Soil;
     CropClass      *Crop;
-    FieldOperationClass *FieldOperation;
+
+    FieldOperationClass *AutoIrrigation;
+    FieldOperationClass *FixedFertilization;
+    FieldOperationClass *FixedIrrigation;
+    FieldOperationClass *Tillage;
+
+    FieldOperationListClass AutoIrrigationList;
+    FieldOperationListClass FixedFertilizationList;
+    FieldOperationListClass FixedIrrigationList;
+    FieldOperationListClass TillageList;
+
     WeatherClass    Weather;
+
+    plantingOrderStruct *plantedCrops;      /* Struct to read in data */
+    plantingOrderStruct *plantingOrder;
+    int             plantingIndex;
+
+    describedCropsStruct *describedCrops;
+    int             describedIndex;
+
+//    autoIrrigationStruct *autoIrrigation;
+//    autoFertilizationStruct *autoFertilization;
+    int             usingAutoIrr;
+    int             usingAutoFert;
+
+    int             totalCropsPerRotation;
+
+    char            nextCropName[128];
+    int             nextCropSeedingDate;
+    int             nextCropSeedingYear;
 } *CyclesStruct;
 
 /* Declare Cycles functions */
+/* ReadSimControl.c */
 int             ReadSimControl (char *project, CyclesStruct Cycles);
+
+/* ReadSoil.c */
 int             ReadSoil (char *project, CyclesStruct Cycles);
+
+/* ReadCrop.c */
 int             ReadCrop (char *project, CyclesStruct Cycles);
+
+/* ReadOperation.c */
 int             ReadOperation (char *project, CyclesStruct Cycles);
+
+/* ReadWeather.c */
 int             ReadWeather (char *project, CyclesStruct Cycles);
+
+/* Initialize.c */
 void            Initialize (CyclesStruct Cycles);
-void            InitializeSoil (SoilClass *Soil, WeatherClass *Weather);
+
+/* Soil.c */
+void            InitializeSoil (SoilClass *Soil, WeatherClass *Weather, SimControlClass *SimControl);
 double SoilWaterPotential(double SaturationWC, double AirEntryPot, double Campbell_b, double WC);
 double VolumetricWCAt33Jkg (double Clay, double Sand, double OM);
 double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM);
 double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential);
 double BulkDensity (double Clay, double Sand, double OM);
-double SatVP (double T);
-void CalculateDerivedWeather(WeatherClass *Weather, SimControlClass *SimControl);
+
+/* LinkedList.c */
+void InsertOperation (FieldOperationListClass *OperationList, FieldOperationClass *Operation);
+
+/* ReferenceET.c */
 double CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
 double SaturatedVaporPressure (double T);
 double PotentialRadiation (double Lat, int doy);
 double NetRadiation(double Pot_Rad, double Solar_Rad, double Actual_VP, double TMax, double TMin);
 double Aero_Res(double uz, double z);
 
+/* Weather.c */
+double SatVP (double T);
+void CalculateDerivedWeather(WeatherClass *Weather, SimControlClass *SimControl);
+double annualAvgTemperature (WeatherClass *Weather, int yr);
+double annualAmplitude (WeatherClass *Weather, int yr);
+double dailyETref (WeatherClass *Weather, int yr, int dy);
+double dailyPrecipitation (WeatherClass *Weather, int yr, int dy);
+double dailyRelativeHumidityMax (WeatherClass *Weather, int yr, int dy);
+double dailyRelativeHumidityMin (WeatherClass *Weather, int yr, int dy);
+double dailySolarRadiation (WeatherClass *Weather, int yr, int dy);
+double dailyTemperatureMax (WeatherClass *Weather, int yr, int dy);
+double dailyTemperatureMin (WeatherClass *Weather, int yr, int dy);
+double dailyWindSpeed (WeatherClass *Weather, int yr, int dy);
+
+/* SoilTemperature.c */
+double HeatCapacity(double bulkDensity, double volumetricWC);
+double HeatConductivity(double bulkDensity, double volumetricWC, double fractionClay);
+double EstimatedSoilTemperature(double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth);
+
+#ifdef _DEBUG_
+void PrintSimContrl(SimControlClass SimControl);
+void PrintSoil (SoilClass Soil);
+void PrintCrop (describedCropsStruct *describedCrops, int NumCrop);
+void PrintOperation (plantingOrderStruct *plantedCrops, int NumPlanting, FieldOperationListClass TillageList, FieldOperationListClass FixedIrrigationList, FieldOperationListClass FixedFertilizationList);
+void PrintWeather (WeatherClass Weather);
+#endif
 
 
 
