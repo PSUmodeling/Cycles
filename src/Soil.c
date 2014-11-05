@@ -45,6 +45,9 @@ void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass *
 
     Soil->nodeDepth[Soil->totalLayers] = Soil->cumulativeDepth[Soil->totalLayers - 1] + Soil->layerThickness[Soil->totalLayers - 1] / 2.;
 
+    /*
+     * Compute hydraulic properties
+     */
     for (i = 0; i < Soil->totalLayers; i++)
     {
         if (Soil->BD[i] == BADVAL)  /* Buld Density switch */
@@ -74,7 +77,10 @@ void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass *
             exit (1);
         }
     }
-    /* initialize variables depending on previous loop */
+
+    /*
+     * initialize variables depending on previous loop
+     */
     for (i = 0; i < Soil->totalLayers; i++)
     {
         Soil->SOC_Conc[i] = Soil->IOM[i] * 10. * 0.58;
@@ -87,23 +93,20 @@ void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass *
         Soil->waterContent[i] = (Soil->FC[i] + Soil->PWP[i]) / 2.;
     }
 
-    /* initializes soil temperature in first day of simulation */
+    /*
+     * Initializes soil temperature in first day of simulation
+     */
     Soil->dampingDepth = 2.;
 
-    printf ("Latitude = %lf\n", Weather->siteLatitude);
     if (Weather->siteLatitude >= 0)
         Soil->annualTemperaturePhase = 100;
     else
         Soil->annualTemperaturePhase = 280;
 
-    printf ("phase = %d\n", Soil->annualTemperaturePhase);
-
     Soil->soilTemperature = (double *)malloc ((Soil->totalLayers + 1) * sizeof (double));
     for (i = 0; i < Soil->totalLayers + 1; i++)
     {
         Soil->soilTemperature[i] = EstimatedSoilTemperature (Soil->nodeDepth[i], 1, annualAvgTemperature (Weather, SimControl->simStartYear), annualAmplitude (Weather, SimControl->simStartYear), Soil->annualTemperaturePhase, Soil->dampingDepth);
-        printf ("return value %lf\n", EstimatedSoilTemperature (Soil->nodeDepth[i], 1, annualAvgTemperature (Weather, SimControl->simStartYear), annualAmplitude (Weather, SimControl->simStartYear), Soil->annualTemperaturePhase, Soil->dampingDepth));
-        printf ("STC = %lf; %lf %d %lf %d %lf \n", Soil->soilTemperature[i], Soil->nodeDepth[i], 1, annualAvgTemperature (Weather, SimControl->simStartYear), annualAmplitude (Weather, SimControl->simStartYear), Soil->annualTemperaturePhase, Soil->dampingDepth);
     }
 
 #ifdef _DEBUG_
@@ -143,8 +146,10 @@ double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campb
 
 double VolumetricWCAt33Jkg (double Clay, double Sand, double OM)
 {
-    /* Saxton and Rawls 2006 SSSAJ 70:1569-1578 Eq 2 (r2 = 0.63) */
-    /* clay and sand fractional, OM as %
+    /*
+     * Saxton and Rawls 2006 SSSAJ 70:1569-1578 Eq 2 (r2 = 0.63)
+     */
+    /* Clay and sand fractional, OM as %
      * (original paper says % for everything, results make no sense) */
     double          x1;
 
@@ -154,8 +159,10 @@ double VolumetricWCAt33Jkg (double Clay, double Sand, double OM)
 
 double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM)
 {
-    /* Saxton and Rawls 2006 SSSAJ 70:1569-1578 Eq 1 (r2 = 0.86) */
-    /* clay and sand fractional, OM as %
+    /*
+     * Saxton and Rawls 2006 SSSAJ 70:1569-1578 Eq 1 (r2 = 0.86)
+     */
+    /* Clay and sand fractional, OM as %
      * (original paper says % for everything, results make no sense) */
     double          x1;
 
@@ -170,13 +177,15 @@ double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbel
 
 double BulkDensity (double Clay, double Sand, double OM)
 {
-    /* Saxton and Rawls 2006 SSSAJ 70:1569-1578 Eq 6,5 (r2 = 0.29)
-     * really poor fit */
-    /* clay and sand fractional, OM as %
-     * (original paper says % for everything, results make no sense) */
-    /*  Note: X2 is Eq 3, supposedly representing moisture from FC to
-     *  Saturation; however, porosity is further adjusted by sand, an
-     *  inconsistency */
+    /*
+     * Saxton and Rawls 2006 SSSAJ 70:1569-1578 Eq 6,5 (r2 = 0.29)
+     * really poor fit
+     */
+    /* Clay and sand fractional, OM as %
+     * (original paper says % for everything, results make no sense)
+     * Note: X2 is Eq 3, supposedly representing moisture from FC to
+     * saturation;
+     * however, porosity is further adjusted by sand, an inconsistency */
 
     double          x1;
     double          x2;
