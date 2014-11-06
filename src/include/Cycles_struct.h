@@ -255,6 +255,26 @@ typedef struct FieldOperationClass
     struct FieldOperationClass *NextOperation;
 } FieldOperationClass;
 
+typedef struct autoIrrigationStruct
+{
+    char            cropName[128];
+    int             startDay;
+    int             stopDay;
+    double          waterDepletion;
+    double          lastSoilLayer;
+} autoIrrigationStruct;
+
+typedef struct autoFertilizationStruct
+{
+    char            cropName[128];
+    int             startDay;
+    int             stopDay;
+    double          mass;
+    char            source[MAXSTRING];
+    char            form[MAXSTRING];
+    char            method[MAXSTRING];
+} autoFertilizationStruct;
+
 typedef struct FieldOperationListClass
 {
     FieldOperationClass *firstOperation;
@@ -293,12 +313,12 @@ typedef struct CyclesStruct
     SoilClass       Soil;
     CropClass      *Crop;
 
-    FieldOperationClass *AutoIrrigation;
+//    FieldOperationClass *AutoIrrigation;
     FieldOperationClass *FixedFertilization;
     FieldOperationClass *FixedIrrigation;
     FieldOperationClass *Tillage;
 
-    FieldOperationListClass AutoIrrigationList;
+//    FieldOperationListClass AutoIrrigationList;
     FieldOperationListClass FixedFertilizationList;
     FieldOperationListClass FixedIrrigationList;
     FieldOperationListClass TillageList;
@@ -312,8 +332,8 @@ typedef struct CyclesStruct
     describedCropsStruct *describedCrops;
     int             describedIndex;
 
-    //    autoIrrigationStruct *autoIrrigation;
-    //    autoFertilizationStruct *autoFertilization;
+    autoIrrigationStruct *autoIrrigation;
+    autoFertilizationStruct *autoFertilization;
     int             usingAutoIrr;
     int             usingAutoFert;
 

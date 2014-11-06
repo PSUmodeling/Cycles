@@ -52,9 +52,6 @@ int main (int argc, char *argv[])
 
     /* Read crop description file */
     ReadCrop (project, Cycles);
-#ifdef _DEBUG_
-    PrintCrop (Cycles->describedCrops, Cycles->NumDescribedCrop);
-#endif
 
     /* Read field operation file */
     ReadOperation (project, Cycles);
@@ -71,5 +68,9 @@ int main (int argc, char *argv[])
 
     /* Initialize model variables and parameters */
     Initialize (Cycles);
+#ifdef _DEBUG_
+    PrintPlantingOrder (Cycles->plantingOrder, Cycles->totalCropsPerRotation);
+    PrintCrop (Cycles->describedCrops, Cycles->NumDescribedCrop);
+#endif
     return 0;
 }

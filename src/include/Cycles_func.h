@@ -56,12 +56,18 @@ double          HeatCapacity (double bulkDensity, double volumetricWC);
 double          HeatConductivity (double bulkDensity, double volumetricWC, double fractionClay);
 double          EstimatedSoilTemperature (double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth);
 
+/* Crops.c */
+//void StorePlantingOrder (plantingOrderStruct *plantedCrops, plantingOrderStruct *plantingOrder, int *totalCropsPerRotation, int rotationSize, int NumPlantedCrop);
+void ModifyDescriptions(describedCropsStruct *describedCrops, int NumDescribedCrop);
+void LinkRotationAndDescription (plantingOrderStruct *plantingOrder, describedCropsStruct *describedCrops, int totalCropsPerRotation, int NumDescribedCrop);
+
 #ifdef _DEBUG_
 void            PrintSimContrl (SimControlClass SimControl);
 void            PrintSoil (SoilClass Soil);
 void            PrintCrop (describedCropsStruct * describedCrops, int NumCrop);
 void            PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationListClass TillageList, FieldOperationListClass FixedIrrigationList, FieldOperationListClass FixedFertilizationList);
 void            PrintWeather (WeatherClass Weather);
+void            PrintPlantingOrder (plantingOrderStruct *plantingOrder, int totalCropsPerRotation);
 #endif
 
 #endif

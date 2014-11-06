@@ -11,6 +11,8 @@ int ReadOperation (char *project, CyclesStruct Cycles)
     int             planting_counter = 0;
     int             irrigation_counter = 0;
     int             fertilization_counter = 0;
+    int             auto_irrigation_counter = 0;
+    //int             auto_fertilization_counter = 0;
     int             i;
     FieldOperationClass *q;
 
@@ -40,19 +42,27 @@ int ReadOperation (char *project, CyclesStruct Cycles)
                 tillage_counter++;
             else if (strcasecmp ("PLANTING", optstr) == 0)
                 planting_counter++;
-            else if (strcasecmp ("IRRIGATION", optstr) == 0)
+            else if (strcasecmp ("FIXED_IRRIGATION", optstr) == 0)
                 irrigation_counter++;
-            else if (strcasecmp ("FERTILIZATION", optstr) == 0)
+            else if (strcasecmp ("FIXED_FERTILIZATION", optstr) == 0)
                 fertilization_counter++;
             else if (strcasecmp ("AUTO_IRRIGATION", optstr) == 0)
+            {
+                auto_irrigation_counter++;
                 Cycles->usingAutoIrr = 1;
+            }
+            //else if (strcasecmp ("AUTO_FERTILIZATION", optstr) == 0)
+            //{
+            //    auto_fertilization_counter++;
+            //    Cycles->usingAutoFert = 1;
+            //}
         }
         fgets (cmdstr, MAXSTRING, operation_file);
     }
 
     /* Allocate memories for field operation classes */
 #ifdef _DEBUG_
-    printf ("  Field operation file contains descriptions of %d planting operations, %d tillage operations, %d fixed irrigation operations, and %d fixed fertilization operations.\n", planting_counter, tillage_counter, irrigation_counter, fertilization_counter);
+    printf ("  Field operation file contains descriptions of %d planting operations, %d tillage operations, %d fixed irrigation operations, %d fixed fertilization operations, %d auto irrigation operations.\n", planting_counter, tillage_counter, irrigation_counter, fertilization_counter, auto_irrigation_counter);
 #endif
 
     Cycles->NumPlantedCrop = planting_counter;
@@ -81,6 +91,7 @@ int ReadOperation (char *project, CyclesStruct Cycles)
                 sscanf (cmdstr, "%*s %d", &Cycles->plantedCrops[planting_counter].usesAutoIrrigation);
                 fgets (cmdstr, MAXSTRING, operation_file);
                 sscanf (cmdstr, "%*s %d", &Cycles->plantedCrops[planting_counter].usesAutoFertilization);
+                planting_counter++;
             }
         }
         fgets (cmdstr, MAXSTRING, operation_file);
@@ -131,7 +142,7 @@ int ReadOperation (char *project, CyclesStruct Cycles)
             if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
             {
                 sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("IRRIGATION", optstr) == 0)
+                if (strcasecmp ("FIXED_IRRIGATION", optstr) == 0)
                 {
                     q = (FieldOperationClass *) malloc (sizeof (FieldOperationClass));
                     fgets (cmdstr, MAXSTRING, operation_file);
@@ -159,7 +170,7 @@ int ReadOperation (char *project, CyclesStruct Cycles)
             if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
             {
                 sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("FERTILIZATION", optstr) == 0)
+                if (strcasecmp ("FIXED_FERTILIZATION", optstr) == 0)
                 {
                     q = (FieldOperationClass *) malloc (sizeof (FieldOperationClass));
                     fgets (cmdstr, MAXSTRING, operation_file);
@@ -199,6 +210,39 @@ int ReadOperation (char *project, CyclesStruct Cycles)
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opS);
                     InsertOperation (&Cycles->FixedFertilizationList, q);
+                }
+            }
+            fgets (cmdstr, MAXSTRING, operation_file);
+        }
+    }
+
+    if (Cycles->usingAutoIrr)
+    {
+        Cycles->autoIrrigation = (autoIrrigationStruct *) malloc (auto_irrigation_counter * sizeof (autoIrrigationStruct));
+
+        /* Rewind to the beginning of file and read all planting operations */
+        rewind (operation_file);
+        auto_irrigation_counter = 0;
+
+        fgets (cmdstr, MAXSTRING, operation_file);
+        while (!feof (operation_file))
+        {
+            if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
+            {
+                sscanf (cmdstr, "%s", optstr);
+                if (strcasecmp ("PLANTING", optstr) == 0)
+                {
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %s", &Cycles->autoIrrigation[auto_irrigation_counter].cropName);
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %d", &Cycles->autoIrrigation[auto_irrigation_counter].startDay);
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %d", &Cycles->autoIrrigation[auto_irrigation_counter].stopDay);
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %lf", &Cycles->autoIrrigation[auto_irrigation_counter].waterDepletion);
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %d", &Cycles->autoIrrigation[auto_irrigation_counter].lastSoilLayer);
+                    auto_irrigation_counter++;
                 }
             }
             fgets (cmdstr, MAXSTRING, operation_file);

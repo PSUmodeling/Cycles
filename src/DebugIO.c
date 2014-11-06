@@ -156,8 +156,24 @@ void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldO
 void PrintWeather (WeatherClass Weather)
 {
     printf ("\nWeather:\n");
-    printf ("%-16s\t%6.2lf\n", "LATITUDE", Weather.siteAltitude);
-    printf ("%-16s\t%6.2lf\n", "ALTITUDE", Weather.siteLatitude);
-    printf ("%-16s\t%6.2lf\n", "SCREENING_HEIGHT", Weather.screeningHeight);
+    printf ("%-16s\t-%6.2lf\n", "LATITUDE", Weather.siteAltitude);
+    printf ("%-16s\t%-6.2lf\n", "ALTITUDE", Weather.siteLatitude);
+    printf ("%-16s\t%-6.2lf\n", "SCREENING_HEIGHT", Weather.screeningHeight);
     printf ("Weather record %d\n", Weather.length);
+}
+
+void PrintPlantingOrder (plantingOrderStruct *plantingOrder, int totalCropsPerRotation)
+{
+    int i;
+
+    printf ("\nPlanting Order: %-2.2d\n", totalCropsPerRotation);
+    for (i = 0; i < totalCropsPerRotation; i++)
+    {
+        printf ("%-16s\t%-4.4d\n", "Seeding Year", plantingOrder[i].seedingYear);
+        printf ("%-16s\t%-3.3d\n", "Seeding Date", plantingOrder[i].seedingDate);
+        printf ("%-16s\t%-108s\n", "Crop Name", plantingOrder[i].cropName);
+        printf ("%-16s\t%-4.4d\n", "Auto Irrigation", plantingOrder[i].usesAutoIrrigation);
+        printf ("%-16s\t%-4.4d\n", "Auto Fertilization", plantingOrder[i].usesAutoFertilization);
+        printf ("%-16s\t%-4.4d\n", "Plant ID", plantingOrder[i].plantID);
+    }
 }
