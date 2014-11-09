@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-int ReadWeather (char *project, CyclesStruct Cycles)
+void ReadWeather (char *project, WeatherStruct *Weather)
 {
     FILE           *weather_file;
     char           *filename;
@@ -8,9 +8,6 @@ int ReadWeather (char *project, CyclesStruct Cycles)
     char            optstr[MAXSTRING];
     int             counter = 0;
     int             i, j;
-    WeatherClass   *Weather;
-
-    Weather = &Cycles->Weather;
 
     printf ("Read weather file.\n");
 
@@ -83,6 +80,4 @@ int ReadWeather (char *project, CyclesStruct Cycles)
     }
 
     fclose (weather_file);
-
-    return 0;
 }

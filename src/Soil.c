@@ -1,13 +1,12 @@
 #include "include/Cycles.h"
 
-void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass * SimControl)
+void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl)
 {
     double          WC33;       /* volumetric water content at 33 J/kg */
     double          WC1500;     /* volumetric water contetn at 1500 J/kg */
     int             i;
 
     /* Initialize soil vairables */
-
 
     Soil->nodeDepth = (double *)malloc ((Soil->totalLayers + 1) * sizeof (double));
     Soil->cumulativeDepth = (double *)malloc ((Soil->totalLayers) * sizeof (double));
@@ -28,8 +27,8 @@ void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass *
     Soil->pH = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->n2o = (double *)malloc ((Soil->totalLayers) * sizeof (double));
 
-    Soil->cumulativeDepth[0] = 0;
-    Soil->nodeDepth[0] = -0.5 * Soil->layerThickness[0];
+    Soil->cumulativeDepth[0] = Soil->layerThickness[0];
+    Soil->nodeDepth[0] = 0.5 * Soil->layerThickness[0];
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
@@ -39,15 +38,15 @@ void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass *
         Soil->NO3[i] = Soil->NO3[i] / 1000.;
         Soil->NH4[i] = Soil->NH4[i] / 1000.;
         if (i > 0)
+        {
             Soil->cumulativeDepth[i] = Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i];
-        Soil->nodeDepth[i] = Soil->cumulativeDepth[i] + Soil->layerThickness[i] / 2.;
+            Soil->nodeDepth[i] = Soil->cumulativeDepth[i-1] + Soil->layerThickness[i] / 2.;
+        }
     }
 
     Soil->nodeDepth[Soil->totalLayers] = Soil->cumulativeDepth[Soil->totalLayers - 1] + Soil->layerThickness[Soil->totalLayers - 1] / 2.;
 
-    /*
-     * Compute hydraulic properties
-     */
+    /* Compute hydraulic properties */
     for (i = 0; i < Soil->totalLayers; i++)
     {
         if (Soil->BD[i] == BADVAL)  /* Buld Density switch */
@@ -56,7 +55,7 @@ void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass *
         Soil->Porosity[i] = 1. - Soil->BD[i] / 2.65;
         WC33 = VolumetricWCAt33Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
         WC1500 = VolumetricWCAt1500Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
-        Soil->B_Value[i] = (log (1500.) / log (33.)) / (log (WC33) - log (WC1500));
+        Soil->B_Value[i] = (log (1500.) - log (33.)) / (log (WC33) - log (WC1500));
         Soil->airEntryPotential[i] = -33. * pow (WC33 / Soil->Porosity[i], Soil->B_Value[i]);
         Soil->M_Value[i] = 2. * Soil->B_Value[i] + 3.;
 
@@ -78,9 +77,7 @@ void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass *
         }
     }
 
-    /*
-     * initialize variables depending on previous loop
-     */
+    /* initialize variables depending on previous loop */
     for (i = 0; i < Soil->totalLayers; i++)
     {
         Soil->SOC_Conc[i] = Soil->IOM[i] * 10. * 0.58;
@@ -93,9 +90,7 @@ void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass *
         Soil->waterContent[i] = (Soil->FC[i] + Soil->PWP[i]) / 2.;
     }
 
-    /*
-     * Initializes soil temperature in first day of simulation
-     */
+    /* Initializes soil temperature in first day of simulation */
     Soil->dampingDepth = 2.;
 
     if (Weather->siteLatitude >= 0)
@@ -110,32 +105,79 @@ void InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass *
     }
 
 #ifdef _DEBUG_
-    printf ("Clay\t\tSand\t\tIOM\t\tNO3\t\tNH4\t\tnodeDepth\t\tcumulativeD\t\tBD\t\tPorosity\t\tb\t\tairEntryPot\t\tm\t\tFC_pot\t\tFC\t\tPWP\t\tSOC_c\t\tSOC_m\t\tSON_m\t\tMBC_m\t\tMBN_m\t\tPAW\t\twaterContent\n");
+    printf ("\n*Soil properties after initialization:\n");
+    printf ("\n*%-30s\t", "Clay");
     for (i = 0; i < Soil->totalLayers; i++)
-    {
-        printf ("%lf\t", Soil->Clay[i]);
-        printf ("%lf\t", Soil->Sand[i]);
-        printf ("%lf\t", Soil->IOM[i]);
-        printf ("%lf\t", Soil->NO3[i]);
-        printf ("%lf\t", Soil->NH4[i]);
-        printf ("%lf\t", Soil->nodeDepth[i]);
-        printf ("%lf\t", Soil->cumulativeDepth[i]);
-        printf ("%lf\t", Soil->BD[i]);
-        printf ("%lf\t", Soil->Porosity[i]);
-        printf ("%lf\t", Soil->B_Value[i]);
-        printf ("%lf\t", Soil->airEntryPotential[i]);
-        printf ("%lf\t", Soil->M_Value[i]);
-        printf ("%lf\t", Soil->FC_WaterPotential[i]);
-        printf ("%lf\t", Soil->FC[i]);
-        printf ("%lf\t", Soil->PWP[i]);
-        printf ("%lf\t", Soil->SOC_Conc[i]);
-        printf ("%lf\t", Soil->SOC_Mass[i]);
-        printf ("%lf\t", Soil->SON_Mass[i]);
-        printf ("%lf\t", Soil->MBC_Mass[i]);
-        printf ("%lf\t", Soil->MBN_Mass[i]);
-        printf ("%lf\t", Soil->PAW[i]);
-        printf ("%lf\n", Soil->waterContent[i]);
-    }
+        printf ("%-10.3lf\t", Soil->Clay[i]);
+    printf ("\n*%-30s\t", "Sand");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->Sand[i]);
+    printf ("\n*%-30s\t", "IOM");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->IOM[i]);
+    printf ("\n*%-30s\t", "NO3");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->NO3[i]);
+    printf ("\n*%-30s\t", "NH4");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->NH4[i]);
+    printf ("\n*%-30s\t", "Node Depth");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->nodeDepth[i]);
+    printf ("\n*%-30s\t", "Cumulative Depth");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->cumulativeDepth[i]);
+    printf ("\n*%-30s\t", "Bulk density");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->BD[i]);
+    printf ("\n*%-30s\t", "Porosity");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->Porosity[i]);
+    printf ("\n*%-30s\t", "B");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->B_Value[i]);
+    printf ("\n*%-30s\t", "Air Entry Potential");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->airEntryPotential[i]);
+    printf ("\n*%-30s\t", "M");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->M_Value[i]);
+    printf ("\n*%-30s\t", "Field capacity potential");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->FC_WaterPotential[i]);
+    printf ("\n*%-30s\t", "Field capacity");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->FC[i]);
+    printf ("\n*%-30s\t", "Wilting Point");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->PWP[i]);
+    printf ("\n*%-30s\t", "SOC concentration");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->SOC_Conc[i]);
+    printf ("\n*%-30s\t", "SOC mass");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->SOC_Mass[i]);
+    printf ("\n*%-30s\t", "SON mass");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->SON_Mass[i]);
+    printf ("\n*%-30s\t", "MBC mass");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->MBC_Mass[i]);
+    printf ("\n*%-30s\t", "MBN mass");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->MBN_Mass[i]);
+    printf ("\n*%-30s\t", "PAW");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->PAW[i]);
+    printf ("\n*%-30s\t", "Water content");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->waterContent[i]);
+    printf ("\n*%-30s\t", "Initial soil temp");
+    for (i = 0; i < Soil->totalLayers; i++)
+        printf ("%-10.3lf\t", Soil->soilTemperature[i]);
+    printf ("\n");
+    printf ("(Press any key to continue ...)\n");
+    getchar();
 #endif
 }
 

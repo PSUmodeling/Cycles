@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-int ReadOperation (char *project, CyclesStruct Cycles)
+void ReadOperation (char *project, CropManagementStruct *CropManagement, int yearsInRotation)
 {
     FILE           *operation_file;
     char           *filename;
@@ -12,13 +12,13 @@ int ReadOperation (char *project, CyclesStruct Cycles)
     int             irrigation_counter = 0;
     int             fertilization_counter = 0;
     int             auto_irrigation_counter = 0;
-    //int             auto_fertilization_counter = 0;
-    int             i;
-    FieldOperationClass *q;
+    int             tempyear;
+    int             i, j;
+    FieldOperationStruct *q;
 
     printf ("Read field operation file.\n");
 
-    /* Open simulation control file */
+    /* Open field operation file */
     filename = (char *)malloc ((strlen (project) + 17) * sizeof (char));
     sprintf (filename, "input/%s.operation", project);
     operation_file = fopen (filename, "r");
@@ -26,7 +26,7 @@ int ReadOperation (char *project, CyclesStruct Cycles)
 
     if (operation_file == NULL)
     {
-        printf ("\nError: Cannot find the field operation file %s!\n", filename);
+        printf ("ERROR: Cannot find the field operation file %s!\n", filename);
         exit (1);
     }
 
@@ -38,63 +38,94 @@ int ReadOperation (char *project, CyclesStruct Cycles)
         if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
         {
             sscanf (cmdstr, "%s", optstr);
-            if (strcasecmp ("TILLAGE", optstr) == 0)
+            if (strcasecmp ("PLANTING", optstr) == 0)
+            {
+                fgets (cmdstr, MAXSTRING, operation_file);
+                sscanf (cmdstr, "%*s %d", &tempyear);
+                if (tempyear <= yearsInRotation)
+                    planting_counter++;
+            }
+            else if (strcasecmp ("TILLAGE", optstr) == 0)
                 tillage_counter++;
-            else if (strcasecmp ("PLANTING", optstr) == 0)
-                planting_counter++;
             else if (strcasecmp ("FIXED_IRRIGATION", optstr) == 0)
                 irrigation_counter++;
             else if (strcasecmp ("FIXED_FERTILIZATION", optstr) == 0)
                 fertilization_counter++;
             else if (strcasecmp ("AUTO_IRRIGATION", optstr) == 0)
-            {
                 auto_irrigation_counter++;
-                Cycles->usingAutoIrr = 1;
-            }
-            //else if (strcasecmp ("AUTO_FERTILIZATION", optstr) == 0)
-            //{
-            //    auto_fertilization_counter++;
-            //    Cycles->usingAutoFert = 1;
-            //}
         }
         fgets (cmdstr, MAXSTRING, operation_file);
     }
 
     /* Allocate memories for field operation classes */
 #ifdef _DEBUG_
-    printf ("  Field operation file contains descriptions of %d planting operations, %d tillage operations, %d fixed irrigation operations, %d fixed fertilization operations, %d auto irrigation operations.\n", planting_counter, tillage_counter, irrigation_counter, fertilization_counter, auto_irrigation_counter);
+    printf ("*Field operation file contains descriptions of %d planting operations, %d tillage operations, %d fixed irrigation operations, %d fixed fertilization operations, %d auto irrigation operations.\n", planting_counter, tillage_counter, irrigation_counter, fertilization_counter, auto_irrigation_counter);
+    printf ("(Press any key to continue ...)\n");
+    getchar();
 #endif
 
-    Cycles->NumPlantedCrop = planting_counter;
+    CropManagement->totalCropsPerRotation = planting_counter;
+    CropManagement->plantingOrder = (plantingOrderStruct *) malloc (planting_counter * sizeof (plantingOrderStruct));
+    CropManagement->autoIrrigation = (autoIrrigationStruct *) malloc (auto_irrigation_counter * sizeof (autoIrrigationStruct));
 
-    Cycles->plantedCrops = (plantingOrderStruct *) malloc (planting_counter * sizeof (plantingOrderStruct));
+    CropManagement->usingAutoIrr = 0;
 
-    /* Rewind to the beginning of file and read all planting operations */
-    rewind (operation_file);
-    planting_counter = 0;
-
-    fgets (cmdstr, MAXSTRING, operation_file);
-    while (!feof (operation_file))
+    if (planting_counter)
     {
-        if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
-        {
-            sscanf (cmdstr, "%s", optstr);
-            if (strcasecmp ("PLANTING", optstr) == 0)
-            {
-                fgets (cmdstr, MAXSTRING, operation_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->plantedCrops[planting_counter].seedingYear);
-                fgets (cmdstr, MAXSTRING, operation_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->plantedCrops[planting_counter].seedingDate);
-                fgets (cmdstr, MAXSTRING, operation_file);
-                sscanf (cmdstr, "%*s %s", &Cycles->plantedCrops[planting_counter].cropName);
-                fgets (cmdstr, MAXSTRING, operation_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->plantedCrops[planting_counter].usesAutoIrrigation);
-                fgets (cmdstr, MAXSTRING, operation_file);
-                sscanf (cmdstr, "%*s %d", &Cycles->plantedCrops[planting_counter].usesAutoFertilization);
-                planting_counter++;
-            }
-        }
+        /* Rewind to the beginning of file and read all planting operations */
+        rewind (operation_file);
+        i = 0;
+
         fgets (cmdstr, MAXSTRING, operation_file);
+        while (!feof (operation_file))
+        {
+            if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
+            {
+                sscanf (cmdstr, "%s", optstr);
+                if (strcasecmp ("PLANTING", optstr) == 0)
+                {
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %d", &tempyear);
+                    if (tempyear <= yearsInRotation)
+                    {
+                        CropManagement->plantingOrder[i].seedingYear = tempyear;
+                        fgets (cmdstr, MAXSTRING, operation_file);
+                        sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].seedingDate);
+                        fgets (cmdstr, MAXSTRING, operation_file);
+                        sscanf (cmdstr, "%*s %s", &CropManagement->plantingOrder[i].cropName);
+                        fgets (cmdstr, MAXSTRING, operation_file);
+                        sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].usesAutoIrrigation);
+                        if (CropManagement->plantingOrder[i].usesAutoIrrigation == 0)
+                            CropManagement->plantingOrder[i].usesAutoIrrigation = -1;
+                        else
+                            CropManagement->usingAutoIrr = 1;
+                        fgets (cmdstr, MAXSTRING, operation_file);
+                        sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].usesAutoFertilization);
+                        if (CropManagement->plantingOrder[i].usesAutoFertilization == 0)
+                            CropManagement->plantingOrder[i].usesAutoFertilization = -1;
+
+                        /* Link planting order and crop description */
+                        for (j = 0; j < CropManagement->NumDescribedCrop; j++)  
+                        {
+                            if (strcmp (CropManagement->plantingOrder[i].cropName, CropManagement->describedCrops[j].userCropName) == 0)
+                            {
+                                CropManagement->plantingOrder[i].plantID = j;
+                                break;
+                            }
+                        }
+                        if (j >= CropManagement->NumDescribedCrop)
+                        {
+                            printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->plantingOrder[i].cropName);
+                            exit (1);
+                        }
+                        i++;
+                    }
+                    else
+                        printf ("Planting operation in year %d is not read in because years in rotation is %d\n", tempyear, yearsInRotation);
+                }
+            }
+            fgets (cmdstr, MAXSTRING, operation_file);
+        }
     }
 
     if (tillage_counter)
@@ -110,7 +141,7 @@ int ReadOperation (char *project, CyclesStruct Cycles)
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("TILLAGE", optstr) == 0)
                 {
-                    q = (FieldOperationClass *) malloc (sizeof (FieldOperationClass));
+                    q = (FieldOperationStruct *) malloc (sizeof (FieldOperationStruct));
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opYear);
                     fgets (cmdstr, MAXSTRING, operation_file);
@@ -123,7 +154,7 @@ int ReadOperation (char *project, CyclesStruct Cycles)
                     sscanf (cmdstr, "%*s %lf", &q->opSDR);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opMixingEfficiency);
-                    InsertOperation (&Cycles->TillageList, q);
+                    InsertOperation (&CropManagement->TillageList, q);
                 }
             }
             fgets (cmdstr, MAXSTRING, operation_file);
@@ -144,14 +175,14 @@ int ReadOperation (char *project, CyclesStruct Cycles)
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("FIXED_IRRIGATION", optstr) == 0)
                 {
-                    q = (FieldOperationClass *) malloc (sizeof (FieldOperationClass));
+                    q = (FieldOperationStruct *) malloc (sizeof (FieldOperationStruct));
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opYear);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opDay);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opVolume);
-                    InsertOperation (&Cycles->FixedIrrigationList, q);
+                    InsertOperation (&CropManagement->FixedIrrigationList, q);
                 }
             }
             fgets (cmdstr, MAXSTRING, operation_file);
@@ -172,7 +203,7 @@ int ReadOperation (char *project, CyclesStruct Cycles)
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("FIXED_FERTILIZATION", optstr) == 0)
                 {
-                    q = (FieldOperationClass *) malloc (sizeof (FieldOperationClass));
+                    q = (FieldOperationStruct *) malloc (sizeof (FieldOperationStruct));
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opYear);
                     fgets (cmdstr, MAXSTRING, operation_file);
@@ -209,20 +240,27 @@ int ReadOperation (char *project, CyclesStruct Cycles)
                     sscanf (cmdstr, "%*s %lf", &q->opK);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opS);
-                    InsertOperation (&Cycles->FixedFertilizationList, q);
+                    if (q->opC_Organic + q->opC_Charcoal + q->opN_Organic + q->opN_Charcoal + q->opN_NH4 + q->opN_NO3 + q->opP_Organic + q->opP_Charcoal + q->opP_Inorganic + q->opK + q->opS <= 1.)
+                    {
+                        q->opMass = q->opMass / 1000.;
+                        InsertOperation (&CropManagement->FixedFertilizationList, q);
+                    }
+                    else
+                    {
+                        printf ("ERROR: Added fertilization fractions must be <= 1\n");
+                        exit (1);
+                    }
                 }
             }
             fgets (cmdstr, MAXSTRING, operation_file);
         }
     }
 
-    if (Cycles->usingAutoIrr)
+    if (CropManagement->usingAutoIrr)
     {
-        Cycles->autoIrrigation = (autoIrrigationStruct *) malloc (auto_irrigation_counter * sizeof (autoIrrigationStruct));
-
         /* Rewind to the beginning of file and read all planting operations */
         rewind (operation_file);
-        auto_irrigation_counter = 0;
+        i = 0;
 
         fgets (cmdstr, MAXSTRING, operation_file);
         while (!feof (operation_file))
@@ -230,26 +268,47 @@ int ReadOperation (char *project, CyclesStruct Cycles)
             if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
             {
                 sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("PLANTING", optstr) == 0)
+                if (strcasecmp ("AUTO_IRRIGATION", optstr) == 0)
                 {
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", &Cycles->autoIrrigation[auto_irrigation_counter].cropName);
+                    sscanf (cmdstr, "%*s %s", &CropManagement->autoIrrigation[i].cropName);
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &Cycles->autoIrrigation[auto_irrigation_counter].startDay);
+                    sscanf (cmdstr, "%*s %d", &CropManagement->autoIrrigation[i].startDay);
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &Cycles->autoIrrigation[auto_irrigation_counter].stopDay);
+                    sscanf (cmdstr, "%*s %d", &CropManagement->autoIrrigation[i].stopDay);
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &Cycles->autoIrrigation[auto_irrigation_counter].waterDepletion);
+                    sscanf (cmdstr, "%*s %lf", &CropManagement->autoIrrigation[i].waterDepletion);
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &Cycles->autoIrrigation[auto_irrigation_counter].lastSoilLayer);
-                    auto_irrigation_counter++;
+                    sscanf (cmdstr, "%*s %d", &CropManagement->autoIrrigation[i].lastSoilLayer);
+                    i++;
                 }
             }
             fgets (cmdstr, MAXSTRING, operation_file);
         }
     }
 
-    fclose (operation_file);
+    /* Link plating order and auto irrigation */
+    for (i = 0; i < CropManagement->totalCropsPerRotation; i++)
+    {
+        if (CropManagement->usingAutoIrr && CropManagement->plantingOrder[i].usesAutoIrrigation == 1)
+        {
+            for (j = 0; j < auto_irrigation_counter; j++)
+            {
+                if (strcmp (CropManagement->plantingOrder[i].cropName, CropManagement->autoIrrigation[j].cropName) == 0)
+                {
+                    CropManagement->plantingOrder[i].usesAutoIrrigation = j;
+                    break;
+                }
+            }
+            if (j >= auto_irrigation_counter)
+            {
+                printf ("ERROR: Cannot find the description of auto irrigation for %s!\n", CropManagement->plantingOrder[i].cropName);
+                exit (1);
+            }
+        }
+        else
+            CropManagement->plantingOrder[i].usesAutoIrrigation = -1;
+    }
 
-    return 0;
+    fclose (operation_file);
 }

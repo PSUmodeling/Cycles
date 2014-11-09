@@ -2,20 +2,24 @@
 
 int main (int argc, char *argv[])
 {
-    CyclesStruct    Cycles;
+    int rotationYear;
+    int nextSeedingDate;
+    int nextSeedingYear;
+    int y;
 
-    char           *project;
+    CyclesStruct    Cycles;     /* Model structure */
+    char           *project;    /* Name of simulation */
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
 #ifdef _DEBUG_
-    project = (char *)malloc (8 * sizeof (char));
-    strcpy (project, "Lebanon");
+    project = (char *)malloc (5 * sizeof (char));
+    strcpy (project, "Demo");
 #else
     if (argc < 2)
     {
-        printf ("Error: Please specify the name of project!\n");
-        exit (0);
+        printf ("ERROR: Please specify the name of project!\n");
+        exit (1);
     }
     else
     {
@@ -36,41 +40,76 @@ int main (int argc, char *argv[])
     printf ("\t\t ######     ##     ######  ######## ########  ######\n\n\n");
     printf ("\t\t Copyright(c)2010-2015 PSU / WSU All rights reserved\n\n\n");
 
-    printf ("Now running the %s simulation.", project);
+    printf ("Now running the %s simulation.\n\n", project);
 
     /* Read simulation control input file */
-    ReadSimControl (project, Cycles);
+    ReadSimControl (project, &Cycles->SimControl);
 #ifdef _DEBUG_
     PrintSimContrl (Cycles->SimControl);
 #endif
 
     /* Read soil description file */
-    ReadSoil (project, Cycles);
+    ReadSoil (project, &Cycles->Soil);
 #ifdef _DEBUG_
     PrintSoil (Cycles->Soil);
 #endif
 
     /* Read crop description file */
-    ReadCrop (project, Cycles);
+    ReadCrop (project, &Cycles->CropManagement);
+#ifdef _DEBUG_
+    PrintCrop (Cycles->CropManagement.describedCrops, Cycles->CropManagement.NumDescribedCrop);
+#endif
+
 
     /* Read field operation file */
-    ReadOperation (project, Cycles);
+    ReadOperation (project, &Cycles->CropManagement, Cycles->SimControl.yearsInRotation);
 #ifdef _DEBUG_
-    PrintOperation (Cycles->plantedCrops, Cycles->NumPlantedCrop, Cycles->TillageList, Cycles->FixedIrrigationList, Cycles->FixedFertilizationList);
+    PrintOperation (Cycles->CropManagement.plantingOrder, Cycles->CropManagement.totalCropsPerRotation, Cycles->CropManagement.TillageList, Cycles->CropManagement.FixedIrrigationList, Cycles->CropManagement.FixedFertilizationList);
 #endif
 
     /* Read meteorological driver */
-    ReadWeather (project, Cycles);
+    ReadWeather (project, &Cycles->Weather);
 #ifdef _DEBUG_
     PrintWeather (Cycles->Weather);
-    printf ("%lf %lf %lf %lf %lf\n", dailyPrecipitation (&Cycles->Weather, 2001, 23), dailyRelativeHumidityMin (&Cycles->Weather, 2001, 23), dailySolarRadiation (&Cycles->Weather, 2001, 23), dailyTemperatureMin (&Cycles->Weather, 2001, 23), dailyWindSpeed (&Cycles->Weather, 2001, 23));
 #endif
 
     /* Initialize model variables and parameters */
-    Initialize (Cycles);
+    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue);
+
+    /* Compute crop thermal time */
+    printf ("Compute crop thermal time.\n");
+    ComputeThermalTime (Cycles->SimControl.simStartYear, Cycles->SimControl.simEndYear, &Cycles->CropManagement, &Cycles->Weather);
+
+    SelectCropInitialPosition (&Cycles->CropManagement);
+
+    if (Cycles->CropManagement.totalCropsPerRotation > 0)
+    {
+        nextSeedingYear = Cycles->CropManagement.nextCropSeedingYear;
+        nextSeedingDate = Cycles->CropManagement.nextCropSeedingDate;
+    }
+    else
+    {
+        nextSeedingYear = 0;
+        nextSeedingDate = 0;
+    }
 #ifdef _DEBUG_
-    PrintPlantingOrder (Cycles->plantingOrder, Cycles->totalCropsPerRotation);
-    PrintCrop (Cycles->describedCrops, Cycles->NumDescribedCrop);
+    printf ("*Next seeding year is %-4d, next seeding date is %3d\n", nextSeedingYear, nextSeedingDate);
 #endif
+
+    rotationYear = 0;
+
+    printf ("\nSimulation running ...\n");
+
+    for (y = Cycles->SimControl.simStartYear; y <= Cycles->SimControl.simEndYear; y++)
+    {
+        if (rotationYear < Cycles->SimControl.yearsInRotation)
+            rotationYear++;
+        else
+            rotationYear = 1;
+#ifdef _DEBUG_
+        printf ("Rotation year = %d\n", rotationYear);
+#endif
+
+    }
     return 0;
 }

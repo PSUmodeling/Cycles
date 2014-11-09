@@ -14,7 +14,7 @@ double SatVP (double T)
     return 0.6108 * exp (17.27 * T / (T + 237.3));
 }
 
-void CalculateDerivedWeather (WeatherClass * Weather, SimControlClass * SimControl)
+void CalculateDerivedWeather (WeatherStruct * Weather)
 {
     int             i, j;
     int             year_start, year0;
@@ -62,7 +62,7 @@ void CalculateDerivedWeather (WeatherClass * Weather, SimControlClass * SimContr
     }
 }
 
-double annualAvgTemperature (WeatherClass * Weather, int yr)
+double annualAvgTemperature (WeatherStruct * Weather, int yr)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)
@@ -80,7 +80,7 @@ double annualAvgTemperature (WeatherClass * Weather, int yr)
     }
 }
 
-double annualAmplitude (WeatherClass * Weather, int yr)
+double annualAmplitude (WeatherStruct * Weather, int yr)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)
@@ -98,7 +98,7 @@ double annualAmplitude (WeatherClass * Weather, int yr)
     }
 }
 
-double dailyETref (WeatherClass * Weather, int yr, int dy)
+double dailyETref (WeatherStruct * Weather, int yr, int dy)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)
@@ -116,7 +116,7 @@ double dailyETref (WeatherClass * Weather, int yr, int dy)
     }
 }
 
-double dailyPrecipitation (WeatherClass * Weather, int yr, int dy)
+double dailyPrecipitation (WeatherStruct * Weather, int yr, int dy)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)
@@ -134,7 +134,7 @@ double dailyPrecipitation (WeatherClass * Weather, int yr, int dy)
     }
 }
 
-double dailyRelativeHumidityMax (WeatherClass * Weather, int yr, int dy)
+double dailyRelativeHumidityMax (WeatherStruct * Weather, int yr, int dy)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)
@@ -152,7 +152,7 @@ double dailyRelativeHumidityMax (WeatherClass * Weather, int yr, int dy)
     }
 }
 
-double dailyRelativeHumidityMin (WeatherClass * Weather, int yr, int dy)
+double dailyRelativeHumidityMin (WeatherStruct * Weather, int yr, int dy)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)
@@ -170,7 +170,7 @@ double dailyRelativeHumidityMin (WeatherClass * Weather, int yr, int dy)
     }
 }
 
-double dailySolarRadiation (WeatherClass * Weather, int yr, int dy)
+double dailySolarRadiation (WeatherStruct * Weather, int yr, int dy)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)
@@ -188,7 +188,7 @@ double dailySolarRadiation (WeatherClass * Weather, int yr, int dy)
     }
 }
 
-double dailyTemperatureMax (WeatherClass * Weather, int yr, int dy)
+double dailyTemperatureMax (WeatherStruct * Weather, int yr, int dy)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)
@@ -206,7 +206,7 @@ double dailyTemperatureMax (WeatherClass * Weather, int yr, int dy)
     }
 }
 
-double dailyTemperatureMin (WeatherClass * Weather, int yr, int dy)
+double dailyTemperatureMin (WeatherStruct * Weather, int yr, int dy)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)
@@ -224,7 +224,7 @@ double dailyTemperatureMin (WeatherClass * Weather, int yr, int dy)
     }
 }
 
-double dailyWindSpeed (WeatherClass * Weather, int yr, int dy)
+double dailyWindSpeed (WeatherStruct * Weather, int yr, int dy)
 {
     int             i;
     for (i = 0; i < Weather->length; i++)

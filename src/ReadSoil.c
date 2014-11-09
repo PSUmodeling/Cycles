@@ -1,14 +1,11 @@
 #include "include/Cycles.h"
 
-int ReadSoil (char *project, CyclesStruct Cycles)
+void ReadSoil (char *project, SoilStruct *Soil)
 {
     FILE           *soil_file;
     char           *filename;
     char            cmdstr[MAXSTRING];
-    int             iLayer;
-    SoilClass      *Soil;
-
-    Soil = &Cycles->Soil;
+    int             i;
 
     printf ("Read soil initialization file.\n");
 
@@ -20,7 +17,7 @@ int ReadSoil (char *project, CyclesStruct Cycles)
 
     if (soil_file == NULL)
     {
-        printf ("\nError: Cannot find the soil file %s!\n", filename);
+        printf ("\nERROR: Cannot find the soil file %s!\n", filename);
         exit (1);
     }
 
@@ -45,13 +42,11 @@ int ReadSoil (char *project, CyclesStruct Cycles)
     Soil->NH4 = (double *)malloc (Soil->totalLayers * sizeof (double));
 
     fgets (cmdstr, MAXSTRING, soil_file);   /* skip header line */
-    for (iLayer = 0; iLayer < Soil->totalLayers; iLayer++)
+    for (i = 0; i < Soil->totalLayers; i++)
     {
         fgets (cmdstr, MAXSTRING, soil_file);
-        sscanf (cmdstr, "%*d %lf %lf %lf %lf %lf %lf %lf %lf %lf", &Soil->layerThickness[iLayer], &Soil->Clay[iLayer], &Soil->Sand[iLayer], &Soil->IOM[iLayer], &Soil->BD[iLayer], &Soil->FC[iLayer], &Soil->PWP[iLayer], &Soil->NO3[iLayer], &Soil->NH4[iLayer]);
+        sscanf (cmdstr, "%*d %lf %lf %lf %lf %lf %lf %lf %lf %lf", &Soil->layerThickness[i], &Soil->Clay[i], &Soil->Sand[i], &Soil->IOM[i], &Soil->BD[i], &Soil->FC[i], &Soil->PWP[i], &Soil->NO3[i], &Soil->NH4[i]);
     }
 
     fclose (soil_file);
-
-    return 0;
 }

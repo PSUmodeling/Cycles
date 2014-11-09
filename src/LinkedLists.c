@@ -1,8 +1,8 @@
 #include "include/Cycles.h"
 
-void InsertOperation (FieldOperationListClass * OperationList, FieldOperationClass * Operation)
+void InsertOperation (FieldOperationListStruct * OperationList, FieldOperationStruct * Operation)
 {
-    FieldOperationClass *p;
+    FieldOperationStruct *p;
 
     p = OperationList->firstOperation;
 

@@ -1,12 +1,14 @@
 #include "include/Cycles.h"
 
-int ReadSimControl (char *project, CyclesStruct Cycles)
+/****************************************************************************
+ * FILE NAME:   ReadSimControl.c
+ * PURPOSE:     Read simulation control files for the Cycles model
+ ***************************************************************************/
+
+void ReadSimControl (char *project, SimControlStruct *SimControl)
 {
     FILE           *simctrl_file;
     char           *filename;
-    SimControlClass *SimControl;
-
-    SimControl = &Cycles->SimControl;
 
     printf ("Read simulation control file.\n");
 
@@ -18,7 +20,7 @@ int ReadSimControl (char *project, CyclesStruct Cycles)
 
     if (simctrl_file == NULL)
     {
-        printf ("\nError: Cannot find the simulation cotrol file %s!\n", filename);
+        printf ("ERROR: Cannot find the simulation cotrol file %s!\n", filename);
         exit (1);
     }
 
@@ -45,6 +47,4 @@ int ReadSimControl (char *project, CyclesStruct Cycles)
     fclose (simctrl_file);
 
     SimControl->totalYears = SimControl->simEndYear - SimControl->simStartYear + 1;
-
-    return 0;
 }

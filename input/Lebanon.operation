@@ -10,8 +10,8 @@ PLANTING
 YEAR                1
 DOY                 110
 CROP                Maize
-AUTO_IRRIGATION     0
-AUTO_FERTILIAZATION 0
+USE_AUTO_IRR        0
+USE_AUTO_FERT       0
 
 TILLAGE
 YEAR                1
@@ -20,13 +20,6 @@ TOOL                DRILL_AIRSEEDER_DOUBLE_DISK
 DEPTH               0.08
 SOIL_DISTURB_RATIO  17
 MIXING_EFFICIENCY   0.05
-
-PLANTING
-YEAR                1
-DOY                 110
-CROP                Soybean
-AUTO_IRRIGATION     1
-AUTO_FERTILIAZATION 1
 
 FIXED_FERTILIZATION
 YEAR                1

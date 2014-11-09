@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-   //void Temperature(int y, int doy, double snowCover, double cropInterception, SoilClass *Soil, WeatherClass *Weather, ResidueClass Residue) 
+   //void Temperature(int y, int doy, double snowCover, double cropInterception, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct Residue) 
    //{ 
    // 
    //        'Const secondsPerHour as Integer = 3600 

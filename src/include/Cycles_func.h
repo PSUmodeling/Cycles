@@ -2,25 +2,25 @@
 #define CYCLES_FUNC_HEADER
 
 /* ReadSimControl.c */
-int             ReadSimControl (char *project, CyclesStruct Cycles);
+void ReadSimControl (char *project, SimControlStruct *SimControl);
 
 /* ReadSoil.c */
-int             ReadSoil (char *project, CyclesStruct Cycles);
+void ReadSoil (char *project, SoilStruct *Soil);
 
 /* ReadCrop.c */
-int             ReadCrop (char *project, CyclesStruct Cycles);
+void ReadCrop (char *project, CropManagementStruct *CropManagement);
 
 /* ReadOperation.c */
-int             ReadOperation (char *project, CyclesStruct Cycles);
+void ReadOperation (char *project, CropManagementStruct *CropManagement, int yearsInRotation);
 
 /* ReadWeather.c */
-int             ReadWeather (char *project, CyclesStruct Cycles);
+void             ReadWeather (char *project, WeatherStruct *Weather);
 
 /* Initialize.c */
-void            Initialize (CyclesStruct Cycles);
+void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue);
 
 /* Soil.c */
-void            InitializeSoil (SoilClass * Soil, WeatherClass * Weather, SimControlClass * SimControl);
+void            InitializeSoil (SoilStruct * Soil, WeatherStruct * Weather, SimControlStruct * SimControl);
 double          SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campbell_b, double WC);
 double          VolumetricWCAt33Jkg (double Clay, double Sand, double OM);
 double          VolumetricWCAt1500Jkg (double Clay, double Sand, double OM);
@@ -28,7 +28,7 @@ double          SoilWaterContent (double SaturationWC, double AirEntryPot, doubl
 double          BulkDensity (double Clay, double Sand, double OM);
 
 /* LinkedList.c */
-void            InsertOperation (FieldOperationListClass * OperationList, FieldOperationClass * Operation);
+void            InsertOperation (FieldOperationListStruct * OperationList, FieldOperationStruct * Operation);
 
 /* ReferenceET.c */
 double          CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
@@ -39,34 +39,41 @@ double          Aero_Res (double uz, double z);
 
 /* Weather.c */
 double          SatVP (double T);
-void            CalculateDerivedWeather (WeatherClass * Weather, SimControlClass * SimControl);
-double          annualAvgTemperature (WeatherClass * Weather, int yr);
-double          annualAmplitude (WeatherClass * Weather, int yr);
-double          dailyETref (WeatherClass * Weather, int yr, int dy);
-double          dailyPrecipitation (WeatherClass * Weather, int yr, int dy);
-double          dailyRelativeHumidityMax (WeatherClass * Weather, int yr, int dy);
-double          dailyRelativeHumidityMin (WeatherClass * Weather, int yr, int dy);
-double          dailySolarRadiation (WeatherClass * Weather, int yr, int dy);
-double          dailyTemperatureMax (WeatherClass * Weather, int yr, int dy);
-double          dailyTemperatureMin (WeatherClass * Weather, int yr, int dy);
-double          dailyWindSpeed (WeatherClass * Weather, int yr, int dy);
+void            CalculateDerivedWeather (WeatherStruct * Weather);
+double          annualAvgTemperature (WeatherStruct * Weather, int yr);
+double          annualAmplitude (WeatherStruct * Weather, int yr);
+double          dailyETref (WeatherStruct * Weather, int yr, int dy);
+double          dailyPrecipitation (WeatherStruct * Weather, int yr, int dy);
+double          dailyRelativeHumidityMax (WeatherStruct * Weather, int yr, int dy);
+double          dailyRelativeHumidityMin (WeatherStruct * Weather, int yr, int dy);
+double          dailySolarRadiation (WeatherStruct * Weather, int yr, int dy);
+double          dailyTemperatureMax (WeatherStruct * Weather, int yr, int dy);
+double          dailyTemperatureMin (WeatherStruct * Weather, int yr, int dy);
+double          dailyWindSpeed (WeatherStruct * Weather, int yr, int dy);
 
 /* SoilTemperature.c */
 double          HeatCapacity (double bulkDensity, double volumetricWC);
 double          HeatConductivity (double bulkDensity, double volumetricWC, double fractionClay);
 double          EstimatedSoilTemperature (double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth);
 
+/* Residue.c */
+void InitializeResidue (ResidueStruct *Residue, int totalYears, int totalLayers);
+void ComputeResidueCover (ResidueStruct *Residue);
+
+/* CropThermalTime.c */
+void ComputeThermalTime (int simStartYear, int simEndYear, CropManagementStruct *CropManagement, WeatherStruct *Weather);
+double ThermalTime (double T_base, double T_op, double T_Max, double Temperature);
 /* Crops.c */
-//void StorePlantingOrder (plantingOrderStruct *plantedCrops, plantingOrderStruct *plantingOrder, int *totalCropsPerRotation, int rotationSize, int NumPlantedCrop);
-void ModifyDescriptions(describedCropsStruct *describedCrops, int NumDescribedCrop);
-void LinkRotationAndDescription (plantingOrderStruct *plantingOrder, describedCropsStruct *describedCrops, int totalCropsPerRotation, int NumDescribedCrop);
+void SelectCropInitialPosition(CropManagementStruct *CropManagement);
+void SelectNextCrop (CropManagementStruct *CropManagement);
+void PeekNextCrop(CropManagementStruct *CropManagement);
 
 #ifdef _DEBUG_
-void            PrintSimContrl (SimControlClass SimControl);
-void            PrintSoil (SoilClass Soil);
+void            PrintSimContrl (SimControlStruct SimControl);
+void            PrintSoil (SoilStruct Soil);
 void            PrintCrop (describedCropsStruct * describedCrops, int NumCrop);
-void            PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationListClass TillageList, FieldOperationListClass FixedIrrigationList, FieldOperationListClass FixedFertilizationList);
-void            PrintWeather (WeatherClass Weather);
+void            PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationListStruct TillageList, FieldOperationListStruct FixedIrrigationList, FieldOperationListStruct FixedFertilizationList);
+void            PrintWeather (WeatherStruct Weather);
 void            PrintPlantingOrder (plantingOrderStruct *plantingOrder, int totalCropsPerRotation);
 #endif
 

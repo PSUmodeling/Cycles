@@ -1,7 +1,7 @@
 #ifndef CYCLES_STRUCT_HEADER
 #define CYCLES_STRUCT_HEADER
 
-typedef struct SimControlClass
+typedef struct SimControlStruct
 {
     int            *yearSpecificLastDOY;
 
@@ -25,9 +25,9 @@ typedef struct SimControlClass
     int             annualSoilOutput;
     int             profileOutput;
     int             seasonOutput;
-} SimControlClass;
+} SimControlStruct;
 
-typedef struct SoilClass
+typedef struct SoilStruct
 {
     int             totalLayers;
     int             Curve_Number;
@@ -36,15 +36,14 @@ typedef struct SoilClass
     int             annualTemperaturePhase;
     double          dampingDepth;
 
-    double         *cumulativeDepth;    /* depth, in meters
-                                         * to the bottom of that layer */
-    double         *nodeDepth;
-    double         *layerThickness;     /* Measured in Meters */
+    double         *cumulativeDepth;    /* Depth to the bottom of layer (m) */
+    double         *nodeDepth;          /* Depth of node (m) */
+    double         *layerThickness;     /* Measured layer thickness (m) */
     double         *Clay;               /* Clay fraction */
     double         *Sand;               /* Sand fraction */
     double         *IOM;                /* Initial Organic Matter */
-    double         *NO3;                /* Nitrate(kg/ha) */
-    double         *NH4;                /* Ammonium(kg/ha) */
+    double         *NO3;                /* Nitrate (kg/ha) */
+    double         *NH4;                /* Ammonium (kg/ha) */
     double         *BD;                 /* Bulk Density (Mg/m3) */
     double         *FC;                 /* Field Capacity water content */
     double         *PWP;                /* Permanent Wilting Point */
@@ -56,14 +55,14 @@ typedef struct SoilClass
     double         *B_Value;            /* Calculated "B" value */
     double         *M_Value;            /* Calculated "M" value */
 
-    double         *n2o;                /* temporary output of n2o/layer */
+    double         *n2o;                /* Temporary output of n2o/layer */
 
     double         *SOC_Conc;           /* g C / kg soil */
-    double         *SOC_Mass;           /* Soil Organic Carbon, Mg/ha
+    double         *SOC_Mass;           /* Soil Organic Carbon (Mg/ha)
                                          * factor 0.58 converts SOM to SOC */
-    double         *SON_Mass;           /* Soil Organic Nitrogen, Mg/ha */
-    double         *MBC_Mass;           /* Microbial Biomass Carbon, Mg/ha */
-    double         *MBN_Mass;           /* Microbial Biomass Nitrogen, Mg/ha */
+    double         *SON_Mass;           /* Soil Organic Nitrogen (Mg/ha) */
+    double         *MBC_Mass;           /* Microbial Biomass C (Mg/ha) */
+    double         *MBN_Mass;           /* Microbial Biomass N (Mg/ha) */
     double          SOCProfile;
     double          SONProfile;
 
@@ -75,18 +74,18 @@ typedef struct SoilClass
                                          * carbon only */
 
     double         *soilTemperature;    /* Celsius */
-    double         *waterContent;       /* Volumetric water content, m3/m3 */
-    double         *waterUptake;        /* layer water uptake  */
+    double         *waterContent;       /* Volumetric water content (m3/m3) */
+    double         *waterUptake;        /* Layer water uptake  */
     double         *pH;
 
-    double          evaporationVol;     /* mm of water */
-    double          residueEvaporationVol;  /* mm of water */
-    double          infiltrationVol;    /* mm of water */
-    double          runoffVol;          /* mm of water */
-    double          irrigationVol;      /* mm of water */
-    double          drainageVol;        /* mm of water */
-    double          NO3Leaching;        /* Mg N/ha */
-    double          NH4Leaching;        /* Mg N/ha */
+    double          evaporationVol;     /* (mm) */
+    double          residueEvaporationVol;  /* (mm) */
+    double          infiltrationVol;    /* (mm) */
+    double          runoffVol;          /* (mm) */
+    double          irrigationVol;      /* (mm) */
+    double          drainageVol;        /* (mm) */
+    double          NO3Leaching;        /* (Mg N/ha) */
+    double          NH4Leaching;        /* (Mg N/ha) */
 
     double          NO3Profile;
     double          NH4Profile;
@@ -98,7 +97,7 @@ typedef struct SoilClass
     double          NO3_Denitrification;
     double          N2O_Denitrification;
     double          NH4_Volatilization;
-} SoilClass;
+} SoilStruct;
 
 typedef struct plantingOrderStruct
 {
@@ -154,12 +153,10 @@ typedef struct describedCropsStruct
     double          calculatedSimMinYield;
 } describedCropsStruct;
 
-typedef struct CropClass
+typedef struct CropStruct
 {
-    /*
-     * Instance of a crop that has been planted
-     * Instance should be deleted once the crop fallow or killed
-     */
+    /* Instance of a crop that has been planted
+     * Instance should be deleted once the crop fallow or killed */
 
     char            cropName[128];
 
@@ -215,12 +212,9 @@ typedef struct CropClass
     int            *harvestDateFinal;
     int            *harvestCount;
     char           *stageGrowth;
-} CropClass;
+} CropStruct;
 
-enum opEnumType
-{ OP_PLANTING, OP_TILLAGE, OP_IRRIGATION, OP_FERTILIZATION };
-
-typedef struct FieldOperationClass
+typedef struct FieldOperationStruct
 {
     int             opYear;
     int             opDay;
@@ -252,8 +246,8 @@ typedef struct FieldOperationClass
     double          opK;
     double          opS;
 
-    struct FieldOperationClass *NextOperation;
-} FieldOperationClass;
+    struct FieldOperationStruct *NextOperation;
+} FieldOperationStruct;
 
 typedef struct autoIrrigationStruct
 {
@@ -263,26 +257,83 @@ typedef struct autoIrrigationStruct
     double          waterDepletion;
     double          lastSoilLayer;
 } autoIrrigationStruct;
+//
+//typedef struct autoFertilizationStruct
+//{
+//    char            cropName[128];
+//    int             startDay;
+//    int             stopDay;
+//    double          mass;
+//    char            source[MAXSTRING];
+//    char            form[MAXSTRING];
+//    char            method[MAXSTRING];
+//} autoFertilizationStruct;
 
-typedef struct autoFertilizationStruct
+typedef struct FieldOperationListStruct
 {
-    char            cropName[128];
-    int             startDay;
-    int             stopDay;
-    double          mass;
-    char            source[MAXSTRING];
-    char            form[MAXSTRING];
-    char            method[MAXSTRING];
-} autoFertilizationStruct;
+    FieldOperationStruct *firstOperation;
+    //    FieldOperationStruct *lastOperation;
+    //    FieldOperationStruct *currentOperation;
+} FieldOperationListStruct;
 
-typedef struct FieldOperationListClass
+typedef struct CropManagementStruct
 {
-    FieldOperationClass *firstOperation;
-    //    FieldOperationClass *lastOperation;
-    //    FieldOperationClass *currentOperation;
-} FieldOperationListClass;
+    FieldOperationStruct *FixedFertilization;
+    FieldOperationStruct *FixedIrrigation;
+    FieldOperationStruct *Tillage;
 
-typedef struct WeatherClass
+    FieldOperationListStruct FixedFertilizationList;
+    FieldOperationListStruct FixedIrrigationList;
+    FieldOperationListStruct TillageList;
+
+    plantingOrderStruct *plantingOrder;
+    int             plantingIndex;
+
+    describedCropsStruct *describedCrops;
+    int             NumDescribedCrop;
+    int             describedIndex;
+
+    autoIrrigationStruct *autoIrrigation;
+    int             usingAutoIrr;
+    int             usingAutoFert;
+
+    int             totalCropsPerRotation;
+
+    char            nextCropName[128];
+    int             nextCropSeedingDate;
+    int             nextCropSeedingYear;
+} CropManagementStruct;
+
+typedef struct ResidueStruct
+{
+    double          residueInterception;
+    double          stanResidueTau;
+    double          flatResidueTau;
+    double          stanResidueMass;
+    double          flatResidueMass;
+    double          stanResidueN;
+    double          flatResidueN;
+    double          manureSurfaceC;
+    double          manureSurfaceN;
+
+    double          stanResidueWater;
+    double          flatResidueWater;   /* (mm) */
+
+    double          *residueAbgd;
+    double          *residueRt;
+    double          *residueRz;
+    double          *residueAbgdN;
+    double          *residueRtN;
+    double          *residueRzN;
+    double          *yearResidueBiomass;
+    double          *yearResidueHarvested;
+    double          *yearRootBiomass;
+    double          *yearRhizodepositionBiomass;
+    double          *manureC;
+    double          *manureN;           /* Mg/ha */
+} ResidueStruct;
+
+typedef struct WeatherStruct
 {
     double          siteAltitude;
     double          siteLatitude;
@@ -302,46 +353,16 @@ typedef struct WeatherClass
     double         *tMax;
     double         *tMin;
     double          atmosphericPressure;
-} WeatherClass;
+} WeatherStruct;
 
 typedef struct CyclesStruct
 {
-    int             NumDescribedCrop;
-    int             NumPlantedCrop;
-    int             NumOp;
-    SimControlClass SimControl;
-    SoilClass       Soil;
-    CropClass      *Crop;
-
-//    FieldOperationClass *AutoIrrigation;
-    FieldOperationClass *FixedFertilization;
-    FieldOperationClass *FixedIrrigation;
-    FieldOperationClass *Tillage;
-
-//    FieldOperationListClass AutoIrrigationList;
-    FieldOperationListClass FixedFertilizationList;
-    FieldOperationListClass FixedIrrigationList;
-    FieldOperationListClass TillageList;
-
-    WeatherClass    Weather;
-
-    plantingOrderStruct *plantedCrops;  /* Struct to read in data */
-    plantingOrderStruct *plantingOrder;
-    int             plantingIndex;
-
-    describedCropsStruct *describedCrops;
-    int             describedIndex;
-
-    autoIrrigationStruct *autoIrrigation;
-    autoFertilizationStruct *autoFertilization;
-    int             usingAutoIrr;
-    int             usingAutoFert;
-
-    int             totalCropsPerRotation;
-
-    char            nextCropName[128];
-    int             nextCropSeedingDate;
-    int             nextCropSeedingYear;
-}              *CyclesStruct;
+    SimControlStruct SimControl;
+    SoilStruct       Soil;
+    CropManagementStruct CropManagement;
+    CropStruct      *Crop;
+    ResidueStruct    Residue;
+    WeatherStruct    Weather;
+} *CyclesStruct;
 
 #endif
