@@ -157,7 +157,6 @@ typedef struct CropStruct
 {
     /* Instance of a crop that has been planted
      * Instance should be deleted once the crop fallow or killed */
-
     char            cropName[128];
 
     /* User Defined Auto Irrigation */
@@ -245,8 +244,6 @@ typedef struct FieldOperationStruct
     double          opP_Inorganic;
     double          opK;
     double          opS;
-
-    struct FieldOperationStruct *NextOperation;
 } FieldOperationStruct;
 
 typedef struct autoIrrigationStruct
@@ -269,24 +266,22 @@ typedef struct autoIrrigationStruct
 //    char            method[MAXSTRING];
 //} autoFertilizationStruct;
 
-typedef struct FieldOperationListStruct
-{
-    FieldOperationStruct *firstOperation;
-    //    FieldOperationStruct *lastOperation;
-    //    FieldOperationStruct *currentOperation;
-} FieldOperationListStruct;
-
 typedef struct CropManagementStruct
 {
     FieldOperationStruct *FixedFertilization;
-    FieldOperationStruct *FixedIrrigation;
-    FieldOperationStruct *Tillage;
+    int             numFertilization;
+    int             fertilizationIndex;
 
-    FieldOperationListStruct FixedFertilizationList;
-    FieldOperationListStruct FixedIrrigationList;
-    FieldOperationListStruct TillageList;
+    FieldOperationStruct *FixedIrrigation;
+    int             numIrrigation;
+    int             irrigationIndex;
+
+    FieldOperationStruct *Tillage;
+    int             numTillage;
+    int             tillageIndex;
 
     plantingOrderStruct *plantingOrder;
+    int             totalCropsPerRotation;
     int             plantingIndex;
 
     describedCropsStruct *describedCrops;
@@ -296,8 +291,6 @@ typedef struct CropManagementStruct
     autoIrrigationStruct *autoIrrigation;
     int             usingAutoIrr;
     int             usingAutoFert;
-
-    int             totalCropsPerRotation;
 
     char            nextCropName[128];
     int             nextCropSeedingDate;
@@ -333,6 +326,28 @@ typedef struct ResidueStruct
     double          *manureN;           /* Mg/ha */
 } ResidueStruct;
 
+typedef struct SoilCarbonStruct
+{
+    double          *factorComposite;
+    double          *carbonRespired;
+    double          *rootBiomassInput;
+    double          *rhizBiomassInput;
+    double          *abgdBiomassInput;
+    double          *rootCarbonInput;
+    double          *rhizCarbonInput;
+    double          *manuCarbonInput;
+    double          *abgdCarbonInput;
+    double          *carbonMassInitial;
+    double          *carbonMassFinal;
+    double          *annualDecompositionFactor;
+    double          *annualSoilCarbonDecompositionRate;
+    double          *annualCarbonInputByLayer;
+    double          *annualHumifiedCarbonMass;
+    double          *annualRespiredCarbonMass;
+    double          *annualRespiredResidueCarbonMass;
+    double          *annualHumificationCoefficient;
+} SoilCarbonStruct;
+
 typedef struct WeatherStruct
 {
     double          siteAltitude;
@@ -362,6 +377,7 @@ typedef struct CyclesStruct
     CropManagementStruct CropManagement;
     CropStruct      *Crop;
     ResidueStruct    Residue;
+    SoilCarbonStruct SoilCarbon;
     WeatherStruct    Weather;
 } *CyclesStruct;
 

@@ -93,7 +93,7 @@ void PrintCrop (describedCropsStruct * describedCrops, int NumCrop)
     printf ("\n");
 }
 
-void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationListStruct TillageList, FieldOperationListStruct FixedIrrigationList, FieldOperationListStruct FixedFertilizationList)
+void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization)
 {
     int             i;
     FieldOperationStruct *p;
@@ -113,9 +113,9 @@ void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldO
     getchar();
 
     printf ("*Tillage:\n");
-    p = TillageList.firstOperation;
-    while (p != NULL)
+    for (i = 0; i < NumTillage; i++)
     {
+        p = &Tillage[i];
         printf ("*%-18s\t%-3d\n", "YEAR", p->opYear);
         printf ("*%-18s\t%-3d\n", "DOY", p->opDay);
         printf ("*%-18s\t%-128s\n", "TOOL", p->opToolName);
@@ -123,30 +123,26 @@ void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldO
         printf ("*%-18s\t%-4.2lf\n", "SOIL DISTURB RATIO", p->opSDR);
         printf ("*%-18s\t%-4.2lf\n", "MIXING EFFICIENCY", p->opMixingEfficiency);
         printf ("\n");
-        p = p->NextOperation;
     }
-    printf ("\n");
     printf ("(Press any key to continue ...)\n");
     getchar();
 
     printf ("*Fixed Irrigation:\n");
-    p = FixedIrrigationList.firstOperation;
-    while (p != NULL)
+    for (i = 0; i < NumIrrigation; i++)
     {
+        p = &FixedIrrigation[i];
         printf ("*%-18s\t%-3d\n", "YEAR", p->opYear);
         printf ("*%-18s\t%-3d\n", "DOY", p->opDay);
         printf ("*%-18s\t%-4.2lf\n", "VOLUME", p->opVolume);
         printf ("\n");
-        p = p->NextOperation;
     }
-    printf ("\n");
     printf ("(Press any key to continue ...)\n");
     getchar();
 
     printf ("*Fixed Fertilization:\n");
-    p = FixedFertilizationList.firstOperation;
-    while (p != NULL)
+    for (i = 0; i < NumFertilization; i++)
     {
+        p = &FixedFertilization[i];
         printf ("*%-18s\t%-3d\n", "YEAR", p->opYear);
         printf ("*%-18s\t%-3d\n", "DOY", p->opDay);
         printf ("*%-18s\t%-128s\n", "SOURCE", p->opSource);
@@ -166,9 +162,7 @@ void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldO
         printf ("*%-18s\t%-6.2lf\n", "K", p->opK);
         printf ("*%-18s\t%-6.2lf\n", "S", p->opS);
         printf ("\n");
-        p = p->NextOperation;
     }
-    printf ("\n");
     printf ("(Press any key to continue ...)\n");
     getchar ();
 }

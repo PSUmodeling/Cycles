@@ -16,7 +16,7 @@ void SelectNextCrop (CropManagementStruct *CropManagement)
      * Next crop in the rotation (if any)has limited values stored
      */
 
-    if ( CropManagement->plantingIndex < CropManagement->totalCropsPerRotation)
+    if (CropManagement->plantingIndex < CropManagement->totalCropsPerRotation)
         CropManagement->plantingIndex++;
     else
         CropManagement->plantingIndex = 0;

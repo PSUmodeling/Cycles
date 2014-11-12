@@ -28,7 +28,6 @@ double          SoilWaterContent (double SaturationWC, double AirEntryPot, doubl
 double          BulkDensity (double Clay, double Sand, double OM);
 
 /* LinkedList.c */
-void            InsertOperation (FieldOperationListStruct * OperationList, FieldOperationStruct * Operation);
 
 /* ReferenceET.c */
 double          CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
@@ -63,16 +62,22 @@ void ComputeResidueCover (ResidueStruct *Residue);
 /* CropThermalTime.c */
 void ComputeThermalTime (int simStartYear, int simEndYear, CropManagementStruct *CropManagement, WeatherStruct *Weather);
 double ThermalTime (double T_base, double T_op, double T_Max, double Temperature);
+
 /* Crops.c */
 void SelectCropInitialPosition(CropManagementStruct *CropManagement);
 void SelectNextCrop (CropManagementStruct *CropManagement);
 void PeekNextCrop(CropManagementStruct *CropManagement);
 
+/* FieldOperations.c */
+void SelectNextOperation(FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
+void SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
+int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int operationIndex);
+
 #ifdef _DEBUG_
 void            PrintSimContrl (SimControlStruct SimControl);
 void            PrintSoil (SoilStruct Soil);
 void            PrintCrop (describedCropsStruct * describedCrops, int NumCrop);
-void            PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationListStruct TillageList, FieldOperationListStruct FixedIrrigationList, FieldOperationListStruct FixedFertilizationList);
+void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization);
 void            PrintWeather (WeatherStruct Weather);
 void            PrintPlantingOrder (plantingOrderStruct *plantingOrder, int totalCropsPerRotation);
 #endif

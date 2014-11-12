@@ -66,8 +66,17 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
 
     CropManagement->totalCropsPerRotation = planting_counter;
     CropManagement->plantingOrder = (plantingOrderStruct *) malloc (planting_counter * sizeof (plantingOrderStruct));
-    CropManagement->autoIrrigation = (autoIrrigationStruct *) malloc (auto_irrigation_counter * sizeof (autoIrrigationStruct));
 
+    CropManagement->numFertilization = fertilization_counter;
+    CropManagement->FixedFertilization = (FieldOperationStruct *) malloc (fertilization_counter * sizeof (FieldOperationStruct));
+
+    CropManagement->numIrrigation = irrigation_counter;
+    CropManagement->FixedIrrigation = (FieldOperationStruct *) malloc (irrigation_counter * sizeof (FieldOperationStruct));
+
+    CropManagement->numTillage = tillage_counter;
+    CropManagement->Tillage = (FieldOperationStruct *) malloc (tillage_counter * sizeof (FieldOperationStruct));
+
+    CropManagement->autoIrrigation = (autoIrrigationStruct *) malloc (auto_irrigation_counter * sizeof (autoIrrigationStruct));
     CropManagement->usingAutoIrr = 0;
 
     if (planting_counter)
@@ -132,6 +141,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
     {
         /* Rewind to the beginning of file and read all tillage operations */
         rewind (operation_file);
+        i = 0;
 
         fgets (cmdstr, MAXSTRING, operation_file);
         while (!feof (operation_file))
@@ -141,7 +151,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("TILLAGE", optstr) == 0)
                 {
-                    q = (FieldOperationStruct *) malloc (sizeof (FieldOperationStruct));
+                    q = &(CropManagement->Tillage[i]);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opYear);
                     fgets (cmdstr, MAXSTRING, operation_file);
@@ -154,7 +164,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                     sscanf (cmdstr, "%*s %lf", &q->opSDR);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opMixingEfficiency);
-                    InsertOperation (&CropManagement->TillageList, q);
+                    i++;
                 }
             }
             fgets (cmdstr, MAXSTRING, operation_file);
@@ -166,6 +176,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
         /* Rewind to the beginning of file and read all irrigation
          * operations */
         rewind (operation_file);
+        i = 0;
 
         fgets (cmdstr, MAXSTRING, operation_file);
         while (!feof (operation_file))
@@ -175,14 +186,14 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("FIXED_IRRIGATION", optstr) == 0)
                 {
-                    q = (FieldOperationStruct *) malloc (sizeof (FieldOperationStruct));
+                    q = &(CropManagement->FixedIrrigation[i]);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opYear);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opDay);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opVolume);
-                    InsertOperation (&CropManagement->FixedIrrigationList, q);
+                    i++;
                 }
             }
             fgets (cmdstr, MAXSTRING, operation_file);
@@ -194,6 +205,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
         /* Rewind to the beginning of file and read all fertilization
          * operations */
         rewind (operation_file);
+        i = 0;
 
         fgets (cmdstr, MAXSTRING, operation_file);
         while (!feof (operation_file))
@@ -203,7 +215,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("FIXED_FERTILIZATION", optstr) == 0)
                 {
-                    q = (FieldOperationStruct *) malloc (sizeof (FieldOperationStruct));
+                    q = &(CropManagement->FixedFertilization[i]);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opYear);
                     fgets (cmdstr, MAXSTRING, operation_file);
@@ -243,7 +255,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                     if (q->opC_Organic + q->opC_Charcoal + q->opN_Organic + q->opN_Charcoal + q->opN_NH4 + q->opN_NO3 + q->opP_Organic + q->opP_Charcoal + q->opP_Inorganic + q->opK + q->opS <= 1.)
                     {
                         q->opMass = q->opMass / 1000.;
-                        InsertOperation (&CropManagement->FixedFertilizationList, q);
+                        i++;
                     }
                     else
                     {

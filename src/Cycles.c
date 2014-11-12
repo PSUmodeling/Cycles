@@ -64,7 +64,7 @@ int main (int argc, char *argv[])
     /* Read field operation file */
     ReadOperation (project, &Cycles->CropManagement, Cycles->SimControl.yearsInRotation);
 #ifdef _DEBUG_
-    PrintOperation (Cycles->CropManagement.plantingOrder, Cycles->CropManagement.totalCropsPerRotation, Cycles->CropManagement.TillageList, Cycles->CropManagement.FixedIrrigationList, Cycles->CropManagement.FixedFertilizationList);
+    PrintOperation (Cycles->CropManagement.plantingOrder, Cycles->CropManagement.totalCropsPerRotation, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization);
 #endif
 
     /* Read meteorological driver */
@@ -102,12 +102,26 @@ int main (int argc, char *argv[])
 
     for (y = Cycles->SimControl.simStartYear; y <= Cycles->SimControl.simEndYear; y++)
     {
+        printf ("Year %4.4d\n", y);
         if (rotationYear < Cycles->SimControl.yearsInRotation)
             rotationYear++;
         else
             rotationYear = 1;
 #ifdef _DEBUG_
-        printf ("Rotation year = %d\n", rotationYear);
+        printf ("*%-30s = %-d\n", "Rotation year", rotationYear);
+#endif
+
+        SelectOperationYear (rotationYear, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, &Cycles->CropManagement.tillageIndex);
+#ifdef _DEBUG_
+        printf ("*%-30s = %-d\n", "Active tillage index", Cycles->CropManagement.tillageIndex);
+#endif
+        SelectOperationYear (rotationYear, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, &Cycles->CropManagement.irrigationIndex);
+#ifdef _DEBUG_
+        printf ("*%-30s = %-d\n", "Active irriggation index", Cycles->CropManagement.irrigationIndex);
+#endif
+        SelectOperationYear (rotationYear, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization, &Cycles->CropManagement.fertilizationIndex);
+#ifdef _DEBUG_
+        printf ("*%-30s = %-d\n", "Active fertilization index", Cycles->CropManagement.fertilizationIndex);
 #endif
 
     }
