@@ -223,6 +223,7 @@ typedef struct FieldOperationStruct
     double          opDepth;
     double          opSDR;
     double          opMixingEfficiency;
+    double         *tillage_Factor;
 
     /* Fixed Irrigation */
     double          opVolume;
