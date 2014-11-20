@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void ComputeThermalTime (int simStartYear, int simEndYear, CropManagementStruct *CropManagement, WeatherStruct *Weather)
+void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, WeatherStruct *Weather)
 {
     /*
      * Calculate flowering and Maturity thermal time for each crop
@@ -34,7 +34,7 @@ void ComputeThermalTime (int simStartYear, int simEndYear, CropManagementStruct 
             cropEvents = 0;
             cropON = 0;
 
-            for (y = simStartYear; y <= simEndYear; y++)
+            for (y = 0; y < total_years; y++)
             {
                 for (d = 1; d <= lastDOY; d++)
                 {
@@ -43,8 +43,8 @@ void ComputeThermalTime (int simStartYear, int simEndYear, CropManagementStruct 
                     if (cropON)
                     {
                         sumTT = sumTT + 0.5 * (
-                            ThermalTime (describedCrops->userTemperatureBase, describedCrops->userTemperatureOptimum, describedCrops->userTemperatureMaximum, dailyTemperatureMax (Weather, y, d))
-                            + ThermalTime (describedCrops->userTemperatureBase, describedCrops->userTemperatureOptimum, describedCrops->userTemperatureMaximum, dailyTemperatureMin(Weather, y, d)));
+                            ThermalTime (describedCrops->userTemperatureBase, describedCrops->userTemperatureOptimum, describedCrops->userTemperatureMaximum, Weather->tMax[y][d - 1])
+                            + ThermalTime (describedCrops->userTemperatureBase, describedCrops->userTemperatureOptimum, describedCrops->userTemperatureMaximum, Weather->tMin[y][d - 1]));
                         if (d == describedCrops->userFloweringDate)
                             sumFTTbyYear = sumFTTbyYear + sumTT;
                         if (d == describedCrops->userMaturityDate)

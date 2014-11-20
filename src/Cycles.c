@@ -6,6 +6,8 @@ int main (int argc, char *argv[])
     int nextSeedingDate;
     int nextSeedingYear;
     int y;
+    int doy;
+    int i;
 
     CyclesStruct    Cycles;     /* Model structure */
     char           *project;    /* Name of simulation */
@@ -68,17 +70,17 @@ int main (int argc, char *argv[])
 #endif
 
     /* Read meteorological driver */
-    ReadWeather (project, &Cycles->Weather);
+    ReadWeather (project, &Cycles->Weather, Cycles->SimControl.simStartYear, Cycles->SimControl.totalYears);
 #ifdef _DEBUG_
     PrintWeather (Cycles->Weather);
 #endif
 
     /* Initialize model variables and parameters */
-    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue);
+    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop);
 
     /* Compute crop thermal time */
     printf ("Compute crop thermal time.\n");
-    ComputeThermalTime (Cycles->SimControl.simStartYear, Cycles->SimControl.simEndYear, &Cycles->CropManagement, &Cycles->Weather);
+    ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->CropManagement, &Cycles->Weather);
 
     SelectCropInitialPosition (&Cycles->CropManagement);
 
@@ -100,7 +102,7 @@ int main (int argc, char *argv[])
 
     printf ("\nSimulation running ...\n");
 
-    for (y = Cycles->SimControl.simStartYear; y <= Cycles->SimControl.simEndYear; y++)
+    for (y = 0; y < Cycles->SimControl.totalYears; y++)
     {
         printf ("Year %4.4d\n", y);
         if (rotationYear < Cycles->SimControl.yearsInRotation)
@@ -124,6 +126,19 @@ int main (int argc, char *argv[])
         printf ("*%-30s = %-d\n", "Active fertilization index", Cycles->CropManagement.fertilizationIndex);
 #endif
 
+        for (i = 0; i < Cycles->Soil.totalLayers; i++)
+        {
+            Cycles->SoilCarbon.carbonMassInitial[i] = Cycles->Soil.SOC_Mass[i];
+            Cycles->SoilCarbon.carbonMassFinal[i] = 0.;
+            Cycles->SoilCarbon.annualHumifiedCarbonMass[i] = 0.;
+            Cycles->SoilCarbon.annualRespiredCarbonMass[i] = 0.;
+        } 
+
+        /* Daily operations */
+        for (doy = 1; doy > 366; doy++)
+        {
+
+        }
     }
     return 0;
 }

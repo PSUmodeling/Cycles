@@ -173,7 +173,6 @@ void PrintWeather (WeatherStruct Weather)
     printf ("*%-16s\t%-6.2lf\n", "LATITUDE", Weather.siteLatitude);
     printf ("*%-16s\t%-6.2lf\n", "ALTITUDE", Weather.siteAltitude);
     printf ("*%-16s\t%-6.2lf\n", "SCREENING_HEIGHT", Weather.screeningHeight);
-    printf ("*Weather record %d\n", Weather.length);
     printf ("\n");
     printf ("(Press any key to continue ...)\n");
     getchar ();

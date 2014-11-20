@@ -14,10 +14,10 @@ void ReadCrop (char *project, CropManagementStruct *CropManagement);
 void ReadOperation (char *project, CropManagementStruct *CropManagement, int yearsInRotation);
 
 /* ReadWeather.c */
-void             ReadWeather (char *project, WeatherStruct *Weather);
+void ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years);
 
 /* Initialize.c */
-void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue);
+void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop);
 
 /* Soil.c */
 void            InitializeSoil (SoilStruct * Soil, WeatherStruct * Weather, SimControlStruct * SimControl);
@@ -38,17 +38,7 @@ double          Aero_Res (double uz, double z);
 
 /* Weather.c */
 double          SatVP (double T);
-void            CalculateDerivedWeather (WeatherStruct * Weather);
-double          annualAvgTemperature (WeatherStruct * Weather, int yr);
-double          annualAmplitude (WeatherStruct * Weather, int yr);
-double          dailyETref (WeatherStruct * Weather, int yr, int dy);
-double          dailyPrecipitation (WeatherStruct * Weather, int yr, int dy);
-double          dailyRelativeHumidityMax (WeatherStruct * Weather, int yr, int dy);
-double          dailyRelativeHumidityMin (WeatherStruct * Weather, int yr, int dy);
-double          dailySolarRadiation (WeatherStruct * Weather, int yr, int dy);
-double          dailyTemperatureMax (WeatherStruct * Weather, int yr, int dy);
-double          dailyTemperatureMin (WeatherStruct * Weather, int yr, int dy);
-double          dailyWindSpeed (WeatherStruct * Weather, int yr, int dy);
+void            CalculateDerivedWeather (WeatherStruct * Weather, int total_years);
 
 /* SoilTemperature.c */
 double          HeatCapacity (double bulkDensity, double volumetricWC);
@@ -60,7 +50,7 @@ void InitializeResidue (ResidueStruct *Residue, int totalYears, int totalLayers)
 void ComputeResidueCover (ResidueStruct *Residue);
 
 /* CropThermalTime.c */
-void ComputeThermalTime (int simStartYear, int simEndYear, CropManagementStruct *CropManagement, WeatherStruct *Weather);
+void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, WeatherStruct *Weather);
 double ThermalTime (double T_base, double T_op, double T_Max, double Temperature);
 
 /* Crops.c */
@@ -72,6 +62,24 @@ void PeekNextCrop(CropManagementStruct *CropManagement);
 void SelectNextOperation(FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
 void SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
 int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int operationIndex);
+
+/* SoilCarbon.c */
+void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers);
+void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilStruct *Soil);
+void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, FieldOperationStruct *Tillage);
+void StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass);
+double Aeration(double AC);
+double Moisture (double wp);
+double TemperatureFunction (double T);
+double MaximumAbgdHumificationFactor (double clayFraction);
+double MaximumRootHumificationFactor (double clayFraction);
+double MaximumRhizHumificationFactor (double clayFraction);
+double MaximumManuHumificationFactor (double clayFraction);
+double NitrogenMineralization (double CNDecomposing, double CNnew, double humRate, double decomposedMass);
+double CNdestiny (double  NmineralConc, double CNdecomposing);
+double PoolNitrogenMineralization (double NmineralConc, double CNRatioDecomposing, double humRate, double decomposedMass, double carbonConc);
+double Function_CNnew (double NmineralConc, double CNDecomposingPool);
+
 
 #ifdef _DEBUG_
 void            PrintSimContrl (SimControlStruct SimControl);

@@ -24,7 +24,7 @@ void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers)
 
 void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilStruct *Soil)
 {
-//    static double avg[Soil->totalLayers];
+    static double avg[50];
     double waterPotential;      /* J/kg */
     double airContent;          /* m3/m3 */
     double factorMoisture;      /* unitless */
@@ -37,7 +37,7 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilS
 
     if (doy == 1)
     {
-        for (i = 0; i < soil->totalLayers; i++)
+        for (i = 0; i < Soil->totalLayers; i++)
             avg[i] = 0.;
     }
     for (i = 0; i < Soil->totalLayers; i++)
@@ -56,8 +56,9 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilS
     }
 }
 
-void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, FieldOperationStructStruct *Tillage)
+void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, FieldOperationStruct *Tillage)
 {
+    int     i;
     double socDecompositionRate;
     double micrDecompositionRate;
     double humifiedCarbon;
@@ -524,7 +525,7 @@ void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStr
                             + (1. - micrHumificationFactor) * (xx8 + xx9);
 
         /* for OUTPUT */
-        SoilCarbon->annualSoilCarbonDecompositionRate[i] += SOCDecompositionRate;
+        SoilCarbon->annualSoilCarbonDecompositionRate[i] += socDecompositionRate;
         /* excludes residue and manure */
         SoilCarbon->annualRespiredCarbonMass[i] += (1. - micrHumificationFactor) * (xx8 + xx9);
         /* residue, roots and manure only */
@@ -557,7 +558,7 @@ void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStr
         exit (1);
 }
 
-void StoreOutput (int y, int totalLayers, double *SOCMass)
+void StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass)
 {
     int i;
 
@@ -565,7 +566,7 @@ void StoreOutput (int y, int totalLayers, double *SOCMass)
         SoilCarbon->carbonMassFinal[i] = SOCMass[i];
 }
 
-double Aeration(double AC);
+double Aeration(double AC)
 {
     /* AC = soil air content */
     const double A1 = 0.05;

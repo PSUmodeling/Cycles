@@ -26,5 +26,12 @@
 #define SOC_DECOMPOSITION_POWER             0.5
 #define SOC_HUMIFICATION_POWER              6.0
 
+#define WATER_DENSITY                       1000.0  /* kg/m3 */
+
+#define THRESHOLD_TEMPERATURE_SNOWFALL      1   /* degree C */
+#define THRESHOLD_TEMPERATURE_SNOWMELT      -1  /* degree C */
+#define SNOWMELT_RATE                       2.5 /* mm/(C day) or degree day
+                                                 * melting factor */
+enum stage { PRE_EMERGENCE, VEGETATIVE_GROWTH, PERENNIAL, REPRODUCTIVE_GROWTH, MATURITY, CLIPPING, PLANTING };
 #endif
 

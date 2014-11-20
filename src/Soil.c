@@ -101,7 +101,7 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     Soil->soilTemperature = (double *)malloc ((Soil->totalLayers + 1) * sizeof (double));
     for (i = 0; i < Soil->totalLayers + 1; i++)
     {
-        Soil->soilTemperature[i] = EstimatedSoilTemperature (Soil->nodeDepth[i], 1, annualAvgTemperature (Weather, SimControl->simStartYear), annualAmplitude (Weather, SimControl->simStartYear), Soil->annualTemperaturePhase, Soil->dampingDepth);
+        Soil->soilTemperature[i] = EstimatedSoilTemperature (Soil->nodeDepth[i], 1, Weather->annualAverageTemperature[0], Weather->yearlyAmplitude[0], Soil->annualTemperaturePhase, Soil->dampingDepth);
     }
 
 #ifdef _DEBUG_

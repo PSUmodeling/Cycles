@@ -157,6 +157,7 @@ typedef struct CropStruct
 {
     /* Instance of a crop that has been planted
      * Instance should be deleted once the crop fallow or killed */
+    int             cropUniqueIdentifier;
     char            cropName[128];
 
     /* User Defined Auto Irrigation */
@@ -176,42 +177,66 @@ typedef struct CropStruct
     int             autoFetilizationMethod;
 
     /* Crop Status Flags */
-    int            *cropGrowing;
-    int            *cropMature;
+    int             cropGrowing;
+    int             cropMature;
 
     /* State Variables */
-    double         *svTT_Daily;
-    double         *svTT_Cumulative;
-    double         *svRadiationInterception;
-    double         *svBiomass;
-    double         *svShoot;
-    double         *svRoot;
-    double         *svRizho;
-    double         *svShootDailyGrowth;
-    double         *svRootDailyGrowth;
-    double         *svRizhoDailyDeposition;
-    double         *svUnstressedShootDailyGrowth;
-    double         *svUnstressedRootDailyGrowth;
-    double         *svPostFloweringShootBiomass;
-    double         *svRootingDepth;
-    double         *svTranspiration;
-    double         *svTranspirationPotential;
-    double         *svN_Shoot;
-    double         *svN_Root;
-    double         *svN_Rhizo;
-    double         *svN_RizhoDailyDeposition;
-    double         *svN_AutoAdded;
-    double         *svN_Fixation;
-    double         *svWaterStressFactor;
-    double         *svN_StressFactor;
+    double          svTT_Daily;
+    double         svTT_Cumulative;
+    double         svRadiationInterception;
+    double         svBiomass;
+    double         svShoot;
+    double         svRoot;
+    double         svRizho;
+    double         svShootDailyGrowth;
+    double         svRootDailyGrowth;
+    double         svRizhoDailyDeposition;
+    double         svUnstressedShootDailyGrowth;
+    double         svUnstressedRootDailyGrowth;
+    double         svPostFloweringShootBiomass;
+    double         svRootingDepth;
+    double         svTranspiration;
+    double         svTranspirationPotential;
+    double         svN_Shoot;
+    double         svN_Root;
+    double         svN_Rhizo;
+    double         svN_RizhoDailyDeposition;
+    double         svN_AutoAdded;
+    double         svN_Fixation;
+    double         svWaterStressFactor;
+    double         svN_StressFactor;
 
-    double         *svShootUnstressed;
-    double         *svN_StressCumulative;
+    double         svShootUnstressed;
+    double         svN_StressCumulative;
 
-    int            *harvestDateFinal;
-    int            *harvestCount;
-    char           *stageGrowth;
+    int            harvestDateFinal;
+    int            harvestCount;
+    enum stage      stageGrowth;
 } CropStruct;
+
+typedef struct RealizedCropStruct
+{
+    int             rcCropNumber;
+    char            rcName[128];
+    int             rcActiveStatus;
+    int             rcYear;
+    int             rcDoy;
+    double          rcForageYield;
+    double          rcGrainYield;
+    double          rcBiomass;
+    double          rcRoot;
+    double          rcResidueBiomass;
+    double          rcCropTranspiration;
+    double          rcCropTranspirationPotential;
+    double          rcSoilWaterEvaporation;
+    double          rcHarvestIndex;
+    double          rcTotalNitrogen;
+    double          rcRootNitrogen;
+    double          rcGrainNitrogenYield;
+    double          rcforageNitrogenYield;
+    double          rcNitrogenCumulative;
+    double          totalRealizedCrops;
+} RealizedCropStruct;
 
 typedef struct FieldOperationStruct
 {
@@ -223,7 +248,7 @@ typedef struct FieldOperationStruct
     double          opDepth;
     double          opSDR;
     double          opMixingEfficiency;
-    double         *tillage_Factor;
+    double         *tillageFactor;
 
     /* Fixed Irrigation */
     double          opVolume;
@@ -289,6 +314,9 @@ typedef struct CropManagementStruct
     int             NumDescribedCrop;
     int             describedIndex;
 
+    RealizedCropStruct *realizedCrop;
+    int             cropCount;
+
     autoIrrigationStruct *autoIrrigation;
     int             usingAutoIrr;
     int             usingAutoFert;
@@ -296,7 +324,17 @@ typedef struct CropManagementStruct
     char            nextCropName[128];
     int             nextCropSeedingDate;
     int             nextCropSeedingYear;
+
 } CropManagementStruct;
+
+typedef struct SnowStruct
+{
+    double          Snow;
+    double          snowFall;
+    double          snowMelt;
+    double          snowCover;
+    double          snowEvaporationVol;
+} SnowStruct;
 
 typedef struct ResidueStruct
 {
@@ -355,19 +393,16 @@ typedef struct WeatherStruct
     double          siteLatitude;
     double          screeningHeight;
     int             length;
-    int            *year;
-    int            *jday;
-    double         *time;
     double         *yearlyAmplitude;
     double         *annualAverageTemperature;
-    double         *wind;
-    double         *ETref;
-    double         *precipitation;
-    double         *RHmax;
-    double         *RHmin;
-    double         *solarRadiation;
-    double         *tMax;
-    double         *tMin;
+    double        **wind;
+    double        **ETref;
+    double        **precipitation;
+    double        **RHmax;
+    double        **RHmin;
+    double        **solarRadiation;
+    double        **tMax;
+    double        **tMin;
     double          atmosphericPressure;
 } WeatherStruct;
 
@@ -376,7 +411,7 @@ typedef struct CyclesStruct
     SimControlStruct SimControl;
     SoilStruct       Soil;
     CropManagementStruct CropManagement;
-    CropStruct      *Crop;
+    CropStruct       Crop;
     ResidueStruct    Residue;
     SoilCarbonStruct SoilCarbon;
     WeatherStruct    Weather;

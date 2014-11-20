@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue)
+void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop)
 {
     int max = 0;
     int i;
@@ -8,7 +8,7 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
     /*
      * Initialize weather variables
      */
-    CalculateDerivedWeather (Weather);
+    CalculateDerivedWeather (Weather, SimControl->totalYears);
 
     /*
      * Initialize soil variables
@@ -17,9 +17,13 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
 
     /* Initialize residue */
     InitializeResidue (Residue, SimControl->totalYears, Soil->totalLayers);
+
+    /* Initialize soil carbon */
+    InitializeSoilCarbon (SoilCarbon, Soil->totalLayers);
     /*
      * Initialize crops
      */
+    Crop->cropUniqueIdentifier = -1;
 
     /* Convert units of crop parameters */
 //    ModifyDescriptions (Cycles->describedCrops, Cycles->NumDescribedCrop);
