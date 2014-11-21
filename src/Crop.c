@@ -426,10 +426,13 @@ void PeekNextCrop(CropManagementStruct *CropManagement)
 //            Me.opList.DeleteNode(uniqueIdentifier)
 //        End Sub
 //
-//        Public Sub SetCropStatusToMature()
-//            'growing and mature
+void SetCropStatusToMature(CropStruct Crop);
+{
+    /*
+     * growing and mature
+     */
 //            Me.opList.Data(14) = True
-//        End Sub
+}
 //
 //        Public ReadOnly Property cropUniqueIdentifier() As String
 //            Get

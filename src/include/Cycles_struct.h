@@ -182,35 +182,35 @@ typedef struct CropStruct
 
     /* State Variables */
     double          svTT_Daily;
-    double         svTT_Cumulative;
-    double         svRadiationInterception;
-    double         svBiomass;
-    double         svShoot;
-    double         svRoot;
-    double         svRizho;
-    double         svShootDailyGrowth;
-    double         svRootDailyGrowth;
-    double         svRizhoDailyDeposition;
-    double         svUnstressedShootDailyGrowth;
-    double         svUnstressedRootDailyGrowth;
-    double         svPostFloweringShootBiomass;
-    double         svRootingDepth;
-    double         svTranspiration;
-    double         svTranspirationPotential;
-    double         svN_Shoot;
-    double         svN_Root;
-    double         svN_Rhizo;
-    double         svN_RizhoDailyDeposition;
-    double         svN_AutoAdded;
-    double         svN_Fixation;
-    double         svWaterStressFactor;
-    double         svN_StressFactor;
+    double          svTT_Cumulative;
+    double          svRadiationInterception;
+    double          svBiomass;
+    double          svShoot;
+    double          svRoot;
+    double          svRizho;
+    double          svShootDailyGrowth;
+    double          svRootDailyGrowth;
+    double          svRizhoDailyDeposition;
+    double          svUnstressedShootDailyGrowth;
+    double          svUnstressedRootDailyGrowth;
+    double          svPostFloweringShootBiomass;
+    double          svRootingDepth;
+    double          svTranspiration;
+    double          svTranspirationPotential;
+    double          svN_Shoot;
+    double          svN_Root;
+    double          svN_Rhizo;
+    double          svN_RizhoDailyDeposition;
+    double          svN_AutoAdded;
+    double          svN_Fixation;
+    double          svWaterStressFactor;
+    double          svN_StressFactor;
 
-    double         svShootUnstressed;
-    double         svN_StressCumulative;
+    double          svShootUnstressed;
+    double          svN_StressCumulative;
 
-    int            harvestDateFinal;
-    int            harvestCount;
+    int             harvestDateFinal;
+    int             harvestCount;
     enum stage      stageGrowth;
 } CropStruct;
 
