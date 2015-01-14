@@ -32,6 +32,12 @@
 #define THRESHOLD_TEMPERATURE_SNOWMELT      -1  /* degree C */
 #define SNOWMELT_RATE                       2.5 /* mm/(C day) or degree day
                                                  * melting factor */
+
+#define NITRIFICATION_CONSTANT              0.2     /* 1/day */
+#define POTENTIAL_DENITRIFICATION           0.000032 /* kg N / kg soil / day */
+#define DENITRIFICATION_HALF_RATE           0.00006     /* kg N / kg Soil */
+#define NITRIFICATION_NO3_NH4_RATIO         8           /* NO3-N / NH4-N */
+
 enum stage { PRE_EMERGENCE, VEGETATIVE_GROWTH, PERENNIAL, REPRODUCTIVE_GROWTH, MATURITY, CLIPPING, PLANTING };
 #endif
 

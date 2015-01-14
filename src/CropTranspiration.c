@@ -181,7 +181,7 @@ void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil As SoilCla
 
     rootSum = 0.;
     for (i = 0; i < j; i++)
-        rootSum = rootSum + rootDistribution[j];
+        rootSum = rootSum + rootDistribution[i];
 
     /* ensures sum fraction = 1 */
     for (i = 0; i < j; i++)     /* exits loop on the same layer as the previous loop */

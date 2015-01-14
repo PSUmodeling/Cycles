@@ -40,7 +40,7 @@ int main (int argc, char *argv[])
     printf ("\t\t##          ##    ##       ##       ##             ##\n");
     printf ("\t\t##    ##    ##    ##    ## ##       ##       ##    ##\n");
     printf ("\t\t ######     ##     ######  ######## ########  ######\n\n\n");
-    printf ("\t\t Copyright(c)2010-2015 PSU / WSU All rights reserved\n\n\n");
+//    printf ("\t\t Copyright(c)2010-2015 PSU / WSU All rights reserved\n\n\n");
 
     printf ("Now running the %s simulation.\n\n", project);
 
@@ -135,7 +135,7 @@ int main (int argc, char *argv[])
         } 
 
         /* Daily operations */
-        for (doy = 1; doy > 366; doy++)
+        for (doy = 1; doy < 366; doy++)
         {
 
         }

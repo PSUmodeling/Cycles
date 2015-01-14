@@ -1,0 +1,63 @@
+TILLAGE
+YEAR                1
+DOY                 105
+TOOL                FERT_APPLIC_DEEP_PLCMT_HVY_SHNK
+DEPTH               0.15
+SOIL_DISTURB_RATIO  16
+MIXING_EFFICIENCY   0.371806
+
+PLANTING
+YEAR                1
+DOY                 110
+CROP                Maize
+USE_AUTO_IRR        0
+USE_AUTO_FERT       0
+
+TILLAGE
+YEAR                2
+DOY                 110
+TOOL                DRILL_AIRSEEDER_DOUBLE_DISK
+DEPTH               0.08
+SOIL_DISTURB_RATIO  17
+MIXING_EFFICIENCY   0.05
+
+PLANTING
+YEAR                1
+DOY                 120
+CROP                Soybean
+USE_AUTO_IRR        0
+USE_AUTO_FERT       0
+
+FIXED_FERTILIZATION
+YEAR                2
+DOY                 305
+SOURCE              82-00-00_ANHYDROUS_AMMONIA
+MASS                205
+FORM                LIQUID
+METHOD              INCORP
+DEPTH               3
+C_ORGANIC           0
+C_CHARCOAL          0
+N_ORGANIC           0
+N_CHARCOAL          0
+N_NH4               0.82
+N_NO3               0
+P_ORGANIC           0
+P_CHARCOOAL         0
+P_INORGANIC         0
+K                   0
+S                   0
+
+#AUTO_IRRIGATION
+#START_DAY
+#STOP_DAY
+#WATER_DEPLETION
+#LAST_SOIL_LAYER
+
+#AUTO_FERTILIZATION
+#START_DAY
+#END_DAY
+#MASS
+#SOURCE
+#FORM
+#METHOD

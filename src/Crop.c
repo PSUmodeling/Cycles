@@ -22,11 +22,7 @@ void SelectNextCrop (CropManagementStruct *CropManagement)
         CropManagement->plantingIndex = 0;
 
     CropManagement->describedIndex = CropManagement->plantingOrder[CropManagement->plantingIndex].plantID;
-//#ifdef _DEBUG_
-//    printf ("%-25s\t%-3d\n", "*Described index", CropManagement->describedIndex);
-//    printf ("(Press any key to continue ...)\n");
-//    getchar ();
-//#endif 
+
     PeekNextCrop (CropManagement);
 }
 

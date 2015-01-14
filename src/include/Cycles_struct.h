@@ -233,7 +233,7 @@ typedef struct RealizedCropStruct
     double          rcTotalNitrogen;
     double          rcRootNitrogen;
     double          rcGrainNitrogenYield;
-    double          rcforageNitrogenYield;
+    double          rcForageNitrogenYield;
     double          rcNitrogenCumulative;
     double          totalRealizedCrops;
 } RealizedCropStruct;
@@ -258,7 +258,7 @@ typedef struct FieldOperationStruct
     double          opMass;
     char            opForm[MAXSTRING];
     char            opMethod[MAXSTRING];
-    int             opLayer;
+    int             opLayer;    /* Starting from 1 */
     double          opC_Organic;
     double          opC_Charcoal;
     double          opN_Organic;

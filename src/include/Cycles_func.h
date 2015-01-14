@@ -80,6 +80,11 @@ double CNdestiny (double  NmineralConc, double CNdecomposing);
 double PoolNitrogenMineralization (double NmineralConc, double CNRatioDecomposing, double humRate, double decomposedMass, double carbonConc);
 double Function_CNnew (double NmineralConc, double CNDecomposingPool);
 
+/* CropTranspiration.c */
+void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, WeatherStruct *Weather);
+void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil As SoilClass, CropStruct Crop);
+double TemperatureLimitation (double T, double T_Min, double T_Threshold);
+double Aeration(double AC);
 
 #ifdef _DEBUG_
 void            PrintSimContrl (SimControlStruct SimControl);
