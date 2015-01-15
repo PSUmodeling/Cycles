@@ -2,7 +2,7 @@
 
 double SatVP (double T)
 {
-    // Saturated vapor pressure (kPa)
+    // Saturated vapor pressure (kPa).
     return 0.6108 * exp (17.27 * T / (T + 237.3));
 }
 
