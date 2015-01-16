@@ -14,10 +14,6 @@ int main (int argc, char *argv[])
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
-#ifdef _DEBUG_
-    project = (char *)malloc (5 * sizeof (char));
-    strcpy (project, "Demo");
-#else
     if (argc < 2)
     {
         printf ("ERROR: Please specify the name of project!\n");
@@ -29,7 +25,6 @@ int main (int argc, char *argv[])
         project = (char *)malloc ((strlen (argv[1]) + 1) * sizeof (char));
         strcpy (project, argv[1]);
     }
-#endif
 
     system ("clear");
     printf ("\n\n");
@@ -40,7 +35,6 @@ int main (int argc, char *argv[])
     printf ("\t\t##          ##    ##       ##       ##             ##\n");
     printf ("\t\t##    ##    ##    ##    ## ##       ##       ##    ##\n");
     printf ("\t\t ######     ##     ######  ######## ########  ######\n\n\n");
-//    printf ("\t\t Copyright(c)2010-2015 PSU / WSU All rights reserved\n\n\n");
 
     printf ("Now running the %s simulation.\n\n", project);
 
@@ -59,9 +53,8 @@ int main (int argc, char *argv[])
     /* Read crop description file */
     ReadCrop (project, &Cycles->CropManagement);
 #ifdef _DEBUG_
-    PrintCrop (Cycles->CropManagement.describedCrops, Cycles->CropManagement.NumDescribedCrop);
+    PrintCrop (Cycles->CropManagement.describedCrop, Cycles->CropManagement.NumDescribedCrop);
 #endif
-
 
     /* Read field operation file */
     ReadOperation (project, &Cycles->CropManagement, Cycles->SimControl.yearsInRotation);
@@ -76,7 +69,7 @@ int main (int argc, char *argv[])
 #endif
 
     /* Initialize model variables and parameters */
-    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop);
+    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop, &Cycles->CropManagement);
 
     /* Compute crop thermal time */
     printf ("Compute crop thermal time.\n");
@@ -104,26 +97,26 @@ int main (int argc, char *argv[])
 
     for (y = 0; y < Cycles->SimControl.totalYears; y++)
     {
-        printf ("Year %4.4d\n", y);
+        printf ("Year %4d\n", y + 1);
         if (rotationYear < Cycles->SimControl.yearsInRotation)
             rotationYear++;
         else
             rotationYear = 1;
 #ifdef _DEBUG_
-        printf ("*%-30s = %-d\n", "Rotation year", rotationYear);
+        printf ("*%-15s = %-d\n", "Rotation year", rotationYear);
 #endif
 
         SelectOperationYear (rotationYear, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, &Cycles->CropManagement.tillageIndex);
 #ifdef _DEBUG_
-        printf ("*%-30s = %-d\n", "Active tillage index", Cycles->CropManagement.tillageIndex);
+//        printf ("*%-30s = %-d\n", "Active tillage index", Cycles->CropManagement.tillageIndex);
 #endif
         SelectOperationYear (rotationYear, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, &Cycles->CropManagement.irrigationIndex);
 #ifdef _DEBUG_
-        printf ("*%-30s = %-d\n", "Active irriggation index", Cycles->CropManagement.irrigationIndex);
+//        printf ("*%-30s = %-d\n", "Active irriggation index", Cycles->CropManagement.irrigationIndex);
 #endif
         SelectOperationYear (rotationYear, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization, &Cycles->CropManagement.fertilizationIndex);
 #ifdef _DEBUG_
-        printf ("*%-30s = %-d\n", "Active fertilization index", Cycles->CropManagement.fertilizationIndex);
+//        printf ("*%-30s = %-d\n", "Active fertilization index", Cycles->CropManagement.fertilizationIndex);
 #endif
 
         for (i = 0; i < Cycles->Soil.totalLayers; i++)
@@ -137,7 +130,8 @@ int main (int argc, char *argv[])
         /* Daily operations */
         for (doy = 1; doy < 366; doy++)
         {
-
+            printf ("Year %4d DOY %5d\n", y + 1, doy);
+            DailyOperations (rotationYear, y, doy, &nextSeedingYear, &nextSeedingDate, &Cycles->CropManagement, &Cycles->Crop, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather);
         }
     }
     return 0;

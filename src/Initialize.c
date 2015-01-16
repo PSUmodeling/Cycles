@@ -1,18 +1,12 @@
 #include "include/Cycles.h"
 
-void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop)
+void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement)
 {
-    int max = 0;
     int i;
-
-    /*
-     * Initialize weather variables
-     */
+    /* Initialize weather variables */
     CalculateDerivedWeather (Weather, SimControl->totalYears);
 
-    /*
-     * Initialize soil variables
-     */
+    /* Initialize soil variables */
     InitializeSoil (Soil, Weather, SimControl);
 
     /* Initialize residue */
@@ -20,11 +14,14 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
 
     /* Initialize soil carbon */
     InitializeSoilCarbon (SoilCarbon, Soil->totalLayers);
-    /*
-     * Initialize crops
-     */
+
+    ///* Initialize crops */
     Crop->cropUniqueIdentifier = -1;
 
+    /* Initialize tillage factors */
+    for (i = 0; i < CropManagement->numTillage; i++)
+        CropManagement->Tillage[i].tillageFactor = (double *) malloc (Soil->totalLayers * sizeof (double));
+        
     /* Convert units of crop parameters */
 //    ModifyDescriptions (Cycles->describedCrops, Cycles->NumDescribedCrop);
 //    LinkRotationAndDescription (Cycles->plantingOrder, Cycles->describedCrops, Cycles->totalCropsPerRotation, Cycles->NumDescribedCrop);

@@ -4,10 +4,14 @@ void Temperature(int y, int doy, double snowCover, double cropInterception, Soil
 { 
  
     int m;
-    double CP[Soil->totalLayers + 1];
-    double k[Soil->totalLayers + 1];
+    int i;
+    double CP[Soil->totalLayers];
+    double k[Soil->totalLayers];
+    double CPsfc;
+    double ksfc;
     double a[Soil->totalLayers + 1], b[Soil->totalLayers + 1], c[Soil->totalLayers + 1], d[Soil->totalLayers + 1];
     double T[Soil->totalLayers + 1], Tn[Soil->totalLayers + 1];
+    double tsfc;    /* land surface temperature, C*/
     double tAvg;    /* average air temperature, C */
     double fCover;  /* soil cover factor accouting for flat residue and snow cover */
     double soilCover;   /* soil fraction covered by snow and flat residues */
@@ -20,76 +24,89 @@ void Temperature(int y, int doy, double snowCover, double cropInterception, Soil
 
     m = Soil->totalLayers;
 
-    CP[0] = 0.;     /* heat capacity of boundary layer  = 0 */
-    k[0] = 20.;     /* boundary layer conductance (W/m2 K) */
+    CPsfc = 0.;     /* heat capacity of boundary layer  = 0 */
+    ksfc = 20.;     /* boundary layer conductance (W/m2 K) */
 
     for (i = 0; i < m; i++)
     {
-        ' calculates heat capacity weighted by solid and water phase only 
-        CP(i) = Me.HeatCapacity(Soil.BD(i), Soil.waterContent(i)) * Soil.layerThickness(i) 
-        ' calculates conductance per layer, equation 4.20 for thermal conductivity 
-        k(i) = Me.HeatConductivity(Soil.BD(i), Soil.waterContent(i), Soil.Clay(i)) / (Soil.nodeDepth(i + 1) - Soil.nodeDepth(i)) 
+        /* calculates heat capacity weighted by solid and water phase only  */
+        CP[i] = HeatCapacity(Soil->BD[i], Soil->waterContent[i]) * Soil->layerThickness[i]; 
+        /* calculates conductance per layer, equation 4.20 for thermal conductivity */
+        k[i] = HeatConductivity(Soil->BD[i], Soil->waterContent[i], Soil->Clay[i]) / (Soil->nodeDepth[i + 1] - Soil->nodeDepth[i]); 
     } 
 
-    'recalculates bottom boundary condition 
-    T(m + 1) = Me.EstimatedSoilTemperature(Soil.nodeDepth(m + 1), doy, Weather.annualAvgTemperature, Weather.annualAmplitude, Soil.annualTemperaturePhase, Soil.dampingDepth) 
-    Tn(m + 1) = T(m + 1) 
+    /* recalculates bottom boundary condition */
+    T[Soil->totalLayers] = EstimatedSoilTemperature(Soil->nodeDepth[Soil->totalLayers], doy, Weather->annualAverageTemperature[y], Weather->yearlyAmplitude[y], Soil->annualTemperaturePhase, Soil->dampingDepth);
+    Tn[Soil->totalLayers] = T[Soil->totalLayers]; 
 
-    'passes previous time step temperatures for all soil layers 
-    T = Soil.soilTemperature 
+    /* Passes previous time step temperatures for all soil layers */
+    for (i = 0; i < Soil->totalLayers + 1; i++)
+        T[i] = Soil->soilTemperature[i];
 
-    'calculates temperature of upper boundary condition 
-    'uses an empirical factor to weight the effect of air temperature, residue cover, and snow cover on the upper node temperature 
-    'this is an empirical approach to allow for residue or snow insulation effect 
-    tAvg = 0.5 * (Weather.dailyTemperatureMax + Weather.dailyTemperatureMin) 
-    soilCover = 1 - (1 - cropInterception) * (1 - snowCover) * Residue.flatResidueTau 
-    fCover = 0.4 * soilCover + 0.3 * snowCover / (soilCover + 0.001) 
-    Tn(0) = (1 - fCover) * tAvg + fCover * T(1) 
-    T(0) = Tn(0) 
+    /* calculates temperature of upper boundary condition
+     * uses an empirical factor to weight the effect of air temperature,
+     * residue cover, and snow cover on the upper node temperature. This is an
+     * empirical approach to allow for residue or snow insulation effect */
+    tAvg = 0.5 * (Weather->tMax[y][doy] + Weather->tMin[y][doy]); 
+    soilCover = 1. - (1. - cropInterception) * (1. - snowCover) * Residue->flatResidueTau;
+    fCover = 0.4 * soilCover + 0.3 * snowCover / (soilCover + 0.001);
+    tsfc = (1. - fCover) * tAvg + fCover * T[0];
+    //T(0) = Tn(0) 
 
-    counter = 0 
+    counter = 0 ;
 
-    Do 
-        'this loop updates temperatures after the first Thomas loop and is needed 
-        'due to the inclusion of Tsurface [T(1)] to calculate net radiation at "exchange" surface 
-        'these two layers are used as criteria to leave the loop (seen end of loop) 
-        counter += 1 
-        If counter > 1 Then 
-            T(1) = Tn(1) 
-            T(2) = Tn(2) 
-        End If 
+    do
+    { 
+        /* this loop updates temperatures after the first Thomas loop and is
+         * needed due to the inclusion of Tsurface [T(1)] to calculate net
+         * radiation at "exchange" surface these two layers are used as
+         * criteria to leave the loop (seen end of loop) */
+        counter += 1;
+        if (counter > 1)
+        {
+            T[0] = Tn[0];
+            T[1] = Tn[1];
+        }
 
-        For i As Integer = 1 To m                ' calculates matrix elements 
-            c(i) = -k(i) * f 
-            a(i + 1) = c(i) 
-            'b(i) = f * (k(i) + k(i - 1)) + CP(i) / secondsPerHour 
-            b(i) = f * (k(i) + k(i - 1)) + CP(i) / 86400 'changed to seconds per day, quite long time step 
-            'd(i) = g * k(i - 1) * T(i - 1) + (CP(i) / secondsPerHour - g * (k(i) + k(i - 1))) * T(i) + g * k(i) * T(i + 1) 
-            d(i) = g * k(i - 1) * T(i - 1) + (CP(i) / 86400 - g * (k(i) + k(i - 1))) * T(i) + g * k(i) * T(i + 1) 'changed to seconds per day, quite long time step 
-        Next 
+        for (i = 0; i < Soil->totalLayers; i++) /* calculates matrix elements */
+        {
+            c[i] = -k[i] * f; 
+            a[i + 1] = c[i]; 
+            if (i == 0)
+            {
+                b[i] = f * (k[i] + ksfc) + CP[i] / 86400.;  /* changed to seconds per day, quite long time step */
+                d[i] = g * ksfc * tsfc + (CP[i] / 86400. - g * (k[i] + ksfc)) * T[i] + g * k[i] * T[i + 1]; /* changed to seconds per day, quite long time step */
+            }
+            else
+            {
+                b[i] = f * (k[i] + k[i - 1]) + CP[i] / 86400.;  /* changed to seconds per day, quite long time step */
+                d[i] = g * k[i - 1] * T[i - 1] + (CP[i] / 86400. - g * (k[i] + k[i - 1])) * T[i] + g * k[i] * T[i + 1]; /* changed to seconds per day, quite long time step */
+            }
+        }
 
-        d(1) += k(0) * Tn(0) * f '+ Rnet - Hourly_Latent_Heat ' add net radiation and latent heat transfer here for subdaily time step 
-        d(m) += k(m) * f * Tn(m + 1) 
+        d[0] += ksfc * tsfc * f;
+        d[Soil->totalLayers - 1] += k[Soil->totalLayers - 1] * f * Tn[Soil->totalLayers];
 
-        'Thomas algorithm starts 
-        For i As Integer = 1 To m - 1 
-            c(i) = c(i) / b(i) 
-            d(i) = d(i) / b(i) 
-            b(i + 1) = b(i + 1) - a(i + 1) * c(i) 
-            d(i + 1) = d(i + 1) - a(i + 1) * d(i) 
-        Next i 
+        /* Thomas algorithm starts */
+        for (i = 0; i < Soil->totalLayers - 1; i++)
+        {
+            c[i] = c[i] / b[i]; 
+            d[i] = d[i] / b[i]; 
+            b[i + 1] = b[i + 1] - a[i + 1] * c[i]; 
+            d[i + 1] = d[i + 1] - a[i + 1] * d[i];
+        }
 
-        Tn(m) = d(m) / b(m) 
+        Tn[Soil->totalLayers - 1] = d[Soil->totalLayers - 1] / b[Soil->totalLayers - 1];
 
-        For i As Integer = m - 1 To 1 Step -1 
-            Tn(i) = d(i) - c(i) * Tn(i + 1) 
-        Next 
-        'Thomas algorithm ends 
+        for (i = Soil->totalLayers - 2; i >= 0; i--)
+            Tn[i] = d[i] - c[i] * Tn[i + 1];
+        /* Thomas algorithm ends */
+    } while (fabs(T[0] - Tn[0]) > 0.02 || abs(T[1] - Tn[1]) > 0.02);
 
-    Loop While Abs(T(1) - Tn(1)) > 0.02 Or Abs(T(2) - Tn(2)) > 0.02 
+    for (i = 0; i < Soil->totalLayers + 1; i++)
+        Soil->soilTemperature[i] = Tn[i]; 
+}
 
-    Soil.soilTemperature = Tn 
-} 
 double HeatCapacity (double bulkDensity, double volumetricWC)
 {
     return 2400000. * bulkDensity / 2.65 + 4180000. * volumetricWC;

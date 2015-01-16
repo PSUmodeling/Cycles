@@ -43,7 +43,7 @@ void PrintSoil (SoilStruct Soil)
     getchar();
 }
 
-void PrintCrop (describedCropsStruct * describedCrops, int NumCrop)
+void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
 {
     int             i;
 
@@ -53,47 +53,47 @@ void PrintCrop (describedCropsStruct * describedCrops, int NumCrop)
 
     for (i = 0; i < NumCrop; i++)
     {
-        printf ("*%-38s\t%-10s\n", "NAME", describedCrops[i].userCropName);
-        printf ("*%-38s\t%-3d\n", "AVERAGE SEEDING DATE", describedCrops[i].userSeedingDate);
-        printf ("*%-38s\t%-3d\n", "AVERAGE 50% FLOWERING DATE", describedCrops[i].userFloweringDate);
-        printf ("*%-38s\t%-3d\n", "AVERAGE MATURITY DATE", describedCrops[i].userMaturityDate);
-        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_SOIL_COVERAGE", describedCrops[i].userMaximumSoilCoverage);
-        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_ROOTING_DEPTH", describedCrops[i].userMaximumRootingDepth);
-        printf ("*%-38s\t%-9.2lf\n", "AVERAGE_EXPECTED_YIELD", describedCrops[i].userExpectedYieldAvg);
-        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_EXPECTED_YIELD", describedCrops[i].userExpectedYieldMax);
-        printf ("*%-38s\t%-9.2lf\n", "MINIMUM_EXPECTED_YIELD", describedCrops[i].userExpectedYieldMin);
-        printf ("*%-38s\t%-9.2lf\n", "COMMERCIAL_YIELD_MOISTURE", describedCrops[i].userPercentMoistureInYield);
-        printf ("*%-38s\t%-9.2lf\n", "STANDING_RESIDUE_AT_HARVEST", describedCrops[i].userFractionResidueStanding);
-        printf ("*%-38s\t%-9.2lf\n", "RESIDUE_REMOVED", describedCrops[i].userFractionResidueRemoved);
-        printf ("*%-38s\t%-9.2lf\n", "HARVEST_TIMING", describedCrops[i].userClippingTiming);
-        printf ("*%-38s\t%-9.2lf\n", "MIN_TEMPERATURE_FOR_TRANSPIRATION", describedCrops[i].userTranspirationMinTemperature);
-        printf ("*%-38s\t%-9.2lf\n", "THRESHOLD_TEMPERATURE_FOR_TRANPIRATION", describedCrops[i].userTranspirationThresholdTemperature);
-        printf ("*%-38s\t%-9.2lf\n", "MIN_TEMPERATURE_FOR_COLD_DAMAGE", describedCrops[i].userColdDamageMinTemperature);
-        printf ("*%-38s\t%-9.2lf\n", "THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE", describedCrops[i].userColdDamageThresholdTemperature);
-        printf ("*%-38s\t%-9.2lf\n", "BASE_TEMPERATURE_FOR_DEVELOPMENT", describedCrops[i].userTemperatureBase);
-        printf ("*%-38s\t%-9.2lf\n", "OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT", describedCrops[i].userTemperatureOptimum);
-        printf ("*%-38s\t%-9.2lf\n", "MAX_TEMPERATURE_FOR_DEVELOPMENT", describedCrops[i].userTemperatureMaximum);
-        printf ("*%-38s\t%-9.2lf\n", "INITIAL_PARTITIONING_TO_SHOOT", describedCrops[i].userShootPartitionInitial);
-        printf ("*%-38s\t%-9.2lf\n", "FINAL_PARTITIONING_TO_SHOOT", describedCrops[i].userShootPartitionFinal);
-        printf ("*%-38s\t%-9.2lf\n", "RAIDATION_USE_EFFICIENCY", describedCrops[i].userRadiationUseEfficiency);
-        printf ("*%-38s\t%-9.2lf\n", "TRANSPIRATION_USE_EFFICIENCY", describedCrops[i].userTranspirationUseEfficiency);
-        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_HARVEST_INDEX", describedCrops[i].userHIx);
-        printf ("*%-38s\t%-9.2lf\n", "MINIMUM_HARVEST_INDEX", describedCrops[i].userHIo);
-        printf ("*%-38s\t%-9.2lf\n", "HARVEST_INDEX", describedCrops[i].userHIk);
-        printf ("*%-38s\t%-9.2lf\n", "THERMAL_TIME_TO_EMERGENCE", describedCrops[i].userEmergenceTT);
-        printf ("*%-38s\t%-9.2lf\n", "N_MAX_CONCENTRATION", describedCrops[i].userNMaxConcentration);
-        printf ("*%-38s\t%-9.2lf\n", "N_DILUTION_SLOPE", describedCrops[i].userNDilutionSlope);
-        printf ("*%-38s\t%-9.2lf\n", "KC", describedCrops[i].userKc);
-        printf ("*%-38s\t%-3d\n", "ANNUAL", describedCrops[i].userAnnual);
-        printf ("*%-38s\t%-3d\n", "LEGUME", describedCrops[i].userLegume);
-        printf ("*%-38s\t%-3d\n\n", "C3", describedCrops[i].userC3orC4);
+        printf ("*%-38s\t%-10s\n", "NAME", describedCrop[i].userCropName);
+        printf ("*%-38s\t%-3d\n", "AVERAGE SEEDING DATE", describedCrop[i].userSeedingDate);
+        printf ("*%-38s\t%-3d\n", "AVERAGE 50% FLOWERING DATE", describedCrop[i].userFloweringDate);
+        printf ("*%-38s\t%-3d\n", "AVERAGE MATURITY DATE", describedCrop[i].userMaturityDate);
+        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_SOIL_COVERAGE", describedCrop[i].userMaximumSoilCoverage);
+        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_ROOTING_DEPTH", describedCrop[i].userMaximumRootingDepth);
+        printf ("*%-38s\t%-9.2lf\n", "AVERAGE_EXPECTED_YIELD", describedCrop[i].userExpectedYieldAvg);
+        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_EXPECTED_YIELD", describedCrop[i].userExpectedYieldMax);
+        printf ("*%-38s\t%-9.2lf\n", "MINIMUM_EXPECTED_YIELD", describedCrop[i].userExpectedYieldMin);
+        printf ("*%-38s\t%-9.2lf\n", "COMMERCIAL_YIELD_MOISTURE", describedCrop[i].userPercentMoistureInYield);
+        printf ("*%-38s\t%-9.2lf\n", "STANDING_RESIDUE_AT_HARVEST", describedCrop[i].userFractionResidueStanding);
+        printf ("*%-38s\t%-9.2lf\n", "RESIDUE_REMOVED", describedCrop[i].userFractionResidueRemoved);
+        printf ("*%-38s\t%-9.2lf\n", "HARVEST_TIMING", describedCrop[i].userClippingTiming);
+        printf ("*%-38s\t%-9.2lf\n", "MIN_TEMPERATURE_FOR_TRANSPIRATION", describedCrop[i].userTranspirationMinTemperature);
+        printf ("*%-38s\t%-9.2lf\n", "THRESHOLD_TEMPERATURE_FOR_TRANPIRATION", describedCrop[i].userTranspirationThresholdTemperature);
+        printf ("*%-38s\t%-9.2lf\n", "MIN_TEMPERATURE_FOR_COLD_DAMAGE", describedCrop[i].userColdDamageMinTemperature);
+        printf ("*%-38s\t%-9.2lf\n", "THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE", describedCrop[i].userColdDamageThresholdTemperature);
+        printf ("*%-38s\t%-9.2lf\n", "BASE_TEMPERATURE_FOR_DEVELOPMENT", describedCrop[i].userTemperatureBase);
+        printf ("*%-38s\t%-9.2lf\n", "OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT", describedCrop[i].userTemperatureOptimum);
+        printf ("*%-38s\t%-9.2lf\n", "MAX_TEMPERATURE_FOR_DEVELOPMENT", describedCrop[i].userTemperatureMaximum);
+        printf ("*%-38s\t%-9.2lf\n", "INITIAL_PARTITIONING_TO_SHOOT", describedCrop[i].userShootPartitionInitial);
+        printf ("*%-38s\t%-9.2lf\n", "FINAL_PARTITIONING_TO_SHOOT", describedCrop[i].userShootPartitionFinal);
+        printf ("*%-38s\t%-9.2lf\n", "RAIDATION_USE_EFFICIENCY", describedCrop[i].userRadiationUseEfficiency);
+        printf ("*%-38s\t%-9.2lf\n", "TRANSPIRATION_USE_EFFICIENCY", describedCrop[i].userTranspirationUseEfficiency);
+        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_HARVEST_INDEX", describedCrop[i].userHIx);
+        printf ("*%-38s\t%-9.2lf\n", "MINIMUM_HARVEST_INDEX", describedCrop[i].userHIo);
+        printf ("*%-38s\t%-9.2lf\n", "HARVEST_INDEX", describedCrop[i].userHIk);
+        printf ("*%-38s\t%-9.2lf\n", "THERMAL_TIME_TO_EMERGENCE", describedCrop[i].userEmergenceTT);
+        printf ("*%-38s\t%-9.2lf\n", "N_MAX_CONCENTRATION", describedCrop[i].userNMaxConcentration);
+        printf ("*%-38s\t%-9.2lf\n", "N_DILUTION_SLOPE", describedCrop[i].userNDilutionSlope);
+        printf ("*%-38s\t%-9.2lf\n", "KC", describedCrop[i].userKc);
+        printf ("*%-38s\t%-3d\n", "ANNUAL", describedCrop[i].userAnnual);
+        printf ("*%-38s\t%-3d\n", "LEGUME", describedCrop[i].userLegume);
+        printf ("*%-38s\t%-3d\n\n", "C3", describedCrop[i].userC3orC4);
         printf ("(Press any key to continue ...)\n");
         getchar();
     }
     printf ("\n");
 }
 
-void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization)
+void PrintOperation (FieldOperationStruct * plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization)
 {
     int             i;
     FieldOperationStruct *p;
@@ -101,8 +101,8 @@ void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldO
     printf ("\n*Planting:\n");
     for (i = 0; i < NumPlanting; i++)
     {
-        printf ("*%-18s\t%-3d\n", "YEAR", plantedCrops[i].seedingYear);
-        printf ("*%-18s\t%-3d\n", "DOY", plantedCrops[i].seedingDate);
+        printf ("*%-18s\t%-3d\n", "YEAR", plantedCrops[i].opYear);
+        printf ("*%-18s\t%-3d\n", "DOY", plantedCrops[i].opDay);
         printf ("*%-18s\t%-10s\n", "CROP", plantedCrops[i].cropName);
         printf ("*%-18s\t%-3d\n", "AUTO IRRIGATION", plantedCrops[i].usesAutoIrrigation);
         printf ("*%-18s\t%-3d\n", "AUTO FERTILIAZTION", plantedCrops[i].usesAutoFertilization);

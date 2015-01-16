@@ -17,7 +17,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
 void ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years);
 
 /* Initialize.c */
-void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop);
+void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement);
 
 /* Soil.c */
 void            InitializeSoil (SoilStruct * Soil, WeatherStruct * Weather, SimControlStruct * SimControl);
@@ -53,13 +53,14 @@ void ComputeResidueCover (ResidueStruct *Residue);
 void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, WeatherStruct *Weather);
 double ThermalTime (double T_base, double T_op, double T_Max, double Temperature);
 
-/* Crops.c */
+/* Crop.c */
 void SelectCropInitialPosition(CropManagementStruct *CropManagement);
 void SelectNextCrop (CropManagementStruct *CropManagement);
 void PeekNextCrop(CropManagementStruct *CropManagement);
+void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement);
 
 /* FieldOperations.c */
-void SelectNextOperation(FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
+void SelectNextOperation(int NumOperation, int *operationIndex);
 void SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
 int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int operationIndex);
 
@@ -82,17 +83,23 @@ double Function_CNnew (double NmineralConc, double CNDecomposingPool);
 
 /* CropTranspiration.c */
 void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, WeatherStruct *Weather);
-void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil As SoilClass, CropStruct Crop);
+void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil, CropStruct *Crop);
 double TemperatureLimitation (double T, double T_Min, double T_Threshold);
 double Aeration(double AC);
 
+/* DailyOperation.c */
+void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather);
+void GrowingCrop (int rotationYear, int y, int d, int nextSeedingYear, int nextSeedingDate, CropStruct *Crop, ResidueStruct *Residue, SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, SnowStruct *Snow);
+void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop);
+void SetFinalHarvestDate(int lastDoy, int d, int *harvestDate);
+int ForcedMaturity (int rotationYear, int d, int nextSeedingYear, int nextSeedingDate, int rotationSize);
 #ifdef _DEBUG_
 void            PrintSimContrl (SimControlStruct SimControl);
 void            PrintSoil (SoilStruct Soil);
-void            PrintCrop (describedCropsStruct * describedCrops, int NumCrop);
-void PrintOperation (plantingOrderStruct * plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization);
+void PrintCrop (describedCropStruct *describedCrop, int NumCrop);
+void            PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization);
 void            PrintWeather (WeatherStruct Weather);
-void            PrintPlantingOrder (plantingOrderStruct *plantingOrder, int totalCropsPerRotation);
+void            PrintPlantingOrder (FieldOperationStruct *plantingOrder, int totalCropsPerRotation);
 #endif
 
 #endif

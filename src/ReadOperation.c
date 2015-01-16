@@ -6,7 +6,6 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
     char           *filename;
     char            cmdstr[MAXSTRING];
     char            optstr[MAXSTRING];
-    char            tempchar[128];
     int             tillage_counter = 0;
     int             planting_counter = 0;
     int             irrigation_counter = 0;
@@ -65,7 +64,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
 #endif
 
     CropManagement->totalCropsPerRotation = planting_counter;
-    CropManagement->plantingOrder = (plantingOrderStruct *) malloc (planting_counter * sizeof (plantingOrderStruct));
+    CropManagement->plantingOrder = (FieldOperationStruct *) malloc (planting_counter * sizeof (FieldOperationStruct));
 
     CropManagement->numFertilization = fertilization_counter;
     CropManagement->FixedFertilization = (FieldOperationStruct *) malloc (fertilization_counter * sizeof (FieldOperationStruct));
@@ -97,9 +96,9 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                     sscanf (cmdstr, "%*s %d", &tempyear);
                     if (tempyear <= yearsInRotation)
                     {
-                        CropManagement->plantingOrder[i].seedingYear = tempyear;
+                        CropManagement->plantingOrder[i].opYear = tempyear;
                         fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].seedingDate);
+                        sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].opDay);
                         fgets (cmdstr, MAXSTRING, operation_file);
                         sscanf (cmdstr, "%*s %s", &CropManagement->plantingOrder[i].cropName);
                         fgets (cmdstr, MAXSTRING, operation_file);
@@ -116,7 +115,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                         /* Link planting order and crop description */
                         for (j = 0; j < CropManagement->NumDescribedCrop; j++)  
                         {
-                            if (strcmp (CropManagement->plantingOrder[i].cropName, CropManagement->describedCrops[j].userCropName) == 0)
+                            if (strcmp (CropManagement->plantingOrder[i].cropName, CropManagement->describedCrop[j].userCropName) == 0)
                             {
                                 CropManagement->plantingOrder[i].plantID = j;
                                 break;

@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void SelectNextOperation(FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex)
+void SelectNextOperation(int NumOperation, int *operationIndex)
 {
     /*
      * Select next operation in the list, if any
@@ -23,7 +23,7 @@ void SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation
             while (*operationIndex >=0)
             {
                 if (FieldOperation[*operationIndex].opYear < rotationYear)
-                    SelectNextOperation (FieldOperation, NumOperation, operationIndex);
+                    SelectNextOperation (NumOperation, operationIndex);
                 else
                     break;
             }

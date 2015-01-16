@@ -41,17 +41,10 @@ void PeekNextCrop(CropManagementStruct *CropManagement)
         else
             tempIndex = 0;
 
-        CropManagement->nextCropSeedingYear = CropManagement->plantingOrder[tempIndex].seedingYear;
-        CropManagement->nextCropSeedingDate = CropManagement->plantingOrder[tempIndex].seedingDate;
+        CropManagement->nextCropSeedingYear = CropManagement->plantingOrder[tempIndex].opYear;
+        CropManagement->nextCropSeedingDate = CropManagement->plantingOrder[tempIndex].opDay;
         strcpy (CropManagement->nextCropName, CropManagement->plantingOrder[tempIndex].cropName);
     }
-//#ifdef _DEBUG_
-//    printf ("*%-25s\t%-3d\n", "Next crop seeding year", CropManagement->nextCropSeedingYear);
-//    printf ("*%-25s\t%-3d\n", "Next crop seeding date", CropManagement->nextCropSeedingDate);
-//    printf ("*%-25s\t%-10s\n", "Next crop name", CropManagement->nextCropName);
-//    printf ("(Press any key to continue ...)\n");
-//    getchar ();
-//#endif 
 }
 //
 
@@ -367,54 +360,78 @@ void PeekNextCrop(CropManagementStruct *CropManagement)
 //            Call Me.opList.SelectFirstNode()
 //        End Sub
 //
-//        Public Sub NewCrop(ByVal cropName As String)
-//            'Precondition:  none
-//            'Postcondition: new crop node created
-//            '               new crop node is the active node
-//
-//            Static cropCounter As Integer = 0
-//
-//            Dim tempArray(81) As Object
-//            Dim pos As Integer = 1
-//
-//            cropCounter += 1
-//
-//            tempArray(0) = cropCounter
-//            tempArray(1) = cropName
-//
-//            If Crops.usesAutoIrrigation Then
-//                tempArray(2) = True
-//                tempArray(3) = autoIrrigation(Crops.irrigationNum, 1)
-//                tempArray(4) = autoIrrigation(Crops.irrigationNum, 2)
-//                tempArray(5) = autoIrrigation(Crops.irrigationNum, 3)
-//                tempArray(6) = autoIrrigation(Crops.irrigationNum, 4)
-//            Else
-//                tempArray(2) = False
-//            End If
-//
-//            If Crops.usesAutoFertilization Then
-//                tempArray(7) = True
-//                tempArray(8) = autoFertilization(Crops.fertilizationNum, 1)
-//                tempArray(9) = autoFertilization(Crops.fertilizationNum, 2)
-//                tempArray(10) = autoFertilization(Crops.fertilizationNum, 3)
-//                tempArray(11) = autoFertilization(Crops.fertilizationNum, 4)
-//                tempArray(12) = autoFertilization(Crops.fertilizationNum, 5)
-//                tempArray(13) = autoFertilization(Crops.fertilizationNum, 6)
-//            Else
-//                tempArray(7) = False
-//            End If
-//
-//            For i As Integer = 1 To 39
-//                tempArray(40 + i) = describedCrops(describedIndex, i)
-//            Next
-//
-//            tempArray(79) = -1
-//            tempArray(80) = 0
-//            tempArray(81) = Nothing
-//
-//            Me.opList.InsertTail(tempArray)
-//            Me.opList.SelectLastNode()
-//        End Sub
+void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement)
+{
+    FieldOperationStruct *plantingOrder;
+    autoIrrigationStruct *autoIrrigation;
+    describedCropStruct *describedCrop;
+
+    plantingOrder = &CropManagement->plantingOrder[CropManagement->plantingIndex];
+    autoIrrigation = &CropManagement->autoIrrigation[plantingOrder->usesAutoIrrigation];
+    describedCrop = &CropManagement->describedCrop[CropManagement->describedIndex];
+
+    Crop->cropUniqueIdentifier = plantingOrder->plantID;
+    strcpy (Crop->cropName, plantingOrder->cropName);
+
+    if (plantingOrder->usesAutoIrrigation)
+    {
+        Crop->autoIrrigationUsed = 1;
+        Crop->autoIrrigationStartDay = autoIrrigation->startDay;
+        Crop->autoIrrigationStopDay = autoIrrigation->stopDay;
+        Crop->autoIrrigationWaterDepletion = autoIrrigation->waterDepletion;
+        Crop->autoIrrigationLastSoilLayer = autoIrrigation->lastSoilLayer;        
+    }
+    else
+        Crop->autoIrrigationUsed = 0;
+
+    Crop->userSeedingDate = describedCrop->userSeedingDate;
+    Crop->userFloweringDate = describedCrop->userFloweringDate;
+    Crop->userMaturityDate = describedCrop->userMaturityDate;
+    Crop->userMaximumSoilCoverage = describedCrop->userMaximumSoilCoverage;
+    Crop->userMaximumRootingDepth = describedCrop->userMaximumRootingDepth;
+    Crop->userExpectedYieldAvg = describedCrop->userExpectedYieldAvg;
+    Crop->userExpectedYieldMax = describedCrop->userExpectedYieldMax;
+    Crop->userExpectedYieldMin = describedCrop->userExpectedYieldMin;
+    Crop->userPercentMoistureInYield = describedCrop->userPercentMoistureInYield;
+    Crop->userFractionResidueStanding = describedCrop->userFractionResidueStanding;
+    Crop->userFractionResidueRemoved = describedCrop->userFractionResidueRemoved;
+    Crop->userClippingTiming = describedCrop->userClippingTiming;
+    Crop->userTranspirationMinTemperature = describedCrop->userTranspirationMinTemperature;
+    Crop->userTranspirationThresholdTemperature = describedCrop->userTranspirationThresholdTemperature;
+    Crop->userColdDamageMinTemperature = describedCrop->userColdDamageMinTemperature;
+    Crop->userColdDamageThresholdTemperature = describedCrop->userColdDamageThresholdTemperature;
+    Crop->userTemperatureBase = describedCrop->userTemperatureBase;
+    Crop->userTemperatureOptimum = describedCrop->userTemperatureOptimum;
+    Crop->userTemperatureMaximum = describedCrop->userTemperatureMaximum;
+    Crop->userShootPartitionInitial = describedCrop->userShootPartitionInitial;
+    Crop->userShootPartitionFinal = describedCrop->userShootPartitionFinal;
+    Crop->userRadiationUseEfficiency = describedCrop->userRadiationUseEfficiency;
+    Crop->userTranspirationUseEfficiency = describedCrop->userTranspirationUseEfficiency;
+    Crop->userHIx = describedCrop->userHIx;
+    Crop->userHIo = describedCrop->userHIo;    /* intercept harvest index */
+    Crop->userHIk = describedCrop->userHIk;
+    Crop->userEmergenceTT = describedCrop->userEmergenceTT;
+    Crop->userNMaxConcentration = describedCrop->userNMaxConcentration;
+    Crop->userNDilutionSlope = describedCrop->userNDilutionSlope;
+    Crop->userKc = describedCrop->userKc;
+    Crop->userAnnual = describedCrop->userAnnual;
+    Crop->userLegume = describedCrop->userLegume;
+    Crop->userC3orC4 = describedCrop->userC3orC4;
+    Crop->calculatedFloweringTT = describedCrop->calculatedFloweringTT;
+    Crop->calculatedMaturityTT = describedCrop->calculatedMaturityTT;
+    Crop->calculatedSimAvgYield = describedCrop->calculatedSimAvgYield;
+    Crop->calculatedSimMaxYield = describedCrop->calculatedSimMaxYield;
+    Crop->calculatedSimMinYield = describedCrop->calculatedSimMinYield;
+
+    Crop->harvestDateFinal = -1;
+    Crop->harvestCount = 0;
+    Crop->stageGrowth = -1;
+
+#ifdef _DEBUG_
+    printf ("*Planted crop is %s (ID %d)\n", Crop->cropName, Crop->cropUniqueIdentifier);
+#endif
+}
+        
 //        Public Sub KillCrop(ByVal uniqueIdentifier As Integer)
 //            'Precondition:  uniqueIdentifier is only found once in the list
 //            'Postcondition: node containing the unique value is deleted
@@ -422,7 +439,7 @@ void PeekNextCrop(CropManagementStruct *CropManagement)
 //            Me.opList.DeleteNode(uniqueIdentifier)
 //        End Sub
 //
-void SetCropStatusToMature(CropStruct Crop);
+void SetCropStatusToMature(CropStruct Crop)
 {
     /*
      * growing and mature
