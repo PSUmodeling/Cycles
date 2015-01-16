@@ -30,7 +30,7 @@ typedef struct SimControlStruct
 typedef struct SoilStruct
 {
     int             totalLayers;
-    int             Cucve_Number;
+    int             Curve_Number;
     double          Percent_Slope;
 
     int             annualTemperaturePhase;
