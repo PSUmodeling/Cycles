@@ -279,7 +279,6 @@ typedef struct FieldOperationStruct
     double          opDepth;
     double          opSDR;
     double          opMixingEfficiency;
-    double         *tillageFactor;
 
     /* Fixed Irrigation */
     double          opVolume;
@@ -336,6 +335,7 @@ typedef struct CropManagementStruct
     FieldOperationStruct *Tillage;
     int             numTillage;
     int             tillageIndex;
+    double         *tillageFactor;
 
     FieldOperationStruct *plantingOrder;
     int             totalCropsPerRotation;

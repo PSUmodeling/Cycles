@@ -14,6 +14,10 @@ int main (int argc, char *argv[])
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
+#ifdef _DEBUG_
+    project = (char *)malloc (5 * sizeof (char));
+    strcpy (project, "Demo");
+#else
     if (argc < 2)
     {
         printf ("ERROR: Please specify the name of project!\n");
@@ -25,6 +29,7 @@ int main (int argc, char *argv[])
         project = (char *)malloc ((strlen (argv[1]) + 1) * sizeof (char));
         strcpy (project, argv[1]);
     }
+#endif
 
     system ("clear");
     printf ("\n\n");

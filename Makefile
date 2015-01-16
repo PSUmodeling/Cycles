@@ -13,7 +13,8 @@ INCDIR = ./src/include
 SRCS_ =  Cycles.c ReadSimCtrl.c ReadSoil.c ReadCrop.c ReadOperation.c \
 	    ReadWeather.c Initialize.c Soil.c Weather.c ReferenceET.c \
 	    SoilTemperature.c DebugIO.c Crop.c Residue.c CropThermalTime.c \
-	    FieldOperation.c SoilCarbon.c DailyOperation.c
+	    FieldOperation.c SoilCarbon.c DailyOperation.c Tillage.c \
+	    Fertilization.c
 HEADERS_ = Cycles.h Cycles_const.h Cycles_struct.h Cycles_func.h
 
 EXECUTABLE = Cycles

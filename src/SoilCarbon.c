@@ -56,7 +56,7 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilS
     }
 }
 
-void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, FieldOperationStruct *Tillage)
+void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, FieldOperationStruct *Tillage, double *tillageFactor)
 {
     int     i;
     double socDecompositionRate;
@@ -353,7 +353,7 @@ void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStr
         /* SOC decomposition and SON mineralization */
         decompositionAdjustmentBySOC = 1. - 1. / (1. + pow ((Soil->SOC_Conc[i] / satSOCConc) / 0.22, 3.0));
         decompositionAdjustmentBySOC = decompositionAdjustmentBySOC < 1. ? decompositionAdjustmentBySOC : 1.;
-        socDecompositionRate = SoilCarbon->factorComposite[i] * (1. + Tillage->tillageFactor[i]) * MAXIMUM_UNDISTURBED_SOC_DECOMPOSITION_RATE * decompositionAdjustmentBySOC / (1. - pow (micrHumificationFactor, 2));
+        socDecompositionRate = SoilCarbon->factorComposite[i] * (1. + tillageFactor[i]) * MAXIMUM_UNDISTURBED_SOC_DECOMPOSITION_RATE * decompositionAdjustmentBySOC / (1. - pow (micrHumificationFactor, 2));
         xx8 = socDecompositionRate * Soil->SOC_Mass[i];
         if (xx8 > 0.)
         {
@@ -370,7 +370,7 @@ void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStr
          * Also notice ks acceleration from apparent to actual turnover
          * ks/(1-e^2) */
         aux3 = aux2 * MAXIMUM_UNDISTURBED_SOC_DECOMPOSITION_RATE * decompositionAdjustmentBySOC / (1. - pow (micrHumificationFactor, 2)) * (0.97 / 0.03) * (1. / micrHumificationFactor); 
-        micrDecompositionRate = SoilCarbon->factorComposite[i] * (1. + Tillage->tillageFactor[i]) * aux3;
+        micrDecompositionRate = SoilCarbon->factorComposite[i] * (1. + tillageFactor[i]) * aux3;
         xx9 = micrDecompositionRate * Soil->MBC_Mass[i];
         if (xx9 > 0.)
             nm9 = NitrogenMineralization(micrCNRatio, micrCNRatio, micrHumificationFactor, xx9);

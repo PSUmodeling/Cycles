@@ -2,7 +2,7 @@
 
 void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement)
 {
-    int i;
+    int i, j;
     /* Initialize weather variables */
     CalculateDerivedWeather (Weather, SimControl->totalYears);
 
@@ -19,8 +19,7 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
     Crop->cropUniqueIdentifier = -1;
 
     /* Initialize tillage factors */
-    for (i = 0; i < CropManagement->numTillage; i++)
-        CropManagement->Tillage[i].tillageFactor = (double *) malloc (Soil->totalLayers * sizeof (double));
+    CropManagement->tillageFactor = (double *) malloc (Soil->totalLayers * sizeof (double));
         
     /* Convert units of crop parameters */
 //    ModifyDescriptions (Cycles->describedCrops, Cycles->NumDescribedCrop);

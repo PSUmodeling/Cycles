@@ -67,7 +67,7 @@ int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOper
 /* SoilCarbon.c */
 void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers);
 void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilStruct *Soil);
-void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, FieldOperationStruct *Tillage);
+void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, FieldOperationStruct *Tillage, double *tillageFactor);
 void StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass);
 double Aeration(double AC);
 double Moisture (double wp);
@@ -93,6 +93,17 @@ void GrowingCrop (int rotationYear, int y, int d, int nextSeedingYear, int nextS
 void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop);
 void SetFinalHarvestDate(int lastDoy, int d, int *harvestDate);
 int ForcedMaturity (int rotationYear, int d, int nextSeedingYear, int nextSeedingDate, int rotationSize);
+
+/* Tillage.c */
+void ExecuteTillage (int y, double **abgdBiomassInput, FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, ResidueStruct *Residue);
+void TillageFactorSettling (double *tillageFactor, int totalLayers, const double *waterContent, const double *Porosity);
+double Fraction(double a, double b, double c, double d, double f);
+void ComputeTillageFactor (const FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, double *soilLayerBottom, double toolDepth);
+double ComputeTextureFactor (double Clay);
+
+/* Fertilization.c */
+void ApplyFertilizer (FieldOperationStruct *fixedFertilization, SoilStruct *Soil, ResidueStruct *Residue);
+
 #ifdef _DEBUG_
 void            PrintSimContrl (SimControlStruct SimControl);
 void            PrintSoil (SoilStruct Soil);
