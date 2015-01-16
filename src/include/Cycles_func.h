@@ -58,6 +58,7 @@ void SelectCropInitialPosition(CropManagementStruct *CropManagement);
 void SelectNextCrop (CropManagementStruct *CropManagement);
 void PeekNextCrop(CropManagementStruct *CropManagement);
 void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement);
+void KillCrop(CropStruct *Crop);
 
 /* FieldOperations.c */
 void SelectNextOperation(int NumOperation, int *operationIndex);
@@ -95,7 +96,7 @@ void SetFinalHarvestDate(int lastDoy, int d, int *harvestDate);
 int ForcedMaturity (int rotationYear, int d, int nextSeedingYear, int nextSeedingDate, int rotationSize);
 
 /* Tillage.c */
-void ExecuteTillage (int y, double **abgdBiomassInput, FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, ResidueStruct *Residue);
+void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, ResidueStruct *Residue);
 void TillageFactorSettling (double *tillageFactor, int totalLayers, const double *waterContent, const double *Porosity);
 double Fraction(double a, double b, double c, double d, double f);
 void ComputeTillageFactor (const FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, double *soilLayerBottom, double toolDepth);
@@ -103,6 +104,20 @@ double ComputeTextureFactor (double Clay);
 
 /* Fertilization.c */
 void ApplyFertilizer (FieldOperationStruct *fixedFertilization, SoilStruct *Soil, ResidueStruct *Residue);
+
+/* CropHarvest.c */
+void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon);
+void ForageHarvest(int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon);
+void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon);
+void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon);
+double ComputeHarvestIndex (double HIx, double HIo, double HIk, double cumulativeShoot, double cumulativePostFloweringShootBiomass);
+
+/* Snow.c */
+void SnowProcesses (SnowStruct *Snow, int y, int doy, WeatherStruct *Weather, double TauStandingRes, double CropInterception);
+void CalculateSnowFall (SnowStruct *Snow, double Tavg, double PP);
+void CalculateSnowMelt (SnowStruct *Snow, double Tavg, double Tx, double Tn);
+void CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRes, double CropInterception, double ETo);
+double CalculateSnowCover (SnowStruct *Snow);
 
 #ifdef _DEBUG_
 void            PrintSimContrl (SimControlStruct SimControl);

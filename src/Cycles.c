@@ -135,7 +135,6 @@ int main (int argc, char *argv[])
         /* Daily operations */
         for (doy = 1; doy < 366; doy++)
         {
-            printf ("Year %4d DOY %5d\n", y + 1, doy);
             DailyOperations (rotationYear, y, doy, &nextSeedingYear, &nextSeedingDate, &Cycles->CropManagement, &Cycles->Crop, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather);
         }
     }

@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, RealizedCropStruct *RealizedCrop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
+void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
 {
     /* update roots and residue biomass at harvest */
 
@@ -35,26 +35,26 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, RealizedCrop
     Residue->yearRhizodepositionBiomass += Crop->svRizho;
 
     /* season outputs */
-    RealizedCrop->rcBiomass = Crop->svBiomass;
-    RealizedCrop->rcRoot = Crop->svRoot;
-    RealizedCrop->rcGrainYield = Crop->svShoot * HI;
-    RealizedCrop->rcResidueBiomass = retainedResidue;
-    RealizedCrop->rcForageYield = forageYield;
-    RealizedCrop->rcHarvestIndex = HI;
-    RealizedCrop->rcTotalNitrogen = Crop->svN_Shoot + Crop->svN_Root;
-    RealizedCrop->rcRootNitrogen = Crop->svN_Root;
-    RealizedCrop->rcGrainNitrogenYield = grainNitrogenYield;
-    RealizedCrop->rcforageNitrogenYield = forageNitrogenYield;
-    RealizedCrop->rcNitrogenCumulative = Crop->svN_StressCumulative;
+    Crop->rcBiomass = Crop->svBiomass;
+    Crop->rcRoot = Crop->svRoot;
+    Crop->rcGrainYield = Crop->svShoot * HI;
+    Crop->rcResidueBiomass = retainedResidue;
+    Crop->rcForageYield = forageYield;
+    Crop->rcHarvestIndex = HI;
+    Crop->rcTotalNitrogen = Crop->svN_Shoot + Crop->svN_Root;
+    Crop->rcRootNitrogen = Crop->svN_Root;
+    Crop->rcGrainNitrogenYield = grainNitrogenYield;
+    Crop->rcForageNitrogenYield = forageNitrogenYield;
+    Crop->rcNitrogenCumulative = Crop->svN_StressCumulative;
 
-    RealizedCrop->rcYear = y + startYear - 1;
-    RealizedCrop->rcDoy = doy;
-    RealizedCrop->rcActiveStatus = 0;
+    Crop->rcYear = y + startYear - 1;
+    Crop->rcDoy = doy;
+    Crop->rcActiveStatus = 0;
 
-    KillCrop(Crop->cropUniqueIdentifier);
+    KillCrop(Crop);
 }
 
-void ForageHarvest(int y, int doy, int startYear, CropStruct *Crop, RealizedCropStruct *RealizedCrop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
+void ForageHarvest(int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
 {
 
     double forageYield;
@@ -111,24 +111,25 @@ void ForageHarvest(int y, int doy, int startYear, CropStruct *Crop, RealizedCrop
     Residue->yearRootBiomass += rootMassDead;
 
     /* season outputs */
-    RealizedCrop->rcBiomass += forageYield + residueMass + rootMassDead;
-    RealizedCrop->rcRoot += rootMassDead;
-    RealizedCrop->rcForageYield += forageYield;
-    RealizedCrop->rcResidueBiomass += residueMass;
-    RealizedCrop->rcTotalNitrogen = nitrogenForageYield + Residue_N_Mass + Root_N_Mass_Dead;
-    RealizedCrop->rcRootNitrogen = Root_N_Mass_Dead;
-    RealizedCrop->rcforageNitrogenYield = nitrogenForageYield;
-    RealizedCrop->rcNitrogenCumulative = nitrogenStressCumulative / Crop->userClippingTiming;
+    Crop->rcBiomass += forageYield + residueMass + rootMassDead;
+    Crop->rcRoot += rootMassDead;
+    Crop->rcForageYield += forageYield;
+    Crop->rcResidueBiomass += residueMass;
+    Crop->rcTotalNitrogen = nitrogenForageYield + Residue_N_Mass + Root_N_Mass_Dead;
+    Crop->rcRootNitrogen = Root_N_Mass_Dead;
+    Crop->rcForageNitrogenYield = nitrogenForageYield;
+    Crop->rcNitrogenCumulative = nitrogenStressCumulative / Crop->userClippingTiming;
 
-    RealizedCrop->rcYear = y + startYear;
-    RealizedCrop->rcDoy = doy;
+    Crop->rcYear = y + startYear;
+    Crop->rcDoy = doy;
 }
 
-void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, RealizedCropStruct *RealizedCrop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
+void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
 {
-
-    /* status set to Killed
-     * Final crop values based on a killed crop performed */
+    /*
+     * Set crop status to Killed
+     * Final crop values based on a killed crop performed
+     */
 
     double residueMass;
     double rootMassDead;
@@ -156,69 +157,69 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, RealizedCropS
     Residue->yearRhizodepositionBiomass += Crop->svRizho;
 
     /* season outputs */
-    RealizedCrop->rcBiomass += Crop->svBiomass;
-    RealizedCrop->rcRoot += Crop->svRoot;
-    RealizedCrop->rcResidueBiomass += residueMass;
+    Crop->rcBiomass += Crop->svBiomass;
+    Crop->rcRoot += Crop->svRoot;
+    Crop->rcResidueBiomass += residueMass;
 
-    RealizedCrop->rcYear = y + startYear;
-    RealizedCrop->rcDoy = doy;
-    RealizedCrop->rcActiveStatus = 0;
+    Crop->rcYear = y + startYear;
+    Crop->rcDoy = doy;
+    Crop->rcActiveStatus = 0;
 
-    KillCrop(Crop->cropUniqueIdentifier);
+    KillCrop(Crop);
 }
 
-void SimulatedAverageYields (CropStruct *Crop, RealizedCropStruct *RealizedCrop, ResidueStruct *Residue);
-{
-    typedef struct cropYieldInformationStruct
-    {
-        char Name[128];
-        double SumYield;
-        int TimesInRotation;
-        double average;
-        double max;
-        double min;
-    } cropYieldInformationStruct;
-
-    cropYieldInformationStruct cropYieldInformation[CropManagement->CropsPerRotation];
-    double tempYield;
-
-    SelectCropInitialPosition;
-
-    for (c = 0; c < CropManagement->CropsPerRotation; c++)
-    {
-        SelectNextCrop();
-        cropYieldInformation[c].Name = Crop->cropName;
-        tempYield = RealizedCrop->rcGrainYield;
-
-        cropYieldInformation[c].SumYield += tempYield
-        cropYieldInformation[c].TimesInRotation += 1;
-
-        if (cropYieldInformation[c].TimesInRotation == 1)
-        {
-            cropYieldInformation[c].max = tempYield;
-            cropYieldInformation[c].min = tempYield;
-        }
-        else
-        {
-            if (tempYield > cropYieldInformation[c].max)
-                cropYieldInformation[c].max = tempYield;
-            if (tempYield < cropYieldInformation[c])
-                cropYieldInformation[c].min = tempYield;
-        }
-    }
-
-    SelectCropInitialPosition;
-
-    for (c = 0; c < CropManagement->CropsPerRotation)
-    {
-        SelectNextCrop;
-        if (cropYieldInformation[c].TimesInRotation > 0)
-            cropYieldInformation[c].average = cropYieldInformation[c].SumYield / cropYieldInformation[c].TimesInRotation;
-        Crop->calculatedSimAvgYield = cropYieldInformation[c].average;
-        Crop->calculatedSimMaxYield = cropYieldInformation[c].max;
-        Crop->calculatedSimMinYield = cropYieldInformation[c].min;
-    }
-}
+//void SimulatedAverageYields (CropStruct *Crop, ResidueStruct *Residue)
+//{
+//    typedef struct cropYieldInformationStruct
+//    {
+//        char Name[128];
+//        double SumYield;
+//        int TimesInRotation;
+//        double average;
+//        double max;
+//        double min;
+//    } cropYieldInformationStruct;
+//
+//    cropYieldInformationStruct cropYieldInformation[CropManagement->CropsPerRotation];
+//    double tempYield;
+//
+//    SelectCropInitialPosition;
+//
+//    for (c = 0; c < CropManagement->CropsPerRotation; c++)
+//    {
+//        SelectNextCrop();
+//        cropYieldInformation[c].Name = Crop->cropName;
+//        tempYield = Crop->rcGrainYield;
+//
+//        cropYieldInformation[c].SumYield += tempYield
+//        cropYieldInformation[c].TimesInRotation += 1;
+//
+//        if (cropYieldInformation[c].TimesInRotation == 1)
+//        {
+//            cropYieldInformation[c].max = tempYield;
+//            cropYieldInformation[c].min = tempYield;
+//        }
+//        else
+//        {
+//            if (tempYield > cropYieldInformation[c].max)
+//                cropYieldInformation[c].max = tempYield;
+//            if (tempYield < cropYieldInformation[c])
+//                cropYieldInformation[c].min = tempYield;
+//        }
+//    }
+//
+//    SelectCropInitialPosition;
+//
+//    for (c = 0; c < CropManagement->CropsPerRotation)
+//    {
+//        SelectNextCrop;
+//        if (cropYieldInformation[c].TimesInRotation > 0)
+//            cropYieldInformation[c].average = cropYieldInformation[c].SumYield / cropYieldInformation[c].TimesInRotation;
+//        Crop->calculatedSimAvgYield = cropYieldInformation[c].average;
+//        Crop->calculatedSimMaxYield = cropYieldInformation[c].max;
+//        Crop->calculatedSimMinYield = cropYieldInformation[c].min;
+//    }
+//}
  
 void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon)
 {
@@ -246,10 +247,11 @@ void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double ro
 
     double cumulativeRootingDepth = 0.;
     double z1, z2;
+    int i;
     int j = 0;
 
     double rootDistribution[Soil->totalLayers];
-    double fractionRootsByLayer[Soil.totalLayers];
+    double fractionRootsByLayer[Soil->totalLayers];
 
     rootIntegral = a / b * (exp(-b * 0) - exp(-b * Crop->userMaximumRootingDepth));
     while (cumulativeRootingDepth < Crop->svRootingDepth && j < Soil->totalLayers)

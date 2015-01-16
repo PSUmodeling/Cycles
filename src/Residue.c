@@ -11,11 +11,6 @@ void InitializeResidue (ResidueStruct *Residue, int totalYears, int totalLayers)
     Residue->manureC = (double *) malloc (totalLayers * sizeof (double));
     Residue->manureN = (double *) malloc (totalLayers * sizeof (double));
 
-    Residue->yearResidueBiomass = (double *) malloc (totalYears * sizeof (double));
-    Residue->yearResidueHarvested = (double *) malloc (totalYears * sizeof (double));
-    Residue->yearRootBiomass = (double *) malloc (totalYears * sizeof (double));
-    Residue->yearRhizodepositionBiomass = (double *) malloc (totalYears * sizeof (double));
-
     Residue->residueInterception = 0.;
     Residue->stanResidueTau = 1.;
     Residue->flatResidueTau = 1.;

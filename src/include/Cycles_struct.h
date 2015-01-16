@@ -30,7 +30,7 @@ typedef struct SimControlStruct
 typedef struct SoilStruct
 {
     int             totalLayers;
-    int             Curve_Number;
+    int             Cucve_Number;
     double          Percent_Slope;
 
     int             annualTemperaturePhase;
@@ -386,10 +386,10 @@ typedef struct ResidueStruct
     double          *residueAbgdN;
     double          *residueRtN;
     double          *residueRzN;
-    double          *yearResidueBiomass;
-    double          *yearResidueHarvested;
-    double          *yearRootBiomass;
-    double          *yearRhizodepositionBiomass;
+    double           yearResidueBiomass;
+    double           yearResidueHarvested;
+    double           yearRootBiomass;
+    double           yearRhizodepositionBiomass;
     double          *manureC;
     double          *manureN;           /* Mg/ha */
 } ResidueStruct;

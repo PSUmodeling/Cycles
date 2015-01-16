@@ -118,13 +118,61 @@ void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement)
 #endif
 }
         
-//        Public Sub KillCrop(ByVal uniqueIdentifier As Integer)
-//            'Precondition:  uniqueIdentifier is only found once in the list
-//            'Postcondition: node containing the unique value is deleted
-//
-//            Me.opList.DeleteNode(uniqueIdentifier)
-//        End Sub
-//
+void KillCrop (CropStruct *Crop)
+{
+    Crop->cropUniqueIdentifier = -1;
+    strcpy (Crop->cropName, "");
+
+    Crop->autoIrrigationUsed = -1;
+    Crop->autoIrrigationStartDay = 0;
+    Crop->autoIrrigationStopDay = 0;
+    Crop->autoIrrigationWaterDepletion = 0;
+    Crop->autoIrrigationLastSoilLayer = 0;        
+
+    Crop->userSeedingDate = 0;
+    Crop->userFloweringDate = 0;
+    Crop->userMaturityDate = 0;
+    Crop->userMaximumSoilCoverage = 0;
+    Crop->userMaximumRootingDepth = 0;
+    Crop->userExpectedYieldAvg = 0;
+    Crop->userExpectedYieldMax = 0;
+    Crop->userExpectedYieldMin = 0;
+    Crop->userPercentMoistureInYield = 0;
+    Crop->userFractionResidueStanding = 0;
+    Crop->userFractionResidueRemoved = 0;
+    Crop->userClippingTiming = 0;
+    Crop->userTranspirationMinTemperature = 0;
+    Crop->userTranspirationThresholdTemperature = 0;
+    Crop->userColdDamageMinTemperature = 0;
+    Crop->userColdDamageThresholdTemperature = 0;
+    Crop->userTemperatureBase = 0;
+    Crop->userTemperatureOptimum = 0;
+    Crop->userTemperatureMaximum = 0;
+    Crop->userShootPartitionInitial = 0;
+    Crop->userShootPartitionFinal = 0;
+    Crop->userRadiationUseEfficiency = 0;
+    Crop->userTranspirationUseEfficiency = 0;
+    Crop->userHIx = 0;
+    Crop->userHIo = 0;    /* intercept harvest index */
+    Crop->userHIk = 0;
+    Crop->userEmergenceTT = 0;
+    Crop->userNMaxConcentration = 0;
+    Crop->userNDilutionSlope = 0;
+    Crop->userKc = 0;
+    Crop->userAnnual = 0;
+    Crop->userLegume = 0;
+    Crop->userC3orC4 = 0;
+    Crop->calculatedFloweringTT = 0;
+    Crop->calculatedMaturityTT = 0;
+    Crop->calculatedSimAvgYield = 0;
+    Crop->calculatedSimMaxYield = 0;
+    Crop->calculatedSimMinYield = 0;
+
+    Crop->harvestDateFinal = -1;
+    Crop->harvestCount = -1;
+    Crop->stageGrowth = -1;
+
+}
 void SetCropStatusToMature(CropStruct *Crop)
 {
     /*
