@@ -109,7 +109,7 @@ void Temperature(int y, int doy, double snowCover, double cropInterception, Soil
 
 double HeatCapacity (double bulkDensity, double volumetricWC)
 {
-    return 2400000. * bulkDensity / 2.65 + 4180000. * volumetricWC;
+    return (2400000. * bulkDensity / 2.65 + 4180000. * volumetricWC);
 }
 
 double HeatConductivity (double bulkDensity, double volumetricWC, double fractionClay)
@@ -128,10 +128,10 @@ double HeatConductivity (double bulkDensity, double volumetricWC, double fractio
     /* equation 4.22; coeff of 4.20 */
     C4 = 0.03 + 0.1 * bulkDensity * bulkDensity;
 
-    return C1 + C2 * volumetricWC - (C1 - C4) * exp (-pow (C3 * volumetricWC, 4));
+    return (C1 + C2 * volumetricWC - (C1 - C4) * exp (-pow (C3 * volumetricWC, 4)));
 }
 
 double EstimatedSoilTemperature (double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth)
 {
-    return annualAvgTemperature + yearlyAmplitude * exp (-nodeDepth / dampingDepth) * sin (2. * PI / 365. * (double)(doy - phase) - nodeDepth / dampingDepth);
+    return (annualAvgTemperature + yearlyAmplitude * exp (-nodeDepth / dampingDepth) * sin (2. * PI / 365. * (double)(doy - phase) - nodeDepth / dampingDepth));
 }
