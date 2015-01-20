@@ -3,7 +3,6 @@
 void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
 {
     /* update roots and residue biomass at harvest */
-
     double HI, NHI;
     double residueMass = 0.;
     double forageYield = 0.;
@@ -11,6 +10,7 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
     double grainNitrogenYield = 0.;
     double forageNitrogenYield = 0.;
 
+    printf ("DOY %3.3d Grain Harvest %s\n", doy, Crop->cropName);
     HI = ComputeHarvestIndex (Crop->userHIx, Crop->userHIo, Crop->userHIk, Crop->svShoot, Crop->svPostFloweringShootBiomass);
     NHI = pow (HI, 1. - 2. * (1. - HI) * HI);
     residueMass = Crop->svShoot * (1. - HI);
@@ -122,6 +122,8 @@ void ForageHarvest(int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
 
     Crop->rcYear = y + startYear;
     Crop->rcDoy = doy;
+
+    printf ("DOY %3.3d Forage Harvest %s\n", doy, Crop->cropName);
 }
 
 void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
@@ -164,6 +166,8 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
     Crop->rcYear = y + startYear;
     Crop->rcDoy = doy;
     Crop->rcActiveStatus = 0;
+
+    printf ("DOY %3.3d Harvest %s\n", doy, Crop->cropName);
 
     KillCrop(Crop);
 }

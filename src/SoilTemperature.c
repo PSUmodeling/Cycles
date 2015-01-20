@@ -1,43 +1,43 @@
 #include "include/Cycles.h"
 
-void Temperature(int y, int doy, double snowCover, double cropInterception, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct *Residue) 
-{ 
- 
-    int m;
-    int i;
-    double CP[Soil->totalLayers];
-    double k[Soil->totalLayers];
-    double CPsfc;
-    double ksfc;
-    double a[Soil->totalLayers + 1], b[Soil->totalLayers + 1], c[Soil->totalLayers + 1], d[Soil->totalLayers + 1];
-    double T[Soil->totalLayers + 1], Tn[Soil->totalLayers + 1];
-    double tsfc;    /* land surface temperature, C*/
-    double tAvg;    /* average air temperature, C */
-    double fCover;  /* soil cover factor accouting for flat residue and snow cover */
-    double soilCover;   /* soil fraction covered by snow and flat residues */
-    int counter;
+void Temperature (int y, int doy, double snowCover, double cropInterception, SoilStruct * Soil, WeatherStruct * Weather, ResidueStruct * Residue)
+{
 
-    double f = 0.6;     /* constant for setting forward, backward or centered difference method */
-    double g;
+    int             m;
+    int             i;
+    double          CP[Soil->totalLayers];
+    double          k[Soil->totalLayers];
+    double          CPsfc;
+    double          ksfc;
+    double          a[Soil->totalLayers + 1], b[Soil->totalLayers + 1], c[Soil->totalLayers + 1], d[Soil->totalLayers + 1];
+    double          T[Soil->totalLayers + 1], Tn[Soil->totalLayers + 1];
+    double          tsfc;       /* land surface temperature, C */
+    double          tAvg;       /* average air temperature, C */
+    double          fCover;     /* soil cover factor accouting for flat residue and snow cover */
+    double          soilCover;  /* soil fraction covered by snow and flat residues */
+    int             counter;
+
+    double          f = 0.6;    /* constant for setting forward, backward or centered difference method */
+    double          g;
 
     g = 1 - f;
 
     m = Soil->totalLayers;
 
-    CPsfc = 0.;     /* heat capacity of boundary layer  = 0 */
-    ksfc = 20.;     /* boundary layer conductance (W/m2 K) */
+    CPsfc = 0.;                 /* heat capacity of boundary layer  = 0 */
+    ksfc = 20.;                 /* boundary layer conductance (W/m2 K) */
 
     for (i = 0; i < m; i++)
     {
         /* calculates heat capacity weighted by solid and water phase only  */
-        CP[i] = HeatCapacity(Soil->BD[i], Soil->waterContent[i]) * Soil->layerThickness[i]; 
+        CP[i] = HeatCapacity (Soil->BD[i], Soil->waterContent[i]) * Soil->layerThickness[i];
         /* calculates conductance per layer, equation 4.20 for thermal conductivity */
-        k[i] = HeatConductivity(Soil->BD[i], Soil->waterContent[i], Soil->Clay[i]) / (Soil->nodeDepth[i + 1] - Soil->nodeDepth[i]); 
-    } 
+        k[i] = HeatConductivity (Soil->BD[i], Soil->waterContent[i], Soil->Clay[i]) / (Soil->nodeDepth[i + 1] - Soil->nodeDepth[i]);
+    }
 
     /* recalculates bottom boundary condition */
-    T[Soil->totalLayers] = EstimatedSoilTemperature(Soil->nodeDepth[Soil->totalLayers], doy, Weather->annualAverageTemperature[y], Weather->yearlyAmplitude[y], Soil->annualTemperaturePhase, Soil->dampingDepth);
-    Tn[Soil->totalLayers] = T[Soil->totalLayers]; 
+    T[Soil->totalLayers] = EstimatedSoilTemperature (Soil->nodeDepth[Soil->totalLayers], doy, Weather->annualAverageTemperature[y], Weather->yearlyAmplitude[y], Soil->annualTemperaturePhase, Soil->dampingDepth);
+    Tn[Soil->totalLayers] = T[Soil->totalLayers];
 
     /* Passes previous time step temperatures for all soil layers */
     for (i = 0; i < Soil->totalLayers + 1; i++)
@@ -47,16 +47,16 @@ void Temperature(int y, int doy, double snowCover, double cropInterception, Soil
      * uses an empirical factor to weight the effect of air temperature,
      * residue cover, and snow cover on the upper node temperature. This is an
      * empirical approach to allow for residue or snow insulation effect */
-    tAvg = 0.5 * (Weather->tMax[y][doy] + Weather->tMin[y][doy]); 
+    tAvg = 0.5 * (Weather->tMax[y][doy] + Weather->tMin[y][doy]);
     soilCover = 1. - (1. - cropInterception) * (1. - snowCover) * Residue->flatResidueTau;
     fCover = 0.4 * soilCover + 0.3 * snowCover / (soilCover + 0.001);
     tsfc = (1. - fCover) * tAvg + fCover * T[0];
     //T(0) = Tn(0) 
 
-    counter = 0 ;
+    counter = 0;
 
     do
-    { 
+    {
         /* this loop updates temperatures after the first Thomas loop and is
          * needed due to the inclusion of Tsurface [T(1)] to calculate net
          * radiation at "exchange" surface these two layers are used as
@@ -70,8 +70,8 @@ void Temperature(int y, int doy, double snowCover, double cropInterception, Soil
 
         for (i = 0; i < Soil->totalLayers; i++) /* calculates matrix elements */
         {
-            c[i] = -k[i] * f; 
-            a[i + 1] = c[i]; 
+            c[i] = -k[i] * f;
+            a[i + 1] = c[i];
             if (i == 0)
             {
                 b[i] = f * (k[i] + ksfc) + CP[i] / 86400.;  /* changed to seconds per day, quite long time step */
@@ -90,9 +90,9 @@ void Temperature(int y, int doy, double snowCover, double cropInterception, Soil
         /* Thomas algorithm starts */
         for (i = 0; i < Soil->totalLayers - 1; i++)
         {
-            c[i] = c[i] / b[i]; 
-            d[i] = d[i] / b[i]; 
-            b[i + 1] = b[i + 1] - a[i + 1] * c[i]; 
+            c[i] = c[i] / b[i];
+            d[i] = d[i] / b[i];
+            b[i + 1] = b[i + 1] - a[i + 1] * c[i];
             d[i + 1] = d[i + 1] - a[i + 1] * d[i];
         }
 
@@ -101,10 +101,10 @@ void Temperature(int y, int doy, double snowCover, double cropInterception, Soil
         for (i = Soil->totalLayers - 2; i >= 0; i--)
             Tn[i] = d[i] - c[i] * Tn[i + 1];
         /* Thomas algorithm ends */
-    } while (fabs(T[0] - Tn[0]) > 0.02 || abs(T[1] - Tn[1]) > 0.02);
+    } while (fabs (T[0] - Tn[0]) > 0.02 || abs (T[1] - Tn[1]) > 0.02);
 
     for (i = 0; i < Soil->totalLayers + 1; i++)
-        Soil->soilTemperature[i] = Tn[i]; 
+        Soil->soilTemperature[i] = Tn[i];
 }
 
 double HeatCapacity (double bulkDensity, double volumetricWC)

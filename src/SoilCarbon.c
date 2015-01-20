@@ -56,7 +56,7 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilS
     }
 }
 
-void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, FieldOperationStruct *Tillage, double *tillageFactor)
+void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor)
 {
     int     i;
     double socDecompositionRate;

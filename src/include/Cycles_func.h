@@ -15,19 +15,31 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
 void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon);
 double ComputeHarvestIndex (double HIx, double HIo, double HIk, double cumulativeShoot, double cumulativePostFloweringShootBiomass);
 
+/* CropProcess.c */
+void Processes(const int y, const int doy, const int autoNitrogen, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct *Weather, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon);
+void CropGrowth (int y, int doy, double *DailyGrowth, const double Stage, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct *Weather);
+void CropNitrogenConcentration(double *N_AbgdConcReq, double *N_RootConcReq, double *NaAbgd, double *NxAbgd, double *NcAbgd, double *NnAbgd, double *NxRoot, const double Stage, const CropStruct *Crop);
+void CropNitrogenStress(const double NaAbgd, const double NcAbgd, const double NnAbgd, CropStruct *Crop);
+void CropNitrogenUptake (double N_AbgdConcReq, double N_RootConcReq, double NaAbgd, double NxAbgd, double NxRoot, int autoNitrogen, CropStruct *Crop, SoilStruct *Soil);
+void PotentialSoluteUptakeOption2(double *SoluteSupply, double *SoluteUptake, const double Kd, const int totalLayers, const double *BD, const double *dz, const double *WaterUptake, const double *Solute, const double *WC);
+double ShootBiomassPartitioning (const double Stage, const double Po, const double Pf);
+void RadiationInterception (int y, int doy, CropStruct *Crop);
+void Phenology (int y, int doy, const WeatherStruct *Weather, CropStruct *Crop);
+void ComputeColdDamage (int y, int doy, CropStruct *Crop,  const WeatherStruct *Weather, const SnowStruct *Snow, ResidueStruct *Residue);
+double ColdDamage(const double T, const double Crop_Tn, const double Crop_Tth);
+
 /* CropThermalTime.c */
 void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, WeatherStruct *Weather);
 double ThermalTime (double T_base, double T_op, double T_Max, double Temperature);
 
 /* CropTranspiration.c */
-void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, WeatherStruct *Weather);
+void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const WeatherStruct *Weather);
 void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil, CropStruct *Crop);
 double TemperatureLimitation (double T, double T_Min, double T_Threshold);
-double Aeration(double AC);
 
 /* DailyOperation.c */
 void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather);
-void GrowingCrop (int rotationYear, int y, int d, int nextSeedingYear, int nextSeedingDate, CropStruct *Crop, ResidueStruct *Residue, SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, SnowStruct *Snow);
+void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow);
 void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop);
 void SetFinalHarvestDate(int lastDoy, int d, int *harvestDate);
 int ForcedMaturity (int rotationYear, int d, int nextSeedingYear, int nextSeedingDate, int rotationSize);
@@ -61,6 +73,9 @@ void ReadSoil (char *project, SoilStruct *Soil);
 /* ReadWeather.c */
 void ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years);
 
+/* RealizedCrop.c */
+void AddCrop(CropStruct *Crop);
+
 /* ReferenceET.c */
 double          CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
 double          SaturatedVaporPressure (double T);
@@ -92,7 +107,7 @@ double          BulkDensity (double Clay, double Sand, double OM);
 /* SoilCarbon.c */
 void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers);
 void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilStruct *Soil);
-void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, FieldOperationStruct *Tillage, double *tillageFactor);
+void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor);
 void StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass);
 double Aeration(double AC);
 double Moisture (double wp);
@@ -120,6 +135,17 @@ double K_Sat (double WCATSAT, double WCAT33, double b);
 double AverageHydraulicConductance (double WCSAT, double WCFC, double aep, double b, double SWP1, double SWP2, double ks);
 double Numerator (double aep, double b, double SWP);
 double Denominator (double aep, double b, double SWP);
+
+/* SoilNitrogen.c */
+void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CropStruct *Crop, const ResidueStruct *Residue, const WeatherStruct *Weather, const SoilCarbonStruct *SoilCarbon);
+void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon);
+void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon);
+void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStruct *Soil, const CropStruct *Crop, const ResidueStruct *Residue, const WeatherStruct *Weather);
+double N2OFractionNitrification (double air);
+double pHFunction(double pH);
+double VolatilizationDepthFunction(double depth);
+double AirMolarDensity(double T, double P);
+double BoundaryLayerConductance(double RI, double RM, double WS, double AMD);
 
 /* SoilSolute.c */
 void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *leachate, double *WFlux, double *soluteMass, const double *BD, const double *thickness, const double *porosity, const double *WCinitial);

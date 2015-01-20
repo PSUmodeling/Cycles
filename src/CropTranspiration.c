@@ -1,7 +1,8 @@
 #include "include/Cycles.h"
    
-void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, WeatherStruct *Weather)
+void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const WeatherStruct *Weather)
 {
+    int i;
     double waterExtraction[Soil->totalLayers];          /* water extraction by layer, mm/day */
 
     double PTx = 15.;               /* maximum full cover transpiration, mm/day */
@@ -28,7 +29,7 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, WeatherStr
     double LWP;                     /* leaf water potential, J/kg */
     double LWP_StressOnset = -1100.;    /* leaf water potential at the onset of stomatal closure */
     double LWP_WiltingPoint = -2000.;   /* leaf water potential at wilting point */
-    double SWP_FC As Double = -33.;     /* water potential at field capacity, J/kg */
+    double SWP_FC = -33.;     /* water potential at field capacity, J/kg */
     double SWP_Average;                 /* weighted soil water potential, J/kg */
     double soilWP[Soil->totalLayers];
     double layerSalinityFactor[Soil->totalLayers];
@@ -39,11 +40,11 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, WeatherStr
 
     if (Crop->cropGrowing && Crop->svTT_Cumulative > Crop->userEmergenceTT)
     {
-        temperatureAvg = 0.5 * (Weather->tMax[y, doy - 1] + Weather->tMin[y, doy - 1]);
+        temperatureAvg = 0.5 * (Weather->tMax[y][doy - 1] + Weather->tMin[y][doy - 1]);
         factorTemperature = TemperatureLimitation (temperatureAvg, Crop->userTranspirationMinTemperature, Crop->userTranspirationThresholdTemperature);
 
         /* calculate potential transpiration rate (kg/m2/d = mm/d) */
-        PT = (1. + (Crop->userKc - 1.) * Crop->svRadiationInterception) * factorTemperature * Crop->svRadiationInterception * Weather->ETref[y, doy - 1];
+        PT = (1. + (Crop->userKc - 1.) * Crop->svRadiationInterception) * factorTemperature * Crop->svRadiationInterception * Weather->ETref[y][doy - 1];
         /* calculate crop maximum water uptake rate (kg/m2/d = mm/d) */
         PTx = PTx * factorTemperature * Crop->svRadiationInterception;
         /* calculate maximum crop transpiration rate (kg/m2/d = mm/d) */
@@ -53,7 +54,7 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, WeatherStr
         for (i = 0; i < Soil->totalLayers; i++)
         {
             Soil->waterUptake[i] = 0.;
-            soilWP[i] = Soil->SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
+            soilWP[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
         }
 
         CalcRootFraction (rootFraction, Soil, Crop);
@@ -70,7 +71,7 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, WeatherStr
         for (i = 0; i < Soil->totalLayers; i++)
         {
             rootActivity[i] = 1.;
-            layerSalinityFactor[i] = 1. /* place holder */
+            layerSalinityFactor[i] = 1.;    /* place holder */
             rootActivity[i] = 1. - pow((soilWP[i] - SWP_FC) / (LWP_WiltingPoint - SWP_FC), 8);
             if (rootActivity[i] > 1.)
                 rootActivity[i] = 1.;
@@ -132,13 +133,15 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, WeatherStr
             }
         }
 
-        Crop->svTranspiration = Soil->waterUptake.Sum
-        Crop->svTranspirationPotential = TE
-        Crop->svWaterStressFactor = 1 - Soil->waterUptake.Sum / TE
+        Crop->svTranspiration = 0.;
+        for (i = 0; i < Soil->totalLayers; i++)
+            Crop->svTranspiration += Soil->waterUptake[i];
+        Crop->svTranspirationPotential = TE;
+        Crop->svWaterStressFactor = 1. - Crop->svTranspiration / TE;
     }   /* end plant growing */
 }
 
-void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil As SoilClass, CropStruct Crop)
+void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil, CropStruct *Crop)
 {
     /* 
      * this function computes root fraction in each layer
@@ -167,7 +170,7 @@ void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil As SoilCla
     {
         if (Soil->cumulativeDepth[j] < Crop->svRootingDepth)
             cumulativeRootingDepth = Soil->cumulativeDepth[j];
-        else if (Soil->cumulativeDepth >= Crop->svRootingDepth)
+        else if (Soil->cumulativeDepth[j] >= Crop->svRootingDepth)
             cumulativeRootingDepth = Crop->svRootingDepth;
 
         if (j == 0)
@@ -196,13 +199,4 @@ double TemperatureLimitation (double T, double T_Min, double T_Threshold)
         return ((T - T_Min) / (T_Threshold - T_Min));
     else
         return (1.);
-}
-
-double Aeration(double AC)
-{
-    /* AC = soil air content */
-    double A1 = 0.05;
-    double A2 = 4.;
-
-    return (1. - 0.6 / (1. + pow(AC / A1, A2)));
 }
