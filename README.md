@@ -4,9 +4,6 @@ The model Cycles is a multi-year, multi-crop, multi-layered (soil), one-dimensio
 
 ![alt text][logo]
 [logo]: http://plantscience.psu.edu/research/labs/kemanian/models-and-tools/cycles/leadImage_galleryzoom "Cycles"
-<p align="center">
-  <http://plantscience.psu.edu/research/labs/kemanian/models-and-tools/cycles/leadImage_galleryzoom />
-</p>
 
 Cycles simulates crop growth and nutrient cycling and predicts a range of variables for agricultural yield (grain and forage) of annual and perennial crops, and nitrogen losses.
 Many modules in Cycles are related to the model CropSyst (Stöckle and Nelson, 2003), and the fundamental heat and water transport equations and algorithms are adapted from Campbell (1985) *Soil Physics with Basic* landmark book.
