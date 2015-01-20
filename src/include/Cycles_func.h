@@ -106,6 +106,11 @@ double CNdestiny (double  NmineralConc, double CNdecomposing);
 double PoolNitrogenMineralization (double NmineralConc, double CNRatioDecomposing, double humRate, double decomposedMass, double carbonConc);
 double Function_CNnew (double NmineralConc, double CNDecomposingPool);
 
+/* SoilEvaporation.c */
+void Evaporation (SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, double ETo, double SnowCover);
+double Depth_Limitation_To_Evaporation (double Depth);
+double Water_Content_Limitation_To_Evaporation (double FC, double WC_AirDry, double WC);
+
 /* SoilInfiltration.c */
 void Redistribution (int y, int doy, double precipitation, double snowFall, double snowMelt, int hourlyInfiltration, const CropStruct *Crop, SoilStruct *Soil, ResidueStruct *Residue);
 void CascadeRedistribution (SoilStruct *Soil);
@@ -123,6 +128,7 @@ double LinearEquilibriumConcentration (double Kd, double bulkDensity, double lay
 double LinearEquilibriumSoluteMass (double Kd, double bulkDensity, double layerThickness, double waterContent, double concentration);
 
 /* SoilTemperature.c */
+void Temperature(int y, int doy, double snowCover, double cropInterception, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct *Residue);
 double          HeatCapacity (double bulkDensity, double volumetricWC);
 double          HeatConductivity (double bulkDensity, double volumetricWC, double fractionClay);
 double          EstimatedSoilTemperature (double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth);

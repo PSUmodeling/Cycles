@@ -15,7 +15,7 @@ SRCS_ =  Cycles.c ReadSimCtrl.c ReadSoil.c ReadCrop.c ReadOperation.c \
 	    SoilTemperature.c DebugIO.c Crop.c Residue.c CropThermalTime.c \
 	    FieldOperation.c SoilCarbon.c DailyOperation.c Tillage.c \
 	    Fertilization.c CropHarvest.c Snow.c SoilInfiltration.c \
-	    Irrigation.c SoilSolute.c
+	    Irrigation.c SoilSolute.c SoilEvaporation.c
 HEADERS_ = Cycles.h Cycles_const.h Cycles_struct.h Cycles_func.h
 
 EXECUTABLE = Cycles
