@@ -11,3 +11,5 @@ Cycles modules are modularized and easily unplugged from the main interface and 
 
 Cycles has unique solutions to the coupled cycling of carbon, nitrogen and water in the soil-plant-atmospheric system.
 Among the original components in Cycles are new developments in carbon and nitrogen saturation theory (soil), and an old but robust implementation of stomatal optimization theory (vegetation) to simulate plant growth, water use efficiency, and the response of crops to increasing carbon dioxide.
+
+This is the C version of Cycles.
