@@ -43,6 +43,10 @@ int main (int argc, char *argv[])
 
     printf ("Now running the %s simulation.\n\n", project);
 
+    /* Create output directory */
+    if (0 == (mkdir ("output", 0755)))
+        printf (" Output directory was created.\n\n");
+
     /* Read simulation control input file */
     ReadSimControl (project, &Cycles->SimControl);
 #ifdef _DEBUG_
