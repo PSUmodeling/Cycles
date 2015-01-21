@@ -1,4 +1,4 @@
-﻿#include "include/Cycles.h"
+#include "include/Cycles.h"
 
 void AddCrop(CropStruct *Crop)
 {
