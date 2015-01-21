@@ -1,21 +1,20 @@
 #include "include/Cycles.h"
 
-void SelectCropInitialPosition(CropManagementStruct *CropManagement)
+void SelectCropInitialPosition (CropManagementStruct *CropManagement)
 {
     CropManagement->plantingIndex = -1;
     CropManagement->describedIndex = -1;
-
     PeekNextCrop (CropManagement);
 }
 
 void SelectNextCrop (CropManagementStruct *CropManagement)
 {
+
     /*
      * Planting index set to next crop (if any) to be planted in the rotation
      * Described index set to previously searched value inside plantingOrder
      * Next crop in the rotation (if any)has limited values stored
      */
-
     if (CropManagement->plantingIndex < CropManagement->totalCropsPerRotation - 1)
         CropManagement->plantingIndex++;
     else
@@ -24,16 +23,17 @@ void SelectNextCrop (CropManagementStruct *CropManagement)
     CropManagement->describedIndex = CropManagement->plantingOrder[CropManagement->plantingIndex].plantID;
 
     PeekNextCrop (CropManagement);
-    printf ("plant ID = %d", CropManagement->plantingIndex);
 }
 
-void PeekNextCrop(CropManagementStruct *CropManagement)
+void PeekNextCrop (CropManagementStruct *CropManagement)
 {
     /*
      * Store the name, year, day, and type values for the next crop
      */
-    int tempIndex = CropManagement->plantingIndex;
-    
+    int             tempIndex;
+
+    tempIndex = CropManagement->plantingIndex;
+
     if (CropManagement->totalCropsPerRotation > 0)
     {
         /* Select next crop */
@@ -47,11 +47,12 @@ void PeekNextCrop(CropManagementStruct *CropManagement)
         strcpy (CropManagement->nextCropName, CropManagement->plantingOrder[tempIndex].cropName);
     }
 }
-void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement)
+
+void NewCrop (CropStruct *Crop, CropManagementStruct *CropManagement)
 {
-    FieldOperationStruct *plantingOrder;
-    autoIrrigationStruct *autoIrrigation;
-    describedCropStruct *describedCrop;
+    FieldOperationStruct   *plantingOrder;
+    autoIrrigationStruct   *autoIrrigation;
+    describedCropStruct    *describedCrop;
 
     plantingOrder = &CropManagement->plantingOrder[CropManagement->plantingIndex];
     autoIrrigation = &CropManagement->autoIrrigation[plantingOrder->usesAutoIrrigation];
@@ -59,7 +60,6 @@ void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement)
 
     Crop->cropUniqueIdentifier = plantingOrder->plantID;
     strcpy (Crop->cropName, plantingOrder->cropName);
-    printf ("new crop name %s\n", Crop->cropName);
 
     if (plantingOrder->usesAutoIrrigation)
     {
@@ -67,7 +67,7 @@ void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement)
         Crop->autoIrrigationStartDay = autoIrrigation->startDay;
         Crop->autoIrrigationStopDay = autoIrrigation->stopDay;
         Crop->autoIrrigationWaterDepletion = autoIrrigation->waterDepletion;
-        Crop->autoIrrigationLastSoilLayer = autoIrrigation->lastSoilLayer;        
+        Crop->autoIrrigationLastSoilLayer = autoIrrigation->lastSoilLayer;
     }
     else
         Crop->autoIrrigationUsed = 0;
@@ -96,7 +96,6 @@ void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement)
     Crop->svN_Fixation = 0;
     Crop->svWaterStressFactor = 0;
     Crop->svN_StressFactor = 0;
-
     Crop->svShootUnstressed = 0;
     Crop->svN_StressCumulative = 0;
 
@@ -124,7 +123,7 @@ void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement)
     Crop->userRadiationUseEfficiency = describedCrop->userRadiationUseEfficiency;
     Crop->userTranspirationUseEfficiency = describedCrop->userTranspirationUseEfficiency;
     Crop->userHIx = describedCrop->userHIx;
-    Crop->userHIo = describedCrop->userHIo;    /* intercept harvest index */
+    Crop->userHIo = describedCrop->userHIo;
     Crop->userHIk = describedCrop->userHIk;
     Crop->userEmergenceTT = describedCrop->userEmergenceTT;
     Crop->userNMaxConcentration = describedCrop->userNMaxConcentration;
@@ -133,6 +132,7 @@ void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement)
     Crop->userAnnual = describedCrop->userAnnual;
     Crop->userLegume = describedCrop->userLegume;
     Crop->userC3orC4 = describedCrop->userC3orC4;
+
     Crop->calculatedFloweringTT = describedCrop->calculatedFloweringTT;
     Crop->calculatedMaturityTT = describedCrop->calculatedMaturityTT;
     Crop->calculatedSimAvgYield = describedCrop->calculatedSimAvgYield;
@@ -142,23 +142,18 @@ void NewCrop(CropStruct *Crop, CropManagementStruct *CropManagement)
     Crop->harvestDateFinal = -1;
     Crop->harvestCount = 0;
     Crop->stageGrowth = -1;
-
-#ifdef _DEBUG_
-    printf ("*Planted crop is %s (ID %d)\n", Crop->cropName, Crop->cropUniqueIdentifier);
-#endif
 }
-        
+
 void KillCrop (CropStruct *Crop)
 {
     Crop->cropUniqueIdentifier = -1;
-//    strcpy (Crop->cropName, "\0");
 
+    strcpy (Crop->cropName, "\0");
     Crop->autoIrrigationUsed = -1;
     Crop->autoIrrigationStartDay = 0;
     Crop->autoIrrigationStopDay = 0;
     Crop->autoIrrigationWaterDepletion = 0;
-    Crop->autoIrrigationLastSoilLayer = 0;        
-
+    Crop->autoIrrigationLastSoilLayer = 0;
     Crop->userSeedingDate = 0;
     Crop->userFloweringDate = 0;
     Crop->userMaturityDate = 0;
@@ -183,7 +178,7 @@ void KillCrop (CropStruct *Crop)
     Crop->userRadiationUseEfficiency = 0;
     Crop->userTranspirationUseEfficiency = 0;
     Crop->userHIx = 0;
-    Crop->userHIo = 0;    /* intercept harvest index */
+    Crop->userHIo = 0;
     Crop->userHIk = 0;
     Crop->userEmergenceTT = 0;
     Crop->userNMaxConcentration = 0;
@@ -197,16 +192,7 @@ void KillCrop (CropStruct *Crop)
     Crop->calculatedSimAvgYield = 0;
     Crop->calculatedSimMaxYield = 0;
     Crop->calculatedSimMinYield = 0;
-
     Crop->harvestDateFinal = -1;
     Crop->harvestCount = -1;
     Crop->stageGrowth = -1;
-
-}
-void SetCropStatusToMature(CropStruct *Crop)
-{
-    /*
-     * growing and mature
-     */
-//            Me.opList.Data(14) = True
 }
