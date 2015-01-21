@@ -47,6 +47,8 @@ int main (int argc, char *argv[])
     if (0 == (mkdir ("output", 0755)))
         printf (" Output directory was created.\n\n");
 
+    InitializeOutput (project);
+
     /* Read simulation control input file */
     ReadSimControl (project, &Cycles->SimControl);
 #ifdef _DEBUG_
@@ -140,6 +142,7 @@ int main (int argc, char *argv[])
         for (doy = 1; doy < 366; doy++)
         {
             DailyOperations (rotationYear, y, doy, &nextSeedingYear, &nextSeedingDate, &Cycles->CropManagement, &Cycles->Crop, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather);
+            PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, project);
         }
     }
     return 0;

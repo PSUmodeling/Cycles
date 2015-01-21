@@ -53,10 +53,14 @@ void SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation
 int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int operationIndex);
 
 /* Initialize.c */
+void InitializeOutput (char *project);
 void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement);
 
 /* Irrigation.c */
 double FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStruct *Soil);
+
+/* Print.c */
+void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const char *project);
 
 /* ReadCrop.c */
 void ReadCrop (char *project, CropManagementStruct *CropManagement);

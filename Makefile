@@ -39,7 +39,8 @@ SRCS_ =	Cycles.c \
 	SoilNitrogen.c \
 	CropProcess.c \
 	CropTranspiration.c \
-	RealizedCrop.c
+	RealizedCrop.c \
+	Print.c
 
 HEADERS_ =  Cycles.h \
 	    Cycles_const.h \

@@ -1,5 +1,23 @@
 #include "include/Cycles.h"
 
+void InitializeOutput (char *project)
+{
+    char filename[50];
+    char *output_dir;
+    FILE    *output_file;
+
+    output_dir = (char *) malloc ((strlen(project) + 8) * sizeof (char));
+
+    sprintf (output_dir, "output/%s", project);
+    mkdir (output_dir, 0755);
+
+    sprintf (filename, "output/%s/weather.dat", project);
+    output_file = fopen (filename, "w");
+    fclose (output_file);
+
+    free (output_dir);
+}
+
 void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement)
 {
     int i, j;
@@ -20,11 +38,4 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
 
     /* Initialize tillage factors */
     CropManagement->tillageFactor = (double *) malloc (Soil->totalLayers * sizeof (double));
-        
-    /* Convert units of crop parameters */
-//    ModifyDescriptions (Cycles->describedCrops, Cycles->NumDescribedCrop);
-//    LinkRotationAndDescription (Cycles->plantingOrder, Cycles->describedCrops, Cycles->totalCropsPerRotation, Cycles->NumDescribedCrop);
-
-//    StorePlantingOrder (Cycles->plantedCrops, Cycles->plantingOrder, &Cycles->totalCropsPerRotation, Cycles->SimControl.yearsInRotation, Cycles->NumPlantedCrop);
-
 }
