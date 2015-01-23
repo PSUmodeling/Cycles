@@ -60,7 +60,7 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
 double FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStruct *Soil);
 
 /* Print.c */
-void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const char *project);
+void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project);
 
 /* ReadCrop.c */
 void ReadCrop (char *project, CropManagementStruct *CropManagement);

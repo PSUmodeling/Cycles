@@ -53,7 +53,8 @@ MSG = "...  Compiling Cycles  ..."
 LIBS = -lm
 INCLUDES = 
 LFLAGS = 
-SFLAGS = -D_DEBUG_
+#SFLAGS = -D_DEBUG_
+SFLAGS =
 
 SRCS = $(patsubst %,$(SRCDIR)/%,$(SRCS_))
 HEADERS = $(patsubst %,$(INCDIR)/%,$(HEADERS_))

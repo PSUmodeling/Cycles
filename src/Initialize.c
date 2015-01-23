@@ -13,6 +13,14 @@ void InitializeOutput (char *project)
 
     sprintf (filename, "output/%s/weather.dat", project);
     output_file = fopen (filename, "w");
+    fprintf (output_file, "%-8s\t%-8s\t%-8s\t%-8s\n", "YEAR-DOY", "T_MEAN", "ET_REF", "PRECIP");
+    fprintf (output_file, "%-8s\t%-8s\t%-8s\t%-8s\n", "YEAR-DOY", "C", "MM/DAY", "MM");
+    fclose (output_file);
+
+    sprintf (filename, "output/%s/crop.dat", project);
+    output_file = fopen (filename, "w");
+    fprintf (output_file, "%-8s\t%-8s\t%-8s\t%-8s\n", "YEAR-DOY", "CROP", "STAGE", "PRECIP");
+    fprintf (output_file, "%-8s\t%-8s\t%-8s\t%-8s\n", "YEAR-DOY", "N/A", "N/A", "MM");
     fclose (output_file);
 
     free (output_dir);

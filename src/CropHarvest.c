@@ -19,9 +19,8 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
     grainNitrogenYield = 0.;
     forageNitrogenYield = 0.;
 
-#ifdef _DEBUG_
-    printf ("*DOY %3.3d Grain Harvest %s\n", doy, Crop->cropName);
-#endif
+    if (verbose_mode)
+        printf ("DOY %3.3d %-20s %s\n", doy, "Grain Harvest", Crop->cropName);
 
     HI = ComputeHarvestIndex (Crop->userHIx, Crop->userHIo, Crop->userHIk, Crop->svShoot, Crop->svPostFloweringShootBiomass);
     NHI = pow (HI, 1. - 2. * (1. - HI) * HI);
@@ -79,6 +78,9 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
                                                  * resetting after harvest  */
     const double    fractionalHarvestLosses = 0.05;
     double          fractionalNitrogenRemoval;
+
+    if (verbose_mode)
+        printf ("DOY %3.3d %-20s %s\n", doy, "Forage Harvest", Crop->cropName);
 
     fractionalNitrogenRemoval = 1. - pow (1. - Crop->userFractionResidueRemoved, 0.7);
 
@@ -179,7 +181,8 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
     Crop->rcDoy = doy;
     Crop->rcActiveStatus = 0;
 
-    printf ("*DOY %3.3d Harvest %s\n", doy, Crop->cropName);
+    if (verbose_mode)
+        printf ("DOY %3.3d %-20s %s\n", doy, "Harvest", Crop->cropName);
 
     KillCrop (Crop);
 }

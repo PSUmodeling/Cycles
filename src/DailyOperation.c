@@ -13,17 +13,15 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     else if (doy == *nextSeedingDate && rotationYear == *nextSeedingYear)
     {
         PlantingCrop (doy, nextSeedingYear, nextSeedingDate, CropManagement, Crop);
-#ifdef _DEBUG_
-        printf ("DOY %3.3d Planting %s\n", doy, Crop->cropName);
-#endif
+        if (verbose_mode)
+            printf ("DOY %3.3d %-20s %s\n", doy, "Planting", Crop->cropName);
     }
 
     while (IsOperationToday (rotationYear, doy, CropManagement->FixedFertilization, CropManagement->fertilizationIndex))
     {
         FixedFertilization = &CropManagement->FixedFertilization[CropManagement->fertilizationIndex];
-#ifdef _DEBUG_
-        printf ("DOY %3.3d Fixed Fertilization %s\n", doy, FixedFertilization->opSource);
-#endif
+        if (verbose_mode)
+            printf ("DOY %3.3d %-20s %s\n", doy, "Fixed Fertilization", FixedFertilization->opSource);
         ApplyFertilizer(FixedFertilization, Soil, Residue);
         SelectNextOperation(CropManagement->numFertilization, &CropManagement->fertilizationIndex);
     }
@@ -31,9 +29,8 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     while (IsOperationToday (rotationYear, doy, CropManagement->Tillage, CropManagement->tillageIndex))
     {
         Tillage = &(CropManagement->Tillage[CropManagement->tillageIndex]);
-#ifdef _DEBUG_
-        printf ("DOY %3.3d Tillage %s\n", doy, Tillage->opToolName);
-#endif
+        if (verbose_mode)
+            printf ("DOY %3.3d %-20s %s\n", doy, "Tillage", Tillage->opToolName);
         if (strcasecmp(Tillage->opToolName, "Kill_Crop") != 0)
             ExecuteTillage(y, SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
         else if (Crop->cropGrowing)
@@ -46,7 +43,8 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     while (IsOperationToday (rotationYear, doy, CropManagement->FixedIrrigation, CropManagement->irrigationIndex))
     {
         FixedIrrigation = &(CropManagement->FixedIrrigation[CropManagement->irrigationIndex]);
-        printf ("DOY %3.3d Irrigation %lf\n", doy, FixedIrrigation->opVolume);
+        if (verbose_mode)
+            printf ("DOY %3.3d %-20s %lf\n", doy, "Irrigation", FixedIrrigation->opVolume);
         Soil->irrigationVol += FixedIrrigation->opVolume;
         SelectNextOperation(CropManagement->numIrrigation, &CropManagement->irrigationIndex);
     }
@@ -112,19 +110,19 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
     {
         if (Crop->userAnnual && Crop->svTT_Cumulative > Crop->calculatedFloweringTT)
         {
-            printf ("Crop->userAnnual && Crop->svTT_Cumulative > Crop->calculatedFloweringTT\n");
             GrainHarvest(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon);
         }
         else
             ComputeColdDamage(y, d, Crop, Weather, Snow, Residue);
     }
 
+/*
     if (Crop->cropUniqueIdentifier < 0)
     {
         printf ("Crop ID  = %d\n", Crop->cropUniqueIdentifier);
         exit(1);
     }
-
+*/
     if (d == Crop->harvestDateFinal || forcedHarvest)
     {
         if (Crop->userAnnual)

@@ -1,5 +1,7 @@
 #include "include/Cycles.h"
 
+int verbose_mode;
+
 int main (int argc, char *argv[])
 {
     int rotationYear;
@@ -8,28 +10,13 @@ int main (int argc, char *argv[])
     int y;
     int doy;
     int i;
+    int c;
 
     CyclesStruct    Cycles;     /* Model structure */
     char           *project;    /* Name of simulation */
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
-#ifdef _DEBUG_
-    project = (char *)malloc (5 * sizeof (char));
-    strcpy (project, "Demo");
-#else
-    if (argc < 2)
-    {
-        printf ("ERROR: Please specify the name of project!\n");
-        exit (1);
-    }
-    else
-    {
-        /* Get user specified project in command line */
-        project = (char *)malloc ((strlen (argv[1]) + 1) * sizeof (char));
-        strcpy (project, argv[1]);
-    }
-#endif
 
     system ("clear");
     printf ("\n\n");
@@ -41,11 +28,44 @@ int main (int argc, char *argv[])
     printf ("\t\t##    ##    ##    ##    ## ##       ##       ##    ##\n");
     printf ("\t\t ######     ##     ######  ######## ########  ######\n\n\n");
 
-    printf ("Now running the %s simulation.\n\n", project);
+    verbose_mode = 0;
 
-    /* Create output directory */
-    if (0 == (mkdir ("output", 0755)))
-        printf (" Output directory was created.\n\n");
+    while((c = getopt(argc, argv, "v")) != -1)
+    {
+        if (optind >= argc)
+        {
+            printf ("\nUsage: ./Cycles [-v] <project name>\n");
+            printf ("\t-v Verbose mode\n");
+            exit (1);
+        }
+        switch(c)
+        {
+            case 'v':
+                verbose_mode = 1;
+                printf ("Verbose mode turned on.\n");
+                break;
+            case '?':
+                printf ("Option not recognisable %s\n", argv[optind]);
+                break;
+            default:
+                break;
+        }
+    }
+
+    if (optind >= argc)
+    {
+        printf ("ERROR: Please specify the name of project!\n");
+        printf ("\nUsage: ./Cycles [-v] <project name>\n");
+        printf ("\t-v Verbose mode\n");
+        exit (1);
+    }
+    else
+    {
+        project = (char *)malloc ((strlen (argv[optind]) + 1) * sizeof (char));
+        strcpy (project, argv[optind]);
+    }
+
+    printf ("Now running the %s simulation.\n\n", project);
 
     InitializeOutput (project);
 
@@ -141,8 +161,9 @@ int main (int argc, char *argv[])
         /* Daily operations */
         for (doy = 1; doy < 366; doy++)
         {
+            //printf ("DOY %3.3d\n", doy);
             DailyOperations (rotationYear, y, doy, &nextSeedingYear, &nextSeedingDate, &Cycles->CropManagement, &Cycles->Crop, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather);
-            PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, project);
+            PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Crop, project);
         }
     }
     return 0;
