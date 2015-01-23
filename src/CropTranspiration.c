@@ -38,7 +38,7 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const Weat
     Crop->svTranspirationPotential = 0.;
     Crop->svWaterStressFactor = 0.;
 
-    if (Crop->cropGrowing && Crop->svTT_Cumulative > Crop->userEmergenceTT)
+    if (Crop->cropUniqueIdentifier >= 0 && Crop->svTT_Cumulative > Crop->userEmergenceTT)
     {
         temperatureAvg = 0.5 * (Weather->tMax[y][doy - 1] + Weather->tMin[y][doy - 1]);
         factorTemperature = TemperatureLimitation (temperatureAvg, Crop->userTranspirationMinTemperature, Crop->userTranspirationThresholdTemperature);
@@ -135,7 +135,9 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const Weat
 
         Crop->svTranspiration = 0.;
         for (i = 0; i < Soil->totalLayers; i++)
+        {
             Crop->svTranspiration += Soil->waterUptake[i];
+        }
         Crop->svTranspirationPotential = TE;
         Crop->svWaterStressFactor = 1. - Crop->svTranspiration / TE;
     }   /* end plant growing */

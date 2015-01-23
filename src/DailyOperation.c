@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather)
+void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project)
 {
     FieldOperationStruct *FixedFertilization;
     FieldOperationStruct *Tillage;
@@ -8,7 +8,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
 
     if (Crop->cropUniqueIdentifier >= 0)
     {
-        GrowingCrop(rotationYear, y, doy, nextSeedingYear, nextSeedingDate, Crop, Residue, SimControl, Soil, SoilCarbon, Weather, Snow);
+        GrowingCrop(rotationYear, y, doy, nextSeedingYear, nextSeedingDate, Crop, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
     }
     else if (doy == *nextSeedingDate && rotationYear == *nextSeedingYear)
     {
@@ -33,8 +33,8 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
             printf ("DOY %3.3d %-20s %s\n", doy, "Tillage", Tillage->opToolName);
         if (strcasecmp(Tillage->opToolName, "Kill_Crop") != 0)
             ExecuteTillage(y, SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
-        else if (Crop->cropGrowing)
-            HarvestCrop(y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon);
+        else if (Crop->cropUniqueIdentifier >= 0)
+            HarvestCrop(y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
 
         SelectNextOperation(CropManagement->numTillage, &CropManagement->tillageIndex);
     }
@@ -61,7 +61,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     NitrogenTransformation(y, doy, Soil, Crop, Residue, Weather, SoilCarbon);
 }
 
-void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow)
+void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
 {
     /*
      * Processes that only occur while a crop is growing are performed
@@ -110,7 +110,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
     {
         if (Crop->userAnnual && Crop->svTT_Cumulative > Crop->calculatedFloweringTT)
         {
-            GrainHarvest(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon);
+            GrainHarvest(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
         }
         else
             ComputeColdDamage(y, d, Crop, Weather, Snow, Residue);
@@ -126,11 +126,11 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
     if (d == Crop->harvestDateFinal || forcedHarvest)
     {
         if (Crop->userAnnual)
-            GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon);
+            GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
         else
         {
-            ForageHarvest(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon);
-            HarvestCrop(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon);
+            ForageHarvest(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+            HarvestCrop(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
         }
     }
     else if (Crop->userClippingTiming > 0)
@@ -139,7 +139,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
         {
             if ((Crop->harvestCount < 3 && Crop->userAnnual) || (!Crop->userAnnual))
             {
-                ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon);
+                ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
                 AddCrop(Crop);
                 Crop->stageGrowth = CLIPPING;
                 Crop->harvestCount += 1;

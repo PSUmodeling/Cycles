@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct  *SoilCarbon)
+void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct  *SoilCarbon, const char *project)
 {
     /*
      * update roots and residue biomass at harvest
@@ -63,10 +63,12 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
     Crop->rcDoy = doy;
     Crop->rcActiveStatus = 0;
 
+    PrintSeasonOutput (y, doy, startYear, Crop, project);
+
     KillCrop (Crop);
 }
 
-void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
+void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
 {
     double          forageYield;
     double          residueMass;
@@ -138,9 +140,11 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
     Crop->rcNitrogenCumulative = nitrogenStressCumulative / Crop->userClippingTiming;
     Crop->rcYear = y + startYear;
     Crop->rcDoy = doy;
+
+    PrintSeasonOutput (y, doy, startYear, Crop, project);
 }
 
-void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
+void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
 {
     /*
      * Set crop status to Killed
@@ -183,6 +187,8 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
 
     if (verbose_mode)
         printf ("DOY %3.3d %-20s %s\n", doy, "Harvest", Crop->cropName);
+
+    PrintSeasonOutput (y, doy, startYear, Crop, project);
 
     KillCrop (Crop);
 }

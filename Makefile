@@ -40,7 +40,8 @@ SRCS_ =	Cycles.c \
 	CropProcess.c \
 	CropTranspiration.c \
 	RealizedCrop.c \
-	Print.c
+	Print.c \
+	MiscFunc.c
 
 HEADERS_ =  Cycles.h \
 	    Cycles_const.h \

@@ -13,14 +13,21 @@ void InitializeOutput (char *project)
 
     sprintf (filename, "output/%s/weather.dat", project);
     output_file = fopen (filename, "w");
-    fprintf (output_file, "%-8s\t%-8s\t%-8s\t%-8s\n", "YEAR-DOY", "T_MEAN", "ET_REF", "PRECIP");
-    fprintf (output_file, "%-8s\t%-8s\t%-8s\t%-8s\n", "YEAR-DOY", "C", "MM/DAY", "MM");
+    fprintf (output_file, "%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\n", "YEAR-DOY", "T_MEAN", "ET_REF", "PRECIP");
+    fprintf (output_file, "%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\n", "YEAR-DOY", "C", "MM/DAY", "MM");
     fclose (output_file);
 
     sprintf (filename, "output/%s/crop.dat", project);
     output_file = fopen (filename, "w");
-    fprintf (output_file, "%-8s\t%-8s\t%-8s\t%-8s\n", "YEAR-DOY", "CROP", "STAGE", "PRECIP");
-    fprintf (output_file, "%-8s\t%-8s\t%-8s\t%-8s\n", "YEAR-DOY", "N/A", "N/A", "MM");
+    fprintf (output_file, "%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\n", "YEAR-DOY", "CROP", "STAGE", "PRECIP");
+    fprintf (output_file, "%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\n", "YEAR-DOY", "N/A", "N/A", "MM");
+    fclose (output_file);
+
+    sprintf (filename, "output/%s/season.dat", project);
+    output_file = fopen (filename, "w");
+    fprintf (output_file, "%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\n", "YEAR-DOY", "CROP", "TOTAL", "ROOT", "GRAIN", "FORAGE", "AVG", "HARVEST", "POTENT", "ACTUAL", "SOIL", "TOTAL N", "ROOT N", "GRAIN N", "FORAGE N", "CUMULAT N");
+    fprintf (output_file, "%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\n", "", "", "BIOMASS", "BIOMASS", "YIELD", "YIELD", "RESIDUE", "INDEX", "TRANSP", "TRANSP", "EVAP", "", "", "", "", "STRESS");
+    fprintf (output_file, "%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\t%-8.8s\n", "YEAR-DOY", "N/A", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/Mg", "mm", "mm", "mm", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "");
     fclose (output_file);
 
     free (output_dir);
