@@ -28,8 +28,8 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     fprintf (output_file, "%4.4d-%3.3d\t", y + start_year, doy);
     if (Crop->cropUniqueIdentifier < 0)
     {
-        fprintf (output_file, "%-8.8s\t", "Fallow");
-        fprintf (output_file, "%-8.8s\t", "N/A");
+        fprintf (output_file, "%-8s\t", "Fallow");
+        fprintf (output_file, "%-24s\t", "N/A");
     }
     else
     {
