@@ -309,13 +309,7 @@ void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double ro
         if (rhizoMass > 0.)
         {
             Residue->residueRz[i] += fractionRootsByLayer[i] * rhizoMass;
-#ifdef _DEBUG_
-            printf ("Before: %lf, fractionRootsByLayer = %lf, rhizoN = %lf, rootMass = %lf\n", Residue->residueRzN[i], fractionRootsByLayer[i], rhizoMass, rootMass);
-#endif
             Residue->residueRzN[i] += fractionRootsByLayer[i] * rhizoN;
-#ifdef _DEBUG_
-            printf ("After: %lf, fractionRootsByLayer = %lf, rhizoN = %lf\n", Residue->residueRzN[i], fractionRootsByLayer[i], rhizoMass);
-#endif
             SoilCarbon->rhizBiomassInput[i] += fractionRootsByLayer[i] * rhizoMass;
         }
     }

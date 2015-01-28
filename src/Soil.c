@@ -43,9 +43,6 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         if (i > 0)
         {
             Soil->cumulativeDepth[i] = Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i];
-#ifdef _DEBUG_
-            printf ("%20.17lf, %20.17lf\n", Soil->cumulativeDepth[i], Soil->layerThickness[i]);
-#endif
             Soil->nodeDepth[i] = Soil->cumulativeDepth[i-1] + Soil->layerThickness[i] / 2.;
         }
     }

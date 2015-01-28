@@ -105,10 +105,6 @@ int main (int argc, char *argv[])
     /* Initialize model variables and parameters */
     Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop, &Cycles->CropManagement, &Cycles->Snow);
 
-#ifdef _DEBUG_
-    printf ("manureSurfaceN = %lf\n", Cycles->Residue.manureSurfaceN);
-#endif
-
     /* Compute crop thermal time */
     printf ("Compute crop thermal time.\n");
     ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->CropManagement, &Cycles->Weather);
@@ -145,17 +141,8 @@ int main (int argc, char *argv[])
 #endif
 
         SelectOperationYear (rotationYear, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, &Cycles->CropManagement.tillageIndex);
-#ifdef _DEBUG_
-//        printf ("*%-30s = %-d\n", "Active tillage index", Cycles->CropManagement.tillageIndex);
-#endif
         SelectOperationYear (rotationYear, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, &Cycles->CropManagement.irrigationIndex);
-#ifdef _DEBUG_
-//        printf ("*%-30s = %-d\n", "Active irriggation index", Cycles->CropManagement.irrigationIndex);
-#endif
         SelectOperationYear (rotationYear, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization, &Cycles->CropManagement.fertilizationIndex);
-#ifdef _DEBUG_
-//        printf ("*%-30s = %-d\n", "Active fertilization index", Cycles->CropManagement.fertilizationIndex);
-#endif
 
         for (i = 0; i < Cycles->Soil.totalLayers; i++)
         {
@@ -169,7 +156,7 @@ int main (int argc, char *argv[])
         for (doy = 1; doy < 366; doy++)
         {
 #ifdef _DEBUG_
-            printf ("DOY %3.3d %lf\n", doy, Cycles->Soil.NO3[2]);
+            printf ("DOY %3.3d\n", doy);
 #endif
             DailyOperations (rotationYear, y, doy, &nextSeedingYear, &nextSeedingDate, &Cycles->CropManagement, &Cycles->Crop, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, project);
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Crop, &Cycles->Soil, &Cycles->Snow, project);

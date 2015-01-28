@@ -57,10 +57,6 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
     }
 
     /* Allocate memories for field operation classes */
-#ifdef _DEBUG_
-    printf ("*Field operation file contains descriptions of %d planting operations, %d tillage operations, %d fixed irrigation operations, %d fixed fertilization operations, %d auto irrigation operations.\n", planting_counter, tillage_counter, irrigation_counter, fertilization_counter, auto_irrigation_counter);
-    printf ("(Press any key to continue ...)\n");
-#endif
 
     CropManagement->totalCropsPerRotation = planting_counter;
     CropManagement->plantingOrder = (FieldOperationStruct *) malloc (planting_counter * sizeof (FieldOperationStruct));

@@ -39,10 +39,6 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
     }
 
     Soil->infiltrationVol = (precipitation - snowFall) + Soil->irrigationVol + snowMelt;
-#ifdef _DEBUG_
-    printf ("Redistribution:\n");
-    printf ("infiltrationVol = %lf\n", Soil->infiltrationVol);
-#endif
 
     if (Soil->infiltrationVol > 0.)
     {
@@ -134,10 +130,6 @@ void SubDailyRedistribution (SoilStruct *Soil)
     RedistributionFlag = 0;
 
     Win = Soil->infiltrationVol;
-#ifdef _DEBUG_
-    printf ("SubDailyRedistribution:\n");
-    printf ("Win = %lf\n", Win);
-#endif
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
@@ -148,18 +140,12 @@ void SubDailyRedistribution (SoilStruct *Soil)
         aep[i] = Soil->airEntryPotential[i];
         wpfc[i] = Soil->FC_WaterPotential[i];
         WCi[i] = Soil->waterContent[i];
-#ifdef _DEBUG_
-        printf ("WC[%d] = %lf, FC[%d] = %lf, sat[%d] = %lf, b[%d] = %lf, aep[%d] = %lf, wpfc[%d] = %lf, WCi[%d] = %lf\n", i + 1, WC[i], i + 1, FC[i], i + 1, sat[i], i + 1, b[i], i + 1, aep[i], i + 1, wpfc[i], i + 1, WCi[i]);
-#endif
     }
 
     for (j = 0; j < Soil->totalLayers; j++)
     {
         dzx[j] = Soil->layerThickness[j] * WATER_DENSITY;
         ksat[j] = K_Sat (sat[j], FC[j], b[j]);
-#ifdef _DEBUG_
-        printf ("dzx[%d] = %lf, ksat[%d] = %lf\n", j + 1, dzx[j], ksat[j]);
-#endif
     }
 
     if (Win > 0.)
@@ -208,10 +194,6 @@ void SubDailyRedistribution (SoilStruct *Soil)
 
         WFlux[0] += x1;         /* store flux into layer 0 */
 
-#ifdef _DEBUG_
-        printf ("WC[%d] = %lf, x1 = %lf, Win = %lf, WFlux[0] = %lf\n", 1, WC[0], x1, Win, WFlux[0]);
-#endif
-
         /* check if redistribution still true */
         if (Win == 0.)
         {
@@ -230,9 +212,6 @@ void SubDailyRedistribution (SoilStruct *Soil)
                 break;
         }
 
-#ifdef _DEBUG_
-        printf ("Win = %lg, RedistributionFlag = %d\n", Win, RedistributionFlag);
-#endif
         /* compute travel time for all emitting layers, in seconds select
          * minimum travel time of emitting and receiving */
         dt = s;
@@ -247,34 +226,20 @@ void SubDailyRedistribution (SoilStruct *Soil)
                 wp[j] = SoilWaterPotential (sat[j], aep[j], b[j], WC[j]);
                 if (wpfc[j] / wp[j] < 1.001)
                     wp[j] = wp[j] * 0.999;
-#ifdef _DEBUG_
-                printf ("wp[%d] = %lf\n", j + 1, wp[j]);
-#endif
+
                 kh[j] = AverageHydraulicConductance (sat[j], FC[j], aep[j], b[j], wp[j], wpfc[j], ksat[j]);
-#ifdef _DEBUG_
-                printf ("kh[%d] = %lf\n", j + 1, kh[j]);
-#endif
+
                 t1 = (WC[j] - FC[j]) * dzx[j] / (kh[j] * g);    /* emitting layer */
-#ifdef _DEBUG_
-                printf ("t1 = %lf\n", t1);
-#endif
 
                 if (j < Soil->totalLayers - 1)
                 {
                     wp[j + 1] = SoilWaterPotential (sat[j + 1], aep[j + 1], b[j + 1], WC[j + 1]);
                     if (wpfc[j + 1] / wp[j + 1] < 1.001)
                         wp[j + 1] = wp[j + 1] * 0.999;
-#ifdef _DEBUG_
-                    printf ("wp[%d] = %lf\n", j + 2, wp[j + 1]);
-#endif
+
                     kh[j + 1] = AverageHydraulicConductance (sat[j + 1], FC[j + 1], aep[j + 1], b[j + 1], wp[j + 1], wpfc[j + 1], ksat[j + 1]);
-#ifdef _DEBUG_
-                    printf ("kh[%d] = %lf\n", j + 2, kh[j + 1]);
-#endif
+
                     t2 = (sat[j + 1] - FC[j + 1]) * dzx[j + 1] / (kh[j + 1] * g);   /* maximum volume of receiving layer */
-#ifdef _DEBUG_
-                    printf ("t2 = %lf\n", t2);
-#endif
                 }
                 if (t2 < t1)
                     t1 = t2;
@@ -285,9 +250,6 @@ void SubDailyRedistribution (SoilStruct *Soil)
 
             if (dt < 3600.)
                 dt = 3600.;
-#ifdef _DEBUG_
-            printf ("dt = %lf\n", dt);
-#endif
         }
 
         cum_dt += dt;
@@ -298,9 +260,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
             cum_dt = s;
             RedistributionFlag = 0;
         }
-#ifdef _DEBUG_
-        printf ("cum_dt = %lf, RedistributionFlag = %d\n", cum_dt, RedistributionFlag);
-#endif
+
         for (j = Soil->totalLayers - 1; j >= 0; j--)
         {
             x2 = 0.;
@@ -326,9 +286,6 @@ void SubDailyRedistribution (SoilStruct *Soil)
             }
 
             WFlux[j + 1] += x2; /* stored for solute transport */
-#ifdef _DEBUG_
-            printf ("WFlux[%d] = %lf\n", j + 1, WFlux[j + 1]);
-#endif
         }
 
         /* if remainder of infiltration > 0 when Cum_DT = 86400 then saturate
@@ -356,20 +313,11 @@ void SubDailyRedistribution (SoilStruct *Soil)
                     break;
                 }
                 WFlux[j + 1] = WFlux[j + 1] + x1;
-#ifdef _DEBUG_
-                printf ("WFlux[%d] = %lf\n", j + 1, WFlux[j + 1]);
-#endif
             }
             Soil->drainageVol += Win;   /* keep adding drainage */
-#ifdef _DEBUG_
-            printf ("drainageVol = %lf\n", Soil->drainageVol);
-#endif
         }
     }
 
-#ifdef _DEBUG_
-    printf ("SoluteFlag %d\n", SoluteFlag);
-#endif
     if (SoluteFlag)
     {
         SoluteTransport (Soil->totalLayers, 0, 0, &(Soil->NO3Leaching), WFlux, Soil->NO3, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
@@ -380,9 +328,6 @@ void SubDailyRedistribution (SoilStruct *Soil)
     for (j = 0; j < Soil->totalLayers; j++)
     {
         Soil->waterContent[j] = WC[j];
-#ifdef _DEBUG_
-        printf ("waterContent[%d] = %lf\n", j + 1, Soil->waterContent[j]);
-#endif
     }
 }
 
@@ -408,24 +353,14 @@ void CurveNumber (SoilStruct * Soil)
     CN2 = Soil->Curve_Number;
     slope = Soil->Percent_Slope;
 
-#ifdef _DEBUG_
-    printf ("CurveNumber:\n");
-#endif
     for (i = 0; i < Soil->totalLayers; i++)
     {
         airDryWC[i] = Soil->PWP[i] / 3.;    /* an approximation to air dry */
-#ifdef _DEBUG_
-        printf ("airDryWC[%d] = %lf\n", i + 1, airDryWC[i]);
-#endif
     }
     cumulativeWeightedFactor = 0.;
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
-#ifdef _DEBUG_
-        printf ("cumulativeDepth[%d] = %lg, layerThickness[%d] = %lf\n", i + 1, Soil->cumulativeDepth[i], i + 1, Soil->layerThickness[i]);
-        printf ("%lg\n", Soil->cumulativeDepth[i] - 0.6);
-#endif
         if (Soil->cumulativeDepth[i] < 0.6 + 1e-6)
         {
             cumulativeWeightedFactor = cumulativeWeightedFactor + 1. - (Soil->cumulativeDepth[i] - 0.5 * Soil->layerThickness[i]) / 0.6;
@@ -434,9 +369,6 @@ void CurveNumber (SoilStruct * Soil)
             break;
     }
 
-#ifdef _DEBUG_
-    printf ("cumulativeWeightedFactor = %lf\n", cumulativeWeightedFactor);
-#endif
     weightedWCF = 0.;
 
     for (i = 0; i < Soil->totalLayers; i++)
@@ -446,19 +378,12 @@ void CurveNumber (SoilStruct * Soil)
             weightedFactorDepth[i] = (1. - (Soil->cumulativeDepth[i] - 0.5 * Soil->layerThickness[i]) / 0.6) / cumulativeWeightedFactor;
             WCFraction[i] = (Soil->waterContent[i] - airDryWC[i]) / (Soil->FC[i] - airDryWC[i]);
             weightedWCF += weightedFactorDepth[i] * WCFraction[i];
-#ifdef _DEBUG_
-            printf ("weightedFactorDepth[%d] = %lf, waterContent[%d] = %lf, FC[%d] = %lf, WCFraction[%d] = %lf\n", i + 1, weightedFactorDepth[i], i + 1, Soil->waterContent[i], i + 1, Soil->FC[i], i + 1, WCFraction[i]);
-#endif
         }
         else
             break;
     }
 
     WC_Factor = weightedWCF / (weightedWCF + exp (11. - 15. * weightedWCF));
-
-#ifdef _DEBUG_
-    printf ("WC_Factor = %lf\n", WC_Factor);
-#endif
 
     factorSlope = 1.1 - slope / (slope + exp (3.7 + 0.02 * slope));
     CN1 = CN2 / (2.3 - 0.013 * CN2);
@@ -467,9 +392,6 @@ void CurveNumber (SoilStruct * Soil)
     CN = CN1 + (CN3 - CN1) * WC_Factor;
     s = factorSlope * 254. * (100. / CN - 1.);
 
-#ifdef _DEBUG_
-    printf ("factorSlope = %lf, CN = %lf, s = %lf\n", factorSlope, CN, s);
-#endif
 
     if (Soil->infiltrationVol > a * s)
     {

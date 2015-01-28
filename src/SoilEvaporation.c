@@ -28,11 +28,6 @@ void Evaporation (SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, do
     else
         EvaporativeDemand = Residue->stanResidueTau * (1. - SnowCover) * (1. - Crop->svRadiationInterception) * ETo;
 
-#ifdef _DEBUG_
-    printf ("Evaporation:\n");
-    printf ("EvaporativeDemand = %lf, residueInterception = %lf, svRadiationInterception = %lf, ETo = %lf, \n", EvaporativeDemand, Residue->residueInterception, Crop->svRadiationInterception, ETo);
-#endif
-
     for (i = 0; i < Soil->totalLayers; i++)
     {
         if (i > 0)
@@ -64,16 +59,9 @@ void Evaporation (SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, do
         Soil->waterContent[i] -= Evaporation / (Soil->layerThickness[i] * WATER_DENSITY);
         EvapFlux[i] = Evaporation;
 
-#ifdef _DEBUG_
-        printf ("waterContent[%d] = %lf\n", i + 1, Soil->waterContent[i]);
-#endif
-
         if (EvaporativeDemand == 0.)
             break;
     }
-#ifdef _DEBUG_
-    printf ("evaporationVol = %lf\n", Soil->evaporationVol);
-#endif
 
     /* Try changing retention constant to slow down nitrate upward movement,
      * try 1 (defaul is 0 for nitrate downward in liquid flow) */
