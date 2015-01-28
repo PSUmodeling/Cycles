@@ -1,9 +1,9 @@
 #include "include/Cycles.h"
 
-void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *leachate, double *WFlux, double *soluteMass, const double *BD, const double *thickness, const double *porosity, const double *WCinitial)
+void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *leachate, const double *WFlux, double *soluteMass, const double *BD, const double *thickness, const double *porosity, const double *WCinitial)
 {
     int             i;
-    double          C[totalLayers]; /* solute concentration at end of equilibrium, kg solute / m3 */
+    //double          C[totalLayers]; /* solute concentration at end of equilibrium, kg solute / m3 */
     double          soluteConc; /* solute concentration, current layer, kg solute / m3 */
     double          soluteFlow[totalLayers + 1];    /* solute flow, kg solute per time step */
     double          waterInitial;   /* initial layer soil water storage, kg / m2 */
@@ -12,6 +12,11 @@ void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *le
     double          soluteMassSolution; /* kg/m2 */
 
     soluteFlow[0] = WInConc * WFlux[0];
+
+#ifdef _DEBUG_
+    printf ("SoluteTransport:\n");
+    printf ("soluteFlow[0] = %lf\n", soluteFlow[0]);
+#endif
 
     for (i = 0; i < totalLayers; i++)
     {
@@ -24,7 +29,11 @@ void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *le
 
         soluteMassAdsorbed = soluteMass[i] - waterInitial * soluteConc;
 
-        if (WFlux[i + 1] > 0.)
+#ifdef _DEBUG_
+        printf ("%d: thickness = %lf, WCinitial = %lf, waterInitial = %lf, soluteConc = %lf, soluteMassAdsorbed = %lf\n", i + 1, thickness[i], WCinitial[i], waterInitial, soluteConc, soluteMassAdsorbed);
+#endif
+
+        if (WFlux[i + 1] > 0 + 1e-6)
         {
             /* note: the 0.67 is temporary, likely not needed, and if needed
              * use a relationship with B */
@@ -33,6 +42,9 @@ void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *le
             soluteFlow[i + 1] = waterInitial * soluteConc + soluteFlow[i] - soluteMassSolution;
             if (i == totalLayers - 1)
                 *leachate = soluteFlow[i + 1];
+#ifdef _DEBUG_
+            printf ("ratio = %lf, soluteMassSolution = %lf, soluteFlow[%d] = %lf, leachate = %lf\n", ratio, soluteMassSolution, i + 1, soluteFlow[i + 1], *leachate);
+#endif
         }
         else
         {
@@ -44,6 +56,9 @@ void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *le
          * on concentration at the end ignoring initial mass, not using it */
         //SoluteMass(i) = LinearEquilibriumSoluteMass(Sol_Kd, BD(i), Thickness(i), WCFinal, C(i))
         soluteMass[i] = soluteMassAdsorbed + soluteMassSolution;
+#ifdef _DEBUG_
+            printf ("soluteMass[%d] = %lf\n", i + 1, soluteMass[i]);
+#endif
     }
 }
 
@@ -76,6 +91,11 @@ void SoluteTransportEvaporation (int totalLayers, double Sol_Kd, const double *W
             soluteMass[i] += soluteFlux[i + 1];
         }
     }
+#ifdef _DEBUG_
+    printf ("SoluteTransportEvaporation:\n");
+    for (i = 0; i < totalLayers; i++)
+        printf ("soluteMass[%d] = %lf\n", i + 1, soluteMass[i]);
+#endif
 }
 
 double LinearEquilibriumConcentration (double Kd, double bulkDensity, double layerThickness, double waterContent, double soluteMass)

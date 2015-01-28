@@ -407,6 +407,7 @@ void PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake, d
     }
 
     *SoluteSupply = totalPotentialUptake;
+
 }
 
 double ShootBiomassPartitioning (double Stage, double Po, double Pf)

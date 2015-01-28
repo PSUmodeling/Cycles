@@ -27,6 +27,9 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     Soil->pH = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->n2o = (double *)malloc ((Soil->totalLayers) * sizeof (double));
 
+    for (i = 0; i < Soil->totalLayers; i++)
+        Soil->cumulativeDepth[i] = 0.;
+
     Soil->cumulativeDepth[0] = Soil->layerThickness[0];
     Soil->nodeDepth[0] = 0.5 * Soil->layerThickness[0];
 
@@ -40,6 +43,9 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         if (i > 0)
         {
             Soil->cumulativeDepth[i] = Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i];
+#ifdef _DEBUG_
+            printf ("%20.17lf, %20.17lf\n", Soil->cumulativeDepth[i], Soil->layerThickness[i]);
+#endif
             Soil->nodeDepth[i] = Soil->cumulativeDepth[i-1] + Soil->layerThickness[i] / 2.;
         }
     }
@@ -178,7 +184,6 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         printf ("%-10.3lf\t", Soil->soilTemperature[i]);
     printf ("\n");
     printf ("(Press any key to continue ...)\n");
-    getchar();
 #endif
 }
 

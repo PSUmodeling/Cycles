@@ -35,6 +35,10 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilS
                                  */
     int i;
 
+#ifdef _DEBUG_
+    printf ("ComputeFactorComposite:\n");
+#endif
+
     if (doy == 1)
     {
         for (i = 0; i < Soil->totalLayers; i++)
@@ -48,6 +52,9 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilS
         factorTemperature = TemperatureFunction(Soil->soilTemperature[i]);
         factorAeration *= Aeration(airContent);
         SoilCarbon->factorComposite[i] = factorMoisture * factorAeration * factorTemperature;
+#ifdef _DEBUG_
+        printf ("factorComposite[%d] = %lf\n", i + 1, SoilCarbon->factorComposite[i]);
+#endif
 
         avg[i] += SoilCarbon->factorComposite[i];
 
@@ -124,6 +131,10 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
     NInitial = 0.;
     NFinal = 0.;
     NInitial = Residue->stanResidueN + Residue->flatResidueN + Residue->manureSurfaceN;
+#ifdef _DEBUG_
+    printf ("ComputeSoilCarbonBalance:\n");
+    printf ("NInitial = %lf, stanResidueN = %lf, flatResidueN = %lf, manureSurfaceN = %lf\n", NInitial, Residue->stanResidueN, Residue->flatResidueN, Residue->manureSurfaceN);
+#endif
 
     contactFractionFlat = 0.;
     contactFractionStan = 0.;
@@ -140,6 +151,10 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
     for (i = 0; i < Soil->totalLayers; i++)
     {
         NInitial += Soil->SON_Mass[i] + Soil->MBN_Mass[i] + Soil->NO3[i] + Soil->NH4[i] + Residue->residueAbgdN[i] + Residue->residueRtN[i] + Residue->residueRzN[i] + Residue->manureN[i];
+#ifdef _DEBUG_
+        printf ("i = %d, NInitial = %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n", i + 1, NInitial, Soil->SON_Mass[i], Soil->MBN_Mass[i],  Soil->NO3[i], Soil->NH4[i], Residue->residueAbgdN[i], Residue->residueRtN[i], Residue->residueRzN[i], Residue->manureN[i]);
+        printf ("%lf\n", Residue->residueRzN[i]);
+#endif
 
         socDecompositionRate = 0.;
         micrDecompositionRate = 0.;
@@ -172,6 +187,10 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         NMineralConcentration = Soil->NO3[i] / soilMass;
         satSOCConc = 21.1 + 0.375 * Soil->Clay[i] * 100.;
 
+#ifdef _DEBUG_
+        printf ("soilMass = %lf, NMineral = %lf (%lf, %lf), NH4_Fraction = %lf, NMineralConcentration = %lf, satSOCConc = %lf\n", soilMass, NMineral, Soil->NO3[i], Soil->NH4[i], NH4_Fraction, NMineralConcentration, satSOCConc);
+#endif
+
         /* compute C/N ratios */
         if (i == 0)
         {
@@ -183,8 +202,14 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
                 smanCNRatio = Residue->manureSurfaceC / Residue->manureSurfaceN;
         }
 
+#ifdef _DEBUG_
+        printf ("stanCNRatio = %lf, flatCNRatio = %lf, smanCNRatio = %lf\n", stanCNRatio, flatCNRatio, smanCNRatio);
+#endif
         somCNratio = Soil->SOC_Mass[i] / Soil->SON_Mass[i];
         micrCNRatio = Soil->MBC_Mass[i] / Soil->MBN_Mass[i];
+#ifdef _DEBUG_
+        printf ("somCNratio = %lf, micrCNRatio = %lf\n", somCNratio, micrCNRatio);
+#endif
         if (Residue->residueAbgd[i] > 0.)
             abgdCNRatio = Residue->residueAbgd[i] * FRACTION_CARBON_PLANT / Residue->residueAbgdN[i];
         if (Residue->residueRt[i] > 0.)
@@ -198,11 +223,18 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         /* humification reduction when C conc approaches saturation */
         humificationAdjustmentBySOC = 1. - pow(Soil->SOC_Conc[i] / satSOCConc, SOC_HUMIFICATION_POWER);
         humificationAdjustmentBySOC = humificationAdjustmentBySOC > 0. ? humificationAdjustmentBySOC : 0.;
+#ifdef _DEBUG_
+        printf ("humificationAdjustmentBySOC = %lf, SOC_Conc[%d] = %lf, satSOCConc = %lf, SOC_HUMIFICATION_POWER = %lf\n", humificationAdjustmentBySOC, i + 1, Soil->SOC_Conc[i], satSOCConc, SOC_HUMIFICATION_POWER);
+#endif
 
         abgdHumificationFactor = sqrt(MaximumAbgdHumificationFactor(Soil->Clay[i]) * humificationAdjustmentBySOC);
         rootHumificationFactor = sqrt(MaximumRootHumificationFactor(Soil->Clay[i]) * humificationAdjustmentBySOC);
         rhizHumificationFactor = sqrt(MaximumRhizHumificationFactor(Soil->Clay[i]) * humificationAdjustmentBySOC);
         manuHumificationFactor = sqrt(MaximumManuHumificationFactor(Soil->Clay[i]) * humificationAdjustmentBySOC);
+#ifdef _DEBUG_
+        printf ("abgdHumificationFactor = %lf, rootHumificationFactor = %lf, rhizHumificationFactor = %lf, manuHumificationFactor = %lf\n", abgdHumificationFactor, rootHumificationFactor, rhizHumificationFactor, manuHumificationFactor);
+#endif
+
         /* temporarily assigned abgd humification, then checked if it can be
          * higher if manure is decomposing, but never lower */
         micrHumificationFactor = abgdHumificationFactor;    
@@ -215,13 +247,18 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
             xx2 = SoilCarbon->factorComposite[i] * MAXIMUM_RESIDUE_DECOMPOSITION_RATE * contactFractionStan * Residue->stanResidueMass;
             xx3 = SoilCarbon->factorComposite[i] * MAXIMUM_RESIDUE_DECOMPOSITION_RATE * contactFractionFlat * Residue->flatResidueMass;
             xx6 = SoilCarbon->factorComposite[i] * MAXIMUM_MANURE_DECOMPOSITION_RATE * Residue->manureSurfaceC;
+#ifdef _DEBUG_
+            printf ("contactFractionStan = %lf, contactFractionFlat = %lf, xx2 = %lf, xx3 = %lf, xx6 = %lf\n", contactFractionStan, contactFractionFlat, xx2, xx3, xx6);
+#endif
         }
 
         xx1 = SoilCarbon->factorComposite[i] * MAXIMUM_RESIDUE_DECOMPOSITION_RATE * Residue->residueAbgd[i];
         xx4 = SoilCarbon->factorComposite[i] * MAXIMUM_ROOT_DECOMPOSITION_RATE * Residue->residueRt[i];
         xx5 = SoilCarbon->factorComposite[i] * MAXIMUM_RHIZO_DECOMPOSITION_RATE * Residue->residueRz[i];
         xx7 = SoilCarbon->factorComposite[i] * MAXIMUM_MANURE_DECOMPOSITION_RATE * Residue->manureC[i];
-
+#ifdef _DEBUG_
+        printf ("xx1 = %lf, xx4 = %lf, xx5 = %lf, xx7 = %lf\n", xx1, xx4, xx5, xx7);
+#endif
         /* inorganic N limitation for decomposition */
         /* if decomposition > 0 then compute net N mineralization and
          * accumulate negatives */
@@ -286,6 +323,9 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         else
             decompReductionFactor = 1.;
 
+#ifdef _DEBUG_
+        printf ("decompReductionFactor = %lf\n", decompReductionFactor);
+#endif
         if (decompReductionFactor < 1.)
         {
             /* adjust actual decomposition as a function on mineral N
@@ -354,12 +394,18 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         decompositionAdjustmentBySOC = 1. - 1. / (1. + pow ((Soil->SOC_Conc[i] / satSOCConc) / 0.22, 3.0));
         decompositionAdjustmentBySOC = decompositionAdjustmentBySOC < 1. ? decompositionAdjustmentBySOC : 1.;
         socDecompositionRate = SoilCarbon->factorComposite[i] * (1. + tillageFactor[i]) * MAXIMUM_UNDISTURBED_SOC_DECOMPOSITION_RATE * decompositionAdjustmentBySOC / (1. - pow (micrHumificationFactor, 2));
+#ifdef _DEBUG_
+        printf ("decompositionAdjustmentBySOC = %lf, socDecompositionRate = %lf\n", decompositionAdjustmentBySOC, socDecompositionRate);
+#endif
         xx8 = socDecompositionRate * Soil->SOC_Mass[i];
         if (xx8 > 0.)
         {
             CNnew = CNdestiny(NMineralConcentration, somCNratio);
             nm8 = NitrogenMineralization(somCNratio, CNnew, micrHumificationFactor, xx8);
         }
+#ifdef _DEBUG_
+        printf ("xx8 = %lf, CNnew = %lf, nm8 = %lf\n", xx8, CNnew, nm8);
+#endif
 
         /* microbial biomass decomposition and N mineralization */
         aux1 = (Soil->MBC_Mass[i] / Soil->SOC_Mass[i]) / 0.03;
@@ -371,9 +417,15 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
          * ks/(1-e^2) */
         aux3 = aux2 * MAXIMUM_UNDISTURBED_SOC_DECOMPOSITION_RATE * decompositionAdjustmentBySOC / (1. - pow (micrHumificationFactor, 2)) * (0.97 / 0.03) * (1. / micrHumificationFactor); 
         micrDecompositionRate = SoilCarbon->factorComposite[i] * (1. + tillageFactor[i]) * aux3;
+#ifdef _DEBUG_
+        printf ("aux1 = %lf, aux2 = %lf, aux3 = %lf, micrDecompositionRate = %lf\n", aux1, aux2, aux3, micrDecompositionRate);
+#endif
         xx9 = micrDecompositionRate * Soil->MBC_Mass[i];
         if (xx9 > 0.)
             nm9 = NitrogenMineralization(micrCNRatio, micrCNRatio, micrHumificationFactor, xx9);
+#ifdef _DEBUG_
+        printf ("xx9 = %lf, nm9 = %lf\n", xx9, nm9);
+#endif
 
         /* calculate N removal from decomposing pools */
         if (xx1 > 0.)
@@ -394,6 +446,9 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
             nr8 = xx8 / somCNratio;
         if (xx9 > 0.)
             nr9 = xx9 / micrCNRatio;
+#ifdef _DEBUG_
+        printf ("nr1 = %lf, nr2 = %lf, nr3 = %lf, nr4 = %lf, nr5 = %lf, nr6 = %lf, nr7 = %lf, nr8 = %lf, nr9 = %lf\n", nr1, nr2, nr3, nr4, nr5, nr6, nr7, nr8, nr9);
+#endif
 
         /* calculate N contribution (N humification) to microbial pool of each decomposing pool */
         if (nm1 > 0.)
@@ -433,6 +488,10 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         else
             nh9 = nr9;
 
+#ifdef _DEBUG_
+        printf ("nh1 %lf nh2 %lf nh3 %lf nh4 %lf nh5 %lf nh6 %lf nh7 %lf nh8 %lf nh9 %lf\n", nh1, nh2, nh3, nh4, nh5, nh6, nh7, nh8, nh9);
+#endif 
+
         /* calculate total residue, manure, and som carbon tansfer to
          * microbial pool */
         humifiedCarbon = abgdHumificationFactor * FRACTION_CARBON_PLANT * (xx1 + xx2 + xx3)
@@ -440,10 +499,12 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
                             + rhizHumificationFactor * FRACTION_CARBON_RIZHO * xx5
                             + manuHumificationFactor * (xx6 + xx7) 
                             + micrHumificationFactor * xx8;
-
         /* calculate total residue, manure, and som nitrogen transfer to
          * microbial pool */
         humifiedNitrogen = nh1 + nh2 + nh3 + nh4 + nh5 + nh6 + nh7 + nh8;
+#ifdef _DEBUG_
+        printf ("humifiedCarbon = %lf, humifiedNitrogen = %lf\n", humifiedCarbon, humifiedNitrogen);
+#endif
 
         /* accumulate N mineralization, immobilization, and net
          * mineralization */
@@ -485,12 +546,18 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
             NImmobilization += nm9;
 
         NNetMineralization = NMineralization + NImmobilization;
+#ifdef _DEBUG_
+        printf ("NNetMineralization = %lf, NMineralization = %lf, NImmobilization = %lf\n", NNetMineralization, NMineralization, NImmobilization);
+#endif
 
         /* UPDATE POOLS (N immbilization is negative) */
         Soil->NO3[i] += NImmobilization * (1. - NH4_Fraction);
         Soil->NH4[i] += NImmobilization * NH4_Fraction + NMineralization;
+#ifdef _DEBUG_
+        printf ("NO3[%d] = %lf, NH4[%d] = %lf\n", i + 1, Soil->NO3[i], i + 1, Soil->NH4[i]);
+#endif
 
-        if (i ==0)
+        if (i == 0)
         {
             Residue->stanResidueWater *= (1. - xx2 / (Residue->stanResidueMass + 1e-10));
             Residue->flatResidueWater *= (1. - xx3 / (Residue->flatResidueMass + 1e-10));
@@ -500,6 +567,9 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
             Residue->stanResidueN -= nr2;
             Residue->flatResidueN -= nr3;
             Residue->manureSurfaceN -= nr6;
+#ifdef _DEBUG_
+            printf ("stanResidueWater = %lf, flatResidueWater = %lf, stanResidueMass = %lf, flatResidueMass = %lf, manureSurfaceC = %lf, stanResidueN = %lf, flatResidueN = %lf, manureSurfaceN = %lf\n", Residue->stanResidueWater, Residue->flatResidueWater, Residue->stanResidueMass, Residue->flatResidueMass, Residue->manureSurfaceC, Residue->stanResidueN, Residue->flatResidueN, Residue->manureSurfaceN);
+#endif
         }
 
         Residue->residueAbgd[i] -= xx1;
@@ -510,20 +580,26 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         Residue->residueRtN[i] -= nr4;
         Residue->residueRzN[i] -= nr5;
         Residue->manureN[i] -= nr7;
-
+#ifdef _DEBUG_
+        printf ("residueAbgd[%d] = %lf, residueRt[%d] = %lf, residueRz[%d] = %lf, manureC[%d] = %lf, residueAbgdN[%d] = %lf, residueRtN[%d] = %lf, residueRzN[%d] = %lf, manureN[%d] = %lf\n", i + 1, Residue->residueAbgd[i], i + 1, Residue->residueRt[i], i + 1, Residue->residueRz[i], i + 1, Residue->manureC[i], i + 1, Residue->residueAbgdN[i], i + 1, Residue->residueRtN[i], i + 1, Residue->residueRzN[i], i + 1, Residue->manureN[i]);
+#endif
         Soil->SOC_Mass[i] += xx9 * micrHumificationFactor - xx8;
         Soil->SON_Mass[i] += nh9 - nr8;
         Soil->SOC_Conc[i] = Soil->SOC_Mass[i] * 1000. / soilMass;
-
         Soil->MBC_Mass[i] += humifiedCarbon - xx9;
         Soil->MBN_Mass[i] += humifiedNitrogen + (-NImmobilization) - nr9;
+#ifdef _DEBUG_
+        printf ("SOC_Mass[%d] = %lf, SON_Mass[%d] = %lf, SOC_Conc[%d] = %lf, Soil->MBC_Mass[%d] = %lf, Soil->MBN_Mass[%d] = %lf\n", i + 1, Soil->SOC_Mass[i], i + 1, Soil->SON_Mass[i], i + 1, Soil->SOC_Conc[i], i + 1, Soil->MBC_Mass[i], i + 1, Soil->MBN_Mass[i]);
+#endif
 
         SoilCarbon->carbonRespired[i] = (1. - abgdHumificationFactor) * FRACTION_CARBON_PLANT * (xx1 + xx2 + xx3)
                             + (1. - rootHumificationFactor) * FRACTION_CARBON_PLANT * xx4
                             + (1. - rhizHumificationFactor) * FRACTION_CARBON_RIZHO * xx5
                             + (1. - manuHumificationFactor) * (xx6 + xx7)
                             + (1. - micrHumificationFactor) * (xx8 + xx9);
-
+#ifdef _DEBUG_
+        printf ("carbonRespired[%d] = %lf\n", SoilCarbon->carbonRespired[i]);
+#endif
         /* for OUTPUT */
         SoilCarbon->annualSoilCarbonDecompositionRate[i] += socDecompositionRate;
         /* excludes residue and manure */
@@ -549,10 +625,19 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         /* residues, roots and manure */
         Soil->C_ResidueRespired += SoilCarbon->carbonRespired[i] - (1. - micrHumificationFactor) * (xx8 + xx9);
         Soil->C_SoilRespired += (1. - micrHumificationFactor) * (xx8 + xx9);
+#ifdef _DEBUG_
+        printf ("N_Immobilization = %lf, N_Mineralization = %lf, N_NetMineralization = %lf, SOCProfile = %lf, SONProfile = %lf, C_Humified = %lf, C_ResidueRespired = %lf, C_SoilRespired = %lf\n", Soil->N_Immobilization, Soil->N_Mineralization, Soil->N_NetMineralization, Soil->SOCProfile, Soil->SONProfile, Soil->C_Humified, Soil->C_ResidueRespired, Soil->C_SoilRespired);
+#endif
 
         NFinal += Soil->SON_Mass[i] + Soil->MBN_Mass[i] + Soil->NO3[i] + Soil->NH4[i] + Residue->residueAbgdN[i] + Residue->residueRtN[i] + Residue->residueRzN[i] + Residue->manureN[i];
+#ifdef _DEBUG_
+        printf ("NFinal = %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf\n", NFinal, Soil->SON_Mass[i], Soil->MBN_Mass[i], Soil->NO3[i], Soil->NH4[i], Residue->residueAbgdN[i], Residue->residueRtN[i], Residue->residueRzN[i], Residue->manureN[i]);
+#endif
     } /* End soil layer loop */
     NFinal += Residue->stanResidueN + Residue->flatResidueN + Residue->manureSurfaceN;
+#ifdef _DEBUG_
+        printf ("NFinal = %lf\n", NFinal);
+#endif
 
     if (fabs(NFinal - NInitial) > 0.00001)
         exit (1);

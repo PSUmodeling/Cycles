@@ -54,7 +54,7 @@ int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOper
 
 /* Initialize.c */
 void InitializeOutput (char *project);
-void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement);
+void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement, SnowStruct *Snow);
 
 /* Irrigation.c */
 double FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStruct *Soil);
@@ -66,7 +66,7 @@ int t2doy (time_t *rawtime);
 int doy2date (int year, int jday, int *month, int *mday, int leap_year_mode);
 
 /* Print.c */
-void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project);
+void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const char *project);
 void PrintSeasonOutput (int y, int doy, int start_year, const CropStruct *Crop, const char *project);
 
 /* ReadCrop.c */
@@ -159,7 +159,7 @@ double AirMolarDensity(double T, double P);
 double BoundaryLayerConductance(double RI, double RM, double WS, double AMD);
 
 /* SoilSolute.c */
-void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *leachate, double *WFlux, double *soluteMass, const double *BD, const double *thickness, const double *porosity, const double *WCinitial);
+void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *leachate, const double *WFlux, double *soluteMass, const double *BD, const double *thickness, const double *porosity, const double *WCinitial);
 void SoluteTransportEvaporation (int totalLayers, double Sol_Kd, const double *WFlux, double *soluteMass, const double *BD, const double *thickness, const double *porosity, double *WCinitial);
 double LinearEquilibriumConcentration (double Kd, double bulkDensity, double layerThickness, double waterContent, double soluteMass);
 double LinearEquilibriumSoluteMass (double Kd, double bulkDensity, double layerThickness, double waterContent, double concentration);
@@ -187,7 +187,6 @@ void            PrintSoil (SoilStruct Soil);
 void PrintCrop (describedCropStruct *describedCrop, int NumCrop);
 void            PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization);
 void            PrintWeather (WeatherStruct Weather);
-void            PrintPlantingOrder (FieldOperationStruct *plantingOrder, int totalCropsPerRotation);
 #endif
 
 #endif

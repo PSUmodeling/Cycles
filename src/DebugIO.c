@@ -24,7 +24,6 @@ void PrintSimContrl (SimControlStruct SimControl)
     printf ("*%-22s\t%-4d\n", "Season_Out", SimControl.seasonOutput);
     printf ("\n");
     printf ("(Press any key to continue ...)\n");
-    getchar();
 }
 
 void PrintSoil (SoilStruct Soil)
@@ -40,7 +39,6 @@ void PrintSoil (SoilStruct Soil)
         printf ("*%-10d\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\n", i + 1, Soil.layerThickness[i], Soil.Clay[i], Soil.Sand[i], Soil.IOM[i], Soil.BD[i], Soil.FC[i], Soil.PWP[i], Soil.NO3[i], Soil.NH4[i]);
     printf ("\n");
     printf ("(Press any key to continue ...)\n");
-    getchar();
 }
 
 void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
@@ -49,7 +47,6 @@ void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
 
     printf ("\n\n*Crop description file contains descriptions of %d crop types.\n\n", NumCrop);
     printf ("(Press any key to continue ...)\n");
-    getchar();
 
     for (i = 0; i < NumCrop; i++)
     {
@@ -88,7 +85,6 @@ void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
         printf ("*%-38s\t%-3d\n", "LEGUME", describedCrop[i].userLegume);
         printf ("*%-38s\t%-3d\n\n", "C3", describedCrop[i].userC3orC4);
         printf ("(Press any key to continue ...)\n");
-        getchar();
     }
     printf ("\n");
 }
@@ -110,7 +106,6 @@ void PrintOperation (FieldOperationStruct * plantedCrops, int NumPlanting, Field
     }
     printf ("\n");
     printf ("(Press any key to continue ...)\n");
-    getchar();
 
     printf ("*Tillage:\n");
     for (i = 0; i < NumTillage; i++)
@@ -125,7 +120,6 @@ void PrintOperation (FieldOperationStruct * plantedCrops, int NumPlanting, Field
         printf ("\n");
     }
     printf ("(Press any key to continue ...)\n");
-    getchar();
 
     printf ("*Fixed Irrigation:\n");
     for (i = 0; i < NumIrrigation; i++)
@@ -137,7 +131,6 @@ void PrintOperation (FieldOperationStruct * plantedCrops, int NumPlanting, Field
         printf ("\n");
     }
     printf ("(Press any key to continue ...)\n");
-    getchar();
 
     printf ("*Fixed Fertilization:\n");
     for (i = 0; i < NumFertilization; i++)
@@ -164,7 +157,6 @@ void PrintOperation (FieldOperationStruct * plantedCrops, int NumPlanting, Field
         printf ("\n");
     }
     printf ("(Press any key to continue ...)\n");
-    getchar ();
 }
 
 void PrintWeather (WeatherStruct Weather)
@@ -175,6 +167,5 @@ void PrintWeather (WeatherStruct Weather)
     printf ("*%-16s\t%-6.2lf\n", "SCREENING_HEIGHT", Weather.screeningHeight);
     printf ("\n");
     printf ("(Press any key to continue ...)\n");
-    getchar ();
 }
 

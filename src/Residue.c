@@ -18,6 +18,8 @@ void InitializeResidue (ResidueStruct * Residue, int totalYears, int totalLayers
     Residue->flatResidueMass = 0.;
     Residue->stanResidueN = 0.;
     Residue->flatResidueN = 0.;
+    Residue->manureSurfaceC = 0.;
+    Residue->manureSurfaceN = 0.;
     Residue->stanResidueWater = 0.;
     Residue->flatResidueWater = 0.;
 }
@@ -35,6 +37,11 @@ void ComputeResidueCover (ResidueStruct * Residue)
     Residue->stanResidueTau = exp (-STAN_RESIDUE_K * stanResidueAI);
     Residue->flatResidueTau = exp (-FLAT_RESIDUE_K * flatResidueAI);
     Residue->residueInterception = (1. - Residue->stanResidueTau) + Residue->stanResidueTau * (1. - Residue->flatResidueTau);
+
+#ifdef _DEBUG_
+    printf ("ComputeResidueCover:\n");
+    printf ("stanResidueTau = %lf, flatResidueTau = %lf, residueInterception = %lf\n", Residue->stanResidueTau, Residue->flatResidueTau, Residue->residueInterception);
+#endif
 }
 
 void ResidueWetting (ResidueStruct * Residue, SoilStruct * Soil)
@@ -50,6 +57,13 @@ void ResidueWetting (ResidueStruct * Residue, SoilStruct * Soil)
     standingResidueWaterDeficit = residueMaxWaterConcentration * Residue->stanResidueMass / 10. - Residue->stanResidueWater;    /* 10 converts residue from Mg/ha to kg/m2 */
     waterWettingResidue = Soil->infiltrationVol * Residue->residueInterception;
 
+#ifdef _DEBUG_
+    printf ("ResidueWetting:\n");
+    printf ("flatResidueWaterDeficit = %lf, standingResidueWaterDeficit = %lf, waterWettingResidue = %lf\n", flatResidueWaterDeficit, standingResidueWaterDeficit, waterWettingResidue);
+#endif
+
+    waterRetainedResidue = 0.;
+
     /* wet flat residue first */
     if (waterWettingResidue > flatResidueWaterDeficit)
     {
@@ -64,6 +78,10 @@ void ResidueWetting (ResidueStruct * Residue, SoilStruct * Soil)
         waterWettingResidue -= waterWettingResidue;
     }
 
+#ifdef _DEBUG_
+    printf ("flatResidueWater = %lf, waterRetainedResidue = %lf, waterWettingResidue = %lf\n", Residue->flatResidueWater, waterRetainedResidue, waterWettingResidue);
+#endif
+
     if (waterWettingResidue > standingResidueWaterDeficit)
     {
         Residue->stanResidueWater += standingResidueWaterDeficit;
@@ -77,7 +95,15 @@ void ResidueWetting (ResidueStruct * Residue, SoilStruct * Soil)
         waterWettingResidue -= waterWettingResidue;
     }
 
-    Soil->infiltrationVol -= waterRetainedResidue;
+#ifdef _DEBUG_
+    printf ("stanResidueWater = %lf, waterRetainedResidue = %lf, waterWettingResidue = %lf\n", Residue->stanResidueWater, waterRetainedResidue, waterWettingResidue);
+#endif
+
+   Soil->infiltrationVol -= waterRetainedResidue;
+
+#ifdef _DEBUG_
+    printf ("infiltrationVol = %lf\n", Soil->infiltrationVol);
+#endif
 }
 
 void ResidueEvaporation (ResidueStruct * Residue, SoilStruct * Soil, CropStruct * Crop, double ETo, double snowCover)

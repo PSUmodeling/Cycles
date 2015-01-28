@@ -87,7 +87,9 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
         soilMassNotMixed[i] = soilMass[i] - soilMassMixed[i];
         partialSoilMassMixed = totalSoilMassMixed + soilMassMixed[i];
         for (j = 0; j < mixVariables; j++)
+        {
             mixed[j] = Fraction (totalSoilMassMixed, mixed[j], soilMassMixed[i], conc[i][j], partialSoilMassMixed);
+        }
         totalSoilMassMixed = partialSoilMassMixed;
     }
 
@@ -151,6 +153,9 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
     Residue->stanResidueN *= (1. - Tillage->opMixingEfficiency);
     Residue->manureSurfaceC *= (1. - Tillage->opMixingEfficiency);
     Residue->manureSurfaceN *= (1. - Tillage->opMixingEfficiency);
+#ifdef _DEBUG_
+    printf ("Tillage:manureSurfaceN = %lf", Residue->manureSurfaceN);
+#endif
     Residue->flatResidueWater *= (1. - Tillage->opMixingEfficiency);
     Residue->stanResidueWater *= (1. - Tillage->opMixingEfficiency);
     ComputeTillageFactor (Tillage, tillageFactor, Soil, Soil->cumulativeDepth, toolDepth);
@@ -159,10 +164,16 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
 void TillageFactorSettling (double *tillageFactor, int totalLayers, const double *waterContent, const double *Porosity)
 {
     int             i;
-    for (i = 0; i < totalLayers; i++)
 
+#ifdef _DEBUG_
+    printf ("TillageFactorSettling:\n");
+#endif
+    for (i = 0; i < totalLayers; i++)
     {
         tillageFactor[i] *= (1.0 - 0.02 * waterContent[i] / Porosity[i]);
+#ifdef _DEBUG_
+        printf ("tillageFactor[%d] = %lf\n", i + 1, tillageFactor[i]);        
+#endif
     }
 }
 

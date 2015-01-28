@@ -10,6 +10,7 @@ void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CropStruct 
     double          Profile_NH4_Volatilization; /* NH4 volatilization, Mg N/ha */
 
     Profile_N_Nitrified = 0.;
+    Profile_N2O_Nitri = 0.;
     Profile_N_Denitrified = 0.;
     Profile_N2O_Denit = 0.;
     Profile_NH4_Volatilization = 0.;
@@ -22,6 +23,9 @@ void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CropStruct 
     Denitrification (&Profile_N_Denitrified, &Profile_N2O_Denit, Soil, SoilCarbon);
     Nitrification (&Profile_N_Nitrified, &Profile_N2O_Nitri, Soil, SoilCarbon);
     Volatilization (y, doy, &Profile_NH4_Volatilization, Soil, Crop, Residue, Weather);
+#ifdef _DEBUG_
+    printf ("Volatilization: %lf\n", Profile_NH4_Volatilization);
+#endif
 
     Soil->NO3Profile = 0.;
     Soil->NH4Profile = 0.;
@@ -31,11 +35,18 @@ void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CropStruct 
         Soil->NH4Profile += Soil->NH4[i];
     }
 
+#ifdef _DEBUG_
+    printf ("NO3Profile = %lf, NH4Profile = %lf\n", Soil->NO3Profile, Soil->NH4Profile);
+#endif
+
     Soil->NH4_Nitrification = Profile_N_Nitrified;
     Soil->N2O_Nitrification = Profile_N2O_Nitri;
     Soil->NO3_Denitrification = Profile_N_Denitrified;
     Soil->N2O_Denitrification = Profile_N2O_Denit;
     Soil->NH4_Volatilization = Profile_NH4_Volatilization;
+#ifdef _DEBUG_
+    printf ("NH4_Nitrification = %lf, N2O_Nitrification = %lf, NO3_Denitrification = %lf, N2O_Denitrification = %lf, NH4_Volatilization = %lf\n", Soil->NH4_Nitrification, Soil->N2O_Nitrification, Soil->NO3_Denitrification, Soil->N2O_Denitrification, Soil->NH4_Volatilization);
+#endif
 }
 
 void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon)
@@ -65,8 +76,11 @@ void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, 
             N2O_Nitrified = N2O_Fraction * NH4_Nitrified;
             Soil->NH4[i] -= (NH4_Nitrified + N2O_Nitrified);
             Soil->NO3[i] += NH4_Nitrified;
-            *Profile_N_Nitrified += NH4_Nitrified;
-            *Profile_N2O_Nitrified += N2O_Nitrified;
+            *Profile_N_Nitrified = *Profile_N_Nitrified + NH4_Nitrified;
+            *Profile_N2O_Nitrified = *Profile_N2O_Nitrified + N2O_Nitrified;
+#ifdef _DEBUG_
+            printf ("NH4[%d] = %lf, NO3[%d] = %lf, Profile_N_Nitrified = %lf, Profile_N2O_Nitrified = %lf\n", i + 1, Soil->NH4[i], i + 1, Soil->NO3[i], *Profile_N_Nitrified, *Profile_N2O_Nitrified);
+#endif
 
             Soil->n2o[i] = N2O_Nitrified;
         }
@@ -91,11 +105,17 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
     double          cc2 = 60.;  /* coefficient of denitrification curve response to aereation */
     int             i;
 
+#ifdef _DEBUG_
+    printf ("Denitrification:\n");
+#endif
     for (i = 0; i < Soil->totalLayers; i++)
     {
         N_Denit = 0.;
         N2O_Emission = 0.;
         AirVol = Soil->Porosity[i] - Soil->waterContent[i];
+#ifdef _DEBUG_
+        printf ("AirVol = %lf\n", AirVol);
+#endif
 
         if (Soil->NO3[i] > 1e-6 && AirVol < 0.25)
         {
@@ -108,6 +128,9 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
 
             NO3_Conc = Soil->NO3[i] / Soil_Mass;
             NO3_Factor = NO3_Conc / (NO3_Conc + DENITRIFICATION_HALF_RATE);
+#ifdef _DEBUG_
+            printf ("Oxy_Factor = %lf, Res_Factor = %lf, NO3_Factor = %lf\n", Oxy_Factor, Res_Factor, NO3_Factor);
+#endif
 
             //N_Denit = POTENTIAL_DENITRIFICATION * Soil_Mass * Oxy_Factor * Res_Factor * NO3_Factor
             N_Denit = POTENTIAL_DENITRIFICATION * Soil_Mass * pow (Oxy_Factor, 0.5) * Res_Factor * NO3_Factor;
@@ -116,10 +139,16 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
             N2O_Emission = N_Denit * N2O_Fraction;
 
             Soil->NO3[i] -= N_Denit;
+#ifdef _DEBUG_
+            printf ("N_Denit = %lf, N2O_Emission = %lf, NO3[%d] = %lf\n", N_Denit, N2O_Emission, i + 1, Soil->NO3[i]);
+#endif
         }
 
         *Profile_N_Denitrified += N_Denit;
         *Profile_N2O_Denitrified += N2O_Emission;
+#ifdef _DEBUG_
+        printf ("Profile_N_Denitrified = %lf, Profile_N2O_Denitrified = %lf\n", *Profile_N_Denitrified, *Profile_N2O_Denitrified);
+#endif
         Soil->n2o[i] = N2O_Emission;
     }
 }
@@ -170,10 +199,17 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
     GG1 = 1 - 0.85 * pow (Crop->svRadiationInterception, 3);
     GG2 = 0.95 * pow (Residue->flatResidueTau, 2);
     GG3 = GBL * GG1 * GG2;
+#ifdef _DEBUG_
+    printf ("Volatilization:\n");
+    printf ("Tavg = %lf, pAtm = %lf, AMD = %lf, GBL = %lf, GG1 = %lf, GG2 = %lf, GG3 = %lf\n", Tavg, pAtm, AMD, GBL, GG1, GG2, GG3);
+#endif
 
     pK = 0.09018 + 2729.92 / Tavg;
     henrysCoeff = pow (10., 1477.7 / Tavg - 1.69);
     henrysConst = 1000. * 8.3143 * Tavg / henrysCoeff;  /* 1000 converts from m3 to liters */
+#ifdef _DEBUG_
+    printf ("pK = %lf, henrysCoeff = %lf, henrysConst = %lf\n", pK, henrysCoeff, henrysConst);
+#endif
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
@@ -193,6 +229,9 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
         CECFactor = 0.2 + 0.8 * exp (-0.08 * CEC);
 
         layerMidpoint = 0.5 * (layerTop[i] + layerBottom[i]);
+#ifdef _DEBUG_
+        printf ("layerTop[%d] = %lf, layerBottom[%d] = %lf, layerMidpoint = %lf\n", i + 1, layerTop[i], i + 1, layerBottom[i], layerMidpoint);
+#endif
         DepthFactor = 1. / 3. * (VolatilizationDepthFunction (layerTop[i]) + VolatilizationDepthFunction (layerMidpoint) + VolatilizationDepthFunction (layerBottom[i]));
 
         fVol = CECFactor * DepthFactor;
@@ -202,10 +241,19 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
         NH4Conc = NH4Volatilizable * (18. / 14.) / waterVolume;;    /* Mg/m3; 18/14 converts mass of N to mass of NH4 */
         NH3Conc = NH4Conc / (1 + pow (10, pK - pH));    /* Mg/m3 */
         NH3MolarFraction = henrysConst * (NH3Conc / 0.000017) / pAtm;   /* 0.000017 = Mg/mol of NH3 */
-        NH4Volatilized = GG3 * NH3MolarFraction * 86400 * 0.000017 * 10000 * (14 / 17); /* Mg NH3 / ha / day; 14/17 converts mass of N to mass of NH4 */
+#ifdef _DEBUG_
+        printf ("waterVolume = %lf, NH4Conc = %16.14lf, NH3Conc = %16.14lf, NH3MolarFraction = %16.14lf\n", waterVolume, NH4Conc, NH3Conc, NH3MolarFraction);
+#endif
+        NH4Volatilized = GG3 * NH3MolarFraction * 86400. * 0.000017 * 10000. * (14. / 17.); /* Mg NH3 / ha / day; 14/17 converts mass of N to mass of NH4 */
+#ifdef _DEBUG_
+        printf ("CECFactor = %lf, DepthFactor = %lf, NH4Volatilizable = %lf, NH4Volatilized = %16.14lf\n", CECFactor, DepthFactor, NH4Volatilizable, NH4Volatilized);
+#endif
 
         Soil->NH4[i] -= NH4Volatilized;
         *Profile_NH4_Volatilization += NH4Volatilized;
+#ifdef _DEBUG_
+        printf ("NH4[%d] = %lf, Profile_NH4_Volatilization = %lf\n", i + 1, Soil->NH4[i], *Profile_NH4_Volatilization);
+#endif
     }
 }
 

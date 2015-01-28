@@ -20,9 +20,6 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
 
     SelectCropInitialPosition(CropManagement);
 
-#ifdef _DEBUG_
-        printf ("*%-10s%-12s%-12s\n", "Crop", "FloweringTT", "MaturityTT");
-#endif
     for (c = 0;  c < CropManagement->totalCropsPerRotation; c++)
     {
         SelectNextCrop (CropManagement);
@@ -74,9 +71,6 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
         }
         sumFTTbyYear = 0.;
         sumMTTbyYear = 0.;
-#ifdef _DEBUG_
-        printf ("*%-10s%-12.2lf%-12.2lf\n", describedCrop->userCropName, y, describedCrop->calculatedFloweringTT, describedCrop->calculatedMaturityTT);
-#endif
     }
 }
 

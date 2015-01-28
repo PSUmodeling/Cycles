@@ -3,7 +3,7 @@
 void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const WeatherStruct *Weather)
 {
     int i;
-    double waterExtraction[Soil->totalLayers];          /* water extraction by layer, mm/day */
+    //double waterExtraction[Soil->totalLayers];          /* water extraction by layer, mm/day */
 
     double PTx = 15.;               /* maximum full cover transpiration, mm/day */
     double PT = 0.00001;            /* potential transpiration, mm/day */
@@ -13,7 +13,7 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const Weat
     double transpirationRatio;
     double temperatureAvg;
     double factorTemperature;
-    double factorAeration;
+    //double factorAeration;
 
     double plantHC;                 /* plant hydraulic conductance, (kg/m2)/(J/kg) = kg2/(J m2) */
     double rootHC;                  /* root hydraulic conductance */

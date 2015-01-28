@@ -7,17 +7,11 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
      */
 
     double          HI, NHI;
-    double          residueMass;
-    double          forageYield;
+    double          residueMass = 0.;
+    double          forageYield = 0.;
     double          retainedResidue = 0.;
     double          grainNitrogenYield = 0.;
     double          forageNitrogenYield = 0.;
-
-    residueMass = 0.;
-    forageYield = 0.;
-    retainedResidue = 0.;
-    grainNitrogenYield = 0.;
-    forageNitrogenYield = 0.;
 
     if (verbose_mode)
         printf ("DOY %3.3d %-20s %s\n", doy, "Grain Harvest", Crop->cropName);
@@ -304,6 +298,7 @@ void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double ro
     for (i = 0; i < j; i++)     /* exits loop on the same layer as the
                                  * previous loop */
     {
+        fractionRootsByLayer[i] = 0.;
         if (rootMass > 0.)
         {
             fractionRootsByLayer[i] = rootDistribution[i] / rootSum;
@@ -314,7 +309,13 @@ void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double ro
         if (rhizoMass > 0.)
         {
             Residue->residueRz[i] += fractionRootsByLayer[i] * rhizoMass;
+#ifdef _DEBUG_
+            printf ("Before: %lf, fractionRootsByLayer = %lf, rhizoN = %lf, rootMass = %lf\n", Residue->residueRzN[i], fractionRootsByLayer[i], rhizoMass, rootMass);
+#endif
             Residue->residueRzN[i] += fractionRootsByLayer[i] * rhizoN;
+#ifdef _DEBUG_
+            printf ("After: %lf, fractionRootsByLayer = %lf, rhizoN = %lf\n", Residue->residueRzN[i], fractionRootsByLayer[i], rhizoMass);
+#endif
             SoilCarbon->rhizBiomassInput[i] += fractionRootsByLayer[i] * rhizoMass;
         }
     }

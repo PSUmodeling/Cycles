@@ -11,9 +11,12 @@ int main (int argc, char *argv[])
     int doy;
     int i;
     int c;
+    clock_t begin, end;
 
     CyclesStruct    Cycles;     /* Model structure */
     char           *project;    /* Name of simulation */
+
+    begin = clock();
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
@@ -100,7 +103,11 @@ int main (int argc, char *argv[])
 #endif
 
     /* Initialize model variables and parameters */
-    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop, &Cycles->CropManagement);
+    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop, &Cycles->CropManagement, &Cycles->Snow);
+
+#ifdef _DEBUG_
+    printf ("manureSurfaceN = %lf\n", Cycles->Residue.manureSurfaceN);
+#endif
 
     /* Compute crop thermal time */
     printf ("Compute crop thermal time.\n");
@@ -161,10 +168,17 @@ int main (int argc, char *argv[])
         /* Daily operations */
         for (doy = 1; doy < 366; doy++)
         {
-            //printf ("DOY %3.3d\n", doy);
+#ifdef _DEBUG_
+            printf ("DOY %3.3d %lf\n", doy, Cycles->Soil.NO3[2]);
+#endif
             DailyOperations (rotationYear, y, doy, &nextSeedingYear, &nextSeedingDate, &Cycles->CropManagement, &Cycles->Crop, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, project);
-            PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Crop, project);
+            PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Crop, &Cycles->Soil, &Cycles->Snow, project);
         }
     }
+    
+    end = clock();
+
+    printf ("\nSimulation time: %-lf seconds.\n", (double)(end - begin) / CLOCKS_PER_SEC);
+
     return 0;
 }

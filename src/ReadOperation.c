@@ -60,7 +60,6 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
 #ifdef _DEBUG_
     printf ("*Field operation file contains descriptions of %d planting operations, %d tillage operations, %d fixed irrigation operations, %d fixed fertilization operations, %d auto irrigation operations.\n", planting_counter, tillage_counter, irrigation_counter, fertilization_counter, auto_irrigation_counter);
     printf ("(Press any key to continue ...)\n");
-    getchar();
 #endif
 
     CropManagement->totalCropsPerRotation = planting_counter;

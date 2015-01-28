@@ -25,6 +25,10 @@ double FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStr
     }
 
     if (depletionZoneWater + Soil->irrigationVol < depletionZonePAW * (1. - opWaterDepletion))
+    {
         /* convert m to mm */
         tempVal = (depletionZonePAW - depletionZoneWater) * 1000. - Soil->irrigationVol;
+    }
+
+    return tempVal;
 }

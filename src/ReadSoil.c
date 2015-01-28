@@ -45,7 +45,7 @@ void ReadSoil (char *project, SoilStruct *Soil)
     for (i = 0; i < Soil->totalLayers; i++)
     {
         fgets (cmdstr, MAXSTRING, soil_file);
-        sscanf (cmdstr, "%*d %lf %lf %lf %lf %lf %lf %lf %lf %lf", &Soil->layerThickness[i], &Soil->Clay[i], &Soil->Sand[i], &Soil->IOM[i], &Soil->BD[i], &Soil->FC[i], &Soil->PWP[i], &Soil->NO3[i], &Soil->NH4[i]);
+        sscanf (cmdstr, "%*d %lg %lf %lf %lf %lf %lf %lf %lf %lf", &Soil->layerThickness[i], &Soil->Clay[i], &Soil->Sand[i], &Soil->IOM[i], &Soil->BD[i], &Soil->FC[i], &Soil->PWP[i], &Soil->NO3[i], &Soil->NH4[i]);
     }
 
     fclose (soil_file);

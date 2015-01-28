@@ -2,7 +2,6 @@
 
 void Temperature (int y, int doy, double snowCover, double cropInterception, SoilStruct * Soil, WeatherStruct * Weather, ResidueStruct * Residue)
 {
-
     int             m;
     int             i;
     double          CP[Soil->totalLayers];
@@ -43,15 +42,25 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
     for (i = 0; i < Soil->totalLayers + 1; i++)
         T[i] = Soil->soilTemperature[i];
 
+#ifdef _DEBUG_
+    printf ("Temperature:\n");
+    for (i = 0; i < Soil->totalLayers + 1; i++)
+        printf ("T[%d] = %lf\n", i + 1, T[i]);
+#endif
+
     /* calculates temperature of upper boundary condition
      * uses an empirical factor to weight the effect of air temperature,
      * residue cover, and snow cover on the upper node temperature. This is an
      * empirical approach to allow for residue or snow insulation effect */
-    tAvg = 0.5 * (Weather->tMax[y][doy] + Weather->tMin[y][doy]);
+    tAvg = 0.5 * (Weather->tMax[y][doy - 1] + Weather->tMin[y][doy - 1]);
     soilCover = 1. - (1. - cropInterception) * (1. - snowCover) * Residue->flatResidueTau;
     fCover = 0.4 * soilCover + 0.3 * snowCover / (soilCover + 0.001);
     tsfc = (1. - fCover) * tAvg + fCover * T[0];
     //T(0) = Tn(0) 
+
+#ifdef _DEBUG_
+    printf ("tAvg = %lf, T[0] = %lf, fCover = %lf, tsfc = %lf\n", tAvg, T[0], fCover, tsfc);
+#endif
 
     counter = 0;
 
@@ -68,6 +77,7 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
             T[1] = Tn[1];
         }
 
+        a[0] = 0.;
         for (i = 0; i < Soil->totalLayers; i++) /* calculates matrix elements */
         {
             c[i] = -k[i] * f;
@@ -104,7 +114,12 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
     } while (fabs (T[0] - Tn[0]) > 0.02 || abs (T[1] - Tn[1]) > 0.02);
 
     for (i = 0; i < Soil->totalLayers + 1; i++)
+    {
         Soil->soilTemperature[i] = Tn[i];
+#ifdef _DEBUG_
+        printf ("Tn[%d] = %lf\n", i + 1, Tn[i]);
+#endif
+    }
 }
 
 double HeatCapacity (double bulkDensity, double volumetricWC)
