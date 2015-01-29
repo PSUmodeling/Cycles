@@ -12,6 +12,7 @@ void InitializeOutput (char *project)
     sprintf (output_dir, "output/%s", project);
     mkdir (output_dir, 0755);
 
+    sprintf (filename, "output/%s/weather.dat", project);
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\n", "DATE", "T_MEAN", "ET_REF", "PRECIP");
     fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\n", "YYYY-MM-DD", "C", "MM/DAY", "MM");
