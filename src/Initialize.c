@@ -8,10 +8,10 @@ void InitializeOutput (char *project)
 
     output_dir = (char *) malloc ((strlen(project) + 8) * sizeof (char));
 
+    mkdir ("output", 0755);
     sprintf (output_dir, "output/%s", project);
     mkdir (output_dir, 0755);
 
-    sprintf (filename, "output/%s/weather.dat", project);
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\n", "DATE", "T_MEAN", "ET_REF", "PRECIP");
     fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\n", "YYYY-MM-DD", "C", "MM/DAY", "MM");
