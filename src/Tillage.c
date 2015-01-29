@@ -17,10 +17,10 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
     double          soilMassMixed[Soil->totalLayers];
     double          totalSoilMassMixed;
     double          partialSoilMassMixed;   /* Mg/m3 */
-    double          SOCConc[Soil->totalLayers];
-    double          SONConc[Soil->totalLayers];
-    double          NO3Conc[Soil->totalLayers];
-    double          NH4Conc[Soil->totalLayers];
+    //double          SOCConc[Soil->totalLayers];
+    //double          SONConc[Soil->totalLayers];
+    //double          NO3Conc[Soil->totalLayers];
+    //double          NH4Conc[Soil->totalLayers];
     double          incorporatedResidueBiomass;
     double          incorporatedResidueN;
     double          incorporatedManureC;
@@ -31,14 +31,14 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
     /* flatten standing residues */
     flattenedFraction = pow (Tillage->opMixingEfficiency, 0.5);
     Residue->flatResidueMass += flattenedFraction * Residue->stanResidueMass;
-    Residue->stanResidueMass *= (1. - flattenedFraction);
+    Residue->stanResidueMass *= (1.0 - flattenedFraction);
     Residue->flatResidueN += flattenedFraction * Residue->stanResidueN;
-    Residue->stanResidueN *= (1. - flattenedFraction);
+    Residue->stanResidueN *= (1.0 - flattenedFraction);
     Residue->flatResidueWater += flattenedFraction * Residue->stanResidueWater;
-    Residue->stanResidueWater *= (1. - flattenedFraction);
+    Residue->stanResidueWater *= (1.0 - flattenedFraction);
 
     /* set tillage depth */
-    if (Tillage->opMixingEfficiency == 0. || Tillage->opDepth == 0.)
+    if (Tillage->opMixingEfficiency == 0.0 || Tillage->opDepth == 0.0)
         return;
     else if (Soil->cumulativeDepth[Soil->totalLayers - 1] >= Tillage->opDepth)
         toolDepth = Tillage->opDepth;
@@ -46,7 +46,6 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
         toolDepth = Soil->cumulativeDepth[Soil->totalLayers - 1];
 
     /* add water mixing, microbial biomass */
-
     /* start soil mixing */
     for (i = 0; i < Soil->totalLayers; i++)
     {
@@ -56,7 +55,7 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
                 break;
         }
 
-        soilMass[i] = Soil->BD[i] * Soil->layerThickness[i] * 10000.;   /* mass in Mg C ha-1 */
+        soilMass[i] = Soil->BD[i] * Soil->layerThickness[i] * 10000.0;   /* mass in Mg C ha-1 */
         conc[i][0] = Soil->Clay[i];
         conc[i][1] = Soil->SOC_Conc[i];
         conc[i][2] = Soil->SON_Mass[i] / soilMass[i];
@@ -76,8 +75,9 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
         conc[i][16] = Soil->Sand[i];
         lastLayer = i + 1;
     }
-    for (i = 0; i < lastLayer; i++)
 
+    totalSoilMassMixed = 0.0;
+    for (i = 0; i < lastLayer; i++)
     {
         if (toolDepth >= Soil->cumulativeDepth[i])
             soilMassMixed[i] = Tillage->opMixingEfficiency * soilMass[i];
@@ -85,6 +85,7 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
         else
             soilMassMixed[i] = Tillage->opMixingEfficiency * soilMass[i] * (toolDepth - Soil->cumulativeDepth[i - 1]) / Soil->layerThickness[i];
         soilMassNotMixed[i] = soilMass[i] - soilMassMixed[i];
+
         partialSoilMassMixed = totalSoilMassMixed + soilMassMixed[i];
         for (j = 0; j < mixVariables; j++)
         {
@@ -114,7 +115,7 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
         Soil->MBN_Mass[i] = soilMass[i] * Fraction (conc[i][14], soilMassNotMixed[i], mixed[14], soilMassMixed[i], soilMass[i]);
         Soil->waterContent[i] = soilMass[i] / Soil->layerThickness[i] * Fraction (conc[i][15], soilMassNotMixed[i], mixed[15], soilMassMixed[i], soilMass[i]);
         Soil->Sand[i] = Fraction (conc[i][16], soilMassNotMixed[i], mixed[16], soilMassMixed[i], soilMass[i]);
-        Soil->SOC_Mass[i] = Soil->SOC_Conc[i] / 1000. * soilMass[i];    /* mass in Mg/ha */
+        Soil->SOC_Mass[i] = Soil->SOC_Conc[i] / 1000.0 * soilMass[i];    /* mass in Mg/ha */
     }
 
     /* Remove residue from the surface and incorporate within each layer */
@@ -129,13 +130,10 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
     {
         if (toolDepth >= Soil->cumulativeDepth[i])
             mixedFraction = Soil->layerThickness[i] / toolDepth;
-
         else
-
         {
             if (i > 0)
                 mixedFraction = (toolDepth - Soil->cumulativeDepth[i - 1]) / toolDepth;
-
             else
                 mixedFraction = toolDepth / toolDepth;
         }
@@ -147,17 +145,14 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
     }
 
     /* Update surface pools */
-    Residue->flatResidueMass *= (1. - Tillage->opMixingEfficiency);
-    Residue->stanResidueMass *= (1. - Tillage->opMixingEfficiency);
-    Residue->flatResidueN *= (1. - Tillage->opMixingEfficiency);
-    Residue->stanResidueN *= (1. - Tillage->opMixingEfficiency);
-    Residue->manureSurfaceC *= (1. - Tillage->opMixingEfficiency);
-    Residue->manureSurfaceN *= (1. - Tillage->opMixingEfficiency);
-#ifdef _DEBUG_
-    printf ("Tillage:manureSurfaceN = %lf", Residue->manureSurfaceN);
-#endif
-    Residue->flatResidueWater *= (1. - Tillage->opMixingEfficiency);
-    Residue->stanResidueWater *= (1. - Tillage->opMixingEfficiency);
+    Residue->flatResidueMass *= (1.0 - Tillage->opMixingEfficiency);
+    Residue->stanResidueMass *= (1.0 - Tillage->opMixingEfficiency);
+    Residue->flatResidueN *= (1.0 - Tillage->opMixingEfficiency);
+    Residue->stanResidueN *= (1.0 - Tillage->opMixingEfficiency);
+    Residue->manureSurfaceC *= (1.0 - Tillage->opMixingEfficiency);
+    Residue->manureSurfaceN *= (1.0 - Tillage->opMixingEfficiency);
+    Residue->flatResidueWater *= (1.0 - Tillage->opMixingEfficiency);
+    Residue->stanResidueWater *= (1.0 - Tillage->opMixingEfficiency);
     ComputeTillageFactor (Tillage, tillageFactor, Soil, Soil->cumulativeDepth, toolDepth);
 }
 
@@ -165,15 +160,9 @@ void TillageFactorSettling (double *tillageFactor, int totalLayers, const double
 {
     int             i;
 
-#ifdef _DEBUG_
-    printf ("TillageFactorSettling:\n");
-#endif
     for (i = 0; i < totalLayers; i++)
     {
         tillageFactor[i] *= (1.0 - 0.02 * waterContent[i] / Porosity[i]);
-#ifdef _DEBUG_
-        printf ("tillageFactor[%d] = %lf\n", i + 1, tillageFactor[i]);        
-#endif
     }
 }
 
@@ -184,7 +173,6 @@ double Fraction (double a, double b, double c, double d, double f)
 
 void ComputeTillageFactor (const FieldOperationStruct * Tillage, double *tillageFactor, SoilStruct * Soil, double *soilLayerBottom, double toolDepth)
 {
-
     /*
      * Multiplier for soil decomposition rate based on tillage intensity and
      * soil type is returned
@@ -198,35 +186,36 @@ void ComputeTillageFactor (const FieldOperationStruct * Tillage, double *tillage
     double          textureFactor;
     double          TF1;
     double          XX;
-    for (i = 0; i < Soil->totalLayers; i++)
 
+    for (i = 0; i < Soil->totalLayers; i++)
     {
         textureFactor = ComputeTextureFactor (Soil->Clay[i]);
         TF1 = tillageFactor[i] / textureFactor;
+
         if (TF1 > 0.01)
-
         {
-            SDR1 = 35.;         /* iteration starting value */
-            SDR2 = 0.;
-            while (fabs ((SDR1 - SDR2) / SDR1) > 0.05)
+            SDR1 = 35.0;         /* iteration starting value */
+            SDR2 = 0.0;
 
+            while (fabs ((SDR1 - SDR2) / SDR1) > 0.05)
             {
                 SDR2 = SDR1;
                 XX = exp (k1 - k2 * SDR1);
                 FX = SDR1 / (SDR1 + XX) - TF1;
-                DFX = (1. + k2 * SDR1) * XX / pow (SDR1 + XX, 2);
+                DFX = (1.0 + k2 * SDR1) * XX / pow (SDR1 + XX, 2.0);
                 SDR1 = SDR1 - FX / DFX;
             }
+
             SDR = SDR1;
         }
-
         else
-            SDR = 1.;
+            SDR = 1.0;
+
         if (soilLayerBottom[i] <= toolDepth)
             SDR += Tillage->opSDR;
-
         else if (soilLayerBottom[i] > toolDepth && soilLayerBottom[i - 1] < toolDepth)
             SDR += Tillage->opSDR * (toolDepth - soilLayerBottom[i - 1]) / Soil->layerThickness[i];
+
         tillageFactor[i] = textureFactor * SDR / (SDR + exp (k1 - k2 * SDR));
     }
 }
@@ -235,8 +224,8 @@ double ComputeTextureFactor (double Clay)
 {
 
     /* clay is expressed fractionally */
-    const int       aClay = 1;  /* the maximum (lots of tillage) multiplier in a 100% clay soil is (A_clay + 1) */
-    const int       aSand = 5;  /* the maximum multiplier in 100% sand soil is (A_sand + 1) */
+    const double    aClay = 1.0;  /* the maximum (lots of tillage) multiplier in a 100% clay soil is (A_clay + 1) */
+    const double    aSand = 5.0;  /* the maximum multiplier in 100% sand soil is (A_sand + 1) */
     const double    kClay = 5.5;    /* a curvature factor */
     return (aClay + (aSand - aClay) * exp (-kClay * Clay)); /* clay dependent term */
 }

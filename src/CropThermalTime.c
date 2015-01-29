@@ -7,9 +7,9 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
      * in the rotation
      */
 
-    double sumTT = 0.;
-    double sumMTTbyYear = 0.;
-    double sumFTTbyYear = 0.;
+    double sumTT = 0.0;
+    double sumMTTbyYear = 0.0;
+    double sumFTTbyYear = 0.0;
 
     int cropEvents;
     int cropON;
@@ -24,7 +24,7 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
     {
         SelectNextCrop (CropManagement);
         describedCrop = &(CropManagement->describedCrop[CropManagement->describedIndex]);
-        if (describedCrop->calculatedMaturityTT == 0)
+        if (describedCrop->calculatedMaturityTT == 0.0)
         {
             /* Computes thermal time for 1st instance of crop in each
              * rotation */
@@ -48,12 +48,12 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
                         {
                             cropEvents = cropEvents + 1;
                             sumMTTbyYear = sumMTTbyYear + sumTT;
-                            sumTT = 0.;
+                            sumTT = 0.0;
                             cropON = 0;
                         }
                     }
-                } /* End of d loop */
-            } /* End of y loop */
+                } 
+            } 
 
             /* Load flow and mat TT as crop info for the crops in the rotation
              * Order of crops in array are assigned according to order in the
@@ -65,22 +65,25 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
             }
             else
             {
-                describedCrop->calculatedFloweringTT = 0.;
-                describedCrop->calculatedMaturityTT = 0.;
+                describedCrop->calculatedFloweringTT = 0.0;
+                describedCrop->calculatedMaturityTT = 0.0;
             }
         }
-        sumFTTbyYear = 0.;
-        sumMTTbyYear = 0.;
+        sumFTTbyYear = 0.0;
+        sumMTTbyYear = 0.0;
     }
 }
 
 double ThermalTime (double T_base, double T_op, double T_Max, double Temperature)
 {
+    double thermal_time;
 
     if (Temperature <= T_base || Temperature >= T_Max)
-        return (0);
+        thermal_time = 0.0;
     else if (Temperature < T_op)
-        return (Temperature - T_base);
+        thermal_time = Temperature - T_base;
     else
-        return ((T_Max - Temperature) / (T_Max - T_op) * (T_op - T_base));
+        thermal_time = (T_Max - Temperature) / (T_Max - T_op) * (T_op - T_base);
+
+    return (thermal_time);
 }

@@ -4,10 +4,10 @@ void SnowProcesses (SnowStruct *Snow, int y, int doy, WeatherStruct *Weather, do
 {
     double          PP, Tavg, Tx, Tn;
 
-    Snow->snowFall = 0.;
-    Snow->snowMelt = 0.;
-    Snow->snowCover = 0.;
-    Snow->snowEvaporationVol = 0.;
+    Snow->snowFall = 0.0;
+    Snow->snowMelt = 0.0;
+    Snow->snowCover = 0.0;
+    Snow->snowEvaporationVol = 0.0;
 
     PP = Weather->precipitation[y][doy - 1];
     Tx = Weather->tMax[y][doy - 1];
@@ -16,10 +16,10 @@ void SnowProcesses (SnowStruct *Snow, int y, int doy, WeatherStruct *Weather, do
 
     CalculateSnowFall (Snow, Tavg, PP);
 
-    if (Snow->Snow > 0)
+    if (Snow->Snow > 0.0)
     {
         CalculateSnowMelt (Snow, Tavg, Tx, Tn);
-        if (Snow->Snow > 0)
+        if (Snow->Snow > 0.0)
             CalculateSnowEvaporation (Snow, TauStandingRes, CropInterception, Weather->ETref[y][doy - 1]);
         Snow->snowCover = CalculateSnowCover (Snow);
     }
@@ -27,7 +27,7 @@ void SnowProcesses (SnowStruct *Snow, int y, int doy, WeatherStruct *Weather, do
 
 void CalculateSnowFall (SnowStruct *Snow, double Tavg, double PP)
 {
-    if (PP > 0 && Tavg < THRESHOLD_TEMPERATURE_SNOWFALL)
+    if (PP > 0.0 && Tavg < THRESHOLD_TEMPERATURE_SNOWFALL)
     {
         Snow->snowFall = PP;
         Snow->Snow = Snow->Snow + Snow->snowFall;
@@ -41,9 +41,9 @@ void CalculateSnowMelt (SnowStruct *Snow, double Tavg, double Tx, double Tn)
     if (Tn > THRESHOLD_TEMPERATURE_SNOWMELT)
         TTmelt = Tavg - THRESHOLD_TEMPERATURE_SNOWMELT;
     else if (Tx < THRESHOLD_TEMPERATURE_SNOWMELT)
-        TTmelt = 0;
+        TTmelt = 0.0;
     else
-        TTmelt = pow (Tx - THRESHOLD_TEMPERATURE_SNOWMELT, 2.) / (Tx - Tn);
+        TTmelt = pow (Tx - THRESHOLD_TEMPERATURE_SNOWMELT, 2.0) / (Tx - Tn);
 
     Snow->snowMelt = TTmelt * SNOWMELT_RATE;
     if (Snow->snowMelt > Snow->Snow)
@@ -55,7 +55,7 @@ void CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRes, double C
 {
     double          evaporativeDemand;
 
-    evaporativeDemand = TauStandingRes * (1. - CropInterception) * ETo;
+    evaporativeDemand = TauStandingRes * (1.0 - CropInterception) * ETo;
 
     if (evaporativeDemand > Snow->Snow)
         Snow->snowEvaporationVol = Snow->Snow;
@@ -67,6 +67,9 @@ void CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRes, double C
 
 double CalculateSnowCover (SnowStruct * Snow)
 {
-    //SnowCover = 1 - exp(C1 * pow(Snow->Snow, 1 + C1 / 3)) with C1 = 0.427
-    return (1. - exp (-0.43 * pow (Snow->Snow, 1.14)));
+    double snow_cover;
+
+    snow_cover = (1.0 - exp (-0.43 * pow (Snow->Snow, 1.14)));
+
+    return (snow_cover);
 }

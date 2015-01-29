@@ -19,12 +19,12 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
     double          f = 0.6;    /* constant for setting forward, backward or centered difference method */
     double          g;
 
-    g = 1 - f;
+    g = 1.0 - f;
 
     m = Soil->totalLayers;
 
-    CPsfc = 0.;                 /* heat capacity of boundary layer  = 0 */
-    ksfc = 20.;                 /* boundary layer conductance (W/m2 K) */
+    CPsfc = 0.0;                 /* heat capacity of boundary layer  = 0 */
+    ksfc = 20.0;                 /* boundary layer conductance (W/m2 K) */
 
     for (i = 0; i < m; i++)
     {
@@ -42,25 +42,15 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
     for (i = 0; i < Soil->totalLayers + 1; i++)
         T[i] = Soil->soilTemperature[i];
 
-#ifdef _DEBUG_
-    printf ("Temperature:\n");
-    for (i = 0; i < Soil->totalLayers + 1; i++)
-        printf ("T[%d] = %lf\n", i + 1, T[i]);
-#endif
-
     /* calculates temperature of upper boundary condition
      * uses an empirical factor to weight the effect of air temperature,
      * residue cover, and snow cover on the upper node temperature. This is an
      * empirical approach to allow for residue or snow insulation effect */
     tAvg = 0.5 * (Weather->tMax[y][doy - 1] + Weather->tMin[y][doy - 1]);
-    soilCover = 1. - (1. - cropInterception) * (1. - snowCover) * Residue->flatResidueTau;
+    soilCover = 1.0 - (1.0 - cropInterception) * (1.0 - snowCover) * Residue->flatResidueTau;
     fCover = 0.4 * soilCover + 0.3 * snowCover / (soilCover + 0.001);
-    tsfc = (1. - fCover) * tAvg + fCover * T[0];
+    tsfc = (1.0 - fCover) * tAvg + fCover * T[0];
     //T(0) = Tn(0) 
-
-#ifdef _DEBUG_
-    printf ("tAvg = %lf, T[0] = %lf, fCover = %lf, tsfc = %lf\n", tAvg, T[0], fCover, tsfc);
-#endif
 
     counter = 0;
 
@@ -77,20 +67,20 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
             T[1] = Tn[1];
         }
 
-        a[0] = 0.;
+        a[0] = 0.0;
         for (i = 0; i < Soil->totalLayers; i++) /* calculates matrix elements */
         {
             c[i] = -k[i] * f;
             a[i + 1] = c[i];
             if (i == 0)
             {
-                b[i] = f * (k[i] + ksfc) + CP[i] / 86400.;  /* changed to seconds per day, quite long time step */
-                d[i] = g * ksfc * tsfc + (CP[i] / 86400. - g * (k[i] + ksfc)) * T[i] + g * k[i] * T[i + 1]; /* changed to seconds per day, quite long time step */
+                b[i] = f * (k[i] + ksfc) + CP[i] / 86400.0;  /* changed to seconds per day, quite long time step */
+                d[i] = g * ksfc * tsfc + (CP[i] / 86400.0 - g * (k[i] + ksfc)) * T[i] + g * k[i] * T[i + 1]; /* changed to seconds per day, quite long time step */
             }
             else
             {
-                b[i] = f * (k[i] + k[i - 1]) + CP[i] / 86400.;  /* changed to seconds per day, quite long time step */
-                d[i] = g * k[i - 1] * T[i - 1] + (CP[i] / 86400. - g * (k[i] + k[i - 1])) * T[i] + g * k[i] * T[i + 1]; /* changed to seconds per day, quite long time step */
+                b[i] = f * (k[i] + k[i - 1]) + CP[i] / 86400.0;  /* changed to seconds per day, quite long time step */
+                d[i] = g * k[i - 1] * T[i - 1] + (CP[i] / 86400.0 - g * (k[i] + k[i - 1])) * T[i] + g * k[i] * T[i + 1]; /* changed to seconds per day, quite long time step */
             }
         }
 
@@ -116,15 +106,12 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
     for (i = 0; i < Soil->totalLayers + 1; i++)
     {
         Soil->soilTemperature[i] = Tn[i];
-#ifdef _DEBUG_
-        printf ("Tn[%d] = %lf\n", i + 1, Tn[i]);
-#endif
     }
 }
 
 double HeatCapacity (double bulkDensity, double volumetricWC)
 {
-    return (2400000. * bulkDensity / 2.65 + 4180000. * volumetricWC);
+    return (2400000.0 * bulkDensity / 2.65 + 4180000.0 * volumetricWC);
 }
 
 double HeatConductivity (double bulkDensity, double volumetricWC, double fractionClay)
@@ -138,7 +125,7 @@ double HeatConductivity (double bulkDensity, double volumetricWC, double fractio
     C2 = 1.06 * bulkDensity;
 
     /* equation 4.28; coeff of 4.20 */
-    C3 = 1. + 2.6 / sqrt (fractionClay);
+    C3 = 1.0 + 2.6 / sqrt (fractionClay);
 
     /* equation 4.22; coeff of 4.20 */
     C4 = 0.03 + 0.1 * bulkDensity * bulkDensity;
@@ -148,5 +135,5 @@ double HeatConductivity (double bulkDensity, double volumetricWC, double fractio
 
 double EstimatedSoilTemperature (double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth)
 {
-    return (annualAvgTemperature + yearlyAmplitude * exp (-nodeDepth / dampingDepth) * sin (2. * PI / 365. * (double)(doy - phase) - nodeDepth / dampingDepth));
+    return (annualAvgTemperature + yearlyAmplitude * exp (-nodeDepth / dampingDepth) * sin (2.0 * PI / 365.0 * (double)(doy - phase) - nodeDepth / dampingDepth));
 }

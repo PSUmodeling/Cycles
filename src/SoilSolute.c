@@ -13,27 +13,18 @@ void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *le
 
     soluteFlow[0] = WInConc * WFlux[0];
 
-#ifdef _DEBUG_
-    printf ("SoluteTransport:\n");
-    printf ("soluteFlow[0] = %lf\n", soluteFlow[0]);
-#endif
-
     for (i = 0; i < totalLayers; i++)
     {
-        soluteConc = 0.;
-        soluteMassAdsorbed = 0.;
+        soluteConc = 0.0;
+        soluteMassAdsorbed = 0.0;
         waterInitial = thickness[i] * WATER_DENSITY * WCinitial[i];
 
-        if (soluteMass[i] > 0.)
+        if (soluteMass[i] > 0.0)
             soluteConc = LinearEquilibriumConcentration (Sol_Kd, BD[i], thickness[i], WCinitial[i], soluteMass[i]);
 
         soluteMassAdsorbed = soluteMass[i] - waterInitial * soluteConc;
 
-#ifdef _DEBUG_
-        printf ("%d: thickness = %lf, WCinitial = %lf, waterInitial = %lf, soluteConc = %lf, soluteMassAdsorbed = %lf\n", i + 1, thickness[i], WCinitial[i], waterInitial, soluteConc, soluteMassAdsorbed);
-#endif
-
-        if (WFlux[i + 1] > 0 + 1e-6)
+        if (WFlux[i + 1] > 0.0 + 1e-6)
         {
             /* note: the 0.67 is temporary, likely not needed, and if needed
              * use a relationship with B */
@@ -42,23 +33,17 @@ void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *le
             soluteFlow[i + 1] = waterInitial * soluteConc + soluteFlow[i] - soluteMassSolution;
             if (i == totalLayers - 1)
                 *leachate = soluteFlow[i + 1];
-#ifdef _DEBUG_
-            printf ("ratio = %lf, soluteMassSolution = %lf, soluteFlow[%d] = %lf, leachate = %lf\n", ratio, soluteMassSolution, i + 1, soluteFlow[i + 1], *leachate);
-#endif
         }
         else
         {
             soluteMassSolution = waterInitial * soluteConc + soluteFlow[i];
-            soluteFlow[i + 1] = 0;
+            soluteFlow[i + 1] = 0.0;
         }
 
         /* this equilibrium can cause a mass balance error if "mass" is based
          * on concentration at the end ignoring initial mass, not using it */
         //SoluteMass(i) = LinearEquilibriumSoluteMass(Sol_Kd, BD(i), Thickness(i), WCFinal, C(i))
         soluteMass[i] = soluteMassAdsorbed + soluteMassSolution;
-#ifdef _DEBUG_
-            printf ("soluteMass[%d] = %lf\n", i + 1, soluteMass[i]);
-#endif
     }
 }
 
@@ -74,11 +59,11 @@ void SoluteTransportEvaporation (int totalLayers, double Sol_Kd, const double *W
     {
         waterInitial = thickness[i] * WATER_DENSITY * WCinitial[i];
 
-        if (soluteMass[i] > 0.)
+        if (soluteMass[i] > 0.0)
             soluteConc = LinearEquilibriumConcentration (Sol_Kd, BD[i], thickness[i], WCinitial[i], soluteMass[i]);
 
         else
-            soluteConc = 0.;
+            soluteConc = 0.0;
 
         soluteFlux[i] = WFlux[i] * soluteConc;
     }
@@ -91,11 +76,6 @@ void SoluteTransportEvaporation (int totalLayers, double Sol_Kd, const double *W
             soluteMass[i] += soluteFlux[i + 1];
         }
     }
-#ifdef _DEBUG_
-    printf ("SoluteTransportEvaporation:\n");
-    for (i = 0; i < totalLayers; i++)
-        printf ("soluteMass[%d] = %lf\n", i + 1, soluteMass[i]);
-#endif
 }
 
 double LinearEquilibriumConcentration (double Kd, double bulkDensity, double layerThickness, double waterContent, double soluteMass)
@@ -106,7 +86,7 @@ double LinearEquilibriumConcentration (double Kd, double bulkDensity, double lay
      * soil bulk density, kg/m3
      * kd is the slope of the adsortion isotherm, m3/kg
      * solute equilibrium concentration, kg solute / m3 */
-    bulkDensity *= 1000.;       /* convert Mg/m3 to kg/m3 */
+    bulkDensity *= 1000.0;       /* convert Mg/m3 to kg/m3 */
     soilBufferPower = Kd * bulkDensity + waterContent;
 
     return (soluteMass / (soilBufferPower * layerThickness * WATER_DENSITY));
@@ -122,7 +102,7 @@ double LinearEquilibriumSoluteMass (double Kd, double bulkDensity, double layerT
      * kd is the slope of the adsortion isotherm, m3/kg
      * solute equilibrium concentration, kg solute / m3
      * solute mass, kg solute / m3 */
-    bulkDensity *= 1000.;       /* convert Mg/m3 to kg/m3 */
+    bulkDensity *= 1000.0;       /* convert Mg/m3 to kg/m3 */
     soilBufferPower = Kd * bulkDensity + waterContent;
 
     return (concentration * (soilBufferPower * layerThickness * WATER_DENSITY));

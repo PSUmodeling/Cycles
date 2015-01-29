@@ -41,14 +41,17 @@ int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOper
     /*
      * Returns a true or false indicating if an operation happens on that day
      */
+    int operation_today;
 
     if (operationIndex == -1)
-        return (0);
+        operation_today = 0;
     else
     {
         if (rotationYear == FieldOperation[operationIndex].opYear && doy == FieldOperation[operationIndex].opDay)
-            return (1);
+            operation_today = 1;
         else
-            return (0);
+            operation_today = 0;
     }
+
+    return (operation_today);
 }

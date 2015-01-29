@@ -20,7 +20,6 @@ int main (int argc, char *argv[])
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
-
     system ("clear");
     printf ("\n\n");
     printf ("\t\t ######  ##    ##  ######  ##       ########  ######\n");
@@ -147,9 +146,9 @@ int main (int argc, char *argv[])
         for (i = 0; i < Cycles->Soil.totalLayers; i++)
         {
             Cycles->SoilCarbon.carbonMassInitial[i] = Cycles->Soil.SOC_Mass[i];
-            Cycles->SoilCarbon.carbonMassFinal[i] = 0.;
-            Cycles->SoilCarbon.annualHumifiedCarbonMass[i] = 0.;
-            Cycles->SoilCarbon.annualRespiredCarbonMass[i] = 0.;
+            Cycles->SoilCarbon.carbonMassFinal[i] = 0.0;
+            Cycles->SoilCarbon.annualHumifiedCarbonMass[i] = 0.0;
+            Cycles->SoilCarbon.annualRespiredCarbonMass[i] = 0.0;
         } 
 
         /* Daily operations */
@@ -167,5 +166,5 @@ int main (int argc, char *argv[])
 
     printf ("\nSimulation time: %-lf seconds.\n", (double)(end - begin) / CLOCKS_PER_SEC);
 
-    return 0;
+    return (0);
 }

@@ -9,7 +9,6 @@ void SelectCropInitialPosition (CropManagementStruct *CropManagement)
 
 void SelectNextCrop (CropManagementStruct *CropManagement)
 {
-
     /*
      * Planting index set to next crop (if any) to be planted in the rotation
      * Described index set to previously searched value inside plantingOrder
@@ -72,32 +71,32 @@ void NewCrop (CropStruct *Crop, CropManagementStruct *CropManagement)
     else
         Crop->autoIrrigationUsed = 0;
 
-    Crop->svTT_Daily = 0;
-    Crop->svTT_Cumulative = 0;
-    Crop->svRadiationInterception = 0;
-    Crop->svBiomass = 0;
-    Crop->svShoot = 0;
-    Crop->svRoot = 0;
-    Crop->svRizho = 0;
-    Crop->svShootDailyGrowth = 0;
-    Crop->svRootDailyGrowth = 0;
-    Crop->svRizhoDailyDeposition = 0;
-    Crop->svUnstressedShootDailyGrowth = 0;
-    Crop->svUnstressedRootDailyGrowth = 0;
-    Crop->svPostFloweringShootBiomass = 0;
-    Crop->svRootingDepth = 0;
-    Crop->svTranspiration = 0;
-    Crop->svTranspirationPotential = 0;
-    Crop->svN_Shoot = 0;
-    Crop->svN_Root = 0;
-    Crop->svN_Rhizo = 0;
-    Crop->svN_RizhoDailyDeposition = 0;
-    Crop->svN_AutoAdded = 0;
-    Crop->svN_Fixation = 0;
-    Crop->svWaterStressFactor = 0;
-    Crop->svN_StressFactor = 0;
-    Crop->svShootUnstressed = 0;
-    Crop->svN_StressCumulative = 0;
+    Crop->svTT_Daily = 0.0;
+    Crop->svTT_Cumulative = 0.0;
+    Crop->svRadiationInterception = 0.0;
+    Crop->svBiomass = 0.0;
+    Crop->svShoot = 0.0;
+    Crop->svRoot = 0.0;
+    Crop->svRizho = 0.0;
+    Crop->svShootDailyGrowth = 0.0;
+    Crop->svRootDailyGrowth = 0.0;
+    Crop->svRizhoDailyDeposition = 0.0;
+    Crop->svUnstressedShootDailyGrowth = 0.0;
+    Crop->svUnstressedRootDailyGrowth = 0.0;
+    Crop->svPostFloweringShootBiomass = 0.0;
+    Crop->svRootingDepth = 0.0;
+    Crop->svTranspiration = 0.0;
+    Crop->svTranspirationPotential = 0.0;
+    Crop->svN_Shoot = 0.0;
+    Crop->svN_Root = 0.0;
+    Crop->svN_Rhizo = 0.0;
+    Crop->svN_RizhoDailyDeposition = 0.0;
+    Crop->svN_AutoAdded = 0.0;
+    Crop->svN_Fixation = 0.0;
+    Crop->svWaterStressFactor = 0.0;
+    Crop->svN_StressFactor = 0.0;
+    Crop->svShootUnstressed = 0.0;
+    Crop->svN_StressCumulative = 0.0;
 
     Crop->userSeedingDate = describedCrop->userSeedingDate;
     Crop->userFloweringDate = describedCrop->userFloweringDate;

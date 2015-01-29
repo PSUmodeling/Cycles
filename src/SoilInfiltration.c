@@ -9,20 +9,13 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
      * estimates runoff infiltrates and/or redistributes water
      */
 
-    //Soil->irrigationVol = 0.;
     int i;
 
-    Soil->infiltrationVol = 0.;
-    Soil->runoffVol = 0.;
-    Soil->drainageVol = 0.;
-    Soil->NO3Leaching = 0.;
-    Soil->NH4Leaching = 0.;
-
-    //while IsOperationToday(y, doy, CropManagement->FixedIrrigation, CropManagement->irrigationIndex);
-    //{
-    //    Soil->irrigationVol += CropManagement->FixedIrrigation[CropManagement->irrigationIndex]->opVolume;
-    //    SelectNextOperation (CropManagement->FixedIrrigation, CropManagement->numIrrigation, *(CropManagement->irrigationIndex));
-    //}
+    Soil->infiltrationVol = 0.0;
+    Soil->runoffVol = 0.0;
+    Soil->drainageVol = 0.0;
+    Soil->NO3Leaching = 0.0;
+    Soil->NH4Leaching = 0.0;
 
     if (Crop->autoIrrigationUsed)
     {
@@ -40,7 +33,7 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
 
     Soil->infiltrationVol = (precipitation - snowFall) + Soil->irrigationVol + snowMelt;
 
-    if (Soil->infiltrationVol > 0.)
+    if (Soil->infiltrationVol > 0.0)
     {
         ResidueWetting (Residue, Soil); /* wet surface residues before runoff */
         CurveNumber (Soil);     /* runoff before infiltration */
@@ -50,7 +43,7 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
     {
         SubDailyRedistribution (Soil);
     }
-    else if (Soil->infiltrationVol > 0.)
+    else if (Soil->infiltrationVol > 0.0)
     {
         CascadeRedistribution (Soil);
     }
@@ -82,19 +75,19 @@ void CascadeRedistribution (SoilStruct *Soil)
         else
         {
             Soil->waterContent[j] += Win / (WATER_DENSITY * Soil->layerThickness[j]);
-            Wout = 0.;
+            Wout = 0.0;
         }
 
         WFlux[j + 1] = Wout;
         Win = Wout;
-        if (Win <= 0.)
+        if (Win <= 0.0)
             break;
     }
 
-    if (Wout > 0.)
+    if (Wout > 0.0)
         Soil->drainageVol += Wout;
 
-    SoluteTransport (Soil->totalLayers, 0, 0, &(Soil->NO3Leaching), WFlux, Soil->NO3, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
+    SoluteTransport (Soil->totalLayers, 0.0, 0, &(Soil->NO3Leaching), WFlux, Soil->NO3, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
     SoluteTransport (Soil->totalLayers, 5.6, 0, &(Soil->NH4Leaching), WFlux, Soil->NH4, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
 }
 
@@ -124,8 +117,8 @@ void SubDailyRedistribution (SoilStruct *Soil)
     double          wpfc[Soil->totalLayers];
     double          WCi[Soil->totalLayers];
     double          WFlux[Soil->totalLayers + 1];
-    double          g = 9.81;
-    double          s = 86400.; /* seconds per day (or fraction of the day) */
+    const double    g = 9.81;
+    const double    s = 86400.; /* seconds per day (or fraction of the day) */
 
     RedistributionFlag = 0;
 
@@ -148,7 +141,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
         ksat[j] = K_Sat (sat[j], FC[j], b[j]);
     }
 
-    if (Win > 0.)
+    if (Win > 0.0)
     {
         RedistributionFlag = 1;
         SoluteFlag = 1;
@@ -169,13 +162,13 @@ void SubDailyRedistribution (SoilStruct *Soil)
     }
 
     /* redistribution */
-    cum_dt = 0.;
+    cum_dt = 0.0;
 
     while (RedistributionFlag)
     {
-        x1 = 0.;
+        x1 = 0.0;
 
-        if (Win > 0)            /* wet layer[0] - up to saturation */
+        if (Win > 0.0)            /* wet layer[0] - up to saturation */
         {
             x1 = (sat[0] - WC[0]) * dzx[0];
             if (Win > x1)
@@ -187,7 +180,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
             {
                 WC[0] += Win / dzx[0];
                 x1 = Win;
-                Win = 0.;
+                Win = 0.0;
             }
         }
 
@@ -195,7 +188,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
         WFlux[0] += x1;         /* store flux into layer 0 */
 
         /* check if redistribution still true */
-        if (Win == 0.)
+        if (Win == 0.0)
         {
             RedistributionFlag = 0;
 
@@ -248,8 +241,8 @@ void SubDailyRedistribution (SoilStruct *Soil)
             if (t1 < dt)
                 dt = t1;
 
-            if (dt < 3600.)
-                dt = 3600.;
+            if (dt < 3600.0)
+                dt = 3600.0;
         }
 
         cum_dt += dt;
@@ -263,9 +256,9 @@ void SubDailyRedistribution (SoilStruct *Soil)
 
         for (j = Soil->totalLayers - 1; j >= 0; j--)
         {
-            x2 = 0.;
-            x3 = 0.;
-            x4 = 0.;
+            x2 = 0.0;
+            x3 = 0.0;
+            x4 = 0.0;
 
             if (WC[j] > FC[j])
             {
@@ -274,7 +267,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
                 if (j + 1 < Soil->totalLayers - 1)
                     x4 = (sat[j + 1] - WC[j + 1]) * dzx[j + 1];
                 else
-                    x4 = 1000.; /* a big number to allow gravitational drainage from last layer */
+                    x4 = 1000.0; /* a big number to allow gravitational drainage from last layer */
                 x2 = x2 < x3 ? x2 : x3;
                 x2 = x2 < x4 ? x2 : x4;
                 WC[j] = WC[j] - x2 / dzx[j];
@@ -293,9 +286,9 @@ void SubDailyRedistribution (SoilStruct *Soil)
          * if there is excess water then drainage
          * note: wonder if this excess should not be considered runoff, check
          * how often it happens and the volume */
-        if (!RedistributionFlag && Win > 0.)
+        if (!RedistributionFlag && Win > 0.0)
         {
-            x1 = 0.;
+            x1 = 0.0;
             for (j = 0; j < Soil->totalLayers; j++)
             {
                 x1 = (sat[j] - WC[j]) * dzx[j];
@@ -308,8 +301,8 @@ void SubDailyRedistribution (SoilStruct *Soil)
                 {
                     WC[j] = WC[j] + Win / dzx[j];
                     WFlux[j + 1] = WFlux[j + 1] + Win;
-                    Win = 0.;
-                    x1 = 0.;
+                    Win = 0.0;
+                    x1 = 0.0;
                     break;
                 }
                 WFlux[j + 1] = WFlux[j + 1] + x1;
@@ -320,7 +313,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
 
     if (SoluteFlag)
     {
-        SoluteTransport (Soil->totalLayers, 0, 0, &(Soil->NO3Leaching), WFlux, Soil->NO3, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
+        SoluteTransport (Soil->totalLayers, 0.0, 0, &(Soil->NO3Leaching), WFlux, Soil->NO3, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
         SoluteTransport (Soil->totalLayers, 5.6, 0, &(Soil->NH4Leaching), WFlux, Soil->NH4, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
     }
 
@@ -355,27 +348,28 @@ void CurveNumber (SoilStruct * Soil)
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
-        airDryWC[i] = Soil->PWP[i] / 3.;    /* an approximation to air dry */
+        airDryWC[i] = Soil->PWP[i] / 3.0;    /* an approximation to air dry */
     }
-    cumulativeWeightedFactor = 0.;
+
+    cumulativeWeightedFactor = 0.0;
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
         if (Soil->cumulativeDepth[i] < 0.6 + 1e-6)
         {
-            cumulativeWeightedFactor = cumulativeWeightedFactor + 1. - (Soil->cumulativeDepth[i] - 0.5 * Soil->layerThickness[i]) / 0.6;
+            cumulativeWeightedFactor = cumulativeWeightedFactor + 1.0 - (Soil->cumulativeDepth[i] - 0.5 * Soil->layerThickness[i]) / 0.6;
         }
         else
             break;
     }
 
-    weightedWCF = 0.;
+    weightedWCF = 0.0;
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
         if (Soil->cumulativeDepth[i] < 0.6 + 1e-6)
         {
-            weightedFactorDepth[i] = (1. - (Soil->cumulativeDepth[i] - 0.5 * Soil->layerThickness[i]) / 0.6) / cumulativeWeightedFactor;
+            weightedFactorDepth[i] = (1.0 - (Soil->cumulativeDepth[i] - 0.5 * Soil->layerThickness[i]) / 0.6) / cumulativeWeightedFactor;
             WCFraction[i] = (Soil->waterContent[i] - airDryWC[i]) / (Soil->FC[i] - airDryWC[i]);
             weightedWCF += weightedFactorDepth[i] * WCFraction[i];
         }
@@ -383,14 +377,14 @@ void CurveNumber (SoilStruct * Soil)
             break;
     }
 
-    WC_Factor = weightedWCF / (weightedWCF + exp (11. - 15. * weightedWCF));
+    WC_Factor = weightedWCF / (weightedWCF + exp (11.0 - 15.0 * weightedWCF));
 
     factorSlope = 1.1 - slope / (slope + exp (3.7 + 0.02 * slope));
     CN1 = CN2 / (2.3 - 0.013 * CN2);
     CN3 = CN2 / (0.4 + 0.006 * CN2);
 
     CN = CN1 + (CN3 - CN1) * WC_Factor;
-    s = factorSlope * 254. * (100. / CN - 1.);
+    s = factorSlope * 254.0 * (100.0 / CN - 1.0);
 
 
     if (Soil->infiltrationVol > a * s)
@@ -404,7 +398,7 @@ void CurveNumber (SoilStruct * Soil)
 double K_Sat (double WCATSAT, double WCAT33, double b)
 {
     /* kg s / m^3 */
-    return (1930. * pow (WCATSAT - WCAT33, 3 - 1 / b) * (1. / 3600.) / 9.81);
+    return (1930.0 * pow (WCATSAT - WCAT33, 3.0 - 1.0 / b) * (1.0 / 3600.0) / 9.81);
 }
 
 double AverageHydraulicConductance (double WCSAT, double WCFC, double aep, double b, double SWP1, double SWP2, double ks)
@@ -414,10 +408,10 @@ double AverageHydraulicConductance (double WCSAT, double WCFC, double aep, doubl
 
 double Numerator (double aep, double b, double SWP)
 {
-    return (-b * pow (aep / SWP, 2 + 4 / b) / (4 + 2 * b));
+    return (-b * pow (aep / SWP, 2.0 + 4.0 / b) / (4.0 + 2.0 * b));
 }
 
 double Denominator (double aep, double b, double SWP)
 {
-    return (-b * pow (aep / SWP, 1 / b));
+    return (-b * pow (aep / SWP, 1.0 / b));
 }

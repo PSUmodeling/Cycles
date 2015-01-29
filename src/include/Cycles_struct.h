@@ -29,24 +29,25 @@ typedef struct SimControlStruct
 
 typedef struct SoilStruct
 {
-    int             totalLayers;
-    int             Curve_Number;
-    double          Percent_Slope;
+    int             totalLayers;        /* Input parameter */
+    double          Curve_Number;       /* Input parameter */
+    double          Percent_Slope;      /* Input parameter */
 
-    int             annualTemperaturePhase;
+    double          annualTemperaturePhase;
     double          dampingDepth;
 
     double         *cumulativeDepth;    /* Depth to the bottom of layer (m) */
     double         *nodeDepth;          /* Depth of node (m) */
-    double         *layerThickness;     /* Measured layer thickness (m) */
-    double         *Clay;               /* Clay fraction */
-    double         *Sand;               /* Sand fraction */
-    double         *IOM;                /* Initial Organic Matter */
-    double         *NO3;                /* Nitrate (kg/ha) */
-    double         *NH4;                /* Ammonium (kg/ha) */
-    double         *BD;                 /* Bulk Density (Mg/m3) */
-    double         *FC;                 /* Field Capacity water content */
-    double         *PWP;                /* Permanent Wilting Point */
+    double         *layerThickness;     /* Input, Measured layer thickness (m) */
+    double         *Clay;               /* Input, Clay fraction */
+    double         *Sand;               /* Input, Sand fraction */
+    double         *IOM;                /* Input, Initial Organic Matter */
+    double         *NO3;                /* Input, Nitrate (kg/ha) */
+    double         *NH4;                /* Input, Ammonium (kg/ha) */
+    double         *BD;                 /* Input, Bulk Density (Mg/m3) */
+    double         *FC;                 /* Input, Field Capacity water content */
+    double         *PWP;                /* Input, Permanent Wilting Point */
+
     double         *Porosity;           /* Saturation water content (m3/m3) */
     double         *PAW;                /* Maximum plant available water */
     double         *FC_WaterPotential;  /* Estimate water potential at field

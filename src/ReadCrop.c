@@ -127,19 +127,20 @@ void ReadCrop (char *project, CropManagementStruct *CropManagement)
                 fgets (cmdstr, MAXSTRING, crop_file);
                 sscanf (cmdstr, "%*s %d", &CropManagement->describedCrop[i].userC3orC4);
 
-                CropManagement->describedCrop[i].userMaximumSoilCoverage = CropManagement->describedCrop[i].userMaximumSoilCoverage * 0.94 / 100.;
-                CropManagement->describedCrop[i].userPercentMoistureInYield = CropManagement->describedCrop[i].userPercentMoistureInYield / 100.;
-                CropManagement->describedCrop[i].userFractionResidueStanding = CropManagement->describedCrop[i].userFractionResidueStanding / 100.;
-                CropManagement->describedCrop[i].userFractionResidueRemoved = CropManagement->describedCrop[i].userFractionResidueRemoved / 100.;
+                /* Convert units */
+                CropManagement->describedCrop[i].userMaximumSoilCoverage = CropManagement->describedCrop[i].userMaximumSoilCoverage * 0.94 / 100.0;
+                CropManagement->describedCrop[i].userPercentMoistureInYield = CropManagement->describedCrop[i].userPercentMoistureInYield / 100.0;
+                CropManagement->describedCrop[i].userFractionResidueStanding = CropManagement->describedCrop[i].userFractionResidueStanding / 100.0;
+                CropManagement->describedCrop[i].userFractionResidueRemoved = CropManagement->describedCrop[i].userFractionResidueRemoved / 100.0;
                 if (CropManagement->describedCrop[i].userClippingTiming != BADVAL)
-                    CropManagement->describedCrop[i].userClippingTiming = CropManagement->describedCrop[i].userClippingTiming / 100.;
+                    CropManagement->describedCrop[i].userClippingTiming = CropManagement->describedCrop[i].userClippingTiming / 100.0;
                 else
-                    CropManagement->describedCrop[i].userClippingTiming = 0.;
-                CropManagement->describedCrop[i].calculatedFloweringTT = 0.;
-                CropManagement->describedCrop[i].calculatedMaturityTT = 0.;
-                CropManagement->describedCrop[i].calculatedSimAvgYield = 0.;
-                CropManagement->describedCrop[i].calculatedSimMaxYield = 0.;
-                CropManagement->describedCrop[i].calculatedSimMinYield = 0.;
+                    CropManagement->describedCrop[i].userClippingTiming = 0.0;
+                CropManagement->describedCrop[i].calculatedFloweringTT = 0.0;
+                CropManagement->describedCrop[i].calculatedMaturityTT = 0.0;
+                CropManagement->describedCrop[i].calculatedSimAvgYield = 0.0;
+                CropManagement->describedCrop[i].calculatedSimMaxYield = 0.0;
+                CropManagement->describedCrop[i].calculatedSimMinYield = 0.0;
                 i++;
             }
         }

@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void InitializeResidue (ResidueStruct * Residue, int totalYears, int totalLayers)
+void InitializeResidue (ResidueStruct *Residue, int totalYears, int totalLayers)
 {
     Residue->residueAbgd = (double *)malloc (totalLayers * sizeof (double));
     Residue->residueRt = (double *)malloc (totalLayers * sizeof (double));
@@ -11,20 +11,24 @@ void InitializeResidue (ResidueStruct * Residue, int totalYears, int totalLayers
     Residue->manureC = (double *)malloc (totalLayers * sizeof (double));
     Residue->manureN = (double *)malloc (totalLayers * sizeof (double));
 
-    Residue->residueInterception = 0.;
-    Residue->stanResidueTau = 1.;
-    Residue->flatResidueTau = 1.;
-    Residue->stanResidueMass = 0.;
-    Residue->flatResidueMass = 0.;
-    Residue->stanResidueN = 0.;
-    Residue->flatResidueN = 0.;
-    Residue->manureSurfaceC = 0.;
-    Residue->manureSurfaceN = 0.;
-    Residue->stanResidueWater = 0.;
-    Residue->flatResidueWater = 0.;
+    Residue->residueInterception = 0.0;
+    Residue->stanResidueTau = 1.0;
+    Residue->flatResidueTau = 1.0;
+    Residue->stanResidueMass = 0.0;
+    Residue->flatResidueMass = 0.0;
+    Residue->stanResidueN = 0.0;
+    Residue->flatResidueN = 0.0;
+    Residue->manureSurfaceC = 0.0;
+    Residue->manureSurfaceN = 0.0;
+    Residue->stanResidueWater = 0.0;
+    Residue->flatResidueWater = 0.0;
+
+    Residue->yearResidueBiomass = 0.0;
+    Residue->yearRootBiomass = 0.0;
+    Residue->yearRhizodepositionBiomass = 0.0;
 }
 
-void ComputeResidueCover (ResidueStruct * Residue)
+void ComputeResidueCover (ResidueStruct *Residue)
 {
     double          stanResidueAI;  /* standing residue area index
                                      * (m2 residue / m2 ground) */
@@ -36,10 +40,10 @@ void ComputeResidueCover (ResidueStruct * Residue)
     flatResidueAI = FLAT_RESIDUE_SA * Residue->flatResidueMass * 0.1;
     Residue->stanResidueTau = exp (-STAN_RESIDUE_K * stanResidueAI);
     Residue->flatResidueTau = exp (-FLAT_RESIDUE_K * flatResidueAI);
-    Residue->residueInterception = (1. - Residue->stanResidueTau) + Residue->stanResidueTau * (1. - Residue->flatResidueTau);
+    Residue->residueInterception = (1.0 - Residue->stanResidueTau) + Residue->stanResidueTau * (1.0 - Residue->flatResidueTau);
 }
 
-void ResidueWetting (ResidueStruct * Residue, SoilStruct * Soil)
+void ResidueWetting (ResidueStruct *Residue, SoilStruct *Soil)
 {
     const double    residueMaxWaterConcentration = 3.3; /* (kg / kg) */
     double          flatResidueWaterDeficit;    /* Water need to saturate residue
@@ -48,11 +52,11 @@ void ResidueWetting (ResidueStruct * Residue, SoilStruct * Soil)
     double          waterWettingResidue;    /* mm, amount of water interceptable by residue */
     double          waterRetainedResidue;   /* mm, water retained in residue and discounted for infiltration */
 
-    flatResidueWaterDeficit = residueMaxWaterConcentration * Residue->flatResidueMass / 10. - Residue->flatResidueWater;    /* 10 converts residue from Mg/ha to kg/m2 */
-    standingResidueWaterDeficit = residueMaxWaterConcentration * Residue->stanResidueMass / 10. - Residue->stanResidueWater;    /* 10 converts residue from Mg/ha to kg/m2 */
+    flatResidueWaterDeficit = residueMaxWaterConcentration * Residue->flatResidueMass / 10.0 - Residue->flatResidueWater;    /* 10 converts residue from Mg/ha to kg/m2 */
+    standingResidueWaterDeficit = residueMaxWaterConcentration * Residue->stanResidueMass / 10.0 - Residue->stanResidueWater;    /* 10 converts residue from Mg/ha to kg/m2 */
     waterWettingResidue = Soil->infiltrationVol * Residue->residueInterception;
 
-    waterRetainedResidue = 0.;
+    waterRetainedResidue = 0.0;
 
     /* wet flat residue first */
     if (waterWettingResidue > flatResidueWaterDeficit)
@@ -84,7 +88,7 @@ void ResidueWetting (ResidueStruct * Residue, SoilStruct * Soil)
    Soil->infiltrationVol -= waterRetainedResidue;
 }
 
-void ResidueEvaporation (ResidueStruct * Residue, SoilStruct * Soil, CropStruct * Crop, double ETo, double snowCover)
+void ResidueEvaporation (ResidueStruct *Residue, SoilStruct *Soil, CropStruct *Crop, double ETo, double snowCover)
 {
     const double    residueMaxWaterConcentration = 3.3; /* kg water / kg residue */
     double          flatEvapFactor;
@@ -94,13 +98,13 @@ void ResidueEvaporation (ResidueStruct * Residue, SoilStruct * Soil, CropStruct 
     double          residueEvapDemand;
     double          xx;
 
-    Soil->residueEvaporationVol = 0.;
-    if (Residue->stanResidueWater > 0. || Residue->flatResidueWater > 0.)
+    Soil->residueEvaporationVol = 0.0;
+    if (Residue->stanResidueWater > 0.0 || Residue->flatResidueWater > 0.0)
     {
-        Soil->residueEvaporationVol = 0.;
-        residueEvapDemand = Residue->residueInterception * (1. - snowCover) * (1. - Crop->svRadiationInterception) * ETo;
-        standingEvapFactor = pow (Residue->stanResidueWater / (residueMaxWaterConcentration * Residue->stanResidueMass / 10.), 2);  /* 10 converts residue from Mg/ha to kg/m2 */
-        flatEvapFactor = pow (Residue->flatResidueWater / (residueMaxWaterConcentration * Residue->flatResidueMass / 10), 2);   /* 10 converts residue from Mg/ha to kg/m2 */
+        Soil->residueEvaporationVol = 0.0;
+        residueEvapDemand = Residue->residueInterception * (1.0 - snowCover) * (1.0 - Crop->svRadiationInterception) * ETo;
+        standingEvapFactor = pow (Residue->stanResidueWater / (residueMaxWaterConcentration * Residue->stanResidueMass / 10.0), 2.0);  /* 10 converts residue from Mg/ha to kg/m2 */
+        flatEvapFactor = pow (Residue->flatResidueWater / (residueMaxWaterConcentration * Residue->flatResidueMass / 10.0), 2.0);   /* 10 converts residue from Mg/ha to kg/m2 */
 
         /* dry standing residue first */
         xx = residueEvapDemand * standingEvapFactor;

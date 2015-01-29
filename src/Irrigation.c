@@ -6,9 +6,9 @@ double FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStr
      * This sub calculates the volume of an automatic irrigation
      */
     int             i;
-    double          depletionZonePAW = 0.;
-    double          depletionZoneWater = 0.;
-    double          tempVal;
+    double          depletionZonePAW = 0.0;
+    double          depletionZoneWater = 0.0;
+    double          irrigation_vol;
 
     if (opLayer > Soil->totalLayers)
         opLayer = Soil->totalLayers;
@@ -24,11 +24,11 @@ double FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStr
             depletionZonePAW += (Soil->FC[i] - Soil->waterContent[i]) * Soil->layerThickness[i];
     }
 
-    if (depletionZoneWater + Soil->irrigationVol < depletionZonePAW * (1. - opWaterDepletion))
+    if (depletionZoneWater + Soil->irrigationVol < depletionZonePAW * (1.0 - opWaterDepletion))
     {
         /* convert m to mm */
-        tempVal = (depletionZonePAW - depletionZoneWater) * 1000. - Soil->irrigationVol;
+        irrigation_vol = (depletionZonePAW - depletionZoneWater) * 1000.0 - Soil->irrigationVol;
     }
 
-    return tempVal;
+    return (irrigation_vol);
 }

@@ -23,10 +23,10 @@ void ReadSoil (char *project, SoilStruct *Soil)
 
     /* Read soil file */
     fgets (cmdstr, MAXSTRING, soil_file);
-    sscanf (cmdstr, "%*s %d", &Soil->Curve_Number);
+    sscanf (cmdstr, "%*s %lf", &Soil->Curve_Number);
     fgets (cmdstr, MAXSTRING, soil_file);
     sscanf (cmdstr, "%*s %lf", &Soil->Percent_Slope);
-    Soil->Percent_Slope = Soil->Percent_Slope / 100.;
+    Soil->Percent_Slope = Soil->Percent_Slope / 100.0;
     fgets (cmdstr, MAXSTRING, soil_file);
     sscanf (cmdstr, "%*s %d", &Soil->totalLayers);
 

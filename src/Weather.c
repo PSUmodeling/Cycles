@@ -6,19 +6,18 @@ double SatVP (double T)
     return 0.6108 * exp (17.27 * T / (T + 237.3));
 }
 
-void CalculateDerivedWeather (WeatherStruct * Weather, int total_years)
+void CalculateDerivedWeather (WeatherStruct *Weather, int total_years)
 {
     int             y, doy;
-    int             year_start, year0;
     double          annualMaxTemperatureSum;
     double          annualMinTemperatureSum;
 
-    Weather->atmosphericPressure = 101.325 * exp (-Weather->siteAltitude / 8200.);
+    Weather->atmosphericPressure = 101.325 * exp (-Weather->siteAltitude / 8200.0);
 
     for (y = 0; y < total_years; y++)
     {
-        annualMaxTemperatureSum = 0.;
-        annualMinTemperatureSum = 0.;
+        annualMaxTemperatureSum = 0.0;
+        annualMinTemperatureSum = 0.0;
 
         for (doy = 1; doy < 366; doy++)
         {
@@ -26,7 +25,7 @@ void CalculateDerivedWeather (WeatherStruct * Weather, int total_years)
             annualMaxTemperatureSum = annualMaxTemperatureSum + Weather->tMax[y][doy - 1];
             annualMinTemperatureSum = annualMinTemperatureSum + Weather->tMin[y][doy - 1];
         }
-        Weather->annualAverageTemperature[y] = (annualMaxTemperatureSum + annualMinTemperatureSum) / 365. / 2.;
-        Weather->yearlyAmplitude[y] = (annualMaxTemperatureSum - annualMinTemperatureSum) / 365.;
+        Weather->annualAverageTemperature[y] = (annualMaxTemperatureSum + annualMinTemperatureSum) / 365.0 / 2.0;
+        Weather->yearlyAmplitude[y] = (annualMaxTemperatureSum - annualMinTemperatureSum) / 365.0;
     }
 }
