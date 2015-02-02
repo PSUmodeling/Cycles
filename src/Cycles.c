@@ -1,6 +1,7 @@
 #include "include/Cycles.h"
 
 int verbose_mode;
+int debug_mode;
 
 int main (int argc, char *argv[])
 {
@@ -32,12 +33,13 @@ int main (int argc, char *argv[])
 
     verbose_mode = 0;
 
-    while((c = getopt(argc, argv, "v")) != -1)
+    while((c = getopt(argc, argv, "vd")) != -1)
     {
         if (optind >= argc)
         {
-            printf ("\nUsage: ./Cycles [-v] <project name>\n");
+            printf ("\nUsage: ./Cycles [-v] [-d] <project name>\n");
             printf ("\t-v Verbose mode\n");
+            printf ("\t-d Ddebug mode\n");
             exit (1);
         }
         switch(c)
@@ -45,6 +47,10 @@ int main (int argc, char *argv[])
             case 'v':
                 verbose_mode = 1;
                 printf ("Verbose mode turned on.\n");
+                break;
+            case 'd':
+                debug_mode = 1;
+                printf ("Debug mode turned on.\n");
                 break;
             case '?':
                 printf ("Option not recognisable %s\n", argv[optind]);
@@ -57,8 +63,9 @@ int main (int argc, char *argv[])
     if (optind >= argc)
     {
         printf ("ERROR: Please specify the name of project!\n");
-        printf ("\nUsage: ./Cycles [-v] <project name>\n");
+        printf ("\nUsage: ./Cycles [-v] [-d] <project name>\n");
         printf ("\t-v Verbose mode\n");
+        printf ("\t-d Ddebug mode\n");
         exit (1);
     }
     else
@@ -73,33 +80,28 @@ int main (int argc, char *argv[])
 
     /* Read simulation control input file */
     ReadSimControl (project, &Cycles->SimControl);
-#ifdef _DEBUG_
-    PrintSimContrl (Cycles->SimControl);
-#endif
+    if (debug_mode)
+        PrintSimContrl (Cycles->SimControl);
 
     /* Read soil description file */
     ReadSoil (project, &Cycles->Soil);
-#ifdef _DEBUG_
-    PrintSoil (Cycles->Soil);
-#endif
+    if (debug_mode)
+        PrintSoil (Cycles->Soil);
 
     /* Read crop description file */
     ReadCrop (project, &Cycles->CropManagement);
-#ifdef _DEBUG_
-    PrintCrop (Cycles->CropManagement.describedCrop, Cycles->CropManagement.NumDescribedCrop);
-#endif
+    if (debug_mode)
+        PrintCrop (Cycles->CropManagement.describedCrop, Cycles->CropManagement.NumDescribedCrop);
 
     /* Read field operation file */
     ReadOperation (project, &Cycles->CropManagement, Cycles->SimControl.yearsInRotation);
-#ifdef _DEBUG_
-    PrintOperation (Cycles->CropManagement.plantingOrder, Cycles->CropManagement.totalCropsPerRotation, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization);
-#endif
+    if (debug_mode)
+        PrintOperation (Cycles->CropManagement.plantingOrder, Cycles->CropManagement.totalCropsPerRotation, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization);
 
     /* Read meteorological driver */
     ReadWeather (project, &Cycles->Weather, Cycles->SimControl.simStartYear, Cycles->SimControl.totalYears);
-#ifdef _DEBUG_
-    PrintWeather (Cycles->Weather);
-#endif
+    if (debug_mode)
+        PrintWeather (Cycles->Weather);
 
     /* Initialize model variables and parameters */
     Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop, &Cycles->CropManagement, &Cycles->Snow);
@@ -120,9 +122,8 @@ int main (int argc, char *argv[])
         nextSeedingYear = 0;
         nextSeedingDate = 0;
     }
-#ifdef _DEBUG_
-    printf ("*Next seeding year is %-4d, next seeding date is %3d\n", nextSeedingYear, nextSeedingDate);
-#endif
+    if (debug_mode)
+        printf ("*Next seeding year is %-4d, next seeding date is %3d\n", nextSeedingYear, nextSeedingDate);
 
     rotationYear = 0;
 
@@ -135,9 +136,8 @@ int main (int argc, char *argv[])
             rotationYear++;
         else
             rotationYear = 1;
-#ifdef _DEBUG_
-        printf ("*%-15s = %-d\n", "Rotation year", rotationYear);
-#endif
+        if (debug_mode)
+            printf ("*%-15s = %-d\n", "Rotation year", rotationYear);
 
         SelectOperationYear (rotationYear, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, &Cycles->CropManagement.tillageIndex);
         SelectOperationYear (rotationYear, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, &Cycles->CropManagement.irrigationIndex);
@@ -154,9 +154,8 @@ int main (int argc, char *argv[])
         /* Daily operations */
         for (doy = 1; doy < 366; doy++)
         {
-#ifdef _DEBUG_
-            printf ("DOY %3.3d\n", doy);
-#endif
+            if (debug_mode)
+                printf ("DOY %3.3d\n", doy);
             DailyOperations (rotationYear, y, doy, &nextSeedingYear, &nextSeedingDate, &Cycles->CropManagement, &Cycles->Crop, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, project);
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Crop, &Cycles->Soil, &Cycles->Snow, project);
         }

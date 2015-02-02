@@ -41,5 +41,6 @@
 enum stage { PRE_EMERGENCE, VEGETATIVE_GROWTH, PERENNIAL, REPRODUCTIVE_GROWTH, MATURITY, CLIPPING, PLANTING };
 
 extern int verbose_mode;
+extern int debug_mode;
 #endif
 
