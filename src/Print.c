@@ -1,10 +1,12 @@
 #include "include/Cycles.h"
 
-void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const char *project)
+void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project)
 {
     char filename[50];
     FILE *output_file;
     int month, mday;
+    int i;
+    double sum;
 
     doy2date (y + start_year, doy, &month, &mday, 0);
 
@@ -15,9 +17,9 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     output_file = fopen (filename, "a");
 
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-7.2lf\t", 0.5 * Weather->tMin[y][doy - 1] + 0.5 * Weather->tMax[y][doy - 1]);
-    fprintf (output_file, "%-7.3lf\t", Weather->ETref[y][doy - 1]);
-    fprintf (output_file, "%-7.2lf\n", Weather->precipitation[y][doy - 1]);
+    fprintf (output_file, "%-10.2lf\t", 0.5 * Weather->tMin[y][doy - 1] + 0.5 * Weather->tMax[y][doy - 1]);
+    fprintf (output_file, "%-10.3lf\t", Weather->ETref[y][doy - 1]);
+    fprintf (output_file, "%-10.2lf\n", Weather->precipitation[y][doy - 1]);
 
     fflush (output_file);
     fclose (output_file);
@@ -111,18 +113,73 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
 
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
     fprintf (output_file, "%-7.1lf\t", Soil->SONProfile * 1000.);
-    fprintf (output_file, "%-7.3lf\t", Soil->NO3Profile * 1000.);
-    fprintf (output_file, "%-7.4lf\t", Soil->NH4Profile * 1000.);
+    fprintf (output_file, "%-7.2lf\t", Soil->NO3Profile * 1000.);
+    fprintf (output_file, "%-7.3lf\t", Soil->NH4Profile * 1000.);
     fprintf (output_file, "%-7.4lf\t", Soil->N_Mineralization * 1000.);
-    fprintf (output_file, "%-7.4lf\t", Soil->N_Immobilization * 1000.);
-    fprintf (output_file, "%-7.4lf\t", Soil->N_NetMineralization * 1000.);
-    fprintf (output_file, "%-7.5lf\t", Soil->NH4_Nitrification * 1000.);
+    fprintf (output_file, "%-7.3lf\t", Soil->N_Immobilization * 1000.);
+    fprintf (output_file, "%-7.3lf\t", Soil->N_NetMineralization * 1000.);
+    fprintf (output_file, "%-7.4lf\t", Soil->NH4_Nitrification * 1000.);
     fprintf (output_file, "%-7.5lf\t", Soil->N2O_Nitrification * 1000.);
     fprintf (output_file, "%-7.5lf\t", Soil->NH4_Volatilization * 1000.);
     fprintf (output_file, "%-7.5lf\t", Soil->NO3_Denitrification * 1000.);
     fprintf (output_file, "%-7.5lf\t", Soil->N2O_Denitrification * 1000.);
     fprintf (output_file, "%-7.5lf\t", Soil->NO3Leaching * 1000.);
     fprintf (output_file, "%-7.5lf\n", Soil->NH4Leaching * 1000.);
+
+    fflush (output_file);
+    fclose (output_file);
+
+    /*
+     * Print Carbon Output
+     */
+    sprintf (filename, "output/%s/C.dat", project);
+    output_file = fopen (filename, "a");
+
+    fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+    fprintf (output_file, "%-7.2lf\t", Soil->SOCProfile);
+    fprintf (output_file, "%-7.5lf\t", Soil->C_Humified);
+    fprintf (output_file, "%-7.5lf\t", Soil->C_ResidueRespired);
+    fprintf (output_file, "%-7.5lf\n", Soil->C_SoilRespired);
+
+    fflush (output_file);
+    fclose (output_file);
+
+    /*
+     * Print residue output
+     */
+    sprintf (filename, "output/%s/residue.dat", project);
+    output_file = fopen (filename, "a");
+
+    fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+    fprintf (output_file, "%-7.4lf\t", Residue->residueInterception);
+    fprintf (output_file, "%-7.4lf\t", Residue->stanResidueMass + Residue->flatResidueMass);
+    sum = 0.0;
+    for (i = 0; i < Soil->totalLayers; i++)
+        sum = sum + Residue->residueAbgd[i];
+    fprintf (output_file, "%-7.4lf\t", sum);
+    sum = 0.0;
+    for (i = 0; i < Soil->totalLayers; i++)
+        sum = sum + Residue->residueRt[i] + Residue->residueRz[i];
+    fprintf (output_file, "%-7.4lf\t", sum);
+    fprintf (output_file, "%-7.5lf\t", Residue->manureSurfaceC);
+    fprintf (output_file, "%-7.5lf\t", Residue->stanResidueN + Residue->flatResidueN);
+    sum = 0.0;
+    for (i = 0; i < Soil->totalLayers; i++)
+        sum = sum + Residue->residueAbgdN[i];
+    fprintf (output_file, "%-7.5lf\t", sum);
+    sum = 0.0;
+    for (i = 0; i < Soil->totalLayers; i++)
+        sum = sum + Residue->residueRtN[i] + Residue->residueRzN[i];
+    fprintf (output_file, "%-7.5lf\t", sum);
+    fprintf (output_file, "%-7.5lf\t", Residue->manureSurfaceN);
+    if (Residue->stanResidueMass > 0.0)
+        fprintf (output_file, "%-7.5lf\t", Residue->stanResidueWater / (Residue->stanResidueWater + Residue->stanResidueMass / 10.0));
+    else
+        fprintf (output_file, "%-7.5lf\t", 0.0);
+    if (Residue->flatResidueMass > 0.0)
+        fprintf (output_file, "%-7.5lf\n", Residue->flatResidueWater / (Residue->flatResidueWater + Residue->flatResidueMass / 10.0));
+    else
+        fprintf (output_file, "%-7.5lf\n", 0.0);
 
     fflush (output_file);
     fclose (output_file);

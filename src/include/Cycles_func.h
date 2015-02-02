@@ -66,7 +66,7 @@ int t2doy (time_t *rawtime);
 int doy2date (int year, int jday, int *month, int *mday, int leap_year_mode);
 
 /* Print.c */
-void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const char *project);
+void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project);
 void PrintSeasonOutput (int y, int doy, int start_year, const CropStruct *Crop, const char *project);
 
 /* ReadCrop.c */

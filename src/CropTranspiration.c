@@ -38,6 +38,13 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const Weat
     Crop->svTranspirationPotential = 0.0;
     Crop->svWaterStressFactor = 0.0;
 
+    for (i = 0; i < Soil->totalLayers; i++)
+    {
+        rootFraction[i] = 0.0;
+        layerShootHC[i] = 0.0;
+        layerPlantHC[i] = 0.0;
+    }
+
     if (Crop->cropUniqueIdentifier >= 0 && Crop->svTT_Cumulative > Crop->userEmergenceTT)
     {
         temperatureAvg = 0.5 * (Weather->tMax[y][doy - 1] + Weather->tMin[y][doy - 1]);
