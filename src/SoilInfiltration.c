@@ -118,7 +118,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
     double          WCi[Soil->totalLayers];
     double          WFlux[Soil->totalLayers + 1];
     const double    g = 9.81;
-    const double    s = 86400.; /* seconds per day (or fraction of the day) */
+    const double    s = 86400.0; /* seconds per day (or fraction of the day) */
 
     RedistributionFlag = 0;
 
@@ -134,6 +134,9 @@ void SubDailyRedistribution (SoilStruct *Soil)
         wpfc[i] = Soil->FC_WaterPotential[i];
         WCi[i] = Soil->waterContent[i];
     }
+
+    for (i = 0; i < Soil->totalLayers + 1; i++)
+        WFlux[i] = 0.0;
 
     for (j = 0; j < Soil->totalLayers; j++)
     {
