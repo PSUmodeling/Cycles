@@ -10,7 +10,7 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     Soil->nodeDepth = (double *)malloc ((Soil->totalLayers + 1) * sizeof (double));
     Soil->cumulativeDepth = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->waterContent = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->soilTemperature = (double *)malloc ((Soil->totalLayers) * sizeof (double));
+    //Soil->soilTemperature = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->Porosity = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->PAW = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->FC_WaterPotential = (double *)malloc ((Soil->totalLayers) * sizeof (double));

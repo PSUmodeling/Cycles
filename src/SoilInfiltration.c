@@ -10,6 +10,7 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
      */
 
     int             i;
+    double          irrigation_vol;
 
     Soil->infiltrationVol = 0.0;
     Soil->runoffVol = 0.0;
@@ -22,12 +23,28 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
         if (Crop->autoIrrigationStartDay < Crop->autoIrrigationStopDay)
         {
             if (doy >= Crop->autoIrrigationStartDay && doy <= Crop->autoIrrigationStopDay)
-                Soil->irrigationVol += FindIrrigationVolume (Crop->autoIrrigationLastSoilLayer, Crop->autoIrrigationWaterDepletion, Soil);
+            {
+                irrigation_vol = FindIrrigationVolume (Crop->autoIrrigationLastSoilLayer, Crop->autoIrrigationWaterDepletion, Soil);
+                if (irrigation_vol > 0.0)
+                {
+                    if (verbose_mode)
+                        printf ("DOY %3.3d %-20s %lf\n", doy, "Auto Irrigation", irrigation_vol);
+                }
+                Soil->irrigationVol += irrigation_vol;
+            }
         }
         else
         {
             if (doy >= Crop->autoIrrigationStartDay || doy <= Crop->autoIrrigationStopDay)
-                Soil->irrigationVol += FindIrrigationVolume (Crop->autoIrrigationLastSoilLayer, Crop->autoIrrigationWaterDepletion, Soil);
+            {
+                irrigation_vol = FindIrrigationVolume (Crop->autoIrrigationLastSoilLayer, Crop->autoIrrigationWaterDepletion, Soil);
+                if (irrigation_vol > 0.0)
+                {
+                    if (verbose_mode)
+                        printf ("DOY %3.3d %-20s %lf\n", doy, "Auto Irrigation", irrigation_vol);
+                }
+                Soil->irrigationVol += irrigation_vol;
+            }
         }
     }
 

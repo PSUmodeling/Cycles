@@ -8,7 +8,7 @@ double FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStr
     int             i;
     double          depletionZonePAW = 0.0;
     double          depletionZoneWater = 0.0;
-    double          irrigation_vol;
+    double          irrigation_vol = 0.0;
 
     if (opLayer > Soil->totalLayers)
         opLayer = Soil->totalLayers;

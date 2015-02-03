@@ -55,6 +55,7 @@ int             IsOperationToday (int rotationYear, int doy, FieldOperationStruc
 /* Initialize.c */
 void            InitializeOutput (char *project);
 void            Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement, SnowStruct *Snow);
+void            FreeCyclesStruct (CyclesStruct Cycles, int total_years);
 
 /* Irrigation.c */
 double          FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStruct *Soil);

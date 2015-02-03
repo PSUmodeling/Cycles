@@ -161,6 +161,10 @@ int main (int argc, char *argv[])
         }
     }
 
+    FreeCyclesStruct (Cycles, Cycles->SimControl.totalYears);
+    free (project);
+    free (Cycles);
+
     end = clock ();
 
     printf ("\nSimulation time: %-lf seconds.\n", (double)(end - begin) / CLOCKS_PER_SEC);

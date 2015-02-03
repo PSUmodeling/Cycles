@@ -53,15 +53,15 @@ void NewCrop (CropStruct *Crop, CropManagementStruct *CropManagement)
     autoIrrigationStruct *autoIrrigation;
     describedCropStruct *describedCrop;
 
-    plantingOrder = &CropManagement->plantingOrder[CropManagement->plantingIndex];
-    autoIrrigation = &CropManagement->autoIrrigation[plantingOrder->usesAutoIrrigation];
-    describedCrop = &CropManagement->describedCrop[CropManagement->describedIndex];
+    plantingOrder = &(CropManagement->plantingOrder[CropManagement->plantingIndex]);
+    describedCrop = &(CropManagement->describedCrop[CropManagement->describedIndex]);
 
     Crop->cropUniqueIdentifier = plantingOrder->plantID;
     strcpy (Crop->cropName, plantingOrder->cropName);
 
-    if (plantingOrder->usesAutoIrrigation)
+    if (plantingOrder->usesAutoIrrigation > 0)
     {
+        autoIrrigation = &(CropManagement->autoIrrigation[plantingOrder->usesAutoIrrigation]);
         Crop->autoIrrigationUsed = 1;
         Crop->autoIrrigationStartDay = autoIrrigation->startDay;
         Crop->autoIrrigationStopDay = autoIrrigation->stopDay;
