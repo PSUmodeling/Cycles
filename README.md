@@ -26,7 +26,11 @@ RUN CYCLES
 ----------
 The syntax is
 ~~~shell
-$ ./Cycles [-v] [-d] <project name>)
+$ ./Cycles [-v] [-d] <project name>
 ~~~
-The -v parameter will turn on the verbose mode.
-The -d parameter will turn on the debug mode.
+The optional -v parameter will turn on the verbose mode.
+The optional -d parameter will turn on the debug mode.
+
+INPUT FILES
+-----------
+The Cycles requires XX input files:
