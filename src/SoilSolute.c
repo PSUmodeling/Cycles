@@ -86,7 +86,7 @@ double LinearEquilibriumConcentration (double Kd, double bulkDensity, double lay
      * soil bulk density, kg/m3
      * kd is the slope of the adsortion isotherm, m3/kg
      * solute equilibrium concentration, kg solute / m3 */
-    bulkDensity *= 1000.0;       /* convert Mg/m3 to kg/m3 */
+    bulkDensity *= 1000.0;      /* convert Mg/m3 to kg/m3 */
     soilBufferPower = Kd * bulkDensity + waterContent;
 
     return (soluteMass / (soilBufferPower * layerThickness * WATER_DENSITY));
@@ -102,7 +102,7 @@ double LinearEquilibriumSoluteMass (double Kd, double bulkDensity, double layerT
      * kd is the slope of the adsortion isotherm, m3/kg
      * solute equilibrium concentration, kg solute / m3
      * solute mass, kg solute / m3 */
-    bulkDensity *= 1000.0;       /* convert Mg/m3 to kg/m3 */
+    bulkDensity *= 1000.0;      /* convert Mg/m3 to kg/m3 */
     soilBufferPower = Kd * bulkDensity + waterContent;
 
     return (concentration * (soilBufferPower * layerThickness * WATER_DENSITY));

@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Tillage, double *tillageFactor, SoilStruct * Soil, ResidueStruct * Residue)
+void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, ResidueStruct *Residue)
 {
     /*
      * Tillage performed on the soil profile as described by the tillage
@@ -55,7 +55,7 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
                 break;
         }
 
-        soilMass[i] = Soil->BD[i] * Soil->layerThickness[i] * 10000.0;   /* mass in Mg C ha-1 */
+        soilMass[i] = Soil->BD[i] * Soil->layerThickness[i] * 10000.0;  /* mass in Mg C ha-1 */
         conc[i][0] = Soil->Clay[i];
         conc[i][1] = Soil->SOC_Conc[i];
         conc[i][2] = Soil->SON_Mass[i] / soilMass[i];
@@ -115,7 +115,7 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct * Til
         Soil->MBN_Mass[i] = soilMass[i] * Fraction (conc[i][14], soilMassNotMixed[i], mixed[14], soilMassMixed[i], soilMass[i]);
         Soil->waterContent[i] = soilMass[i] / Soil->layerThickness[i] * Fraction (conc[i][15], soilMassNotMixed[i], mixed[15], soilMassMixed[i], soilMass[i]);
         Soil->Sand[i] = Fraction (conc[i][16], soilMassNotMixed[i], mixed[16], soilMassMixed[i], soilMass[i]);
-        Soil->SOC_Mass[i] = Soil->SOC_Conc[i] / 1000.0 * soilMass[i];    /* mass in Mg/ha */
+        Soil->SOC_Mass[i] = Soil->SOC_Conc[i] / 1000.0 * soilMass[i];   /* mass in Mg/ha */
     }
 
     /* Remove residue from the surface and incorporate within each layer */
@@ -171,7 +171,7 @@ double Fraction (double a, double b, double c, double d, double f)
     return ((a * b + c * d) / f);
 }
 
-void ComputeTillageFactor (const FieldOperationStruct * Tillage, double *tillageFactor, SoilStruct * Soil, double *soilLayerBottom, double toolDepth)
+void ComputeTillageFactor (const FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, double *soilLayerBottom, double toolDepth)
 {
     /*
      * Multiplier for soil decomposition rate based on tillage intensity and
@@ -194,7 +194,7 @@ void ComputeTillageFactor (const FieldOperationStruct * Tillage, double *tillage
 
         if (TF1 > 0.01)
         {
-            SDR1 = 35.0;         /* iteration starting value */
+            SDR1 = 35.0;        /* iteration starting value */
             SDR2 = 0.0;
 
             while (fabs ((SDR1 - SDR2) / SDR1) > 0.05)
@@ -224,8 +224,8 @@ double ComputeTextureFactor (double Clay)
 {
 
     /* clay is expressed fractionally */
-    const double    aClay = 1.0;  /* the maximum (lots of tillage) multiplier in a 100% clay soil is (A_clay + 1) */
-    const double    aSand = 5.0;  /* the maximum multiplier in 100% sand soil is (A_sand + 1) */
+    const double    aClay = 1.0;    /* the maximum (lots of tillage) multiplier in a 100% clay soil is (A_clay + 1) */
+    const double    aSand = 5.0;    /* the maximum multiplier in 100% sand soil is (A_sand + 1) */
     const double    kClay = 5.5;    /* a curvature factor */
     return (aClay + (aSand - aClay) * exp (-kClay * Clay)); /* clay dependent term */
 }

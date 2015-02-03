@@ -65,9 +65,9 @@ void CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRes, double C
     Snow->Snow = Snow->Snow - Snow->snowEvaporationVol;
 }
 
-double CalculateSnowCover (SnowStruct * Snow)
+double CalculateSnowCover (SnowStruct *Snow)
 {
-    double snow_cover;
+    double          snow_cover;
 
     snow_cover = (1.0 - exp (-0.43 * pow (Snow->Snow, 1.14)));
 

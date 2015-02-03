@@ -9,7 +9,7 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
      * estimates runoff infiltrates and/or redistributes water
      */
 
-    int i;
+    int             i;
 
     Soil->infiltrationVol = 0.0;
     Soil->runoffVol = 0.0;
@@ -95,15 +95,15 @@ void SubDailyRedistribution (SoilStruct *Soil)
 {
     int             i, j;
     double          Win;
-    double          dzx[Soil->totalLayers + 1];     /* layer thickness times
-                                                     * water density, kg/m2
-                                                     * (to reduce
-                                                     * computations) */
+    double          dzx[Soil->totalLayers + 1]; /* layer thickness times
+                                                 * water density, kg/m2
+                                                 * (to reduce
+                                                 * computations) */
     double          ksat[Soil->totalLayers + 1];    /* saturated hydraulic
                                                      * conductivity kg s/m3 */
-    double          wp[Soil->totalLayers + 1];      /* water potential J/kg */
-    double          kh[Soil->totalLayers + 1];      /* hydraulic conductance
-                                                     * kg s/m3 */
+    double          wp[Soil->totalLayers + 1];  /* water potential J/kg */
+    double          kh[Soil->totalLayers + 1];  /* hydraulic conductance
+                                                 * kg s/m3 */
     double          t1, t2, dt, cum_dt, x1, x2, x3, x4;
     int             RedistributionFlag = 0;
     int             SoluteFlag = 0;
@@ -118,7 +118,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
     double          WCi[Soil->totalLayers];
     double          WFlux[Soil->totalLayers + 1];
     const double    g = 9.81;
-    const double    s = 86400.0; /* seconds per day (or fraction of the day) */
+    const double    s = 86400.0;    /* seconds per day (or fraction of the day) */
 
     RedistributionFlag = 0;
 
@@ -171,7 +171,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
     {
         x1 = 0.0;
 
-        if (Win > 0.0)            /* wet layer[0] - up to saturation */
+        if (Win > 0.0)          /* wet layer[0] - up to saturation */
         {
             x1 = (sat[0] - WC[0]) * dzx[0];
             if (Win > x1)
@@ -270,7 +270,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
                 if (j + 1 < Soil->totalLayers - 1)
                     x4 = (sat[j + 1] - WC[j + 1]) * dzx[j + 1];
                 else
-                    x4 = 1000.0; /* a big number to allow gravitational drainage from last layer */
+                    x4 = 1000.0;    /* a big number to allow gravitational drainage from last layer */
                 x2 = x2 < x3 ? x2 : x3;
                 x2 = x2 < x4 ? x2 : x4;
                 WC[j] = WC[j] - x2 / dzx[j];
@@ -327,7 +327,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
     }
 }
 
-void CurveNumber (SoilStruct * Soil)
+void CurveNumber (SoilStruct *Soil)
 {
     int             i;
     double          a = 0.2;
@@ -351,7 +351,7 @@ void CurveNumber (SoilStruct * Soil)
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
-        airDryWC[i] = Soil->PWP[i] / 3.0;    /* an approximation to air dry */
+        airDryWC[i] = Soil->PWP[i] / 3.0;   /* an approximation to air dry */
     }
 
     cumulativeWeightedFactor = 0.0;

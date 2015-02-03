@@ -12,13 +12,13 @@
 #define STAN_RESIDUE_K  0.25    /* Standing residue extinction coefficient */
 #define FLAT_RESIDUE_K  1.0     /* flat residue extinction */
 
-#define MAXIMUM_UNDISTURBED_SOC_DECOMPOSITION_RATE 0.00015  /* (1 + 0.056) ^ (1 / 365) - 1  ' 1/day (1/5 for Urbana) */
-#define MAXIMUM_RESIDUE_DECOMPOSITION_RATE  0.05    /* 1/day */
-#define MAXIMUM_ROOT_DECOMPOSITION_RATE     0.05    /* 1/day */
-#define MAXIMUM_RHIZO_DECOMPOSITION_RATE    0.1     /*  1/day */
-#define MAXIMUM_MANURE_DECOMPOSITION_RATE   0.05    /* 1/day */
-#define MAXIMUM_MICROBIAL_DECOMPOSITION_RATE 1.0    /* calculated internaly
-                                                     * 1/day */
+#define MAXIMUM_UNDISTURBED_SOC_DECOMPOSITION_RATE  0.00015 /* (1 + 0.056) ^ (1 / 365) - 1  ' 1/day (1/5 for Urbana) */
+#define MAXIMUM_RESIDUE_DECOMPOSITION_RATE          0.05    /* 1/day */
+#define MAXIMUM_ROOT_DECOMPOSITION_RATE             0.05    /* 1/day */
+#define MAXIMUM_RHIZO_DECOMPOSITION_RATE            0.1     /*  1/day */
+#define MAXIMUM_MANURE_DECOMPOSITION_RATE           0.05    /* 1/day */
+#define MAXIMUM_MICROBIAL_DECOMPOSITION_RATE        1.0     /* calculated internaly
+                                                             * 1/day */
 #define FRACTION_CARBON_PLANT               0.43
 #define FRACTION_CARBON_RIZHO               0.43
 #define FRACTION_CARBON_MANURE              0.4
@@ -33,14 +33,14 @@
 #define SNOWMELT_RATE                       2.5 /* mm/(C day) or degree day
                                                  * melting factor */
 
-#define NITRIFICATION_CONSTANT              0.2     /* 1/day */
-#define POTENTIAL_DENITRIFICATION           0.000032 /* kg N / kg soil / day */
-#define DENITRIFICATION_HALF_RATE           0.00006     /* kg N / kg Soil */
-#define NITRIFICATION_NO3_NH4_RATIO         8           /* NO3-N / NH4-N */
+#define NITRIFICATION_CONSTANT              0.2 /* 1/day */
+#define POTENTIAL_DENITRIFICATION           0.000032    /* kg N / kg soil / day */
+#define DENITRIFICATION_HALF_RATE           0.00006 /* kg N / kg Soil */
+#define NITRIFICATION_NO3_NH4_RATIO         8   /* NO3-N / NH4-N */
 
-enum stage { PRE_EMERGENCE, VEGETATIVE_GROWTH, PERENNIAL, REPRODUCTIVE_GROWTH, MATURITY, CLIPPING, PLANTING };
+enum stage
+{ PRE_EMERGENCE, VEGETATIVE_GROWTH, PERENNIAL, REPRODUCTIVE_GROWTH, MATURITY, CLIPPING, PLANTING };
 
-extern int verbose_mode;
-extern int debug_mode;
+extern int      verbose_mode;
+extern int      debug_mode;
 #endif
-

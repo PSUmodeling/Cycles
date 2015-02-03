@@ -1,6 +1,101 @@
 #ifndef CYCLES_STRUCT_HEADER
 #define CYCLES_STRUCT_HEADER
 
+/*****************************************************************************
+ *
+ * FILE NAME:   Cycles_struct.h
+ * PURPOSE:     Defines Cycles data structure.
+ *
+ * Variables                Type        Description
+ * ==========               ==========  ====================
+ * ---------------------------------------------------------------------------
+ * SimControlStruct         struct      Simulation control structure
+ *  simStartYear            int         Simulation start year
+ *  simEndYear              int         Simulation end year
+ *  totalYears              int         Total simulation years
+ *  yearsInRotation         int         Years in rotation
+ *  adjustedYields          int
+ *  hourlyInfiltration      int         Flag to indicate whether hourly
+ *                                        infiltration is used
+ *  automaticNitrogen       int         Flag to indicate whether automatic
+ *                                        Nitrogen is used
+ *  automaticPhosphorus     int             
+ *  automaticSulfur         int         Flag to indicate
+ *  cropDailyOutput         int         Flag to control daily crop output
+ *  soilDailyOutput         int         Flag to control daily soil output
+ *  nitrogenDailyOutput     int         Flag to control daily nitrogen output
+ *  waterDailyOutput        int         Flag to control daily water output
+ *  weatherDailyOutput      int         Flag to control daily weather output
+ *  residueDailyOutput      int         Flag to control daily residue output
+ *  soilCarbonDailyOutput   int         Flag to control daily soil carbon
+ *                                        output
+ *  annualSoilOutput        int         Flag to control annual soil output
+ *  profileOutput           int         Flag to control profile output
+ *  seasonOutput            int         Flag to control seasonal output
+ * ---------------------------------------------------------------------------
+ * SoilStruct               struct      Soil structure
+ *  totalLayers             int         Total soil layers [input]
+ *  Curve_Number            double      Curve number [input]
+ *  Percent_Slope           double      Slope [input]
+ *  annualTemperaturePhase  double      Annual soil temperature phase
+ *  dampingDepth            double*     Soil temperature damping depth (m)
+ *  cumulativeDepth         double*     Depth to the bottom of layer (m)
+ *  nodeDepth               double*     Depth of node (m)
+ *  layerThickness          double*     Measured layer thickness (m) [input]
+ *  Clay                    double*     Clay fraction [input]
+ *  Sand                    double*     Sand fraction [input]
+ *  IOM                     double*     Initial Organic Matter [input]
+ *  NO3                     double*     Initial Nitrate (kg/ha) [input]
+ *  NH4                     double*     Initial Ammonium (kg/ha) [input]
+ *  BD                      double*     Bulk Density (Mg/m3)
+ *  FC                      double*     Field Capacity water content [input]
+ *  PWP                     double*     Permanent Wilting Point [input]
+ *  Porosity                double*     Saturation water content (m3/m3)
+ *  PAW                     double*     Maximum plant available water
+ *  FC_WaterPotential       double*     Estimate water potential at field
+ *                                        capacity
+ *  airEntryPotential       double*     Calculate Air Entry Potential
+ *  B_Value                 double*     Calculated "B" value
+ *  M_Value                 double*     Calculated "M" value
+ *  n2o                     double*     Temporary output of n2o/layer
+ *  SOC_Conc                double*     (g C/kg soil)
+ *  SOC_Mass                double*     Soil organic carbon (Mg/ha)
+ *  SON_Mass                double*     Soil organic Nitrogen (Mg/ha)
+ *  MBC_Mass                double*     Microbial biomass C (Mg/ha)
+ *  MBN_Mass                double*     Microbial Biomass N (Mg/ha)
+ *  SOCProfile              double      Profile soil organic C
+ *  SONProfile              double      Profile soil organic N
+ *  C_Humified              double      Carbon humified from residues, roots,
+ *                                        rizho, and manure
+ *  C_ResidueRespired       double      Carbon respired from residues, roots,
+ *                                        rizho, and manure
+ *  C_SoilRespired          double      Carbon respired from soil organic
+ *                                        carbon only
+ *  soilTemperature         double*     Soil temperature (Degree Celsius)
+ *  waterContent            double*     Volumetric water content (m3/m3)
+ *  waterUptake             double*     Layer water uptake
+ *  pH                      double*     Soil pH
+ *  evaporationVol          double      Soil evaporation (mm)
+ *  residueEvaporationVol   double      Evaporation from residue (mm)
+ *  infiltrationVol         double      Soil infiltration (mm)
+ *  runoffVol               double      Runoff (mm)
+ *  irrigationVol           double      Irrigation (mm)
+ *  drainageVol             double      Drainage (mm)
+ *  NO3Leaching             double      NO3 leaching (Mg N/ha)
+ *  NH4Leaching             double      NH4 leaching (Mg N/ha)
+ *  NO3Profile              double
+ *  NH4Profile              double
+ *  N_Immobilization        double
+ *  N_Mineralization        double
+ *  N_NetMineralization     double
+ *  NH4_Nitrification       double
+ *  N2O_Nitrification       double
+ *  NO3_Denitrification     double
+ *  N2O_Denitrification     double
+ *  NH4_Volatilization      double
+ *
+ *
+ ***************************************************************************/
 typedef struct SimControlStruct
 {
     int            *yearSpecificLastDOY;
@@ -29,64 +124,59 @@ typedef struct SimControlStruct
 
 typedef struct SoilStruct
 {
-    int             totalLayers;        /* Input parameter */
-    double          Curve_Number;       /* Input parameter */
-    double          Percent_Slope;      /* Input parameter */
+    int             totalLayers;
+    double          Curve_Number;
+    double          Percent_Slope;
 
     double          annualTemperaturePhase;
     double          dampingDepth;
 
-    double         *cumulativeDepth;    /* Depth to the bottom of layer (m) */
-    double         *nodeDepth;          /* Depth of node (m) */
-    double         *layerThickness;     /* Input, Measured layer thickness (m) */
-    double         *Clay;               /* Input, Clay fraction */
-    double         *Sand;               /* Input, Sand fraction */
-    double         *IOM;                /* Input, Initial Organic Matter */
-    double         *NO3;                /* Input, Nitrate (kg/ha) */
-    double         *NH4;                /* Input, Ammonium (kg/ha) */
-    double         *BD;                 /* Input, Bulk Density (Mg/m3) */
-    double         *FC;                 /* Input, Field Capacity water content */
-    double         *PWP;                /* Input, Permanent Wilting Point */
+    double         *cumulativeDepth;
+    double         *nodeDepth;
+    double         *layerThickness;
+    double         *Clay;
+    double         *Sand;
+    double         *IOM;
+    double         *NO3;
+    double         *NH4;
+    double         *BD;
+    double         *FC;
+    double         *PWP;
 
-    double         *Porosity;           /* Saturation water content (m3/m3) */
-    double         *PAW;                /* Maximum plant available water */
-    double         *FC_WaterPotential;  /* Estimate water potential at field
-                                         * capacity */
-    double         *airEntryPotential;  /* Calculate Air Entry Potential */
-    double         *B_Value;            /* Calculated "B" value */
-    double         *M_Value;            /* Calculated "M" value */
+    double         *Porosity;
+    double         *PAW;
+    double         *FC_WaterPotential;
+    double         *airEntryPotential;
+    double         *B_Value;
+    double         *M_Value;
 
-    double         *n2o;                /* Temporary output of n2o/layer */
+    double         *n2o;
 
-    double         *SOC_Conc;           /* g C / kg soil */
-    double         *SOC_Mass;           /* Soil Organic Carbon (Mg/ha)
-                                         * factor 0.58 converts SOM to SOC */
-    double         *SON_Mass;           /* Soil Organic Nitrogen (Mg/ha) */
-    double         *MBC_Mass;           /* Microbial Biomass C (Mg/ha) */
-    double         *MBN_Mass;           /* Microbial Biomass N (Mg/ha) */
+    double         *SOC_Conc;
+    double         *SOC_Mass;
+    double         *SON_Mass;
+    double         *MBC_Mass;
+    double         *MBN_Mass;
     double          SOCProfile;
     double          SONProfile;
 
-    double          C_Humified;         /* Carbon humified from residues,
-                                         * roots, rizho, and manure */
-    double          C_ResidueRespired;  /* Carbon respired from residues,
-                                         * roots, rizho, and manure */
-    double          C_SoilRespired;     /* Carbon respired from soil organic
-                                         * carbon only */
+    double          C_Humified;
+    double          C_ResidueRespired;
+    double          C_SoilRespired;
 
-    double         *soilTemperature;    /* Celsius */
-    double         *waterContent;       /* Volumetric water content (m3/m3) */
-    double         *waterUptake;        /* Layer water uptake  */
+    double         *soilTemperature;
+    double         *waterContent;
+    double         *waterUptake;
     double         *pH;
 
-    double          evaporationVol;     /* (mm) */
-    double          residueEvaporationVol;  /* (mm) */
-    double          infiltrationVol;    /* (mm) */
-    double          runoffVol;          /* (mm) */
-    double          irrigationVol;      /* (mm) */
-    double          drainageVol;        /* (mm) */
-    double          NO3Leaching;        /* (Mg N/ha) */
-    double          NH4Leaching;        /* (Mg N/ha) */
+    double          evaporationVol;
+    double          residueEvaporationVol;
+    double          infiltrationVol;
+    double          runoffVol;
+    double          irrigationVol;
+    double          drainageVol;
+    double          NO3Leaching;
+    double          NH4Leaching;
 
     double          NO3Profile;
     double          NH4Profile;
@@ -242,11 +332,11 @@ typedef struct CropStruct
     int             harvestCount;
     enum stage      stageGrowth;
 
-    int             rcCropNumber;
-    char            rcName[128];
-    int             rcActiveStatus;
-    int             rcYear;
-    int             rcDoy;
+    //int             rcCropNumber;
+    //char            rcName[128];
+    //int             rcActiveStatus;
+    //int             rcYear;
+    //int             rcDoy;
     double          rcForageYield;
     double          rcGrainYield;
     double          rcBiomass;
@@ -261,7 +351,7 @@ typedef struct CropStruct
     double          rcGrainNitrogenYield;
     double          rcForageNitrogenYield;
     double          rcNitrogenCumulative;
-    double          totalRealizedCrops;
+    //double          totalRealizedCrops;
 } CropStruct;
 
 typedef struct FieldOperationStruct
@@ -274,7 +364,7 @@ typedef struct FieldOperationStruct
     int             usesAutoIrrigation;
     int             usesAutoFertilization;
     int             plantID;
-    
+
     /* Tillage */
     char            opToolName[MAXSTRING];
     double          opDepth;
@@ -381,40 +471,40 @@ typedef struct ResidueStruct
     double          stanResidueWater;
     double          flatResidueWater;   /* (mm) */
 
-    double          *residueAbgd;
-    double          *residueRt;
-    double          *residueRz;
-    double          *residueAbgdN;
-    double          *residueRtN;
-    double          *residueRzN;
-    double           yearResidueBiomass;
-    double           yearResidueHarvested;
-    double           yearRootBiomass;
-    double           yearRhizodepositionBiomass;
-    double          *manureC;
-    double          *manureN;           /* Mg/ha */
+    double         *residueAbgd;
+    double         *residueRt;
+    double         *residueRz;
+    double         *residueAbgdN;
+    double         *residueRtN;
+    double         *residueRzN;
+    double          yearResidueBiomass;
+    double          yearResidueHarvested;
+    double          yearRootBiomass;
+    double          yearRhizodepositionBiomass;
+    double         *manureC;
+    double         *manureN;    /* Mg/ha */
 } ResidueStruct;
 
 typedef struct SoilCarbonStruct
 {
-    double          *factorComposite;
-    double          *carbonRespired;
-    double          *rootBiomassInput;
-    double          *rhizBiomassInput;
-    double          *abgdBiomassInput;
-    double          *rootCarbonInput;
-    double          *rhizCarbonInput;
-    double          *manuCarbonInput;
-    double          *abgdCarbonInput;
-    double          *carbonMassInitial;
-    double          *carbonMassFinal;
-    double          *annualDecompositionFactor;
-    double          *annualSoilCarbonDecompositionRate;
-    double          *annualCarbonInputByLayer;
-    double          *annualHumifiedCarbonMass;
-    double          *annualRespiredCarbonMass;
-    double          *annualRespiredResidueCarbonMass;
-    double          *annualHumificationCoefficient;
+    double         *factorComposite;
+    double         *carbonRespired;
+    double         *rootBiomassInput;
+    double         *rhizBiomassInput;
+    double         *abgdBiomassInput;
+    double         *rootCarbonInput;
+    double         *rhizCarbonInput;
+    double         *manuCarbonInput;
+    double         *abgdCarbonInput;
+    double         *carbonMassInitial;
+    double         *carbonMassFinal;
+    double         *annualDecompositionFactor;
+    double         *annualSoilCarbonDecompositionRate;
+    double         *annualCarbonInputByLayer;
+    double         *annualHumifiedCarbonMass;
+    double         *annualRespiredCarbonMass;
+    double         *annualRespiredResidueCarbonMass;
+    double         *annualHumificationCoefficient;
 } SoilCarbonStruct;
 
 typedef struct WeatherStruct
@@ -439,13 +529,13 @@ typedef struct WeatherStruct
 typedef struct CyclesStruct
 {
     SimControlStruct SimControl;
-    SoilStruct       Soil;
+    SoilStruct      Soil;
     CropManagementStruct CropManagement;
-    CropStruct       Crop;
-    ResidueStruct    Residue;
+    CropStruct      Crop;
+    ResidueStruct   Residue;
     SoilCarbonStruct SoilCarbon;
-    WeatherStruct    Weather;
-    SnowStruct Snow;
+    WeatherStruct   Weather;
+    SnowStruct      Snow;
 } *CyclesStruct;
 
 #endif

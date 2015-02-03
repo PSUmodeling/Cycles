@@ -2,65 +2,81 @@
 
 void Processes (int y, int doy, int autoNitrogen, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct *Weather, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
 {
-    double          stage;          /* Fractional phenological stage        */
-    double          dailyGrowth = 0.0;    /* Apparent daily growth rate as it
-                                     * includes rizhodeposition             */
-    double          N_AbgdConcReq = 0.0;  /* Maximum concentration in daily growth*/
-    double          N_RootConcReq = 0.0;  
-    double          NxAbgd = 0.0;         /* Maximum concentration of cumulative
-                                     * abgd                                 */
-    double          NcAbgd = 0.0;         /* Critical concentration of cumulative
-                                     * abgd                                 */
-    double          NnAbgd = 0.0;         /* Minimum concentration of cumulative
-                                     * abgd                                 */
-    double          NaAbgd = 0.0;         /* Actual nitrogen concentration in
-                                     * aboveground biomass                  */
-    double          NxRoot = 0.0;         /* Maximum nitrogen concentration of
-                                     * cumulative root biomass              */
+    /* 
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * stage                double      Fractional phenological stage
+     * dailyGrowth          double      Apparent daily growth rate as it
+     *                                    includes rizhodeposition
+     * N_AbgdConcReq        double      Maximum above ground concentration in
+     *                                    daily growth
+     * N_RootConcReq        double      Maximum root concentration in daily
+     *                                    growth
+     * NxAbgd               double      Maximum concentration of cumulative
+     *                                    above ground
+     * NnAbgd               double      Critical concentration of cumulative
+     *                                    above ground
+     * NaAbgd               double      Actual nitrogen concentration in above
+     *                                    ground biomass
+     * NxRoot               double      Maximum nitrogen concentration of
+     *                                    cumulative root biomass
+     */
+
+    double          stage;
+    double          dailyGrowth = 0.0;
+    double          N_AbgdConcReq = 0.0;
+    double          N_RootConcReq = 0.0;
+    double          NxAbgd = 0.0;
+    double          NcAbgd = 0.0;
+    double          NnAbgd = 0.0;
+    double          NaAbgd = 0.0;
+    double          NxRoot = 0.0;
 
     if (Crop->svRadiationInterception > 0.0)
     {
         stage = (Crop->svTT_Cumulative - Crop->userEmergenceTT) / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
 
-        /* compute reference N concentration of biomass and required
+        /* Compute reference N concentration of biomass and required
          * concentration of new growth (Eulerian) */
         CropNitrogenConcentration (&N_AbgdConcReq, &N_RootConcReq, &NaAbgd, &NxAbgd, &NcAbgd, &NnAbgd, &NxRoot, stage, Crop);
 
-        /* compute nitrogen stress */
+        /* Compute nitrogen stress */
         CropNitrogenStress (NaAbgd, NcAbgd, NnAbgd, Crop);
 
-        /* compute growth */
+        /* Compute growth */
         CropGrowth (y, doy, &dailyGrowth, stage, Crop, Residue, Weather);
 
         if (dailyGrowth > 0.0)
         {
-            /* compute N demand based on growth and N uptake */
+            /* Compute N demand based on growth and N uptake */
             CropNitrogenUptake (N_AbgdConcReq, N_RootConcReq, NaAbgd, NxAbgd, NxRoot, autoNitrogen, Crop, Soil);
 
-            /* distribute rizhodeposition in soil layers */
+            /* Distribute rizhodeposition in soil layers */
             DistributeRootDetritus (y, 0.0, Crop->svRizhoDailyDeposition, 0.0, Crop->svN_RizhoDailyDeposition, Soil, Crop, Residue, SoilCarbon);
         }
     }
 }
 
-void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct * Weather)
+void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct *Weather)
 {
-    double          ShootPartitioning;      /* fraction of daily growth
-                                             * allocated to aboveground
-                                             * biomass                  */
+    double          ShootPartitioning;  /* fraction of daily growth
+                                         * allocated to aboveground
+                                         * biomass                  */
     double          RadiationGrowth;
     double          TranspirationGrowth;
     double          UnstressedDailyGrowth;
     double          daytimeVPD;
     double          TUE;
     double          RUE;
-    double          PRG;                    /* potential growth based on
-                                             * radiation                */
-    double          PTG;                    /* potential growth based on
-                                             * transpiration            */
-    const double    RRD = 0.6;              /* root to rizhodeposition
-                                             * ratio of biomass allocated
-                                             * to roots                 */
+    double          PRG;        /* potential growth based on
+                                 * radiation                */
+    double          PTG;        /* potential growth based on
+                                 * transpiration            */
+    const double    RRD = 0.6;  /* root to rizhodeposition
+                                 * ratio of biomass allocated
+                                 * to roots                 */
 
     daytimeVPD = 0.66 * SatVP (Weather->tMax[y][doy - 1]) * (1.0 - Weather->RHmin[y][doy - 1] / 100.0);
 
@@ -68,7 +84,7 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *
         daytimeVPD = 0.2;
 
     /* g/MJ solar radiation intercepted, 0.01 converts to Mg/ha */
-    RUE = 0.01 * Crop->userRadiationUseEfficiency;  
+    RUE = 0.01 * Crop->userRadiationUseEfficiency;
     TUE = 0.01 * Crop->userTranspirationUseEfficiency * pow (daytimeVPD, -0.59);
     ShootPartitioning = ShootBiomassPartitioning (Stage, Crop->userShootPartitionInitial, Crop->userShootPartitionFinal);
 
@@ -85,7 +101,7 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *
     RadiationGrowth = Crop->svRadiationInterception * Weather->solarRadiation[y][doy - 1] * RUE * (1.0 - pow (Crop->svN_StressFactor, 1.0));
     /* This coefficient is higher to represent drop in WUE with N stress
      * (radiation limits more) */
-    TranspirationGrowth = Crop->svTranspiration * TUE * (1.0 - pow (Crop->svN_StressFactor, 1.25));  
+    TranspirationGrowth = Crop->svTranspiration * TUE * (1.0 - pow (Crop->svN_StressFactor, 1.25));
     *DailyGrowth = RadiationGrowth < TranspirationGrowth ? RadiationGrowth : TranspirationGrowth;
 
     /* Update biomass pools */
@@ -117,21 +133,21 @@ void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, do
      * concentration in biomass
      */
 
-    double          BTNx;           /* Threshold abgd biomass level after
-                                     * which N maximum / critical / minimum
-                                     * Conc dilution curve starts, Mg/ha    */
+    double          BTNx;       /* Threshold abgd biomass level after
+                                 * which N maximum / critical / minimum
+                                 * Conc dilution curve starts, Mg/ha    */
     double          BTNc;
-    double          BTNn;           
+    double          BTNn;
     double          NcEmergence;    /* Critical, minimum nitrogen
                                      * concentration at crop emergence,
                                      * maximum is passed                    */
-    double          NnEmergence;    
-    double          Ax, Ac, An;     /* biomass dilution curve constants */
+    double          NnEmergence;
+    double          Ax, Ac, An; /* biomass dilution curve constants */
     const double    Root_NxEmergence = 0.02;
-    const double    R1 = 1.0;        /* root half constant for phenology-based
-                                     * dilution                             */
-    const double    R2 = 0.33;      /* root power of equation for phenology-
-                                     * based dilution                       */
+    const double    R1 = 1.0;   /* root half constant for phenology-based
+                                 * dilution                             */
+    const double    R2 = 0.33;  /* root power of equation for phenology-
+                                 * based dilution                       */
 
     if (Crop->userC3orC4)
     {
@@ -189,8 +205,8 @@ void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, do
 void CropNitrogenStress (double NaAbgd, double NcAbgd, double NnAbgd, CropStruct *Crop)
 {
     double          tempStress;
-    const double    factor = 0.67;      /* weigthing of tempStress in
-                                         * determining today's plant stress */
+    const double    factor = 0.67;  /* weigthing of tempStress in
+                                     * determining today's plant stress */
 
     /* Compute stress based on abgd nitrogen concentration only */
     if (Crop->svShoot > 0.0)
@@ -216,19 +232,19 @@ void CropNitrogenUptake (double N_AbgdConcReq, double N_RootConcReq, double NaAb
 {
     int             i;
     double          N_CropDemand;
-    double          N_ReqAbgdGrowth;                /* N mass required to
-                                                     * satisfy abgd growth
-                                                     * based on luxury
-                                                     * consumption          */
-    double          N_ReqRootGrowth;                /* N mass required to
-                                                     * satisfy root growth
-                                                     * based on luxury
-                                                     * consumption          */
-    double          N_ReqRhizodeposition;           /* N mass required to
-                                                     * satisfy
-                                                     * rizhodeposition      */
-    double          N_AbgdConc, N_RootConc;         /* N concentration in
-                                                     * biomass              */
+    double          N_ReqAbgdGrowth;    /* N mass required to
+                                         * satisfy abgd growth
+                                         * based on luxury
+                                         * consumption          */
+    double          N_ReqRootGrowth;    /* N mass required to
+                                         * satisfy root growth
+                                         * based on luxury
+                                         * consumption          */
+    double          N_ReqRhizodeposition;   /* N mass required to
+                                             * satisfy
+                                             * rizhodeposition      */
+    double          N_AbgdConc, N_RootConc; /* N concentration in
+                                             * biomass              */
     //double          UptakeFactor[Soil->totalLayers];/* factor used to increase
     //                                                 * soil supply in top
     //                                                 * layers and to decrease
@@ -238,29 +254,29 @@ void CropNitrogenUptake (double N_AbgdConcReq, double N_RootConcReq, double NaAb
                                                      * PotentialSoluteUptake*/
     double          NH4Uptake[Soil->totalLayers];   /* array passed to Sub
                                                      * PotentialSoluteUptake*/
-    double          NO3supply, NH4Supply;           /* NO3 and NH4 cumulative
-                                                     * supply through the
-                                                     * rooting depth        */
-    double          N_SoilSupply;                   /* NO3 and NH4 cumulative
-                                                     * supply               */
-    double          N_Uptake;                       /* NO3 and NH4 total N
-                                                     * uptake               */
+    double          NO3supply, NH4Supply;   /* NO3 and NH4 cumulative
+                                             * supply through the
+                                             * rooting depth        */
+    double          N_SoilSupply;   /* NO3 and NH4 cumulative
+                                     * supply               */
+    double          N_Uptake;   /* NO3 and NH4 total N
+                                 * uptake               */
     double          N_FractionalSatisfiedDemand;
     double          N_FractionalSatisfiedSupply;
     //double          Fraction_NO3, Fraction_NH4;     /* auxiliar variables to
     //                                                 * update NO3 and NH4
     //                                                 * pools                */
-    double          N_Surplus;                      /* variable used to remove
-                                                     * excess N in biomass due
-                                                     * to dilution          */
+    double          N_Surplus;  /* variable used to remove
+                                 * excess N in biomass due
+                                 * to dilution          */
     //double          NInitial = 0.0;
     //double          NFinal = 0.0;
     double          Nfixation = 0.0;
     //double          Nauto = 0.0;
     double          Nratio;
 
-    N_CropDemand = 0.;
-    N_Surplus = 0.;
+    N_CropDemand = 0.0;
+    N_Surplus = 0.0;
 
     /* calculate N demand for today's growth
      * (assume no deficit demand to be satisfied - testing) */
@@ -366,16 +382,16 @@ void PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake, d
     /* 2014 02 20 a function was added to limit uptake if concentration is too
      * low, this function only valid for NO3 and NH4 */
     int             i;
-    double          soluteConc;             /* kg solute / kg H2O           */
-    double          soilBufferPower;        /* dimensionless                */
+    double          soluteConc; /* kg solute / kg H2O           */
+    double          soilBufferPower;    /* dimensionless                */
     double          layerPotentialUptake;   /* kg solute/m2/day             */
     double          totalPotentialUptake;   /* kg solute/m2/day             */
-    double          ppmSolute;              /* solute concentration in parts
-                                             * per million                  */
-    double          factorSoluteUptake;     /* factor the affects potential
-                                             * uptake based on ppm, current
-                                             * function valid for NO3 and
-                                             * NH4                          */
+    double          ppmSolute;  /* solute concentration in parts
+                                 * per million                  */
+    double          factorSoluteUptake; /* factor the affects potential
+                                         * uptake based on ppm, current
+                                         * function valid for NO3 and
+                                         * NH4                          */
     double          temp1, temp2;
 
     /* soil buffer power is dimensionless
@@ -389,14 +405,14 @@ void PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake, d
 
         if (WaterUptake[i] > 0.0 && Solute[i] > 0.0)
         {
-            ppmSolute = 100.0 * Solute[i] / (dz[i] * BD[i]); /* calculate solute concentration in ppm */
+            ppmSolute = 100.0 * Solute[i] / (dz[i] * BD[i]);    /* calculate solute concentration in ppm */
             factorSoluteUptake = 1.0 - exp (-0.1 * ppmSolute);
             soilBufferPower = Kd * BD[i] + WC[i];
-            soluteConc = Solute[i] / 10.0 / (dz[i] * soilBufferPower * WATER_DENSITY);   /* 1/10 converts from Mg/ha to kg/m2 */
+            soluteConc = Solute[i] / 10.0 / (dz[i] * soilBufferPower * WATER_DENSITY);  /* 1/10 converts from Mg/ha to kg/m2 */
             temp1 = WATER_DENSITY * WC[i] * dz[i] * soluteConc * factorSoluteUptake;
             temp2 = WaterUptake[i] * 0.0006;    /* max allowed concentration in uptake, about 0.6 g N / kg H2O */
             layerPotentialUptake = temp1 < temp2 ? temp1 : temp2;
-            layerPotentialUptake *= 10.0;    /* 10 converts from kg/m2 to Mg/ha */
+            layerPotentialUptake *= 10.0;   /* 10 converts from kg/m2 to Mg/ha */
         }
         else
             layerPotentialUptake = 0.0;
@@ -413,7 +429,7 @@ double ShootBiomassPartitioning (double Stage, double Po, double Pf)
 {
     const double    P1 = 0.4;   /* stage at which partitioning is half way
                                  * between Po and Pf                        */
-    const double    P2 = 4.0;    /* curvature factor (not recommended to be
+    const double    P2 = 4.0;   /* curvature factor (not recommended to be
                                  * available to user)                       */
 
     return (Po + (Pf - Po) / (1.0 + pow ((Stage + 0.0001) / P1, -P2)));
@@ -426,26 +442,26 @@ void RadiationInterception (int y, int doy, CropStruct *Crop)
     double          Delta_Fractional_TT;
     double          Rate_Crop_Interception;
     double          Delta_Crop_Interception;
-    double          Reserves_Use_Allowance;         /* Allows LAI expansion
-                                                     * larger than daily
-                                                     * growth * SLA         */
+    double          Reserves_Use_Allowance; /* Allows LAI expansion
+                                             * larger than daily
+                                             * growth * SLA         */
     double          Delta_Crop_Interception_Growth; /* crop interception
                                                      * expansion based on daily growth and SLA */
-    double          Compensatory_Expansion;         /* if crop expansion is limited by past stress, it is allowed to compensate, but still limited by daily growth */
+    double          Compensatory_Expansion; /* if crop expansion is limited by past stress, it is allowed to compensate, but still limited by daily growth */
     double          Rate_Root_Depth;
-    double          WSF;                            /* water stress factor - copied from stored value; 1 = no stress */
-    double          NSF;                            /* nitroge stress factor - copied from stored value; 1 = no stress */
-    double          Sx, Sn, SF;                     /* the minimum and maximum of the two stresses, and the compounded stress factor
-                                                     * =0.96/(1+EXP(4-20*AB179/$AB$249)+EXP(-15+16*AB179/$AB$249))
-                                                     * note: these parameters need to be crop dependent e.g. canola radiation interception progresses faster than wheat
-                                                     * current setting is good for wheat, barley, corn, sorghum */
-    const double    a = 6.0;                         /* 5, 7 crop radiation interception parameter modified logistic curve */
-    const double    b = 20.0;                        /*  crop radiation interception parameter modified logistic curve */
-    const double    c = 15.0;                        /*  crop radiation interception parameter modified logistic curve */
-    const double    d = 16.0;                        /* crop radiation interception parameter modified logistic curve [reduce the number increase senescence] */
-    const double    e = 5.0;                         /* root parameter logistic curve */
-    const double    f = 15.0;                        /* root parameter logistic curve */
-    const double    rde = 0.3;                      /* m, root depth at emergence */
+    double          WSF;        /* water stress factor - copied from stored value; 1 = no stress */
+    double          NSF;        /* nitroge stress factor - copied from stored value; 1 = no stress */
+    double          Sx, Sn, SF; /* the minimum and maximum of the two stresses, and the compounded stress factor
+                                 * =0.96/(1+EXP(4-20*AB179/$AB$249)+EXP(-15+16*AB179/$AB$249))
+                                 * note: these parameters need to be crop dependent e.g. canola radiation interception progresses faster than wheat
+                                 * current setting is good for wheat, barley, corn, sorghum */
+    const double    a = 6.0;    /* 5, 7 crop radiation interception parameter modified logistic curve */
+    const double    b = 20.0;   /*  crop radiation interception parameter modified logistic curve */
+    const double    c = 15.0;   /*  crop radiation interception parameter modified logistic curve */
+    const double    d = 16.0;   /* crop radiation interception parameter modified logistic curve [reduce the number increase senescence] */
+    const double    e = 5.0;    /* root parameter logistic curve */
+    const double    f = 15.0;   /* root parameter logistic curve */
+    const double    rde = 0.3;  /* m, root depth at emergence */
 
     Fractional_TT = (Crop->svTT_Cumulative - 1.0 * Crop->svTT_Daily) / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
     Delta_Fractional_TT = Crop->svTT_Daily / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
@@ -516,26 +532,25 @@ void RadiationInterception (int y, int doy, CropStruct *Crop)
 
             if (Crop->svRootingDepth > Crop->userMaximumRootingDepth)
                 Crop->svRootingDepth = Crop->userMaximumRootingDepth;
-        }   /* if Crop->svTT_Cumulative >= Crop->userEmergenceTT */
-    }   /* if Crop->svTT_Cumulative < Crop->calculatedMaturityTT */
+        }                       /* if Crop->svTT_Cumulative >= Crop->userEmergenceTT */
+    }                           /* if Crop->svTT_Cumulative < Crop->calculatedMaturityTT */
 }
 
 void Phenology (int y, int doy, const WeatherStruct *Weather, CropStruct *Crop)
 {
-    Crop->svTT_Daily = 0.5 * (ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMin[y][doy - 1])
-                        + ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMax[y][doy - 1]));
+    Crop->svTT_Daily = 0.5 * (ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMin[y][doy - 1]) + ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMax[y][doy - 1]));
     Crop->svTT_Cumulative += Crop->svTT_Daily;
 }
 
 void ComputeColdDamage (int y, int doy, CropStruct *Crop, const WeatherStruct *Weather, const SnowStruct *Snow, ResidueStruct *Residue)
 {
     double          Min_Temperature;
-    double          Cold_Damage;            /* fraction of interception
-                                             * decreased by cold damage     */
-    double          Crop_Tn;                /* minimum temperature for cold
-                                             * damage                       */
-    double          Crop_Tth;               /* threshold temperature for
-                                             * cold damage                  */
+    double          Cold_Damage;    /* fraction of interception
+                                     * decreased by cold damage     */
+    double          Crop_Tn;    /* minimum temperature for cold
+                                 * damage                       */
+    double          Crop_Tth;   /* threshold temperature for
+                                 * cold damage                  */
     double          residueMass;
     double          Residue_N_Mass;
     double          Phenology_Delay_Factor; /* the more advanced the cycle the
@@ -570,8 +585,8 @@ void ComputeColdDamage (int y, int doy, CropStruct *Crop, const WeatherStruct *W
     Residue->stanResidueN += Residue_N_Mass * Crop->userFractionResidueStanding;
     Residue->flatResidueN += Residue_N_Mass * (1.0 - Crop->userFractionResidueStanding);
     /* Assume 33% residue moisture at harvest */
-    Residue->stanResidueWater += residueMass * Crop->userFractionResidueStanding / 10.0 * 0.5;   
-    Residue->flatResidueWater += residueMass * (1.0 - Crop->userFractionResidueStanding) / 10.0 * 0.5; 
+    Residue->stanResidueWater += residueMass * Crop->userFractionResidueStanding / 10.0 * 0.5;
+    Residue->flatResidueWater += residueMass * (1.0 - Crop->userFractionResidueStanding) / 10.0 * 0.5;
 
     /* yearly output variables */
     Residue->yearResidueBiomass += residueMass;
@@ -581,7 +596,7 @@ void ComputeColdDamage (int y, int doy, CropStruct *Crop, const WeatherStruct *W
     Crop->rcBiomass += residueMass;
 }
 
-double ColdDamage (const double T, const double Crop_Tn, const double Crop_Tth)
+double ColdDamage (double T, double Crop_Tn, double Crop_Tth)
 {
     double          damage;
 

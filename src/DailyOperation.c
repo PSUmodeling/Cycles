@@ -7,7 +7,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     FieldOperationStruct *FixedIrrigation;
 
     if (Crop->cropUniqueIdentifier >= 0)
-        GrowingCrop(rotationYear, y, doy, nextSeedingYear, nextSeedingDate, Crop, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
+        GrowingCrop (rotationYear, y, doy, nextSeedingYear, nextSeedingDate, Crop, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
     else if (doy == *nextSeedingDate && rotationYear == *nextSeedingYear)
     {
         PlantingCrop (doy, nextSeedingYear, nextSeedingDate, CropManagement, Crop);
@@ -20,8 +20,10 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
         FixedFertilization = &CropManagement->FixedFertilization[CropManagement->fertilizationIndex];
         if (verbose_mode)
             printf ("DOY %3.3d %-20s %s\n", doy, "Fixed Fertilization", FixedFertilization->opSource);
-        ApplyFertilizer(FixedFertilization, Soil, Residue);
-        SelectNextOperation(CropManagement->numFertilization, &CropManagement->fertilizationIndex);
+
+        ApplyFertilizer (FixedFertilization, Soil, Residue);
+
+        SelectNextOperation (CropManagement->numFertilization, &CropManagement->fertilizationIndex);
     }
 
     while (IsOperationToday (rotationYear, doy, CropManagement->Tillage, CropManagement->tillageIndex))
@@ -29,12 +31,13 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
         Tillage = &(CropManagement->Tillage[CropManagement->tillageIndex]);
         if (verbose_mode)
             printf ("DOY %3.3d %-20s %s\n", doy, "Tillage", Tillage->opToolName);
-        if (strcasecmp(Tillage->opToolName, "Kill_Crop") != 0)
-            ExecuteTillage(y, SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
-        else if (Crop->cropUniqueIdentifier >= 0)
-            HarvestCrop(y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
 
-        SelectNextOperation(CropManagement->numTillage, &CropManagement->tillageIndex);
+        if (strcasecmp (Tillage->opToolName, "Kill_Crop") != 0)
+            ExecuteTillage (y, SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
+        else if (Crop->cropUniqueIdentifier >= 0)
+            HarvestCrop (y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+
+        SelectNextOperation (CropManagement->numTillage, &CropManagement->tillageIndex);
     }
 
     Soil->irrigationVol = 0.0;
@@ -43,17 +46,17 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
         FixedIrrigation = &(CropManagement->FixedIrrigation[CropManagement->irrigationIndex]);
         if (verbose_mode)
             printf ("DOY %3.3d %-20s %lf\n", doy, "Irrigation", FixedIrrigation->opVolume);
+
         Soil->irrigationVol += FixedIrrigation->opVolume;
-        SelectNextOperation(CropManagement->numIrrigation, &CropManagement->irrigationIndex);
+        SelectNextOperation (CropManagement->numIrrigation, &CropManagement->irrigationIndex);
     }
 
-    ComputeResidueCover(Residue);
+    ComputeResidueCover (Residue);
 
     TillageFactorSettling (CropManagement->tillageFactor, Soil->totalLayers, Soil->waterContent, Soil->Porosity);
-
     SnowProcesses (Snow, y, doy, Weather, Residue->stanResidueTau, Crop->svRadiationInterception);
 
-    Redistribution(y, doy, Weather->precipitation[y][doy - 1], Snow->snowFall, Snow->snowMelt, SimControl->hourlyInfiltration, Crop, Soil, Residue);
+    Redistribution (y, doy, Weather->precipitation[y][doy - 1], Snow->snowFall, Snow->snowMelt, SimControl->hourlyInfiltration, Crop, Soil, Residue);
 
     ResidueEvaporation (Residue, Soil, Crop, Weather->ETref[y][doy - 1], Snow->snowCover);
 
@@ -65,7 +68,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
 
     ComputeSoilCarbonBalance (SoilCarbon, y, Residue, Soil, CropManagement->tillageFactor);
 
-    NitrogenTransformation(y, doy, Soil, Crop, Residue, Weather, SoilCarbon);
+    NitrogenTransformation (y, doy, Soil, Crop, Residue, Weather, SoilCarbon);
 }
 
 void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
@@ -75,10 +78,9 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
      * Any needed harvests/forages have occured
      * Final Harvest date set once crop maturity achieved
      */
+    int             forcedHarvest;
 
-    int forcedHarvest;
-
-    forcedHarvest = ForcedMaturity(rotationYear, d, *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
+    forcedHarvest = ForcedMaturity (rotationYear, d, *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
 
     if (Crop->svTT_Cumulative < Crop->userEmergenceTT)
         Crop->stageGrowth = PRE_EMERGENCE;
@@ -99,6 +101,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
     else if (Crop->svTT_Cumulative >= Crop->calculatedMaturityTT)
     {
         Crop->stageGrowth = MATURITY;
+
         if (Crop->harvestDateFinal < 1)
         {
             /* SetCropStatusToMature */
@@ -109,18 +112,18 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
 
     Phenology (y, d, Weather, Crop);
 
-    RadiationInterception(y, d, Crop);
+    RadiationInterception (y, d, Crop);
 
-    WaterUptake(y, d, Crop, Soil, Weather);
+    WaterUptake (y, d, Crop, Soil, Weather);
 
-    Processes(y, d, SimControl->automaticNitrogen, Crop, Residue, Weather, Soil, SoilCarbon);
+    Processes (y, d, SimControl->automaticNitrogen, Crop, Residue, Weather, Soil, SoilCarbon);
 
     if (Weather->tMin[y][d - 1] < Crop->userColdDamageThresholdTemperature)
     {
         if (Crop->userAnnual && Crop->svTT_Cumulative > Crop->calculatedFloweringTT)
-            GrainHarvest(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+            GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
         else
-            ComputeColdDamage(y, d, Crop, Weather, Snow, Residue);
+            ComputeColdDamage (y, d, Crop, Weather, Snow, Residue);
     }
 
     if (d == Crop->harvestDateFinal || forcedHarvest)
@@ -129,8 +132,8 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
             GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
         else
         {
-            ForageHarvest(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
-            HarvestCrop(y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+            ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+            HarvestCrop (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
         }
     }
     else if (Crop->userClippingTiming > 0.0)
@@ -140,7 +143,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
             if ((Crop->harvestCount < 3 && Crop->userAnnual) || (!Crop->userAnnual))
             {
                 ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
-                AddCrop(Crop);
+                AddCrop (Crop);
                 Crop->stageGrowth = CLIPPING;
                 Crop->harvestCount += 1;
             }
@@ -160,24 +163,22 @@ void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropMana
      * harvestDate is reset to an unreachable date
      * dateSet is set to false
      */
-
     SelectNextCrop (CropManagement);
 
     NewCrop (Crop, CropManagement);
+
     AddCrop (Crop);
 
     *nextSeedingYear = CropManagement->nextCropSeedingYear;
     *nextSeedingDate = CropManagement->nextCropSeedingDate;
-
     Crop->stageGrowth = PLANTING;
 }
 
-double FinalHarvestDate(int lastDoy, int d)
+double FinalHarvestDate (int lastDoy, int d)
 {
-    int harvestDate;
+    int             harvestDate;
 
     harvestDate = d + 10;
-    
     if (harvestDate > lastDoy)
         harvestDate -= lastDoy;
 
@@ -190,12 +191,9 @@ int ForcedMaturity (int rotationYear, int d, int nextSeedingYear, int nextSeedin
      * Returns true if planted crop is within saftey margin of days of the
      * next crop to be planted
      */
-
-    int forced_maturity = 0;
-
-    int margin = 10;
-
-    int nextRotationYear;
+    int             forced_maturity = 0;
+    int             margin = 10;
+    int             nextRotationYear;
 
     nextRotationYear = rotationYear;
 

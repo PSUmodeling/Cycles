@@ -41,7 +41,7 @@ void PrintSoil (SoilStruct Soil)
     printf ("(Press any key to continue ...)\n");
 }
 
-void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
+void PrintCrop (describedCropStruct * describedCrop, int NumCrop)
 {
     int             i;
 
@@ -89,7 +89,7 @@ void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
     printf ("\n");
 }
 
-void PrintOperation (FieldOperationStruct * plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization)
+void PrintOperation (FieldOperationStruct * plantedCrops, int NumPlanting, FieldOperationStruct * Tillage, int NumTillage, FieldOperationStruct * FixedIrrigation, int NumIrrigation, FieldOperationStruct * FixedFertilization, int NumFertilization)
 {
     int             i;
     FieldOperationStruct *p;
@@ -168,4 +168,3 @@ void PrintWeather (WeatherStruct Weather)
     printf ("\n");
     printf ("(Press any key to continue ...)\n");
 }
-

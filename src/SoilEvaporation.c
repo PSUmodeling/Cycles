@@ -42,7 +42,7 @@ void Evaporation (SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, do
         }
 
         layerMidpoint = 0.5 * (layerTop[i] + layerBottom[i]);
-        WC_AirDry = Soil->PWP[i] / 3.0;  /* an approximation to air dry */
+        WC_AirDry = Soil->PWP[i] / 3.0; /* an approximation to air dry */
         WaterAvailable = (Soil->waterContent[i] - WC_AirDry) * Soil->layerThickness[i] * WATER_DENSITY;
 
         DepthLimitation = 1.0 / 3.0 * (Depth_Limitation_To_Evaporation (layerTop[i]) + Depth_Limitation_To_Evaporation (layerMidpoint) + Depth_Limitation_To_Evaporation (layerBottom[i]));

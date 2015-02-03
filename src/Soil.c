@@ -7,7 +7,6 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     int             i;
 
     /* Initialize soil vairables */
-
     Soil->nodeDepth = (double *)malloc ((Soil->totalLayers + 1) * sizeof (double));
     Soil->cumulativeDepth = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->waterContent = (double *)malloc ((Soil->totalLayers) * sizeof (double));
@@ -43,7 +42,7 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         if (i > 0)
         {
             Soil->cumulativeDepth[i] = Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i];
-            Soil->nodeDepth[i] = Soil->cumulativeDepth[i-1] + Soil->layerThickness[i] / 2.0;
+            Soil->nodeDepth[i] = Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i] / 2.0;
         }
     }
 
@@ -85,10 +84,10 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     {
         Soil->SOC_Conc[i] = Soil->IOM[i] * 10.0 * 0.58;
         Soil->SOC_Mass[i] = Soil->IOM[i] / 100.0 * 0.58 * Soil->layerThickness[i] * Soil->BD[i] * 10000.0;
-        Soil->SON_Mass[i] = Soil->SOC_Mass[i] / 10.0;    /* Initializes with CN ratio = 10 */
+        Soil->SON_Mass[i] = Soil->SOC_Mass[i] / 10.0;   /* Initializes with CN ratio = 10 */
         Soil->MBC_Mass[i] = 0.03 * Soil->SOC_Mass[i];   /* Initializes as 3% of SOC_Mass
                                                          * but "added" C */
-        Soil->MBN_Mass[i] = Soil->MBC_Mass[i] / 10.0;    /* Initializes with CN ratio = 10 */
+        Soil->MBN_Mass[i] = Soil->MBC_Mass[i] / 10.0;   /* Initializes with CN ratio = 10 */
         Soil->PAW[i] = Soil->FC[i] - Soil->PWP[i];
         Soil->waterContent[i] = (Soil->FC[i] + Soil->PWP[i]) / 2.0;
     }
@@ -183,7 +182,7 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
 
 double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campbell_b, double WC)
 {
-    double swp;
+    double          swp;
 
     swp = AirEntryPot * pow (WC / SaturationWC, -Campbell_b);
 
@@ -224,7 +223,7 @@ double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM)
 
 double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential)
 {
-    double swc;
+    double          swc;
 
     swc = SaturationWC * pow (Water_Potential / AirEntryPot, -1.0 / Campbell_b);
 

@@ -2,11 +2,11 @@
 
 void InitializeOutput (char *project)
 {
-    char filename[50];
-    char *output_dir;
-    FILE    *output_file;
+    char            filename[50];
+    char           *output_dir;
+    FILE           *output_file;
 
-    output_dir = (char *) malloc ((strlen(project) + 8) * sizeof (char));
+    output_dir = (char *)malloc ((strlen (project) + 8) * sizeof (char));
 
     mkdir ("output", 0755);
     sprintf (output_dir, "output/%s", project);
@@ -55,7 +55,7 @@ void InitializeOutput (char *project)
 
 void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement, SnowStruct *Snow)
 {
-    int i, j;
+    int             i, j;
     /* Initialize weather variables */
     CalculateDerivedWeather (Weather, SimControl->totalYears);
 
@@ -72,7 +72,7 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
     Crop->cropUniqueIdentifier = -1;
 
     /* Initialize tillage factors */
-    CropManagement->tillageFactor = (double *) malloc (Soil->totalLayers * sizeof (double));
+    CropManagement->tillageFactor = (double *)malloc (Soil->totalLayers * sizeof (double));
 
     /* Initialize snow structure */
     Snow->Snow = 0.;

@@ -49,9 +49,9 @@ void PeekNextCrop (CropManagementStruct *CropManagement)
 
 void NewCrop (CropStruct *Crop, CropManagementStruct *CropManagement)
 {
-    FieldOperationStruct   *plantingOrder;
-    autoIrrigationStruct   *autoIrrigation;
-    describedCropStruct    *describedCrop;
+    FieldOperationStruct *plantingOrder;
+    autoIrrigationStruct *autoIrrigation;
+    describedCropStruct *describedCrop;
 
     plantingOrder = &CropManagement->plantingOrder[CropManagement->plantingIndex];
     autoIrrigation = &CropManagement->autoIrrigation[plantingOrder->usesAutoIrrigation];
@@ -223,9 +223,9 @@ void KillCrop (CropStruct *Crop)
     Crop->svShootUnstressed = 0;
     Crop->svN_StressCumulative = 0;
 
-    Crop->rcActiveStatus = 0;
-    Crop->rcYear = 0;
-    Crop->rcDoy = 0;
+    //Crop->rcActiveStatus = 0;
+    //Crop->rcYear = 0;
+    //Crop->rcDoy = 0;
     Crop->rcForageYield = 0;
     Crop->rcGrainYield = 0;
     Crop->rcBiomass = 0;

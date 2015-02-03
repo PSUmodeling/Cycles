@@ -7,20 +7,20 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
      * in the rotation
      */
 
-    double sumTT = 0.0;
-    double sumMTTbyYear = 0.0;
-    double sumFTTbyYear = 0.0;
+    double          sumTT = 0.0;
+    double          sumMTTbyYear = 0.0;
+    double          sumFTTbyYear = 0.0;
 
-    int cropEvents;
-    int cropON;
-    int lastDOY = 365; /* Leap year is not taken into account */
-    int c, y, d;
+    int             cropEvents;
+    int             cropON;
+    int             lastDOY = 365;  /* Leap year is not taken into account */
+    int             c, y, d;
 
     describedCropStruct *describedCrop;
 
-    SelectCropInitialPosition(CropManagement);
+    SelectCropInitialPosition (CropManagement);
 
-    for (c = 0;  c < CropManagement->totalCropsPerRotation; c++)
+    for (c = 0; c < CropManagement->totalCropsPerRotation; c++)
     {
         SelectNextCrop (CropManagement);
         describedCrop = &(CropManagement->describedCrop[CropManagement->describedIndex]);
@@ -39,9 +39,7 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
                         cropON = 1;
                     if (cropON)
                     {
-                        sumTT = sumTT + 0.5 * (
-                            ThermalTime (describedCrop->userTemperatureBase, describedCrop->userTemperatureOptimum, describedCrop->userTemperatureMaximum, Weather->tMax[y][d - 1])
-                            + ThermalTime (describedCrop->userTemperatureBase, describedCrop->userTemperatureOptimum, describedCrop->userTemperatureMaximum, Weather->tMin[y][d - 1]));
+                        sumTT = sumTT + 0.5 * (ThermalTime (describedCrop->userTemperatureBase, describedCrop->userTemperatureOptimum, describedCrop->userTemperatureMaximum, Weather->tMax[y][d - 1]) + ThermalTime (describedCrop->userTemperatureBase, describedCrop->userTemperatureOptimum, describedCrop->userTemperatureMaximum, Weather->tMin[y][d - 1]));
                         if (d == describedCrop->userFloweringDate)
                             sumFTTbyYear = sumFTTbyYear + sumTT;
                         if (d == describedCrop->userMaturityDate)
@@ -52,8 +50,8 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
                             cropON = 0;
                         }
                     }
-                } 
-            } 
+                }
+            }
 
             /* Load flow and mat TT as crop info for the crops in the rotation
              * Order of crops in array are assigned according to order in the
@@ -76,7 +74,7 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
 
 double ThermalTime (double T_base, double T_op, double T_Max, double Temperature)
 {
-    double thermal_time;
+    double          thermal_time;
 
     if (Temperature <= T_base || Temperature >= T_Max)
         thermal_time = 0.0;

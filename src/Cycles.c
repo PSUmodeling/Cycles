@@ -1,23 +1,23 @@
 #include "include/Cycles.h"
 
-int verbose_mode;
-int debug_mode;
+int             verbose_mode;
+int             debug_mode;
 
 int main (int argc, char *argv[])
 {
-    int rotationYear;
-    int nextSeedingDate;
-    int nextSeedingYear;
-    int y;
-    int doy;
-    int i;
-    int c;
-    clock_t begin, end;
+    int             rotationYear;
+    int             nextSeedingDate;
+    int             nextSeedingYear;
+    int             y;
+    int             doy;
+    int             i;
+    int             c;
+    clock_t         begin, end;
 
     CyclesStruct    Cycles;     /* Model structure */
     char           *project;    /* Name of simulation */
 
-    begin = clock();
+    begin = clock ();
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
@@ -33,7 +33,7 @@ int main (int argc, char *argv[])
 
     verbose_mode = 0;
 
-    while((c = getopt(argc, argv, "vd")) != -1)
+    while ((c = getopt (argc, argv, "vd")) != -1)
     {
         if (optind >= argc)
         {
@@ -42,7 +42,7 @@ int main (int argc, char *argv[])
             printf ("\t-d Ddebug mode\n");
             exit (1);
         }
-        switch(c)
+        switch (c)
         {
             case 'v':
                 verbose_mode = 1;
@@ -149,7 +149,7 @@ int main (int argc, char *argv[])
             Cycles->SoilCarbon.carbonMassFinal[i] = 0.0;
             Cycles->SoilCarbon.annualHumifiedCarbonMass[i] = 0.0;
             Cycles->SoilCarbon.annualRespiredCarbonMass[i] = 0.0;
-        } 
+        }
 
         /* Daily operations */
         for (doy = 1; doy < 366; doy++)
@@ -160,8 +160,8 @@ int main (int argc, char *argv[])
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Crop, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue, project);
         }
     }
-    
-    end = clock();
+
+    end = clock ();
 
     printf ("\nSimulation time: %-lf seconds.\n", (double)(end - begin) / CLOCKS_PER_SEC);
 

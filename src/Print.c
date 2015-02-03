@@ -2,11 +2,11 @@
 
 void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project)
 {
-    char filename[50];
-    FILE *output_file;
-    int month, mday;
-    int i;
-    double sum;
+    char            filename[50];
+    FILE           *output_file;
+    int             month, mday;
+    int             i;
+    double          sum;
 
     doy2date (y + start_year, doy, &month, &mday, 0);
 
@@ -64,7 +64,7 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
                 break;
         }
     }
-        
+
     fprintf (output_file, "%-7.2lf\t", Crop->svTT_Cumulative);
     fprintf (output_file, "%-7.3lf\t", Crop->svBiomass);
     fprintf (output_file, "%-7.3lf\t", Crop->svShoot);
@@ -187,9 +187,9 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
 
 void PrintSeasonOutput (int y, int doy, int start_year, const CropStruct *Crop, const char *project)
 {
-    char filename[50];
-    FILE *output_file;
-    int month, mday;
+    char            filename[50];
+    FILE           *output_file;
+    int             month, mday;
 
     sprintf (filename, "output/%s/season.dat", project);
     output_file = fopen (filename, "a");
@@ -216,4 +216,4 @@ void PrintSeasonOutput (int y, int doy, int start_year, const CropStruct *Crop, 
 
     fflush (output_file);
     fclose (output_file);
-} 
+}

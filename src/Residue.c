@@ -52,8 +52,8 @@ void ResidueWetting (ResidueStruct *Residue, SoilStruct *Soil)
     double          waterWettingResidue;    /* mm, amount of water interceptable by residue */
     double          waterRetainedResidue;   /* mm, water retained in residue and discounted for infiltration */
 
-    flatResidueWaterDeficit = residueMaxWaterConcentration * Residue->flatResidueMass / 10.0 - Residue->flatResidueWater;    /* 10 converts residue from Mg/ha to kg/m2 */
-    standingResidueWaterDeficit = residueMaxWaterConcentration * Residue->stanResidueMass / 10.0 - Residue->stanResidueWater;    /* 10 converts residue from Mg/ha to kg/m2 */
+    flatResidueWaterDeficit = residueMaxWaterConcentration * Residue->flatResidueMass / 10.0 - Residue->flatResidueWater;   /* 10 converts residue from Mg/ha to kg/m2 */
+    standingResidueWaterDeficit = residueMaxWaterConcentration * Residue->stanResidueMass / 10.0 - Residue->stanResidueWater;   /* 10 converts residue from Mg/ha to kg/m2 */
     waterWettingResidue = Soil->infiltrationVol * Residue->residueInterception;
 
     waterRetainedResidue = 0.0;
@@ -85,7 +85,7 @@ void ResidueWetting (ResidueStruct *Residue, SoilStruct *Soil)
         waterWettingResidue -= waterWettingResidue;
     }
 
-   Soil->infiltrationVol -= waterRetainedResidue;
+    Soil->infiltrationVol -= waterRetainedResidue;
 }
 
 void ResidueEvaporation (ResidueStruct *Residue, SoilStruct *Soil, CropStruct *Crop, double ETo, double snowCover)
@@ -103,7 +103,7 @@ void ResidueEvaporation (ResidueStruct *Residue, SoilStruct *Soil, CropStruct *C
     {
         Soil->residueEvaporationVol = 0.0;
         residueEvapDemand = Residue->residueInterception * (1.0 - snowCover) * (1.0 - Crop->svRadiationInterception) * ETo;
-        standingEvapFactor = pow (Residue->stanResidueWater / (residueMaxWaterConcentration * Residue->stanResidueMass / 10.0), 2.0);  /* 10 converts residue from Mg/ha to kg/m2 */
+        standingEvapFactor = pow (Residue->stanResidueWater / (residueMaxWaterConcentration * Residue->stanResidueMass / 10.0), 2.0);   /* 10 converts residue from Mg/ha to kg/m2 */
         flatEvapFactor = pow (Residue->flatResidueWater / (residueMaxWaterConcentration * Residue->flatResidueMass / 10.0), 2.0);   /* 10 converts residue from Mg/ha to kg/m2 */
 
         /* dry standing residue first */

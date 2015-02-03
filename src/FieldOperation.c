@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void SelectNextOperation(int NumOperation, int *operationIndex)
+void SelectNextOperation (int NumOperation, int *operationIndex)
 {
     /*
      * Select next operation in the list, if any
@@ -20,7 +20,7 @@ void SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation
         if (rotationYear > 0)
         {
             *operationIndex = 0;
-            while (*operationIndex >=0)
+            while (*operationIndex >= 0)
             {
                 if (FieldOperation[*operationIndex].opYear < rotationYear)
                     SelectNextOperation (NumOperation, operationIndex);
@@ -41,7 +41,7 @@ int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOper
     /*
      * Returns a true or false indicating if an operation happens on that day
      */
-    int operation_today;
+    int             operation_today;
 
     if (operationIndex == -1)
         operation_today = 0;

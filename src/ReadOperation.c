@@ -108,7 +108,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                             CropManagement->plantingOrder[i].usesAutoFertilization = -1;
 
                         /* Link planting order and crop description */
-                        for (j = 0; j < CropManagement->NumDescribedCrop; j++)  
+                        for (j = 0; j < CropManagement->NumDescribedCrop; j++)
                         {
                             if (strcmp (CropManagement->plantingOrder[i].cropName, CropManagement->describedCrop[j].userCropName) == 0)
                             {

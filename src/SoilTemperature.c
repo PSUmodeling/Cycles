@@ -1,6 +1,6 @@
 #include "include/Cycles.h"
 
-void Temperature (int y, int doy, double snowCover, double cropInterception, SoilStruct * Soil, WeatherStruct * Weather, ResidueStruct * Residue)
+void Temperature (int y, int doy, double snowCover, double cropInterception, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct *Residue)
 {
     int             m;
     int             i;
@@ -23,8 +23,8 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
 
     m = Soil->totalLayers;
 
-    CPsfc = 0.0;                 /* heat capacity of boundary layer  = 0 */
-    ksfc = 20.0;                 /* boundary layer conductance (W/m2 K) */
+    CPsfc = 0.0;                /* heat capacity of boundary layer  = 0 */
+    ksfc = 20.0;                /* boundary layer conductance (W/m2 K) */
 
     for (i = 0; i < m; i++)
     {
@@ -74,13 +74,13 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
             a[i + 1] = c[i];
             if (i == 0)
             {
-                b[i] = f * (k[i] + ksfc) + CP[i] / 86400.0;  /* changed to seconds per day, quite long time step */
-                d[i] = g * ksfc * tsfc + (CP[i] / 86400.0 - g * (k[i] + ksfc)) * T[i] + g * k[i] * T[i + 1]; /* changed to seconds per day, quite long time step */
+                b[i] = f * (k[i] + ksfc) + CP[i] / 86400.0; /* changed to seconds per day, quite long time step */
+                d[i] = g * ksfc * tsfc + (CP[i] / 86400.0 - g * (k[i] + ksfc)) * T[i] + g * k[i] * T[i + 1];    /* changed to seconds per day, quite long time step */
             }
             else
             {
-                b[i] = f * (k[i] + k[i - 1]) + CP[i] / 86400.0;  /* changed to seconds per day, quite long time step */
-                d[i] = g * k[i - 1] * T[i - 1] + (CP[i] / 86400.0 - g * (k[i] + k[i - 1])) * T[i] + g * k[i] * T[i + 1]; /* changed to seconds per day, quite long time step */
+                b[i] = f * (k[i] + k[i - 1]) + CP[i] / 86400.0; /* changed to seconds per day, quite long time step */
+                d[i] = g * k[i - 1] * T[i - 1] + (CP[i] / 86400.0 - g * (k[i] + k[i - 1])) * T[i] + g * k[i] * T[i + 1];    /* changed to seconds per day, quite long time step */
             }
         }
 

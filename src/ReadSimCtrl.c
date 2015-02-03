@@ -1,10 +1,5 @@
 #include "include/Cycles.h"
 
-/****************************************************************************
- * FILE NAME:   ReadSimControl.c
- * PURPOSE:     Read simulation control files for the Cycles model
- ***************************************************************************/
-
 void ReadSimControl (char *project, SimControlStruct *SimControl)
 {
     FILE           *simctrl_file;

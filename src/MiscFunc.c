@@ -12,7 +12,7 @@ int doy (int year, int month, int mday, int leap_year_mode)
         {0, 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335}
     };
 
-    int leap;
+    int             leap;
 
     if (leap_year_mode)
         leap = IsLeapYear (year);
@@ -28,8 +28,8 @@ int doy2date (int year, int jday, int *month, int *mday, int leap_year_mode)
         {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365},
         {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366}
     };
-    int i = 1;
-    int leap;
+    int             i = 1;
+    int             leap;
 
     if (leap_year_mode)
         leap = IsLeapYear (year);
@@ -50,11 +50,12 @@ int doy2date (int year, int jday, int *month, int *mday, int leap_year_mode)
         }
     }
 }
-    
-int t2doy (time_t *rawtime)
+
+int t2doy (time_t * rawtime)
 {
-    struct tm *timestamp;
-    int jday;
+    struct tm      *timestamp;
+    int             jday;
+
     timestamp = gmtime (rawtime);
 
     jday = doy (timestamp->tm_year + 1900, timestamp->tm_mon + 1, timestamp->tm_mday, 1);

@@ -1,11 +1,10 @@
 #include "include/Cycles.h"
 
-void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct  *SoilCarbon, const char *project)
+void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
 {
     /*
      * update roots and residue biomass at harvest
      */
-
     double          HI, NHI;
     double          residueMass;
     double          forageYield;
@@ -53,9 +52,9 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
     Crop->rcGrainNitrogenYield = grainNitrogenYield;
     Crop->rcForageNitrogenYield = forageNitrogenYield;
     Crop->rcNitrogenCumulative = Crop->svN_StressCumulative;
-    Crop->rcYear = y + startYear - 1;
-    Crop->rcDoy = doy;
-    Crop->rcActiveStatus = 0;
+    //Crop->rcYear = y + startYear - 1;
+    //Crop->rcDoy = doy;
+    //Crop->rcActiveStatus = 0;
 
     PrintSeasonOutput (y, doy, startYear, Crop, project);
 
@@ -106,7 +105,7 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
     Crop->svN_Shoot -= (nitrogenForageYield + Residue_N_Mass);
     Crop->svN_Root -= Root_N_Mass_Dead;
     /* Resetting of cumulative nitrogen stress after haverst */
-    Crop->svN_StressCumulative *= (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (Crop->userFractionResidueRemoved, 0.75)) / Crop->calculatedMaturityTT;   
+    Crop->svN_StressCumulative *= (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (Crop->userFractionResidueRemoved, 0.75)) / Crop->calculatedMaturityTT;
     Crop->svTT_Cumulative = Crop->userEmergenceTT + (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (Crop->userFractionResidueRemoved, 0.75));
     Crop->svRadiationInterception = Crop->svRadiationInterception * (1.0 - pow (Crop->userFractionResidueRemoved, 0.75));
     Crop->svShootUnstressed = Crop->svShoot;
@@ -132,8 +131,8 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
     Crop->rcRootNitrogen = Root_N_Mass_Dead;
     Crop->rcForageNitrogenYield = nitrogenForageYield;
     Crop->rcNitrogenCumulative = nitrogenStressCumulative / Crop->userClippingTiming;
-    Crop->rcYear = y + startYear;
-    Crop->rcDoy = doy;
+    //Crop->rcYear = y + startYear;
+    //Crop->rcDoy = doy;
 
     PrintSeasonOutput (y, doy, startYear, Crop, project);
 }
@@ -160,7 +159,7 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
     Residue->stanResidueN += Residue_N_Mass * Crop->userFractionResidueStanding;
     Residue->flatResidueN += Residue_N_Mass * (1.0 - Crop->userFractionResidueStanding);
     /* Assume 33% residue moisture at harvest */
-    Residue->stanResidueWater += residueMass * Crop->userFractionResidueStanding / 10.0 * 0.5;   
+    Residue->stanResidueWater += residueMass * Crop->userFractionResidueStanding / 10.0 * 0.5;
     Residue->flatResidueWater += residueMass * (1.0 - Crop->userFractionResidueStanding) / 10.0 * 0.5;
 
     /* Add roots of terminated crop to a root residue pool in each layer */
@@ -175,9 +174,9 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
     Crop->rcBiomass += Crop->svBiomass;
     Crop->rcRoot += Crop->svRoot;
     Crop->rcResidueBiomass += residueMass;
-    Crop->rcYear = y + startYear;
-    Crop->rcDoy = doy;
-    Crop->rcActiveStatus = 0;
+    //Crop->rcYear = y + startYear;
+    //Crop->rcDoy = doy;
+    //Crop->rcActiveStatus = 0;
 
     if (verbose_mode)
         printf ("DOY %3.3d %-20s %s\n", doy, "Harvest", Crop->cropName);
@@ -206,7 +205,7 @@ void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double ro
      * where z1 and z2 are the top and bottom of layer */
 
     const double    a = 1.0;
-    const double    b = 4.0;                         /* units of 1/m */
+    const double    b = 4.0;    /* units of 1/m */
     double          rootIntegral;
     double          rootSum;
     double          cumulativeRootingDepth = 0.0;

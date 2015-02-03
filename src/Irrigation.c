@@ -20,7 +20,7 @@ double FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStr
             depletionZonePAW += Soil->PAW[i] * Soil->layerThickness[i];
             depletionZoneWater += (Soil->waterContent[i] - Soil->PWP[i]) * Soil->layerThickness[i];
         }
-        else    /* this adds deficit below PWP */
+        else                    /* this adds deficit below PWP */
             depletionZonePAW += (Soil->FC[i] - Soil->waterContent[i]) * Soil->layerThickness[i];
     }
 

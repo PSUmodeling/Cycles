@@ -44,7 +44,7 @@ void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, 
     int             i;
     double          NH4_Nitrified;  /* N daily nitrification, Mg/ha */
     double          N2O_Nitrified;  /* N daily N2O from denitrification and nitrification, Mg/ha */
-    double          pH_Factor = 1.0; /* pH function controlling nitrification */
+    double          pH_Factor = 1.0;    /* pH function controlling nitrification */
     double          NO3NH4Ratio;    /* ratio of NO3 to NH4 */
     double          ratioFactor;    /* nitrification control by NO3/NH4 ratio */
     double          AirContent; /* porosity - watercontent, m3/m3 */
@@ -76,7 +76,7 @@ void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, 
     }
 }
 
-void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitrified, SoilStruct * Soil, const SoilCarbonStruct * SoilCarbon)
+void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon)
 {
     double          N_Denit;    /* nitrogen daily denitrification (N2 + N2O), Mg N/ha */
     double          N2O_Emission;   /* nitrogen daily denitrification as N2O, kg/m2 */
@@ -84,12 +84,12 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
     double          Soil_Mass;  /* Mg/ha */
     double          NO3_Conc;   /* Mg NO3 / Mg dry soil */
     double          NO3_Factor; /* nitrate concentration control of denitrification */
-    double          Res_Factor;    /* this respiration factor considers temperature control already */
+    double          Res_Factor; /* this respiration factor considers temperature control already */
     double          Oxy_Factor; /* oxygen control of denitrification, using porosity occupied by air as a surrogate */
     double          rr1;        /* carbon respired Mg C / Mg dry soil */
     double          AirVol;     /* fractional volume of air in the soil, m3/m3 */
     double          cc1;        /* compute coefficient for denitrification based on clay concentration */
-    double          cc2 = 60.0;  /* coefficient of denitrification curve response to aereation */
+    double          cc2 = 60.0; /* coefficient of denitrification curve response to aereation */
     int             i;
 
     for (i = 0; i < Soil->totalLayers; i++)
@@ -103,7 +103,7 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
             cc1 = 0.9 + 0.1 * Soil->Clay[i];
             Oxy_Factor = 1.0 / (1.0 + pow ((1.0 - AirVol) / cc1, -cc2));
 
-            Soil_Mass = Soil->BD[i] * Soil->layerThickness[i] * 10000.0; /* converted to Mg soil/ha */
+            Soil_Mass = Soil->BD[i] * Soil->layerThickness[i] * 10000.0;    /* converted to Mg soil/ha */
             rr1 = SoilCarbon->carbonRespired[i] / Soil_Mass;
             Res_Factor = rr1 / 0.00005 < 1.0 ? rr1 / 0.00005 : 1.0;
 
@@ -161,7 +161,7 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
     double          waterVolume;
     double          NH4Conc;
     double          NH3Conc;
-    double          NH3MolarFraction;  /* molar fraction */
+    double          NH3MolarFraction;   /* molar fraction */
     double          profile_volatilization;
 
     pH = 6.5;                   /* FIX THIS INPUT */
@@ -178,7 +178,7 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
 
     pK = 0.09018 + 2729.92 / Tavg;
     henrysCoeff = pow (10.0, 1477.7 / Tavg - 1.69);
-    henrysConst = 1000.0 * 8.3143 * Tavg / henrysCoeff;  /* 1000 converts from m3 to liters */
+    henrysConst = 1000.0 * 8.3143 * Tavg / henrysCoeff; /* 1000 converts from m3 to liters */
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
@@ -203,8 +203,8 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
         fVol = CECFactor * DepthFactor;
         NH4Volatilizable = fVol * Soil->NH4[i];
 
-        waterVolume = Soil->waterContent[i] * Soil->layerThickness[i] * WATER_DENSITY * 10000.0; /* m3/ha */
-        NH4Conc = NH4Volatilizable * (18.0 / 14.0) / waterVolume;    /* Mg/m3; 18/14 converts mass of N to mass of NH4 */
+        waterVolume = Soil->waterContent[i] * Soil->layerThickness[i] * WATER_DENSITY * 10000.0;    /* m3/ha */
+        NH4Conc = NH4Volatilizable * (18.0 / 14.0) / waterVolume;   /* Mg/m3; 18/14 converts mass of N to mass of NH4 */
         NH3Conc = NH4Conc / (1.0 + pow (10.0, pK - pH));    /* Mg/m3 */
         NH3MolarFraction = henrysConst * (NH3Conc / 0.000017) / pAtm;   /* 0.000017 = Mg/mol of NH3 */
 
@@ -277,7 +277,7 @@ double BoundaryLayerConductance (double RI, double RM, double WS, double AMD)
 
     CropHeight = RI / (RI + 0.5);   /* temporary, until a function for crop height is incorporated; assumed max = 1 m */
     SoilHeight = 0.05;          /* temporary, until something better is available */
-    ResidueHeight = 0.3 * RM / (RM + 2.0);    /* 2 in Mg/ha or residue, assumed max = 0.3 m */
+    ResidueHeight = 0.3 * RM / (RM + 2.0);  /* 2 in Mg/ha or residue, assumed max = 0.3 m */
 
     h = CropHeight > SoilHeight ? CropHeight : SoilHeight;
     h = h > ResidueHeight ? h : ResidueHeight;
