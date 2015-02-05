@@ -62,3 +62,67 @@ int t2doy (time_t * rawtime)
 
     return (jday);
 }
+
+int LT (double x, double y)
+{
+    int lt;
+
+    if (x < y && fabs (x - y) < 1e-7)
+        lt = 1;
+    else
+        lt = 0;
+
+    return (lt);
+}
+
+int LE (double x, double y)
+{
+    int le;
+
+    if (x <= y)
+        le = 1;
+    else if (fabs (x - y) < 1e-7)
+        le = 1;
+    else
+        le = 0;
+
+    return (le);
+}
+
+int EQ (double x, double y)
+{
+    int eq;
+
+    if (fabs (x - y) < 1e-7)
+        eq = 1;
+    else
+        eq = 0;
+
+    return (eq);
+}
+
+int GE (double x, double y)
+{
+    int ge;
+
+    if (x >= y)
+        ge = 1;
+    else if (fabs (x - y) < 1e-7)
+        ge = 1;
+    else
+        ge = 0;
+
+    return (ge);
+}
+
+int GT (double x, double y)
+{
+    int gt;
+
+    if (x > y && fabs (x - y) > 1e-7)
+        gt = 1;
+    else
+        gt = 0;
+
+    return (gt);
+}
