@@ -47,7 +47,7 @@ void PeekNextCrop (CropManagementStruct *CropManagement)
     }
 }
 
-void NewCrop (CropStruct *Crop, CropManagementStruct *CropManagement)
+void NewCrop (CropStruct *Crop, const CropManagementStruct *CropManagement)
 {
     FieldOperationStruct *plantingOrder;
     autoIrrigationStruct *autoIrrigation;

@@ -5,14 +5,14 @@
 void            SelectCropInitialPosition (CropManagementStruct *CropManagement);
 void            SelectNextCrop (CropManagementStruct *CropManagement);
 void            PeekNextCrop (CropManagementStruct *CropManagement);
-void            NewCrop (CropStruct *Crop, CropManagementStruct *CropManagement);
+void            NewCrop (CropStruct *Crop, const CropManagementStruct *CropManagement);
 void            KillCrop (CropStruct *Crop);
 
 /* CropHarvest.c */
-void            GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project);
-void            ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project);
-void            HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project);
-void            DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon);
+void            GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project);
+void            ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project);
+void            HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project);
+void            DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, const SoilStruct *Soil, const CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon);
 double          ComputeHarvestIndex (double HIx, double HIo, double HIk, double cumulativeShoot, double cumulativePostFloweringShootBiomass);
 
 /* CropProcess.c */
@@ -65,6 +65,11 @@ int             IsLeapYear (int year);
 int             doy (int year, int month, int mday, int leap_year_mode);
 int             t2doy (time_t *rawtime);
 int             doy2date (int year, int jday, int *month, int *mday, int leap_year_mode);
+int             LT (double x, double y);
+int             LE (double x, double y);
+int             EQ (double x, double y);
+int             GE (double x, double y);
+int             GT (double x, double y);
 
 /* Print.c */
 void            PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project);

@@ -61,22 +61,35 @@ void Processes (int y, int doy, int autoNitrogen, CropStruct *Crop, ResidueStruc
 
 void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct *Weather)
 {
-    double          ShootPartitioning;  /* fraction of daily growth
-                                         * allocated to aboveground
-                                         * biomass                  */
+    /* 
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * ShootPartitioning    double      Fraction of daily growth allocated to
+     *                                    aboveground biomass
+     * RadiationGrowth      double
+     * TranspirationGrowth  double
+     * UnstressedGrowth double
+     * daytimeVPD           double
+     * TUE                  double
+     * RUE                  double
+     * PRG                  double      Potential growth based on radiation
+     * PTG                  double      Potential growth based on
+     *                                    transpiration
+     * RRD                  double      Root to rizhodeposition ratio of
+     *                                    biomass allocated to roots
+     */
+    double          ShootPartitioning;
     double          RadiationGrowth;
     double          TranspirationGrowth;
-    double          UnstressedDailyGrowth;
+    double          UnstressedGrowth;
     double          daytimeVPD;
     double          TUE;
     double          RUE;
-    double          PRG;        /* potential growth based on
-                                 * radiation                */
-    double          PTG;        /* potential growth based on
-                                 * transpiration            */
-    const double    RRD = 0.6;  /* root to rizhodeposition
-                                 * ratio of biomass allocated
-                                 * to roots                 */
+    double          PRG;        
+    double          PTG; 
+    const double    RRD = 0.6;  
 
     daytimeVPD = 0.66 * SatVP (Weather->tMax[y][doy - 1]) * (1.0 - Weather->RHmin[y][doy - 1] / 100.0);
 
@@ -92,9 +105,9 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *
      * might be used to calculate N demand */
     PRG = Crop->svRadiationInterception * Weather->solarRadiation[y][doy - 1] * RUE;
     PTG = Crop->svTranspirationPotential * TUE;
-    UnstressedDailyGrowth = PRG < PTG ? PRG : PTG;
-    Crop->svUnstressedShootDailyGrowth = UnstressedDailyGrowth * ShootPartitioning;
-    Crop->svUnstressedRootDailyGrowth = UnstressedDailyGrowth * (1.0 - ShootPartitioning) * RRD;
+    UnstressedGrowth = PRG < PTG ? PRG : PTG;
+    Crop->svUnstressedShootDailyGrowth = UnstressedGrowth * ShootPartitioning;
+    Crop->svUnstressedRootDailyGrowth = UnstressedGrowth * (1.0 - ShootPartitioning) * RRD;
     Crop->svShootUnstressed += Crop->svUnstressedShootDailyGrowth;
 
     /* Actual growth rate */
@@ -132,6 +145,11 @@ void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, do
      * NcAbgd, NnAbgd aboveground biomass maximum, critical, and minimum N
      * concentration in biomass
      */
+    /* 
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
 
     double          BTNx;       /* Threshold abgd biomass level after
                                  * which N maximum / critical / minimum

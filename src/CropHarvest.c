@@ -1,9 +1,9 @@
 #include "include/Cycles.h"
 
-void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
+void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
 {
     /*
-     * update roots and residue biomass at harvest
+     * Update roots and residue biomass at harvest
      */
     double          HI, NHI;
     double          residueMass;
@@ -61,7 +61,7 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
     KillCrop (Crop);
 }
 
-void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
+void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
 {
     double          forageYield;
     double          residueMass;
@@ -137,7 +137,7 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
     PrintSeasonOutput (y, doy, startYear, Crop, project);
 }
 
-void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
+void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
 {
     /*
      * Set crop status to Killed
@@ -186,7 +186,7 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
     KillCrop (Crop);
 }
 
-void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon)
+void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, const SoilStruct *Soil, const CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon)
 {
     /*
      * This subroutine distributes dead roots and rizhodeposition in soil
@@ -210,20 +210,24 @@ void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double ro
     double          rootSum;
     double          cumulativeRootingDepth = 0.0;
     double          z1, z2;
-    int             i;
-    int             j;
+    int             i, j = 0;
     double          rootDistribution[Soil->totalLayers];
     double          fractionRootsByLayer[Soil->totalLayers];
 
     rootIntegral = a / b * (exp (-b * 0.0) - exp (-b * Crop->userMaximumRootingDepth));
+
+    for (i = 0; i < Soil->totalLayers; i++)
+    {
+        rootDistribution[i] = 0.0;
+        fractionRootsByLayer[i] = 0.0;
+    }
 
     j = 0;
     while (cumulativeRootingDepth < Crop->svRootingDepth && j < Soil->totalLayers)
     {
         if (Soil->cumulativeDepth[j] < Crop->svRootingDepth)
             cumulativeRootingDepth = Soil->cumulativeDepth[j];
-
-        if (Soil->cumulativeDepth[j] >= Crop->svRootingDepth)
+        else
             cumulativeRootingDepth = Crop->svRootingDepth;
 
         if (j == 0)
@@ -242,10 +246,8 @@ void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double ro
         rootSum = rootSum + rootDistribution[i];
 
     /* compute input of biomass from roots to each layer */
-    for (i = 0; i < j; i++)     /* exits loop on the same layer as the
-                                 * previous loop */
-    {
-        fractionRootsByLayer[i] = 0.0;
+    for (i = 0; i < j; i++)     
+    {   /* exits loop on the same layer as the previous loop */
         if (rootMass > 0.0)
         {
             fractionRootsByLayer[i] = rootDistribution[i] / rootSum;
@@ -253,6 +255,7 @@ void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double ro
             Residue->residueRtN[i] += fractionRootsByLayer[i] * rootN;
             SoilCarbon->rootBiomassInput[i] += fractionRootsByLayer[i] * rootMass;
         }
+
         if (rhizoMass > 0.0)
         {
             Residue->residueRz[i] += fractionRootsByLayer[i] * rhizoMass;
@@ -270,7 +273,7 @@ double ComputeHarvestIndex (double HIx, double HIo, double HIk, double cumulativ
     double          fg;         /* fractional post-anthesis growth */
     double          harvest_index;
 
-    if (cumulativePostFloweringShootBiomass > 0.0 && cumulativeShoot > 0.0)
+    if (GT (cumulativePostFloweringShootBiomass, 0.0) && GT (cumulativeShoot, 0.0))
     {
         fg = cumulativePostFloweringShootBiomass / cumulativeShoot;
         harvest_index = (HIx - (HIx - HIo) * exp (-HIk * fg));
