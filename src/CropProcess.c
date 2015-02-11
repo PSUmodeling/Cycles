@@ -150,6 +150,7 @@ void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, do
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
+     */
 
     double          BTNx;       /* Threshold abgd biomass level after
                                  * which N maximum / critical / minimum

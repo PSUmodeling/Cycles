@@ -27,9 +27,9 @@ void InitializeOutput (char *project)
 
     sprintf (filename, "output/%s/season.dat", project);
     output_file = fopen (filename, "w");
-    fprintf (output_file, "%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "YEAR-DOY", "CROP", "TOTAL", "ROOT", "GRAIN", "FORAGE", "AVG", "HARVEST", "POTENT", "ACTUAL", "SOIL", "TOTAL N", "ROOT N", "GRAIN N", "FORAGE N", "CUMULAT N");
-    fprintf (output_file, "%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "", "", "BIOMASS", "BIOMASS", "YIELD", "YIELD", "RESIDUE", "INDEX", "TRANSP", "TRANSP", "EVAP", "", "", "", "", "STRESS");
-    fprintf (output_file, "%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "YEAR-DOY", "N/A", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/Mg", "mm", "mm", "mm", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "");
+    fprintf (output_file, "%-10s\t%-15s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "DATE", "CROP", "TOTAL", "ROOT", "GRAIN", "FORAGE", "AVG", "HARVEST", "POTENT", "ACTUAL", "SOIL", "TOTAL N", "ROOT N", "GRAIN N", "FORAGE", "CUMUL N");
+    fprintf (output_file, "%-10s\t%-15s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "", "", "BIOMASS", "BIOMASS", "YIELD", "YIELD", "RESIDUE", "INDEX", "TRANSP", "TRANSP", "EVAP", "", "", "", "   N", "STRESS");
+    fprintf (output_file, "%-10s\t%-15s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "YYYY-MM-DD", "N/A", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/Mg", "mm", "mm", "mm", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "");
     fclose (output_file);
 
     sprintf (filename, "output/%s/water.dat", project);
