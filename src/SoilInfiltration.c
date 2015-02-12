@@ -1,4 +1,4 @@
-#include "include/Cycles.h"
+#include "Cycles.h"
 
 void Redistribution (int y, int doy, double precipitation, double snowFall, double snowMelt, int hourlyInfiltration, const CropStruct *Crop, SoilStruct *Soil, ResidueStruct *Residue)
 {

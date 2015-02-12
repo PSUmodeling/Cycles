@@ -1,4 +1,4 @@
-#include "include/Cycles.h"
+#include "Cycles.h"
 
 void ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years)
 {

@@ -1,4 +1,4 @@
-#include "include/Cycles.h"
+#include "Cycles.h"
 
 void Temperature (int y, int doy, double snowCover, double cropInterception, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct *Residue)
 {

@@ -1,4 +1,4 @@
-#include "include/Cycles.h"
+#include "Cycles.h"
 
 void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
 {

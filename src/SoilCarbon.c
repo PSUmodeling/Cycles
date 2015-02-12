@@ -1,4 +1,4 @@
-#include "include/Cycles.h"
+#include "Cycles.h"
 
 void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers)
 {

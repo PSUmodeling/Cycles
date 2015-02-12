@@ -1,4 +1,4 @@
-#include "include/Cycles.h"
+#include "Cycles.h"
 
 void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CropStruct *Crop, const ResidueStruct *Residue, const WeatherStruct *Weather, const SoilCarbonStruct *SoilCarbon)
 {

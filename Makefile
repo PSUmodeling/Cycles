@@ -8,57 +8,56 @@ CC = gcc
 CFLAGS = -g -O0
 
 SRCDIR = ./src
-INCDIR = ./src/include
 
 SRCS_ =	Cycles.c \
-	ReadSimCtrl.c \
-	ReadSoil.c \
-	ReadCrop.c \
-	ReadOperation.c \
-	ReadWeather.c \
-	Initialize.c \
-	Soil.c \
-	Weather.c \
-	ReferenceET.c \
-	SoilTemperature.c \
-	DebugIO.c \
-	Crop.c \
-	Residue.c \
-	CropThermalTime.c \
-	FieldOperation.c \
-	SoilCarbon.c \
-	DailyOperation.c \
-	Tillage.c \
-	Fertilization.c \
-	CropHarvest.c \
-	Snow.c \
-	SoilInfiltration.c \
-	Irrigation.c \
-	SoilSolute.c \
-	SoilEvaporation.c \
-	SoilNitrogen.c \
-	CropProcess.c \
-	CropTranspiration.c \
-	RealizedCrop.c \
-	Print.c \
-	MiscFunc.c
+    ReadSimCtrl.c \
+    ReadSoil.c \
+    ReadCrop.c \
+    ReadOperation.c \
+    ReadWeather.c \
+    Initialize.c \
+    Soil.c \
+    Weather.c \
+    ReferenceET.c \
+    SoilTemperature.c \
+    DebugIO.c \
+    Crop.c \
+    Residue.c \
+    CropThermalTime.c \
+    FieldOperation.c \
+    SoilCarbon.c \
+    DailyOperation.c \
+    Tillage.c \
+    Fertilization.c \
+    CropHarvest.c \
+    Snow.c \
+    SoilInfiltration.c \
+    Irrigation.c \
+    SoilSolute.c \
+    SoilEvaporation.c \
+    SoilNitrogen.c \
+    CropProcess.c \
+    CropTranspiration.c \
+    RealizedCrop.c \
+    Print.c \
+    MiscFunc.c
 
-HEADERS_ =  Cycles.h \
-	    Cycles_const.h \
-	    Cycles_struct.h \
-	    Cycles_func.h
+HEADERS_ = Cycles.h \
+    Cycles_const.h \
+    Cycles_struct.h \
+    Cycles_func.h
 
 EXECUTABLE = Cycles
 MSG = "...  Compiling Cycles  ..."
 
 LIBS = -lm
-INCLUDES = 
+INCLUDES = -I${SRCDIR}/include
 LFLAGS = 
 SFLAGS = -D_DEBUG_
 #SFLAGS =
 
 SRCS = $(patsubst %,$(SRCDIR)/%,$(SRCS_))
-HEADERS = $(patsubst %,$(INCDIR)/%,$(HEADERS_))
+HEADERS = $(patsubst %,$(SRCDIR)/include/%,$(HEADERS_))
 
 OBJS = $(SRCS:.c=.o)
 

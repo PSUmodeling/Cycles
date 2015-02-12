@@ -1,4 +1,4 @@
-#include "include/Cycles.h"
+#include "Cycles.h"
 
 void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl)
 {

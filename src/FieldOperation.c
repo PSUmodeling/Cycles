@@ -1,4 +1,4 @@
-#include "include/Cycles.h"
+#include "Cycles.h"
 
 void SelectNextOperation (int NumOperation, int *operationIndex)
 {

@@ -1,4 +1,4 @@
-#include "include/Cycles.h"
+#include "Cycles.h"
 
 void InitializeResidue (ResidueStruct *Residue, int totalYears, int totalLayers)
 {
