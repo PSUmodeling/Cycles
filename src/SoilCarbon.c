@@ -477,7 +477,7 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
 
         NNetMineralization = NMineralization + NImmobilization;
 
-        /* UPDATE POOLS (N immbilization is negative) */
+        /* UPDATE POOLS (N immobilization is negative) */
         Soil->NO3[i] += NImmobilization * (1.0 - NH4_Fraction);
         Soil->NH4[i] += NImmobilization * NH4_Fraction + NMineralization;
 

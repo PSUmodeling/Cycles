@@ -10,8 +10,8 @@ PLANTING
 YEAR                1
 DOY                 110
 CROP                Maize
-USE_AUTO_IRR        0
-USE_AUTO_FERT       0
+AUTO_IRRIGATION     0
+AUTO_FERTILIZATION  0
 
 TILLAGE
 YEAR                1
@@ -28,7 +28,7 @@ SOURCE              82-00-00_ANHYDROUS_AMMONIA
 MASS                205
 FORM                LIQUID
 METHOD              INCORP
-DEPTH               3
+LAYER               3
 C_ORGANIC           0
 C_CHARCOAL          0
 N_ORGANIC           0
@@ -41,6 +41,11 @@ P_INORGANIC         0
 K                   0
 S                   0
 
+#FIXED_IRRIGATION
+#YEAR
+#DOY
+#VOLUME
+
 #AUTO_IRRIGATION
 #START_DAY
 #STOP_DAY
@@ -49,7 +54,7 @@ S                   0
 
 #AUTO_FERTILIZATION
 #START_DAY
-#END_DAY
+#STOP_DAY
 #MASS
 #SOURCE
 #FORM

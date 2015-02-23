@@ -1,6 +1,6 @@
-LATITUDE            40.3
-ALTITUDE            166
-SCREENING_HEIGHT    2
+LATITUDE		40.3
+ALTITUDE		166
+SCREENING_HEIGHT	2
 YEAR	DOY	PP	TX	TN	SOLAR	RHX     RHN	WIND
 1984   	1      	10.0    1.0   	12.0  	9.25   	98.58  	42.27  	1.92   
 1984   	2      	0.0    	0.0    	-6.5   	4.07   	95.86  	58.94  	1.53   
