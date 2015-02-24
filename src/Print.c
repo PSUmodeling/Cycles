@@ -48,6 +48,8 @@ void InitializeOutput (char *project)
 
     sprintf (filename, "output/%s/C.dat", project);
     output_file = fopen (filename, "w");
+    fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\t%-7s\n", "DATE", "SOC", "HUMIF", "RES R", "SOM R");
+    fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\t%-7s\n", "YYYY-MM-DD", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha");
     fclose (output_file);
 
     free (output_dir);
@@ -70,9 +72,9 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     output_file = fopen (filename, "a");
 
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-10.2lf\t", 0.5 * Weather->tMin[y][doy - 1] + 0.5 * Weather->tMax[y][doy - 1]);
-    fprintf (output_file, "%-10.3lf\t", Weather->ETref[y][doy - 1]);
-    fprintf (output_file, "%-10.2lf\n", Weather->precipitation[y][doy - 1]);
+    fprintf (output_file, "%-7.2lf\t", 0.5 * Weather->tMin[y][doy - 1] + 0.5 * Weather->tMax[y][doy - 1]);
+    fprintf (output_file, "%-7.3lf\t", Weather->ETref[y][doy - 1]);
+    fprintf (output_file, "%-7.2lf\n", Weather->precipitation[y][doy - 1]);
 
     fflush (output_file);
     fclose (output_file);
