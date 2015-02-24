@@ -39,19 +39,32 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
             sscanf (cmdstr, "%s", optstr);
             if (strcasecmp ("PLANTING", optstr) == 0)
             {
+                strcpy (optstr, "\0");
                 fgets (cmdstr, MAXSTRING, operation_file);
                 sscanf (cmdstr, "%*s %d", &tempyear);
                 if (tempyear <= yearsInRotation)
                     planting_counter++;
             }
             else if (strcasecmp ("TILLAGE", optstr) == 0)
+            {
                 tillage_counter++;
+                strcpy (optstr, "\0");
+            }
             else if (strcasecmp ("FIXED_IRRIGATION", optstr) == 0)
+            {
                 irrigation_counter++;
+                strcpy (optstr, "\0");
+            }
             else if (strcasecmp ("FIXED_FERTILIZATION", optstr) == 0)
+            {
                 fertilization_counter++;
+                strcpy (optstr, "\0");
+            }
             else if (strcasecmp ("AUTO_IRRIGATION", optstr) == 0)
+            {
                 auto_irrigation_counter++;
+                strcpy (optstr, "\0");
+            }
         }
         fgets (cmdstr, MAXSTRING, operation_file);
     }
@@ -87,6 +100,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("PLANTING", optstr) == 0)
                 {
+                    strcpy (optstr, "\0");
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &tempyear);
                     if (tempyear <= yearsInRotation)
@@ -145,6 +159,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("TILLAGE", optstr) == 0)
                 {
+                    strcpy (optstr, "\0");
                     q = &(CropManagement->Tillage[i]);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opYear);
@@ -180,6 +195,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("FIXED_IRRIGATION", optstr) == 0)
                 {
+                    strcpy (optstr, "\0");
                     q = &(CropManagement->FixedIrrigation[i]);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opYear);
@@ -209,6 +225,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("FIXED_FERTILIZATION", optstr) == 0)
                 {
+                    strcpy (optstr, "\0");
                     q = &(CropManagement->FixedFertilization[i]);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opYear);
@@ -276,6 +293,7 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
                 sscanf (cmdstr, "%s", optstr);
                 if (strcasecmp ("AUTO_IRRIGATION", optstr) == 0)
                 {
+                    strcpy (optstr, "\0");
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %s", &CropManagement->autoIrrigation[i].cropName);
                     fgets (cmdstr, MAXSTRING, operation_file);

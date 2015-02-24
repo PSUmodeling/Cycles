@@ -31,7 +31,7 @@ void PrintSoil (SoilStruct Soil)
     int             i;
 
     printf ("\n*Soil Description:\n");
-    printf ("*%-12s\t%-3d\n", "Curve number", Soil.Curve_Number);
+    printf ("*%-12s\t%-5.2lf\n", "Curve number", Soil.Curve_Number);
     printf ("*%-12s\t%-4.2lf\n", "Slope", Soil.Percent_Slope);
     printf ("*%-12s\t%-3d\n", "Total layers", Soil.totalLayers);
     printf ("*%-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\t%-10s\n", "Layer", "Thickness", "Clay", "Sand", "Organic", "Buld Dens", "Field Cpct", "Wilt Pnt", "NO3", "CH4");

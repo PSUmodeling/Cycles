@@ -75,7 +75,7 @@ void ReadWeather (char *project, WeatherStruct *Weather, int start_year, int tot
                         sscanf (cmdstr, "%d %d %lf %lf %lf %lf %lf %lf %lf", &temp_year, &temp_doy, &Weather->precipitation[y][doy - 1], &Weather->tMax[y][doy - 1], &Weather->tMin[y][doy - 1], &Weather->solarRadiation[y][doy - 1], &Weather->RHmax[y][doy - 1], &Weather->RHmin[y][doy - 1], &Weather->wind[y][doy - 1]);
                         if (temp_year != y + start_year || temp_doy != doy)
                         {
-                            printf ("ERROR: Please check your weather input file near YEAR: %4.4d, DOY: %-d\n");
+                            printf ("ERROR: Please check your weather input file near YEAR: %4.4d, DOY: %-d\n", temp_year, temp_doy);
                             exit (1);
                         }
                         fgets (cmdstr, MAXSTRING, weather_file);
