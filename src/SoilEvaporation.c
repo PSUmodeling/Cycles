@@ -65,11 +65,13 @@ void Evaporation (SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, do
 
     /* Try changing retention constant to slow down nitrate upward movement,
      * try 1 (defaul is 0 for nitrate downward in liquid flow) */
-    if (Soil->evaporationVol > 0.0)
-    {
-        SoluteTransportEvaporation (Soil->totalLayers, 1.0, EvapFlux, Soil->NO3, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
-        SoluteTransportEvaporation (Soil->totalLayers, 5.6, EvapFlux, Soil->NH4, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
-    }
+    /* 2015/02/23 The solute transport sub needs to be re-coded to take into
+     * account bi-directional solute flow, for now it is removed */
+    //if (Soil->evaporationVol > 0.0)
+    //{
+    //    SoluteTransportEvaporation (Soil->totalLayers, 1.0, EvapFlux, Soil->NO3, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
+    //    SoluteTransportEvaporation (Soil->totalLayers, 5.6, EvapFlux, Soil->NH4, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
+    //}
 }
 
 double Depth_Limitation_To_Evaporation (double Depth)
