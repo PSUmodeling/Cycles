@@ -47,6 +47,9 @@ void InitializeOutput (char *project)
 
     sprintf (filename, "output/%s/residue.dat", project);
     output_file = fopen (filename, "w");
+    fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "DATE", "FRACT", "ABG RES", "BLG RES", "ROOT", "SFC", "ABG RES", "BLG RES", "ROOT", "SFC", "STAND", "FLAT");
+    fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "", "INTERCP", "BIOMASS", "BIOMASS", "RES", "MANUR C", "N", "N", "RES N", "MANUR N", "RES MST", "RES MST");
+    fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "YYYY-MM-DD", "-", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "kg/ha", "kg/ha", "kg/ha", "Mg/ha", "kg/ha", "kg/ha");
     fclose (output_file);
 
     sprintf (filename, "output/%s/C.dat", project);
