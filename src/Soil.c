@@ -4,6 +4,13 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
 {
     double          WC33;       /* volumetric water content at 33 J/kg */
     double          WC1500;     /* volumetric water contetn at 1500 J/kg */
+    double	    sb;		/* Saxton's b coefficient  */
+    double	    sAP;	/* Saxton's air entry potential */
+    double	    sBD;	/* Saxton's bulk density */
+    double	    s33;	/* Saxton's volumetric WC at 33 J/kg */
+    double	    s1500;	/* Saxton's volumetric WC at 1500 J/kg */
+    double	    rr;
+
     int             i;
 
     /* Initialize soil vairables */
@@ -51,14 +58,22 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     /* Compute hydraulic properties */
     for (i = 0; i < Soil->totalLayers; i++)
     {
-        if (Soil->BD[i] == BADVAL)  /* Buld Density switch */
-            Soil->BD[i] = BulkDensity (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
+	sBD = BulkDensity (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
+	s33 = VolumetricWCAt33Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
+	s1500 = VolumetricWCAt1500Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
+	sb = (log (1500.0) - log (33.0)) / (log (s33) - log (s1500));
+	sAP = -33. * pow (s33 / (1.0 - sBD / 2.65), sb);
+
+        if (Soil->BD[i] != BADVAL)  /* Buld Density switch */
+	    Soil->airEntryPotential[i] = sAP * pow (Soil->BD[i] / sBD, 0.67 * sb);
+	else
+	{
+            Soil->BD[i] = sBD;
+	    Soil->airEntryPotential[i] = sAP;
+	}
 
         Soil->Porosity[i] = 1.0 - Soil->BD[i] / 2.65;
-        WC33 = VolumetricWCAt33Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
-        WC1500 = VolumetricWCAt1500Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
-        Soil->B_Value[i] = (log (1500.0) - log (33.0)) / (log (WC33) - log (WC1500));
-        Soil->airEntryPotential[i] = -33. * pow (WC33 / Soil->Porosity[i], Soil->B_Value[i]);
+        Soil->B_Value[i] = sb;
         Soil->M_Value[i] = 2.0 * Soil->B_Value[i] + 3.0;
 
         if (Soil->FC[i] == BADVAL)  /* Field Capacity switch */
@@ -77,6 +92,16 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
             printf ("ERROR: Permanent Wilting Point must be less than Field Capacity in Layer %d\n", i + 1);
             exit (1);
         }
+
+	if (Soil->Porosity[i] < Soil->FC[i])
+	{
+            /* In case the air entry potential adjustment fails to deliver
+	     * FC < Porosity, this function estimates the ratio of volume
+	     * (sat - fc) / (fc - pwp) used to recalculate FC if bulk density
+	     * is too high (source: guess based on Saxton and Rawls data */
+	    rr = 0.63 + 0.59 * exp (0.6 * Soil->Sand[i] * 100.0 - 2.84);
+	    Soil->FC[i] = (rr * Soil->PWP[i] + Soil->Porosity[i]) / (1.0 + rr);
+	}
     }
 
     /* initialize variables depending on previous loop */
