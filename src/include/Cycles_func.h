@@ -53,7 +53,6 @@ void            SelectOperationYear (int rotationYear, FieldOperationStruct *Fie
 int             IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int operationIndex);
 
 /* Initialize.c */
-void            InitializeOutput (char *project);
 void            Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement, SnowStruct *Snow);
 void            FreeCyclesStruct (CyclesStruct Cycles, int total_years);
 
@@ -72,6 +71,7 @@ int             GE (double x, double y);
 int             GT (double x, double y);
 
 /* Print.c */
+void            InitializeOutput (char *project);
 void            PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project);
 void            PrintSeasonOutput (int y, int doy, int start_year, const CropStruct *Crop, const char *project);
 
