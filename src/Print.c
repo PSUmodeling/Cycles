@@ -40,6 +40,9 @@ void InitializeOutput (char *project)
 
     sprintf (filename, "output/%s/N.dat", project);
     output_file = fopen (filename, "w");
+    fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "DATE", "SON", "NO3", "NH4", "MINERAL", "IMMOBIL", "NET", "NH4", "N2O", "NH4", "NO3", "N2O", "NO3", "NO4");
+    fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "", "PROFILE", "PROFILE", "PROFILE", "", "", "MINERAL", "NITRIF", "NITRIF", "VOLATIL", "DENITRI", "DENITRI", "LEACH", "LEACH");
+    fprintf (output_file, "%-10s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\t%-7s\n", "YYYY-MM-DD", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha");
     fclose (output_file);
 
     sprintf (filename, "output/%s/residue.dat", project);
