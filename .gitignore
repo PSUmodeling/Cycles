@@ -1,0 +1,8 @@
+Cycles
+run-Cycles
+*.o
+*/*.o
+*/*/*.o
+src/vb/
+*.dat
+output/*
