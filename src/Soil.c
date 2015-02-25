@@ -2,8 +2,8 @@
 
 void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl)
 {
-    double          WC33;       /* volumetric water content at 33 J/kg */
-    double          WC1500;     /* volumetric water contetn at 1500 J/kg */
+    //double          WC33;       /* volumetric water content at 33 J/kg */
+    //double          WC1500;     /* volumetric water contetn at 1500 J/kg */
     double	    sb;		/* Saxton's b coefficient  */
     double	    sAP;	/* Saxton's air entry potential */
     double	    sBD;	/* Saxton's bulk density */
