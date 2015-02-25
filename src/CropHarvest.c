@@ -177,6 +177,9 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
     //Crop->rcYear = y + startYear;
     //Crop->rcDoy = doy;
     //Crop->rcActiveStatus = 0;
+    Crop->rcTotalNitrogen = Crop->svN_Shoot + Crop->svN_Root;
+    Crop->rcRootNitrogen = Crop->svN_Root;
+    Crop->rcNitrogenCumulative = Crop->svN_StressCumulative;
 
     if (verbose_mode)
         printf ("DOY %3.3d %-20s %s\n", doy, "Harvest", Crop->cropName);
