@@ -132,6 +132,11 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
     {
         NInitial += Soil->SON_Mass[i] + Soil->MBN_Mass[i] + Soil->NO3[i] + Soil->NH4[i] + Residue->residueAbgdN[i] + Residue->residueRtN[i] + Residue->residueRzN[i] + Residue->manureN[i];
 
+	NMineralConcentration = 0.0;
+	NMineral = 0.0;
+	NH4_Fraction = 0.0;
+	decompReductionFactor = 1.0;
+
         socDecompositionRate = 0.0;
         micrDecompositionRate = 0.0;
         humifiedCarbon = 0.0;
@@ -480,6 +485,9 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         /* UPDATE POOLS (N immobilization is negative) */
         Soil->NO3[i] += NImmobilization * (1.0 - NH4_Fraction);
         Soil->NH4[i] += NImmobilization * NH4_Fraction + NMineralization;
+
+	Soil->NO3[i] = Soil->NO3[i] < 0.0 ? 0.0 : Soil->NO3[i];
+	Soil->NH4[i] = Soil->NH4[i] < 0.0 ? 0.0 : Soil->NH4[i];
 
         if (i == 0)
         {
