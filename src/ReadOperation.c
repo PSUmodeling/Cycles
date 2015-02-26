@@ -1,9 +1,9 @@
 #include "Cycles.h"
 
-void ReadOperation (char *project, CropManagementStruct *CropManagement, int yearsInRotation)
+void ReadOperation (char *filename, CropManagementStruct *CropManagement, int yearsInRotation)
 {
     FILE           *operation_file;
-    char           *filename;
+    char           *fullname;
     char            cmdstr[MAXSTRING];
     char            optstr[MAXSTRING];
     int             tillage_counter = 0;
@@ -15,19 +15,20 @@ void ReadOperation (char *project, CropManagementStruct *CropManagement, int yea
     int             i, j;
     FieldOperationStruct *q;
 
-    printf ("Read field operation file.\n");
-
     /* Open field operation file */
-    filename = (char *)malloc ((strlen (project) + 17) * sizeof (char));
-    sprintf (filename, "input/%s.operation", project);
-    operation_file = fopen (filename, "r");
-    free (filename);
+    fullname = (char *)malloc ((strlen (filename) + 7) * sizeof (char));
+    sprintf (fullname, "input/%s", filename);
+    operation_file = fopen (fullname, "r");
 
     if (operation_file == NULL)
     {
         printf ("ERROR: Cannot find the field operation file %s!\n", filename);
         exit (1);
     }
+    else
+	printf ("Read field operation file: %s.\n", filename);
+
+    free (fullname);
 
     /* Read field operation file and count numbers of operations */
     fgets (cmdstr, MAXSTRING, operation_file);

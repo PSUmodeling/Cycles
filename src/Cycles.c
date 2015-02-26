@@ -84,22 +84,22 @@ int main (int argc, char *argv[])
         PrintSimContrl (Cycles->SimControl);
 
     /* Read soil description file */
-    ReadSoil (project, &Cycles->Soil);
+    ReadSoil (Cycles->SimControl.soil_filename, &Cycles->Soil);
     if (debug_mode)
         PrintSoil (Cycles->Soil);
 
     /* Read crop description file */
-    ReadCrop (project, &Cycles->CropManagement);
+    ReadCrop (Cycles->SimControl.crop_filename, &Cycles->CropManagement);
     if (debug_mode)
         PrintCrop (Cycles->CropManagement.describedCrop, Cycles->CropManagement.NumDescribedCrop);
 
     /* Read field operation file */
-    ReadOperation (project, &Cycles->CropManagement, Cycles->SimControl.yearsInRotation);
+    ReadOperation (Cycles->SimControl.operation_filename, &Cycles->CropManagement, Cycles->SimControl.yearsInRotation);
     if (debug_mode)
         PrintOperation (Cycles->CropManagement.plantingOrder, Cycles->CropManagement.totalCropsPerRotation, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization);
 
     /* Read meteorological driver */
-    ReadWeather (project, &Cycles->Weather, Cycles->SimControl.simStartYear, Cycles->SimControl.totalYears);
+    ReadWeather (Cycles->SimControl.weather_filename, &Cycles->Weather, Cycles->SimControl.simStartYear, Cycles->SimControl.totalYears);
     if (debug_mode)
         PrintWeather (Cycles->Weather);
 

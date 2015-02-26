@@ -1,30 +1,30 @@
 #include "Cycles.h"
 
-void ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years)
+void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int total_years)
 {
     FILE           *weather_file;
-    char           *filename;
+    char           *fullname;
     char            cmdstr[MAXSTRING];
     char            optstr[MAXSTRING];
     int             y, doy;
     int             temp_year, temp_doy;
     char            start_year_str[5];
 
-    printf ("Read weather file.\n");
-
     /* Open simulation control file */
 
-    filename = (char *)malloc ((strlen (project) + 15) * sizeof (char));
-    sprintf (filename, "input/%s.weather", project);
-    weather_file = fopen (filename, "r");
+    fullname = (char *)malloc ((strlen (filename) + 7) * sizeof (char));
+    sprintf (fullname, "input/%s", filename);
+    weather_file = fopen (fullname, "r");
 
     if (weather_file == NULL)
     {
         printf ("\nError: Cannot find the weather file %s!\n", filename);
         exit (1);
     }
+    else
+	printf ("Read weather file: %s.\n", filename);
 
-    free (filename);
+    free (fullname);
 
     /* Allocate */
     Weather->wind = (double **)malloc (total_years * sizeof (double *));

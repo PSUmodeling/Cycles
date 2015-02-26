@@ -5,12 +5,11 @@ void ReadSimControl (char *project, SimControlStruct *SimControl)
     FILE           *simctrl_file;
     char           *filename;
 
-    printf ("Read simulation control file.\n");
-
     /* Open simulation control file */
     filename = (char *)malloc ((strlen (project) + 12) * sizeof (char));
     sprintf (filename, "input/%s.ctrl", project);
     simctrl_file = fopen (filename, "r");
+    printf ("Read simulation control file: %s.\n", filename);
     free (filename);
 
     if (simctrl_file == NULL)
@@ -38,6 +37,10 @@ void ReadSimControl (char *project, SimControlStruct *SimControl)
     fscanf (simctrl_file, "%*s %d", &SimControl->annualSoilOutput);
     fscanf (simctrl_file, "%*s %d", &SimControl->profileOutput);
     fscanf (simctrl_file, "%*s %d", &SimControl->seasonOutput);
+    fscanf (simctrl_file, "%*s %s", &SimControl->crop_filename);
+    fscanf (simctrl_file, "%*s %s", &SimControl->operation_filename);
+    fscanf (simctrl_file, "%*s %s", &SimControl->soil_filename);
+    fscanf (simctrl_file, "%*s %s", &SimControl->weather_filename);
 
     fclose (simctrl_file);
 

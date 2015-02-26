@@ -16,3 +16,7 @@ Daily_Soil_Out          1
 Annual_Soil_Out         1
 Annual_Profile_Out      1
 Season_Out              1
+Crop_File		Lebanon.crop
+Operation_File		Lebanon.operation
+Soil_File		Lebanon.soil
+Weather_File		Lebanon.weather

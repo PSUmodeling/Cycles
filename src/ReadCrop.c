@@ -1,28 +1,29 @@
 #include "Cycles.h"
 
-void ReadCrop (char *project, CropManagementStruct *CropManagement)
+void ReadCrop (char *filename, CropManagementStruct *CropManagement)
 {
     FILE           *crop_file;
-    char           *filename;
+    char           *fullname;
     char            cmdstr[MAXSTRING];
     char            optstr[MAXSTRING];
     int             crop_counter = 0;
     int             i;
 
-    printf ("Read crop description file.\n");
-
     /* Open simulation control file */
 
-    filename = (char *)malloc ((strlen (project) + 12) * sizeof (char));
-    sprintf (filename, "input/%s.crop", project);
-    crop_file = fopen (filename, "r");
-    free (filename);
+    fullname = (char *)malloc ((strlen (filename) + 7) * sizeof (char));
+    sprintf (fullname, "input/%s", filename);
+    crop_file = fopen (fullname, "r");
 
     if (crop_file == NULL)
     {
         printf ("\nError: Cannot find the crop description file %s!\n", filename);
         exit (1);
     }
+    else
+	printf ("Read crop description file: %s.\n", filename);
+
+    free (fullname);
 
     /* Read crop description file */
     /* First count how many crop types are there in the description file */

@@ -1,26 +1,26 @@
 #include "Cycles.h"
 
-void ReadSoil (char *project, SoilStruct *Soil)
+void ReadSoil (char *filename, SoilStruct *Soil)
 {
     FILE           *soil_file;
-    char           *filename;
+    char           *fullname;
     char            cmdstr[MAXSTRING];
     int             i;
 
-    printf ("Read soil initialization file.\n");
-
     /* Open soil file */
-    filename = (char *)malloc ((strlen (project) + 12) * sizeof (char));
-    sprintf (filename, "input/%s.soil", project);
-    soil_file = fopen (filename, "r");
-    free (filename);
+    fullname = (char *)malloc ((strlen (filename) + 7) * sizeof (char));
+    sprintf (fullname, "input/%s", filename);
+    soil_file = fopen (fullname, "r");
 
     if (soil_file == NULL)
     {
         printf ("\nERROR: Cannot find the soil file %s!\n", filename);
         exit (1);
     }
+    else
+	printf ("Read soil initialization file: %s.\n", filename);
 
+    free (fullname);
     /* Read soil file */
     fgets (cmdstr, MAXSTRING, soil_file);
     sscanf (cmdstr, "%*s %lf", &Soil->Curve_Number);

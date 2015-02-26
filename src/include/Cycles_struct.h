@@ -120,6 +120,11 @@ typedef struct SimControlStruct
     int             annualSoilOutput;
     int             profileOutput;
     int             seasonOutput;
+
+    char	    crop_filename[128];
+    char	    operation_filename[128];
+    char	    weather_filename[128];
+    char	    soil_filename[128];
 } SimControlStruct;
 
 typedef struct SoilStruct
