@@ -39,7 +39,7 @@ int main (int argc, char *argv[])
         {
             printf ("\nUsage: ./Cycles [-v] [-d] <project name>\n");
             printf ("\t-v Verbose mode\n");
-            printf ("\t-d Ddebug mode\n");
+            printf ("\t-d Debug mode\n");
             exit (1);
         }
         switch (c)
