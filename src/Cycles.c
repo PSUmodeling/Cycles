@@ -21,7 +21,7 @@ int main (int argc, char *argv[])
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
-    system ("clear");
+    //system ("clear");
     printf ("\n\n");
     printf ("\t\t ######  ##    ##  ######  ##       ########  ######\n");
     printf ("\t\t##    ##  ##  ##  ##    ## ##       ##       ##    ##\n");
