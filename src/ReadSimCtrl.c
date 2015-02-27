@@ -14,7 +14,7 @@ void ReadSimControl (char *project, SimControlStruct *SimControl)
 
     if (simctrl_file == NULL)
     {
-        printf ("ERROR: Cannot find the simulation cotrol file %s!\n", filename);
+        printf ("ERROR: Cannot find the simulation control file %s!\n", filename);
         exit (1);
     }
 
