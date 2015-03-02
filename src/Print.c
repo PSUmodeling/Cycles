@@ -68,8 +68,12 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     int             month, mday;
     int             i;
     double          sum;
+    int		    leap_year = 0;
 
-    doy2date (y + start_year, doy, &month, &mday, 0);
+    if (Weather->lastDoy[y] == 366)
+	leap_year = 1;
+
+    doy2date (y + start_year, doy, &month, &mday, leap_year);
 
     /*
      * Print weather output
@@ -246,16 +250,20 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     fclose (output_file);
 }
 
-void PrintSeasonOutput (int y, int doy, int start_year, const CropStruct *Crop, const char *project)
+void PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project)
 {
     char            filename[50];
     FILE           *output_file;
     int             month, mday;
+    int		    leap_year = 0;
+
+    if (Weather->lastDoy[y] == 366)
+	leap_year = 1;
 
     sprintf (filename, "output/%s/season.dat", project);
     output_file = fopen (filename, "a");
 
-    doy2date (y + start_year, doy, &month, &mday, 0);
+    doy2date (y + start_year, doy, &month, &mday, leap_year);
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
     fprintf (output_file, "%-15s\t", Crop->cropName);
 

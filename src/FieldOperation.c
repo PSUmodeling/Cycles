@@ -14,7 +14,9 @@ void SelectNextOperation (int NumOperation, int *operationIndex)
 void SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex)
 {
     if (NumOperation == 0)
+    {
         *operationIndex = -1;
+    }
     else
     {
         if (rotationYear > 0)

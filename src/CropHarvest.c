@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
+void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project)
 {
     /*
      * Update roots and residue biomass at harvest
@@ -56,12 +56,12 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
     //Crop->rcDoy = doy;
     //Crop->rcActiveStatus = 0;
 
-    PrintSeasonOutput (y, doy, startYear, Crop, project);
+    PrintSeasonOutput (y, doy, startYear, Weather, Crop, project);
 
     KillCrop (Crop);
 }
 
-void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
+void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project)
 {
     double          forageYield;
     double          residueMass;
@@ -134,10 +134,10 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
     //Crop->rcYear = y + startYear;
     //Crop->rcDoy = doy;
 
-    PrintSeasonOutput (y, doy, startYear, Crop, project);
+    PrintSeasonOutput (y, doy, startYear, Weather, Crop, project);
 }
 
-void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project)
+void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project)
 {
     /*
      * Set crop status to Killed
@@ -184,7 +184,7 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
     if (verbose_mode)
         printf ("DOY %3.3d %-20s %s\n", doy, "Harvest", Crop->cropName);
 
-    PrintSeasonOutput (y, doy, startYear, Crop, project);
+    PrintSeasonOutput (y, doy, startYear, Weather, Crop, project);
 
     KillCrop (Crop);
 }

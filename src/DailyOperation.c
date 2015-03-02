@@ -35,7 +35,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
         if (strcasecmp (Tillage->opToolName, "Kill_Crop") != 0)
             ExecuteTillage (y, SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
         else if (Crop->cropUniqueIdentifier >= 0)
-            HarvestCrop (y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+            HarvestCrop (y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
 
         SelectNextOperation (CropManagement->numTillage, &CropManagement->tillageIndex);
     }
@@ -80,7 +80,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
      */
     int             forcedHarvest;
 
-    forcedHarvest = ForcedMaturity (rotationYear, d, *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
+    forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
 
     if (Crop->svTT_Cumulative < Crop->userEmergenceTT)
         Crop->stageGrowth = PRE_EMERGENCE;
@@ -106,7 +106,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
         {
             /* SetCropStatusToMature */
             Crop->cropMature = 1;
-            Crop->harvestDateFinal = FinalHarvestDate (365, d);
+            Crop->harvestDateFinal = FinalHarvestDate (Weather->lastDoy[y], d);
         }
     }
 
@@ -127,7 +127,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
 	    GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
 
         if (Crop->userAnnual && Crop->svTT_Cumulative > Crop->calculatedFloweringTT)
-            GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+            GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
         else
             ComputeColdDamage (y, d, Crop, Weather, Snow, Residue);
     }
@@ -135,11 +135,11 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
     if (d == Crop->harvestDateFinal || forcedHarvest)
     {
         if (Crop->userAnnual)
-            GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+            GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
         else
         {
-            ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
-            HarvestCrop (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+            ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
+            HarvestCrop (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
         }
     }
     else if (Crop->userClippingTiming > 0.0)
@@ -148,7 +148,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
         {
             if ((Crop->harvestCount < 3 && Crop->userAnnual) || (!Crop->userAnnual))
             {
-                ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+                ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
                 AddCrop (Crop);
                 Crop->stageGrowth = CLIPPING;
                 Crop->harvestCount += 1;
@@ -191,7 +191,7 @@ double FinalHarvestDate (int lastDoy, int d)
     return (harvestDate);
 }
 
-int ForcedMaturity (int rotationYear, int d, int nextSeedingYear, int nextSeedingDate, int rotationSize)
+int ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize)
 {
     /*
      * Returns true if planted crop is within saftey margin of days of the
@@ -215,7 +215,7 @@ int ForcedMaturity (int rotationYear, int d, int nextSeedingYear, int nextSeedin
     }
     else if (nextRotationYear == nextSeedingYear)
     {
-        if (d >= (365 + nextSeedingDate - margin))
+        if (d >= (lastDoy + nextSeedingDate - margin))
             forced_maturity = 1;
     }
 

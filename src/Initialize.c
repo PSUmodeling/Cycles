@@ -86,6 +86,7 @@ void FreeCyclesStruct (CyclesStruct Cycles, int total_years)
     free (Cycles->Weather.tMin);
     free (Cycles->Weather.yearlyAmplitude);
     free (Cycles->Weather.annualAverageTemperature);
+    free (Cycles->Weather.lastDoy);
 
     free (Cycles->Residue.residueAbgd);
     free (Cycles->Residue.residueRt);
