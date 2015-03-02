@@ -118,14 +118,14 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
 
     Processes (y, d, SimControl->automaticNitrogen, Crop, Residue, Weather, Soil, SoilCarbon);
 
+    if (d == 140 && strcasecmp("RyeBioenergyBS", Crop->cropName) == 0)
+	GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
+
+    if (d == 127 && strcasecmp("RyeBioenergyBS", Crop->cropName) == 0)
+	GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
+
     if (Weather->tMin[y][d - 1] < Crop->userColdDamageThresholdTemperature)
     {
-	if (d == 140 && strcasecmp("RyeBioenergyBM", Crop->cropName) == 0)
-	    GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
-
-	if (d == 127 && strcasecmp("RyeBioenergyBM", Crop->cropName) == 0)
-	    GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
-
         if (Crop->userAnnual && Crop->svTT_Cumulative > Crop->calculatedFloweringTT)
             GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
         else
