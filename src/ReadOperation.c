@@ -11,6 +11,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
     int             irrigation_counter = 0;
     int             fertilization_counter = 0;
     int             auto_irrigation_counter = 0;
+    int		    harvest_counter = 0;
     int             tempyear;
     int             i, j;
     FieldOperationStruct *q;
@@ -46,6 +47,14 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                 if (tempyear <= yearsInRotation)
                     planting_counter++;
             }
+            if (strcasecmp ("FORCED_HARVEST", optstr) == 0)
+            {
+                strcpy (optstr, "\0");
+                fgets (cmdstr, MAXSTRING, operation_file);
+                sscanf (cmdstr, "%*s %d", &tempyear);
+                if (tempyear <= yearsInRotation)
+                    harvest_counter++;
+            }
             else if (strcasecmp ("TILLAGE", optstr) == 0)
             {
                 tillage_counter++;
@@ -74,6 +83,9 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
 
     CropManagement->totalCropsPerRotation = planting_counter;
     CropManagement->plantingOrder = (FieldOperationStruct *) malloc (planting_counter * sizeof (FieldOperationStruct));
+
+    CropManagement->numHarvest = harvest_counter;
+    CropManagement->ForcedHarvest = (FieldOperationStruct *) malloc (harvest_counter * sizeof (FieldOperationStruct));
 
     CropManagement->numFertilization = fertilization_counter;
     CropManagement->FixedFertilization = (FieldOperationStruct *) malloc (fertilization_counter * sizeof (FieldOperationStruct));
@@ -140,6 +152,55 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                     }
                     else
                         printf ("Planting operation in year %d is not read in because years in rotation is %d\n", tempyear, yearsInRotation);
+                }
+            }
+            fgets (cmdstr, MAXSTRING, operation_file);
+        }
+    }
+
+    if (harvest_counter)
+    {
+        /* Rewind to the beginning of file and read all forced harvest operations */
+        rewind (operation_file);
+        i = 0;
+
+        fgets (cmdstr, MAXSTRING, operation_file);
+        while (!feof (operation_file))
+        {
+            if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
+            {
+                sscanf (cmdstr, "%s", optstr);
+                if (strcasecmp ("FORCED_HARVEST", optstr) == 0)
+                {
+                    strcpy (optstr, "\0");
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %d", &tempyear);
+                    if (tempyear <= yearsInRotation)
+                    {
+                        CropManagement->ForcedHarvest[i].opYear = tempyear;
+                        fgets (cmdstr, MAXSTRING, operation_file);
+                        sscanf (cmdstr, "%*s %d", &CropManagement->ForcedHarvest[i].opDay);
+                        fgets (cmdstr, MAXSTRING, operation_file);
+                        sscanf (cmdstr, "%*s %s", &CropManagement->ForcedHarvest[i].cropName);
+
+                        /* Link forced harvest and crop description */
+                        for (j = 0; j < CropManagement->NumDescribedCrop; j++)
+                        {
+                            if (strcmp (CropManagement->ForcedHarvest[i].cropName, CropManagement->describedCrop[j].userCropName) == 0)
+                            {
+                                CropManagement->ForcedHarvest[i].plantID = j;
+                                break;
+                            }
+                        }
+                        if (j >= CropManagement->NumDescribedCrop)
+                        {
+                            printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->ForcedHarvest[i].cropName);
+                            exit (1);
+                        }
+                        i++;
+                    }
+                    else
+                        printf ("Forced harvest operation in year %d is not read in because years in rotation is %d\n", tempyear, yearsInRotation);
                 }
             }
             fgets (cmdstr, MAXSTRING, operation_file);

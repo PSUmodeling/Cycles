@@ -365,6 +365,7 @@ typedef struct FieldOperationStruct
     int             opDay;
 
     /* Planting Order */
+    /* cropName and plantID are shared with forced harvest structure */
     char            cropName[128];
     int             usesAutoIrrigation;
     int             usesAutoFertilization;
@@ -436,6 +437,9 @@ typedef struct CropManagementStruct
     FieldOperationStruct *plantingOrder;
     int             totalCropsPerRotation;
     int             plantingIndex;
+
+    FieldOperationStruct *ForcedHarvest;
+    int		    numHarvest;
 
     describedCropStruct *describedCrop;
     int             NumDescribedCrop;

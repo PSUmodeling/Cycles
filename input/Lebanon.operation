@@ -41,6 +41,11 @@ P_INORGANIC         0
 K                   0
 S                   0
 
+#FORCED_HARVEST
+#YEAR
+#DOY
+#CROP
+
 #FIXED_IRRIGATION
 #YEAR
 #DOY

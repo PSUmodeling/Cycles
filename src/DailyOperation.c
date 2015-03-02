@@ -7,7 +7,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     FieldOperationStruct *FixedIrrigation;
 
     if (Crop->cropUniqueIdentifier >= 0)
-        GrowingCrop (rotationYear, y, doy, nextSeedingYear, nextSeedingDate, Crop, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
+        GrowingCrop (rotationYear, y, doy, nextSeedingYear, nextSeedingDate, CropManagement->ForcedHarvest, CropManagement->numHarvest, Crop, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
     else if (doy == *nextSeedingDate && rotationYear == *nextSeedingYear)
     {
         PlantingCrop (doy, nextSeedingYear, nextSeedingDate, CropManagement, Crop);
@@ -71,16 +71,23 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     NitrogenTransformation (y, doy, Soil, Crop, Residue, Weather, SoilCarbon);
 }
 
-void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
+void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, FieldOperationStruct *ForcedHarvest, int numHarvest, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
 {
     /*
      * Processes that only occur while a crop is growing are performed
      * Any needed harvests/forages have occured
      * Final Harvest date set once crop maturity achieved
      */
-    int             forcedHarvest;
+    int             forcedHarvest = 0;
+    int		    i;
 
     forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
+
+    for (i = 0; i < numHarvest; i++)
+    {
+	if (ForcedHarvest[i].opYear == rotationYear && ForcedHarvest[i].opDay == d && ForcedHarvest[i].plantID == Crop->cropUniqueIdentifier)
+	    forcedHarvest = 1;
+    }
 
     if (Crop->svTT_Cumulative < Crop->userEmergenceTT)
         Crop->stageGrowth = PRE_EMERGENCE;
