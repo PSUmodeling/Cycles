@@ -120,6 +120,12 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
 
     if (Weather->tMin[y][d - 1] < Crop->userColdDamageThresholdTemperature)
     {
+	if (d == 140 && strcasecmp("ReyBioenergyBM", Crop->cropName) == 0)
+	    GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+
+	if (d == 127 && strcasecmp("ReyBioenergyBM", Crop->cropName) == 0)
+	    GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
+
         if (Crop->userAnnual && Crop->svTT_Cumulative > Crop->calculatedFloweringTT)
             GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, project);
         else
