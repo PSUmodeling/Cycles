@@ -520,6 +520,7 @@ typedef struct WeatherStruct
     int             length;
     double         *yearlyAmplitude;
     double         *annualAverageTemperature;
+    int		   *lastDOY;
     double        **wind;
     double        **ETref;
     double        **precipitation;

@@ -35,18 +35,19 @@ void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int to
     Weather->solarRadiation = (double **)malloc (total_years * sizeof (double *));
     Weather->tMax = (double **)malloc (total_years * sizeof (double *));
     Weather->tMin = (double **)malloc (total_years * sizeof (double *));
-    Weather->yearlyAmplitude = (double *)malloc (total_years * sizeof (double *));
-    Weather->annualAverageTemperature = (double *)malloc (total_years * sizeof (double *));
+    Weather->yearlyAmplitude = (double *)malloc (total_years * sizeof (double));
+    Weather->annualAverageTemperature = (double *)malloc (total_years * sizeof (double));
+    Weather->lastDOY = (int *)malloc (total_years * sizeof (int));
     for (y = 0; y < total_years; y++)
     {
-        Weather->wind[y] = (double *)malloc (365 * sizeof (double));
-        Weather->ETref[y] = (double *)malloc (365 * sizeof (double));
-        Weather->precipitation[y] = (double *)malloc (365 * sizeof (double));
-        Weather->RHmax[y] = (double *)malloc (365 * sizeof (double));
-        Weather->RHmin[y] = (double *)malloc (365 * sizeof (double));
-        Weather->solarRadiation[y] = (double *)malloc (365 * sizeof (double));
-        Weather->tMax[y] = (double *)malloc (365 * sizeof (double));
-        Weather->tMin[y] = (double *)malloc (365 * sizeof (double));
+        Weather->wind[y] = (double *)malloc (366 * sizeof (double));
+        Weather->ETref[y] = (double *)malloc (366 * sizeof (double));
+        Weather->precipitation[y] = (double *)malloc (366 * sizeof (double));
+        Weather->RHmax[y] = (double *)malloc (366 * sizeof (double));
+        Weather->RHmin[y] = (double *)malloc (366 * sizeof (double));
+        Weather->solarRadiation[y] = (double *)malloc (366 * sizeof (double));
+        Weather->tMax[y] = (double *)malloc (366 * sizeof (double));
+        Weather->tMin[y] = (double *)malloc (366 * sizeof (double));
     }
 
     sprintf (start_year_str, "%4.4d", start_year);
