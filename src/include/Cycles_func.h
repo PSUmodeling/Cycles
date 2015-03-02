@@ -9,9 +9,9 @@ void            NewCrop (CropStruct *Crop, const CropManagementStruct *CropManag
 void            KillCrop (CropStruct *Crop);
 
 /* CropHarvest.c */
-void            GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project);
-void            ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project);
-void            HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const char *project);
+void            GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project);
+void            ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project);
+void            HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project);
 void            DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, const SoilStruct *Soil, const CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon);
 double          ComputeHarvestIndex (double HIx, double HIo, double HIk, double cumulativeShoot, double cumulativePostFloweringShootBiomass);
 
@@ -42,7 +42,7 @@ void            DailyOperations (int rotationYear, int y, int doy, int *nextSeed
 void            GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project);
 void            PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop);
 double          FinalHarvestDate (int lastDoy, int d);
-int             ForcedMaturity (int rotationYear, int d, int nextSeedingYear, int nextSeedingDate, int rotationSize);
+int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize);
 
 /* Fertilization.c */
 void            ApplyFertilizer (FieldOperationStruct *fixedFertilization, SoilStruct *Soil, ResidueStruct *Residue);
@@ -73,7 +73,7 @@ int             GT (double x, double y);
 /* Print.c */
 void            InitializeOutput (char *project);
 void            PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project);
-void            PrintSeasonOutput (int y, int doy, int start_year, const CropStruct *Crop, const char *project);
+void            PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project);
 
 /* ReadCrop.c */
 void            ReadCrop (char *project, CropManagementStruct *CropManagement);

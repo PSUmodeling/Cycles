@@ -13,7 +13,6 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
 
     int             cropEvents;
     int             cropON;
-    int             lastDOY = 365;  /* Leap year is not taken into account */
     int             c, y, d;
 
     describedCropStruct *describedCrop;
@@ -33,7 +32,7 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
 
             for (y = 0; y < total_years; y++)
             {
-                for (d = 1; d <= lastDOY; d++)
+                for (d = 1; d <= Weather->lastDoy[y]; d++)
                 {
                     if (d == describedCrop->userSeedingDate)
                         cropON = 1;

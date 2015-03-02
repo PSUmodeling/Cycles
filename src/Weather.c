@@ -19,13 +19,13 @@ void CalculateDerivedWeather (WeatherStruct *Weather, int total_years)
         annualMaxTemperatureSum = 0.0;
         annualMinTemperatureSum = 0.0;
 
-        for (doy = 1; doy < 366; doy++)
+        for (doy = 1; doy < Weather->lastDoy[y]; doy++)
         {
             Weather->ETref[y][doy - 1] = CalculatePMET (Weather->siteLatitude, Weather->atmosphericPressure, Weather->screeningHeight, Weather->tMax[y][doy - 1], Weather->tMin[y][doy - 1], Weather->solarRadiation[y][doy - 1], Weather->RHmax[y][doy - 1], Weather->RHmin[y][doy - 1], Weather->wind[y][doy - 1], doy);
             annualMaxTemperatureSum = annualMaxTemperatureSum + Weather->tMax[y][doy - 1];
             annualMinTemperatureSum = annualMinTemperatureSum + Weather->tMin[y][doy - 1];
         }
-        Weather->annualAverageTemperature[y] = (annualMaxTemperatureSum + annualMinTemperatureSum) / 365.0 / 2.0;
-        Weather->yearlyAmplitude[y] = (annualMaxTemperatureSum - annualMinTemperatureSum) / 365.0;
+        Weather->annualAverageTemperature[y] = (annualMaxTemperatureSum + annualMinTemperatureSum) / ((double)(Weather->lastDoy[y])) / 2.0;
+        Weather->yearlyAmplitude[y] = (annualMaxTemperatureSum - annualMinTemperatureSum) / ((double)(Weather->lastDoy[y]));
     }
 }

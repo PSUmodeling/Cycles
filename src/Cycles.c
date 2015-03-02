@@ -21,7 +21,7 @@ int main (int argc, char *argv[])
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
-    //system ("clear");
+    system ("clear");
     printf ("\n\n");
     printf ("\t\t ######  ##    ##  ######  ##       ########  ######\n");
     printf ("\t\t##    ##  ##  ##  ##    ## ##       ##       ##    ##\n");
@@ -152,7 +152,7 @@ int main (int argc, char *argv[])
         }
 
         /* Daily operations */
-        for (doy = 1; doy < 366; doy++)
+        for (doy = 1; doy < Cycles->Weather.lastDoy[y] + 1; doy++)
         {
             if (debug_mode)
                 printf ("DOY %3.3d\n", doy);

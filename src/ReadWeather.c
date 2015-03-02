@@ -37,7 +37,7 @@ void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int to
     Weather->tMin = (double **)malloc (total_years * sizeof (double *));
     Weather->yearlyAmplitude = (double *)malloc (total_years * sizeof (double));
     Weather->annualAverageTemperature = (double *)malloc (total_years * sizeof (double));
-    Weather->lastDOY = (int *)malloc (total_years * sizeof (int));
+    Weather->lastDoy = (int *)malloc (total_years * sizeof (int));
     for (y = 0; y < total_years; y++)
     {
         Weather->wind[y] = (double *)malloc (366 * sizeof (double));
@@ -71,19 +71,29 @@ void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int to
             {
                 for (y = 0; y < total_years; y++)
                 {
-                    for (doy = 1; doy < 366; doy++)
+                    for (doy = 1; doy < 367; doy++)
                     {
-                        sscanf (cmdstr, "%d %d %lf %lf %lf %lf %lf %lf %lf", &temp_year, &temp_doy, &Weather->precipitation[y][doy - 1], &Weather->tMax[y][doy - 1], &Weather->tMin[y][doy - 1], &Weather->solarRadiation[y][doy - 1], &Weather->RHmax[y][doy - 1], &Weather->RHmin[y][doy - 1], &Weather->wind[y][doy - 1]);
-                        if (temp_year != y + start_year || temp_doy != doy)
-                        {
-                            printf ("ERROR: Please check your weather input file near YEAR: %4.4d, DOY: %-d\n", temp_year, temp_doy);
+                        sscanf (cmdstr, "%d %d %*lf %*lf %*lf %*lf %*lf %*lf %*lf", &temp_year, &temp_doy);
+			if (temp_year == y + start_year && temp_doy == doy)
+			{
+			    sscanf (cmdstr, "%*d %*d %lf %lf %lf %lf %lf %lf %lf", &Weather->precipitation[y][doy - 1], &Weather->tMax[y][doy - 1], &Weather->tMin[y][doy - 1], &Weather->solarRadiation[y][doy - 1], &Weather->RHmax[y][doy - 1], &Weather->RHmin[y][doy - 1], &Weather->wind[y][doy - 1]);
+			    if (doy == 366)
+				Weather->lastDoy[y] = 366;
+			    fgets (cmdstr, MAXSTRING, weather_file);
+			}
+			else if (doy == 366 && temp_year == y + start_year + 1 && temp_doy == 1)
+			    Weather->lastDoy[y] = 365;
+			else if (doy == 366 && feof (weather_file))
+			    Weather->lastDoy[y] = 365;
+			else
+			{
+                            printf ("ERROR: Please check your weather input file near YEAR: %4.4d, DOY: %-d, expecting %4.4d-%-d, eof status %d\n", temp_year, temp_doy, y, doy, feof (weather_file));
                             exit (1);
-                        }
-                        fgets (cmdstr, MAXSTRING, weather_file);
-                    }
-                }
-                break;
-            }
+			}
+		    }
+		}
+		break;
+	    }
         }
         fgets (cmdstr, MAXSTRING, weather_file);
     }
