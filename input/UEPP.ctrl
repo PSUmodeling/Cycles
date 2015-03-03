@@ -1,4 +1,4 @@
-﻿SIMULATION_START_YEAR   1995
+SIMULATION_START_YEAR   1995
 SIMULATION_END_YEAR     2008
 ROTATION_SIZE           2   
 ADJUSTED_YIELDS         0   
@@ -16,7 +16,7 @@ DAILY_SOIL_OUT          1
 ANNUAL_SOIL_OUT         1   
 ANNUAL_PROFILE_OUT      1   
 SEASON_OUT              1   
-Crop_File		UEPP.crop
-Operation_File		UEPP.operation
-Soil_File		UEPP.soil
-Weather_File		UEPP.weather
+CROP_FILE               UEPP.crop
+OPERATION_FILE          UEPP.operation
+SOIL_FILE               UEPP.soil
+WEATHER_FILE            UEPP.weather
