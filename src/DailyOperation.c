@@ -86,7 +86,10 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
     for (i = 0; i < numHarvest; i++)
     {
 	if (ForcedHarvest[i].opYear == rotationYear && ForcedHarvest[i].opDay == d && ForcedHarvest[i].plantID == Crop->cropUniqueIdentifier)
+	{
 	    forcedHarvest = 1;
+	    break;
+	}
     }
 
     if (Crop->svTT_Cumulative < Crop->userEmergenceTT)
@@ -124,12 +127,6 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
     WaterUptake (y, d, Crop, Soil, Weather);
 
     Processes (y, d, SimControl->automaticNitrogen, Crop, Residue, Weather, Soil, SoilCarbon);
-
-    if (d == 140 && strcasecmp("RyeBioenergyBS", Crop->cropName) == 0)
-	GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
-
-    if (d == 127 && strcasecmp("RyeBioenergyBS", Crop->cropName) == 0)
-	GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
 
     if (Weather->tMin[y][d - 1] < Crop->userColdDamageThresholdTemperature)
     {
