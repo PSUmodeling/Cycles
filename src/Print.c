@@ -14,7 +14,7 @@ void InitializeOutput (char *project)
 
     sprintf (filename, "output/%s/season.dat", project);
     output_file = fopen (filename, "w");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "CROP", "TOTAL BIOMASS", "ROOT BIOMASS", "GRAIN YIELD", "FORAGE YIELD", "AG RESIDUE", "HARVEST INDEX", "POTENTIAL TR", "ACTUAL TR", "SOIL EVAP", "TOTAL N", "ROOT N", "GRAIN N", "FORAGE N", "CUM. N STRESS");
+    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "CROP", "TOTAL BIOMASS", "ROOT BIOMASS", "GRAIN YIELD", "FORAGE YIELD", "AG RESIDUE", "HARVEST INDEX", "POTENTIAL TR", "ACTUAL TR", "SOIL EVAP", "TOTAL N", "ROOT N", "GRAIN N", "FORAGE N", "CUM. N STRESS", "GRAIN N YIELD", "FORAGE N YIELD");
     fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/Mg", "mm", "mm", "mm", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "-");
     fclose (output_file);
 
@@ -277,6 +277,8 @@ void PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Wea
     fprintf (output_file, "%-15.4lf\t", Crop->rcGrainNitrogenYield);
     fprintf (output_file, "%-15.3lf\t", Crop->rcForageNitrogenYield);
     fprintf (output_file, "%-15.3lf\t", Crop->rcNitrogenCumulative);
+    fprintf (output_file, "%-15.3lf\t", Crop->rcGrainNitrogenYield);
+    fprintf (output_file, "%-15.3lf\t", Crop->rcForageNitrogenYield);
     fprintf (output_file, "\n");
 
     fflush (output_file);
