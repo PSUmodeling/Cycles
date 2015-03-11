@@ -160,6 +160,7 @@ int main (int argc, char *argv[])
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Crop, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue, project);
         }
 	PrintAnnualOutput (y, Cycles->SimControl.simStartYear, &Cycles->Soil, &Cycles->SoilCarbon, project);
+	PrintCarbonEvolution (y, Cycles->SimControl.simStartYear, Cycles->Soil.totalLayers, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Residue, project);
     }
 
     FreeCyclesStruct (Cycles, Cycles->SimControl.totalYears);
