@@ -63,7 +63,7 @@ double          FindIrrigationVolume (int opLayer, double opWaterDepletion, cons
 int             IsLeapYear (int year);
 int             doy (int year, int month, int mday, int leap_year_mode);
 int             t2doy (time_t *rawtime);
-int             doy2date (int year, int jday, int *month, int *mday, int leap_year_mode);
+void            doy2date (int year, int jday, int *month, int *mday, int leap_year_mode);
 int             LT (double x, double y);
 int             LE (double x, double y);
 int             EQ (double x, double y);

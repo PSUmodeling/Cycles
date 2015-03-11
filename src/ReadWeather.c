@@ -73,7 +73,7 @@ void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int to
                 {
                     for (doy = 1; doy < 367; doy++)
                     {
-                        sscanf (cmdstr, "%d %d %*lf %*lf %*lf %*lf %*lf %*lf %*lf", &temp_year, &temp_doy);
+                        sscanf (cmdstr, "%d %d %*f %*f %*f %*f %*f %*f %*f", &temp_year, &temp_doy);
 			if (temp_year == y + start_year && temp_doy == doy)
 			{
 			    sscanf (cmdstr, "%*d %*d %lf %lf %lf %lf %lf %lf %lf", &Weather->precipitation[y][doy - 1], &Weather->tMax[y][doy - 1], &Weather->tMin[y][doy - 1], &Weather->solarRadiation[y][doy - 1], &Weather->RHmax[y][doy - 1], &Weather->RHmin[y][doy - 1], &Weather->wind[y][doy - 1]);

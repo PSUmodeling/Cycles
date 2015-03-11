@@ -405,7 +405,7 @@ typedef struct autoIrrigationStruct
     int             startDay;
     int             stopDay;
     double          waterDepletion;
-    double          lastSoilLayer;
+    int		    lastSoilLayer;
 } autoIrrigationStruct;
 //
 //typedef struct autoFertilizationStruct

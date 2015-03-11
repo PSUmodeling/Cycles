@@ -22,7 +22,7 @@ int doy (int year, int month, int mday, int leap_year_mode)
     return days[leap][month] + mday;
 }
 
-int doy2date (int year, int jday, int *month, int *mday, int leap_year_mode)
+void doy2date (int year, int jday, int *month, int *mday, int leap_year_mode)
 {
     static const int eomday[2][13] = {
         {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365},

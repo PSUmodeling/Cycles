@@ -122,7 +122,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                         fgets (cmdstr, MAXSTRING, operation_file);
                         sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].opDay);
                         fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %s", &CropManagement->plantingOrder[i].cropName);
+                        sscanf (cmdstr, "%*s %s", CropManagement->plantingOrder[i].cropName);
                         fgets (cmdstr, MAXSTRING, operation_file);
                         sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].usesAutoIrrigation);
                         if (CropManagement->plantingOrder[i].usesAutoIrrigation == 0)
@@ -181,7 +181,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                         fgets (cmdstr, MAXSTRING, operation_file);
                         sscanf (cmdstr, "%*s %d", &CropManagement->ForcedHarvest[i].opDay);
                         fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %s", &CropManagement->ForcedHarvest[i].cropName);
+                        sscanf (cmdstr, "%*s %s", CropManagement->ForcedHarvest[i].cropName);
 
                         /* Link forced harvest and crop description */
                         for (j = 0; j < CropManagement->NumDescribedCrop; j++)
@@ -228,7 +228,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opDay);
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", &q->opToolName);
+                    sscanf (cmdstr, "%*s %s", q->opToolName);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opDepth);
                     fgets (cmdstr, MAXSTRING, operation_file);
@@ -294,13 +294,13 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opDay);
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", &q->opSource);
+                    sscanf (cmdstr, "%*s %s", q->opSource);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opMass);
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", &q->opForm);
+                    sscanf (cmdstr, "%*s %s", q->opForm);
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", &q->opMethod);
+                    sscanf (cmdstr, "%*s %s", q->opMethod);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &q->opLayer);
                     fgets (cmdstr, MAXSTRING, operation_file);
@@ -357,7 +357,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                 {
                     strcpy (optstr, "\0");
                     fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", &CropManagement->autoIrrigation[i].cropName);
+                    sscanf (cmdstr, "%*s %s", CropManagement->autoIrrigation[i].cropName);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %d", &CropManagement->autoIrrigation[i].startDay);
                     fgets (cmdstr, MAXSTRING, operation_file);

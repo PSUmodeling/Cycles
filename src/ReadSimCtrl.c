@@ -37,10 +37,10 @@ void ReadSimControl (char *project, SimControlStruct *SimControl)
     fscanf (simctrl_file, "%*s %d", &SimControl->annualSoilOutput);
     fscanf (simctrl_file, "%*s %d", &SimControl->profileOutput);
     fscanf (simctrl_file, "%*s %d", &SimControl->seasonOutput);
-    fscanf (simctrl_file, "%*s %s", &SimControl->crop_filename);
-    fscanf (simctrl_file, "%*s %s", &SimControl->operation_filename);
-    fscanf (simctrl_file, "%*s %s", &SimControl->soil_filename);
-    fscanf (simctrl_file, "%*s %s", &SimControl->weather_filename);
+    fscanf (simctrl_file, "%*s %s", SimControl->crop_filename);
+    fscanf (simctrl_file, "%*s %s", SimControl->operation_filename);
+    fscanf (simctrl_file, "%*s %s", SimControl->soil_filename);
+    fscanf (simctrl_file, "%*s %s", SimControl->weather_filename);
 
     fclose (simctrl_file);
 

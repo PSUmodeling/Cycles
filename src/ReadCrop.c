@@ -62,7 +62,7 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
             if (strcasecmp ("NAME", optstr) == 0)
             {
                 strcpy (optstr, "\0");
-                sscanf (cmdstr, "%*s %s", &CropManagement->describedCrop[i].userCropName);
+                sscanf (cmdstr, "%*s %s", CropManagement->describedCrop[i].userCropName);
                 fgets (cmdstr, MAXSTRING, crop_file);
                 sscanf (cmdstr, "%*s %d", &CropManagement->describedCrop[i].userSeedingDate);
                 fgets (cmdstr, MAXSTRING, crop_file);
