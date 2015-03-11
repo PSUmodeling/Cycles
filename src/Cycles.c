@@ -149,6 +149,14 @@ int main (int argc, char *argv[])
             Cycles->SoilCarbon.carbonMassFinal[i] = 0.0;
             Cycles->SoilCarbon.annualHumifiedCarbonMass[i] = 0.0;
             Cycles->SoilCarbon.annualRespiredCarbonMass[i] = 0.0;
+
+	    Cycles->SoilCarbon.abgdBiomassInput[i] = 0.0;
+	    Cycles->SoilCarbon.rootBiomassInput[i] = 0.0;
+	    Cycles->SoilCarbon.rhizBiomassInput[i] = 0.0;
+	    Cycles->SoilCarbon.abgdCarbonInput[i] = 0.0;
+	    Cycles->SoilCarbon.rootCarbonInput[i] = 0.0;
+	    Cycles->Residue.yearResidueBiomass = 0.0;
+	    Cycles->Residue.yearRootBiomass = 0.0;
         }
 
         /* Daily operations */
