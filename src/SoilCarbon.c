@@ -22,9 +22,8 @@ void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers)
     SoilCarbon->annualHumificationCoefficient = (double *)calloc (totalLayers, sizeof (double));
 }
 
-void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilStruct *Soil)
+void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int last_doy, SoilStruct *Soil)
 {
-    static double   avg[50];
     double          waterPotential; /* J/kg */
     double          airContent; /* m3/m3 */
     double          factorMoisture; /* unitless */
@@ -35,12 +34,6 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilS
                                              */
     int             i;
 
-    if (doy == 1)
-    {
-        for (i = 0; i < Soil->totalLayers; i++)
-            avg[i] = 0.0;
-    }
-
     for (i = 0; i < Soil->totalLayers; i++)
     {
         waterPotential = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
@@ -49,9 +42,14 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilS
         factorTemperature = TemperatureFunction (Soil->soilTemperature[i]);
         factorAeration *= Aeration (airContent);
         SoilCarbon->factorComposite[i] = factorMoisture * factorAeration * factorTemperature;
-        avg[i] += SoilCarbon->factorComposite[i];
-        if (doy == 365)
-            SoilCarbon->annualDecompositionFactor[i] = avg[i] / 365.0;
+
+	if (doy == 1)
+	    SoilCarbon->annualDecompositionFactor[i] = SoilCarbon->factorComposite[i];
+	else
+	    SoilCarbon->annualDecompositionFactor[i] = SoilCarbon->annualDecompositionFactor[i] + SoilCarbon->factorComposite[i];
+
+        if (doy == last_doy)
+            SoilCarbon->annualDecompositionFactor[i] = SoilCarbon->annualDecompositionFactor[i] / ((double)last_doy);
     }
 }
 

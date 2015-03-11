@@ -1,10 +1,11 @@
 #include "Cycles.h"
 
-void InitializeOutput (char *project)
+void InitializeOutput (char *project, int layers)
 {
     char            filename[50];
     char           *output_dir;
     FILE           *output_file;
+    int		    i;
 
     output_dir = (char *)malloc ((strlen (project) + 8) * sizeof (char));
 
@@ -12,12 +13,14 @@ void InitializeOutput (char *project)
     sprintf (output_dir, "output/%s", project);
     mkdir (output_dir, 0755);
 
+    /* Initialize season output files */
     sprintf (filename, "output/%s/season.dat", project);
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "CROP", "TOTAL BIOMASS", "ROOT BIOMASS", "GRAIN YIELD", "FORAGE YIELD", "AG RESIDUE", "HARVEST INDEX", "POTENTIAL TR", "ACTUAL TR", "SOIL EVAP", "TOTAL N", "ROOT N", "GRAIN N", "FORAGE N", "CUM. N STRESS", "GRAIN N YIELD", "FORAGE N YIELD");
     fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/Mg", "mm", "mm", "mm", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "-");
     fclose (output_file);
 
+    /* Initialize daily output files */
     sprintf (filename, "output/%s/weather.dat", project);
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\n", "DATE", "AVG TMP", "REFERENCE ET", "PRECIPITATION");
@@ -52,6 +55,44 @@ void InitializeOutput (char *project)
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "SOIL ORG C", "HUMIFIED C", "RES RESPIRED C", "SOM RESPIRED C");
     fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha");
+    fclose (output_file);
+
+    /* Initialize annual output files */
+    sprintf (filename, "output/%s/annualSoilC.dat", project);
+    output_file = fopen (filename, "w");
+    fprintf (output_file, "%-7s", "YEAR");
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\t%-15s", "THICKNESS");
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\t%-15s", "BULK DENSITY");
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\t%-15s", "CLAY");
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\t%-15s", "COMP DECOMP FAC");
+    fprintf (output_file, "\n"); 
+
+    fprintf (output_file, "%-7s", "-");
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\tLAYER %-9d", i);
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\tLAYER %-9d", i);
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\tLAYER %-9d", i);
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\tLAYER %-9d", i);
+    fprintf (output_file, "\n");
+
+    fprintf (output_file, "%-7s", "YYYY");
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\t%-15s", "m");
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\t%-15s", "Mg/m3");
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\t%-15s", "%");
+    for (i = 0; i < layers; i++)
+	fprintf (output_file, "\t%-15s", "-");
+    fprintf (output_file, "\n");
+
     fclose (output_file);
 
     free (output_dir);
@@ -284,3 +325,28 @@ void PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Wea
     fflush (output_file);
     fclose (output_file);
 }
+
+void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const char *project)
+{
+    char            filename[50];
+    FILE           *output_file;
+    int		    i;
+
+    sprintf (filename, "output/%s/annualSoilC.dat", project);
+    output_file = fopen (filename, "a");
+
+    fprintf (output_file, "%4.4d", y + start_year);
+    for (i = 0; i < Soil->totalLayers; i++)
+	fprintf (output_file, "\t%-15.3lf", Soil->layerThickness[i]);
+    for (i = 0; i < Soil->totalLayers; i++)
+	fprintf (output_file, "\t%-15.3lf", Soil->BD[i]);
+    for (i = 0; i < Soil->totalLayers; i++)
+	fprintf (output_file, "\t%-15.3lf", Soil->Clay[i] * 100.0);
+    for (i = 0; i < Soil->totalLayers; i++)
+	fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualDecompositionFactor[i]);
+
+    fprintf (output_file, "\n");
+    fflush (output_file);
+    fclose (output_file);
+}
+    

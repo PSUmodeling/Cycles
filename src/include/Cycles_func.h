@@ -71,9 +71,10 @@ int             GE (double x, double y);
 int             GT (double x, double y);
 
 /* Print.c */
-void            InitializeOutput (char *project);
+void            InitializeOutput (char *project, int layers);
 void            PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project);
 void            PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project);
+void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const char *project);
 
 /* ReadCrop.c */
 void            ReadCrop (char *project, CropManagementStruct *CropManagement);
@@ -123,7 +124,7 @@ double          BulkDensity (double Clay, double Sand, double OM);
 
 /* SoilCarbon.c */
 void            InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers);
-void            ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, SoilStruct *Soil);
+void            ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int last_doy, SoilStruct *Soil);
 void            ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor);
 void            StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass);
 double          Aeration (double AC);

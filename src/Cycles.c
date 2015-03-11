@@ -76,8 +76,6 @@ int main (int argc, char *argv[])
 
     printf ("Now running the %s simulation.\n\n", project);
 
-    InitializeOutput (project);
-
     /* Read simulation control input file */
     ReadSimControl (project, &Cycles->SimControl);
     if (debug_mode)
@@ -102,6 +100,8 @@ int main (int argc, char *argv[])
     ReadWeather (Cycles->SimControl.weather_filename, &Cycles->Weather, Cycles->SimControl.simStartYear, Cycles->SimControl.totalYears);
     if (debug_mode)
         PrintWeather (Cycles->Weather);
+
+    InitializeOutput (project, Cycles->Soil.totalLayers);
 
     /* Initialize model variables and parameters */
     Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop, &Cycles->CropManagement, &Cycles->Snow);
@@ -159,6 +159,7 @@ int main (int argc, char *argv[])
             DailyOperations (rotationYear, y, doy, &nextSeedingYear, &nextSeedingDate, &Cycles->CropManagement, &Cycles->Crop, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, project);
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Crop, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue, project);
         }
+	PrintAnnualOutput (y, Cycles->SimControl.simStartYear, &Cycles->Soil, &Cycles->SoilCarbon, project);
     }
 
     FreeCyclesStruct (Cycles, Cycles->SimControl.totalYears);
