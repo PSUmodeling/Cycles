@@ -12,12 +12,13 @@ int main (int argc, char *argv[])
     int             doy;
     int             i;
     int             c;
-    clock_t         begin, end;
+    time_t         begin, end;
 
     CyclesStruct    Cycles;     /* Model structure */
     char           *project;    /* Name of simulation */
 
-    begin = clock ();
+    //begin = clock ();
+    time (&begin);
 
     Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
 
@@ -175,9 +176,10 @@ int main (int argc, char *argv[])
     free (project);
     free (Cycles);
 
-    end = clock ();
+    //end = clock ();
+    time (&end);
 
-    printf ("\nSimulation time: %-lf seconds.\n", (double)(end - begin) / CLOCKS_PER_SEC);
+    printf ("\nSimulation time: %-d seconds.\n", (int)(end - begin));
 
     return (0);
 }
