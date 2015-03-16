@@ -12,7 +12,7 @@ int main (int argc, char *argv[])
     int             doy;
     int             i;
     int             c;
-    time_t         begin, end;
+    time_t          begin, end;
 
     CyclesStruct    Cycles;     /* Model structure */
     char           *project;    /* Name of simulation */
@@ -20,7 +20,7 @@ int main (int argc, char *argv[])
     //begin = clock ();
     time (&begin);
 
-    Cycles = (CyclesStruct) malloc (sizeof (*Cycles));
+    Cycles = (CyclesStruct)malloc (sizeof (*Cycles));
 
     system ("clear");
     printf ("\n\n");
@@ -151,14 +151,14 @@ int main (int argc, char *argv[])
             Cycles->SoilCarbon.annualHumifiedCarbonMass[i] = 0.0;
             Cycles->SoilCarbon.annualRespiredCarbonMass[i] = 0.0;
 
-	    Cycles->SoilCarbon.annualSoilCarbonDecompositionRate[i] = 0.0;
-	    Cycles->SoilCarbon.abgdBiomassInput[i] = 0.0;
-	    Cycles->SoilCarbon.rootBiomassInput[i] = 0.0;
-	    Cycles->SoilCarbon.rhizBiomassInput[i] = 0.0;
-	    Cycles->SoilCarbon.abgdCarbonInput[i] = 0.0;
-	    Cycles->SoilCarbon.rootCarbonInput[i] = 0.0;
-	    Cycles->Residue.yearResidueBiomass = 0.0;
-	    Cycles->Residue.yearRootBiomass = 0.0;
+            Cycles->SoilCarbon.annualSoilCarbonDecompositionRate[i] = 0.0;
+            Cycles->SoilCarbon.abgdBiomassInput[i] = 0.0;
+            Cycles->SoilCarbon.rootBiomassInput[i] = 0.0;
+            Cycles->SoilCarbon.rhizBiomassInput[i] = 0.0;
+            Cycles->SoilCarbon.abgdCarbonInput[i] = 0.0;
+            Cycles->SoilCarbon.rootCarbonInput[i] = 0.0;
+            Cycles->Residue.yearResidueBiomass = 0.0;
+            Cycles->Residue.yearRootBiomass = 0.0;
         }
 
         /* Daily operations */
@@ -170,11 +170,11 @@ int main (int argc, char *argv[])
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Crop, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue, project);
         }
 
-	for (i = 0; i < Cycles->Soil.totalLayers; i++)
-	    Cycles->SoilCarbon.carbonMassFinal[i] = Cycles->Soil.SOC_Mass[i];
+        for (i = 0; i < Cycles->Soil.totalLayers; i++)
+            Cycles->SoilCarbon.carbonMassFinal[i] = Cycles->Soil.SOC_Mass[i];
 
-	PrintAnnualOutput (y, Cycles->SimControl.simStartYear, &Cycles->Soil, &Cycles->SoilCarbon, project);
-	PrintCarbonEvolution (y, Cycles->SimControl.simStartYear, Cycles->Soil.totalLayers, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Residue, project);
+        PrintAnnualOutput (y, Cycles->SimControl.simStartYear, &Cycles->Soil, &Cycles->SoilCarbon, project);
+        PrintCarbonEvolution (y, Cycles->SimControl.simStartYear, Cycles->Soil.totalLayers, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Residue, project);
     }
 
     FreeCyclesStruct (Cycles, Cycles->SimControl.totalYears);

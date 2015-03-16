@@ -23,9 +23,9 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const Weat
     double          rootActivity[Soil->totalLayers];    /* root activity factor to compute plant hydraulic conductance */
     double          rootFraction[Soil->totalLayers];
     double          LWP;        /* leaf water potential, J/kg */
-    double          LWP_StressOnset = -1100.0;   /* leaf water potential at the onset of stomatal closure */
-    double          LWP_WiltingPoint = -2000.0;  /* leaf water potential at wilting point */
-    double          SWP_FC = -33.0;  /* water potential at field capacity, J/kg */
+    double          LWP_StressOnset = -1100.0;  /* leaf water potential at the onset of stomatal closure */
+    double          LWP_WiltingPoint = -2000.0; /* leaf water potential at wilting point */
+    double          SWP_FC = -33.0; /* water potential at field capacity, J/kg */
     double          SWP_Average;    /* weighted soil water potential, J/kg */
     double          soilWP[Soil->totalLayers];
     double          layerSalinityFactor[Soil->totalLayers];

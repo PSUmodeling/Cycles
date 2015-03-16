@@ -21,7 +21,7 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
         exit (1);
     }
     else
-	printf ("Read crop description file: %s.\n", filename);
+        printf ("Read crop description file: %s.\n", filename);
 
     free (fullname);
 
@@ -45,7 +45,7 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
 
     /* Allocate memories for Crop classes */
     CropManagement->NumDescribedCrop = crop_counter;
-    CropManagement->describedCrop = (describedCropStruct *) malloc (crop_counter * sizeof (describedCropStruct));
+    CropManagement->describedCrop = (describedCropStruct *)malloc (crop_counter * sizeof (describedCropStruct));
 
     /* Rewind to the beginning of file and reset crop_counter */
     rewind (crop_file);

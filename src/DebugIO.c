@@ -41,7 +41,7 @@ void PrintSoil (SoilStruct Soil)
     printf ("(Press any key to continue ...)\n");
 }
 
-void PrintCrop (describedCropStruct * describedCrop, int NumCrop)
+void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
 {
     int             i;
 

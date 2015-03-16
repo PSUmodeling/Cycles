@@ -18,7 +18,7 @@ void ReadSoil (char *filename, SoilStruct *Soil)
         exit (1);
     }
     else
-	printf ("Read soil initialization file: %s.\n", filename);
+        printf ("Read soil initialization file: %s.\n", filename);
 
     free (fullname);
     /* Read soil file */

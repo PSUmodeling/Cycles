@@ -87,9 +87,9 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *
     double          daytimeVPD;
     double          TUE;
     double          RUE;
-    double          PRG;        
-    double          PTG; 
-    const double    RRD = 0.6;  
+    double          PRG;
+    double          PTG;
+    const double    RRD = 0.6;
 
     daytimeVPD = 0.66 * SatVP (Weather->tMax[y][doy - 1]) * (1.0 - Weather->RHmin[y][doy - 1] / 100.0);
 

@@ -79,17 +79,17 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
      * Final Harvest date set once crop maturity achieved
      */
     int             forcedHarvest = 0;
-    int		    i;
+    int             i;
 
     forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
 
     for (i = 0; i < numHarvest; i++)
     {
-	if (ForcedHarvest[i].opYear == rotationYear && ForcedHarvest[i].opDay == d && ForcedHarvest[i].plantID == Crop->cropUniqueIdentifier)
-	{
-	    forcedHarvest = 1;
-	    break;
-	}
+        if (ForcedHarvest[i].opYear == rotationYear && ForcedHarvest[i].opDay == d && ForcedHarvest[i].plantID == Crop->cropUniqueIdentifier)
+        {
+            forcedHarvest = 1;
+            break;
+        }
     }
 
     if (Crop->svTT_Cumulative < Crop->userEmergenceTT)

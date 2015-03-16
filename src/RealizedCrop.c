@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void AddCrop (CropStruct *Crop) 
+void AddCrop (CropStruct *Crop)
 {
     //Crop->rcActiveStatus = 1;
     //Crop->rcYear = 0;
@@ -19,4 +19,4 @@ void AddCrop (CropStruct *Crop)
     Crop->rcGrainNitrogenYield = 0.0;
     Crop->rcForageNitrogenYield = 0.0;
     Crop->rcNitrogenCumulative = 0.0;
-} 
+}

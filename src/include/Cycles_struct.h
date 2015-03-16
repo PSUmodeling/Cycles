@@ -121,10 +121,10 @@ typedef struct SimControlStruct
     int             profileOutput;
     int             seasonOutput;
 
-    char	    crop_filename[128];
-    char	    operation_filename[128];
-    char	    weather_filename[128];
-    char	    soil_filename[128];
+    char            crop_filename[128];
+    char            operation_filename[128];
+    char            weather_filename[128];
+    char            soil_filename[128];
 } SimControlStruct;
 
 typedef struct SoilStruct
@@ -405,7 +405,7 @@ typedef struct autoIrrigationStruct
     int             startDay;
     int             stopDay;
     double          waterDepletion;
-    int		    lastSoilLayer;
+    int             lastSoilLayer;
 } autoIrrigationStruct;
 //
 //typedef struct autoFertilizationStruct
@@ -439,7 +439,7 @@ typedef struct CropManagementStruct
     int             plantingIndex;
 
     FieldOperationStruct *ForcedHarvest;
-    int		    numHarvest;
+    int             numHarvest;
 
     describedCropStruct *describedCrop;
     int             NumDescribedCrop;
@@ -524,7 +524,7 @@ typedef struct WeatherStruct
     int             length;
     double         *yearlyAmplitude;
     double         *annualAverageTemperature;
-    int		   *lastDoy;
+    int            *lastDoy;
     double        **wind;
     double        **ETref;
     double        **precipitation;
@@ -546,6 +546,6 @@ typedef struct CyclesStruct
     SoilCarbonStruct SoilCarbon;
     WeatherStruct   Weather;
     SnowStruct      Snow;
-} *CyclesStruct;
+}              *CyclesStruct;
 
 #endif

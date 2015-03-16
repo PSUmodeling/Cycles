@@ -72,10 +72,10 @@ void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, 
             Soil->n2o[i] = N2O_Nitrified;
         }
         else
-	{
+        {
             NH4_Nitrified = 0.0;
-	    N2O_Nitrified = 0.0;
-	}
+            N2O_Nitrified = 0.0;
+        }
     }
 }
 

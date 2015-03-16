@@ -5,7 +5,7 @@ void InitializeOutput (char *project, int layers)
     char            filename[50];
     char           *output_dir;
     FILE           *output_file;
-    int		    i;
+    int             i;
 
     output_dir = (char *)malloc ((strlen (project) + 8) * sizeof (char));
 
@@ -69,83 +69,83 @@ void InitializeOutput (char *project, int layers)
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-7s", "YEAR");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "THICKNESS");
+        fprintf (output_file, "\t%-15s", "THICKNESS");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "BULK DENSITY");
+        fprintf (output_file, "\t%-15s", "BULK DENSITY");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "CLAY");
+        fprintf (output_file, "\t%-15s", "CLAY");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "COMP DECOMP FAC");
+        fprintf (output_file, "\t%-15s", "COMP DECOMP FAC");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "SOIL C DECOMP R");
+        fprintf (output_file, "\t%-15s", "SOIL C DECOMP R");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "INIT SOIL C");
+        fprintf (output_file, "\t%-15s", "INIT SOIL C");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "SOIL C DECOMP");
+        fprintf (output_file, "\t%-15s", "SOIL C DECOMP");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "C INPUT / LYR");
+        fprintf (output_file, "\t%-15s", "C INPUT / LYR");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "HUMIFIED / LYR");
+        fprintf (output_file, "\t%-15s", "HUMIFIED / LYR");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "HUMIFICAT COEF");
+        fprintf (output_file, "\t%-15s", "HUMIFICAT COEF");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "EST SAT CONCN");
+        fprintf (output_file, "\t%-15s", "EST SAT CONCN");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "EST SAT CONT");
-    fprintf (output_file, "\n"); 
+        fprintf (output_file, "\t%-15s", "EST SAT CONT");
+    fprintf (output_file, "\n");
 
     fprintf (output_file, "%-7s", "-");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     fprintf (output_file, "\n");
 
     fprintf (output_file, "%-7s", "YYYY");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "m");
+        fprintf (output_file, "\t%-15s", "m");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg/m3");
+        fprintf (output_file, "\t%-15s", "Mg/m3");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "%");
+        fprintf (output_file, "\t%-15s", "%");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "-");
+        fprintf (output_file, "\t%-15s", "-");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "1/year");
+        fprintf (output_file, "\t%-15s", "1/year");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg/ha");
+        fprintf (output_file, "\t%-15s", "Mg/ha");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/year");
+        fprintf (output_file, "\t%-15s", "Mg C/year");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/year");
+        fprintf (output_file, "\t%-15s", "Mg C/year");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/ year");
+        fprintf (output_file, "\t%-15s", "Mg C/ year");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "-");
+        fprintf (output_file, "\t%-15s", "-");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "g C /kg soil");
+        fprintf (output_file, "\t%-15s", "g C /kg soil");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/ha");
+        fprintf (output_file, "\t%-15s", "Mg C/ha");
     fprintf (output_file, "\n");
 
     fflush (output_file);
@@ -156,82 +156,82 @@ void InitializeOutput (char *project, int layers)
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-7s\t%-15s", "YEAR", "Profile");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     fprintf (output_file, "\t%-15s\t%-15s", "ABOVE 30 cm", "BELOW 30 cm");
     fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "RES BIOMASS", "ROOT BIOMASS", "RES BIOMASS IN", "ROOT BIOMASS IN", "INIT PROF C", "RES C INPUT", "ROOT C INPUT", "HUMIFIED C", "RESPIRED C", "FINAL PROF C", "YEAR C DIFF");
 
     fprintf (output_file, "%-7s\t%-15s", "YYYY", "Mg C/ha");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/ha");
+        fprintf (output_file, "\t%-15s", "Mg C/ha");
     fprintf (output_file, "\t%-15s\t%-15s", "Mg C/ha", "Mg C/ha");
 
     fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s", "Mg/year", "Mg/year", "Mg/year", "Mg/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year");
-    fprintf (output_file, "\n"); 
+    fprintf (output_file, "\n");
     fflush (output_file);
 
     sprintf (filename, "output/%s/annualSoilProfile.dat", project);
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-7s", "YEAR");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "RES BIOMASS IN");
+        fprintf (output_file, "\t%-15s", "RES BIOMASS IN");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "ROOT BIOMASS IN");
+        fprintf (output_file, "\t%-15s", "ROOT BIOMASS IN");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "RES C INPUT");
+        fprintf (output_file, "\t%-15s", "RES C INPUT");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "ROOT C INPUT");
+        fprintf (output_file, "\t%-15s", "ROOT C INPUT");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "INIT C MASS");
+        fprintf (output_file, "\t%-15s", "INIT C MASS");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "HUMIFIED C");
+        fprintf (output_file, "\t%-15s", "HUMIFIED C");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "RESPIRED C");
+        fprintf (output_file, "\t%-15s", "RESPIRED C");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "FINAL C");
+        fprintf (output_file, "\t%-15s", "FINAL C");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "C DIFF");
-    fprintf (output_file, "\n"); 
+        fprintf (output_file, "\t%-15s", "C DIFF");
+    fprintf (output_file, "\n");
 
     fprintf (output_file, "%-7s", "-");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\tLAYER %-9d", i + 1);
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     fprintf (output_file, "\n");
 
     fprintf (output_file, "%-7s", "YYYY");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg/ha");
+        fprintf (output_file, "\t%-15s", "Mg/ha");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg/ha");
+        fprintf (output_file, "\t%-15s", "Mg/ha");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg/ha");
+        fprintf (output_file, "\t%-15s", "Mg/ha");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg/ha");
+        fprintf (output_file, "\t%-15s", "Mg/ha");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/year");
+        fprintf (output_file, "\t%-15s", "Mg C/year");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/year");
+        fprintf (output_file, "\t%-15s", "Mg C/year");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/year");
+        fprintf (output_file, "\t%-15s", "Mg C/year");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/year");
+        fprintf (output_file, "\t%-15s", "Mg C/year");
     for (i = 0; i < layers; i++)
-	fprintf (output_file, "\t%-15s", "Mg C/year");
+        fprintf (output_file, "\t%-15s", "Mg C/year");
     fprintf (output_file, "\n");
 
     fflush (output_file);
@@ -247,10 +247,10 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     int             month, mday;
     int             i;
     double          sum;
-    int		    leap_year = 0;
+    int             leap_year = 0;
 
     if (Weather->lastDoy[y] == 366)
-	leap_year = 1;
+        leap_year = 1;
 
     doy2date (y + start_year, doy, &month, &mday, leap_year);
 
@@ -434,10 +434,10 @@ void PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Wea
     char            filename[50];
     FILE           *output_file;
     int             month, mday;
-    int		    leap_year = 0;
+    int             leap_year = 0;
 
     if (Weather->lastDoy[y] == 366)
-	leap_year = 1;
+        leap_year = 1;
 
     sprintf (filename, "output/%s/season.dat", project);
     output_file = fopen (filename, "a");
@@ -472,41 +472,41 @@ void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const Soi
 {
     char            filename[50];
     FILE           *output_file;
-    int		    i;
+    int             i;
 
     sprintf (filename, "output/%s/annualSoilC.dat", project);
     output_file = fopen (filename, "a");
 
     fprintf (output_file, "%4.4d", y + start_year);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.3lf", Soil->layerThickness[i]);
+        fprintf (output_file, "\t%-15.3lf", Soil->layerThickness[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.3lf", Soil->BD[i]);
+        fprintf (output_file, "\t%-15.3lf", Soil->BD[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.3lf", Soil->Clay[i] * 100.0);
+        fprintf (output_file, "\t%-15.3lf", Soil->Clay[i] * 100.0);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualDecompositionFactor[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualDecompositionFactor[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualSoilCarbonDecompositionRate[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualSoilCarbonDecompositionRate[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", Soil->SOC_Mass[i]);
+        fprintf (output_file, "\t%-15.6lf", Soil->SOC_Mass[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualRespiredCarbonMass[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualRespiredCarbonMass[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualCarbonInputByLayer[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualCarbonInputByLayer[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i]);
     for (i = 0; i < Soil->totalLayers; i++)
     {
-	if (SoilCarbon->annualCarbonInputByLayer[i] > 0)
-	    fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i] / SoilCarbon->annualCarbonInputByLayer[i]);
-	else
-	    fprintf (output_file, "\t%-15.6lf", 0.0);
+        if (SoilCarbon->annualCarbonInputByLayer[i] > 0)
+            fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i] / SoilCarbon->annualCarbonInputByLayer[i]);
+        else
+            fprintf (output_file, "\t%-15.6lf", 0.0);
     }
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", 10.0 * (2.11 + 0.0375 * Soil->Clay[i] * 100.0));
+        fprintf (output_file, "\t%-15.6lf", 10.0 * (2.11 + 0.0375 * Soil->Clay[i] * 100.0));
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", 10000.0 * Soil->layerThickness[i] * Soil->BD[i] * (10.0 * (2.11 + 0.0375 * Soil->Clay[i] * 100.0))/ 1000.0);
+        fprintf (output_file, "\t%-15.6lf", 10000.0 * Soil->layerThickness[i] * Soil->BD[i] * (10.0 * (2.11 + 0.0375 * Soil->Clay[i] * 100.0)) / 1000.0);
 
     fprintf (output_file, "\n");
     fflush (output_file);
@@ -518,23 +518,23 @@ void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const Soi
 
     fprintf (output_file, "%4.4d", y + start_year);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.3lf", SoilCarbon->abgdBiomassInput[i]);
+        fprintf (output_file, "\t%-15.3lf", SoilCarbon->abgdBiomassInput[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.3lf", SoilCarbon->rootBiomassInput[i] + SoilCarbon->rhizBiomassInput[i]);
+        fprintf (output_file, "\t%-15.3lf", SoilCarbon->rootBiomassInput[i] + SoilCarbon->rhizBiomassInput[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.3lf", SoilCarbon->abgdCarbonInput[i]);
+        fprintf (output_file, "\t%-15.3lf", SoilCarbon->abgdCarbonInput[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->rootCarbonInput[i] + SoilCarbon->rhizCarbonInput[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->rootCarbonInput[i] + SoilCarbon->rhizCarbonInput[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->carbonMassInitial[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->carbonMassInitial[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualRespiredCarbonMass[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualRespiredCarbonMass[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->carbonMassFinal[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->carbonMassFinal[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", SoilCarbon->carbonMassFinal[i] - SoilCarbon->carbonMassInitial[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->carbonMassFinal[i] - SoilCarbon->carbonMassInitial[i]);
     fprintf (output_file, "\n");
     fflush (output_file);
     fclose (output_file);
@@ -544,12 +544,12 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
 {
     char            filename[50];
     FILE           *output_file;
-    int		    i;
+    int             i;
 
-    double SOC_sum;
-    double SOC_Mass_Depth1, SOC_Mass_Depth2;
-    double layerSplit;
-    double sumProfile1, sumProfile2, sumProfile3, sumProfile4, sumProfile5, sumProfile6, sumProfile7, sumProfile8;
+    double          SOC_sum;
+    double          SOC_Mass_Depth1, SOC_Mass_Depth2;
+    double          layerSplit;
+    double          sumProfile1, sumProfile2, sumProfile3, sumProfile4, sumProfile5, sumProfile6, sumProfile7, sumProfile8;
 
     sprintf (filename, "output/%s/SoilCEvol.dat", project);
     output_file = fopen (filename, "a");
@@ -569,35 +569,35 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
 
     for (i = 0; i < total_layers; i++)
     {
-	sumProfile1 += SoilCarbon->abgdBiomassInput[i];
-	sumProfile2 += SoilCarbon->rootBiomassInput[i] + SoilCarbon->rhizCarbonInput[i];
-	sumProfile3 += SoilCarbon->abgdCarbonInput[i];
-	sumProfile4 += SoilCarbon->rootCarbonInput[i] + SoilCarbon->rhizCarbonInput[i];
-	sumProfile5 += SoilCarbon->carbonMassInitial[i];
-	sumProfile6 += SoilCarbon->annualHumifiedCarbonMass[i];
-	sumProfile7 += SoilCarbon->annualRespiredCarbonMass[i];
-	sumProfile8 += SoilCarbon->carbonMassFinal[i];
+        sumProfile1 += SoilCarbon->abgdBiomassInput[i];
+        sumProfile2 += SoilCarbon->rootBiomassInput[i] + SoilCarbon->rhizCarbonInput[i];
+        sumProfile3 += SoilCarbon->abgdCarbonInput[i];
+        sumProfile4 += SoilCarbon->rootCarbonInput[i] + SoilCarbon->rhizCarbonInput[i];
+        sumProfile5 += SoilCarbon->carbonMassInitial[i];
+        sumProfile6 += SoilCarbon->annualHumifiedCarbonMass[i];
+        sumProfile7 += SoilCarbon->annualRespiredCarbonMass[i];
+        sumProfile8 += SoilCarbon->carbonMassFinal[i];
 
-	//soilCarbonEvolutionVars(y, 2 + i) = SoilCarbon.carbonMassFinal(y, i) 'Updated_SOC_Mass(i)
+        //soilCarbonEvolutionVars(y, 2 + i) = SoilCarbon.carbonMassFinal(y, i) 'Updated_SOC_Mass(i)
 
-	if (Soil->cumulativeDepth[i] <= layerSplit)
-	    SOC_Mass_Depth1 += Soil->SOC_Mass[i];
-	else if (Soil->cumulativeDepth[i] > layerSplit && Soil->cumulativeDepth[i] < layerSplit + Soil->layerThickness[i + 1])
-	{
-	    SOC_Mass_Depth1 += Soil->SOC_Mass[i] * (layerSplit - (Soil->cumulativeDepth[i] - Soil->layerThickness[i])) / Soil->layerThickness[i];
-	    SOC_Mass_Depth2 += Soil->SOC_Mass[i] * (Soil->cumulativeDepth[i] - layerSplit) / Soil->layerThickness[i];
-	}
-	else
-	    SOC_Mass_Depth2 += Soil->SOC_Mass[i];
+        if (Soil->cumulativeDepth[i] <= layerSplit)
+            SOC_Mass_Depth1 += Soil->SOC_Mass[i];
+        else if (Soil->cumulativeDepth[i] > layerSplit && Soil->cumulativeDepth[i] < layerSplit + Soil->layerThickness[i + 1])
+        {
+            SOC_Mass_Depth1 += Soil->SOC_Mass[i] * (layerSplit - (Soil->cumulativeDepth[i] - Soil->layerThickness[i])) / Soil->layerThickness[i];
+            SOC_Mass_Depth2 += Soil->SOC_Mass[i] * (Soil->cumulativeDepth[i] - layerSplit) / Soil->layerThickness[i];
+        }
+        else
+            SOC_Mass_Depth2 += Soil->SOC_Mass[i];
     }
 
     fprintf (output_file, "%4.4d", y + start_year);
     SOC_sum = 0.0;
     for (i = 0; i < total_layers; i++)
-	SOC_sum = SOC_sum + Soil->SOC_Mass[i];
+        SOC_sum = SOC_sum + Soil->SOC_Mass[i];
     fprintf (output_file, "\t%-15.6lf", SOC_sum);
     for (i = 0; i < Soil->totalLayers; i++)
-	fprintf (output_file, "\t%-15.6lf", Soil->SOC_Mass[i]);
+        fprintf (output_file, "\t%-15.6lf", Soil->SOC_Mass[i]);
     fprintf (output_file, "\t%-15.6lf\t%-15.6lf", SOC_Mass_Depth1, SOC_Mass_Depth2);
     fprintf (output_file, "\t%-15.6lf", Residue->yearResidueBiomass);
     fprintf (output_file, "\t%-15.6lf", Residue->yearRootBiomass);

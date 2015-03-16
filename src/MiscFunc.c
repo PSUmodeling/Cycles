@@ -65,7 +65,7 @@ int t2doy (time_t * rawtime)
 
 int LT (double x, double y)
 {
-    int lt;
+    int             lt;
 
     if (x < y && fabs (x - y) < 1e-7)
         lt = 1;
@@ -77,7 +77,7 @@ int LT (double x, double y)
 
 int LE (double x, double y)
 {
-    int le;
+    int             le;
 
     if (x <= y)
         le = 1;
@@ -91,7 +91,7 @@ int LE (double x, double y)
 
 int EQ (double x, double y)
 {
-    int eq;
+    int             eq;
 
     if (fabs (x - y) < 1e-7)
         eq = 1;
@@ -103,7 +103,7 @@ int EQ (double x, double y)
 
 int GE (double x, double y)
 {
-    int ge;
+    int             ge;
 
     if (x >= y)
         ge = 1;
@@ -117,7 +117,7 @@ int GE (double x, double y)
 
 int GT (double x, double y)
 {
-    int gt;
+    int             gt;
 
     if (x > y && fabs (x - y) > 1e-7)
         gt = 1;

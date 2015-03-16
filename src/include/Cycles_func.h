@@ -39,7 +39,7 @@ double          TemperatureLimitation (double T, double T_Min, double T_Threshol
 
 /* DailyOperation.c */
 void            DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project);
-void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, FieldOperationStruct *ForcedHarvest, int numHarvest, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project);
+void            GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, FieldOperationStruct *ForcedHarvest, int numHarvest, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project);
 void            PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop);
 double          FinalHarvestDate (int lastDoy, int d);
 int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize);
@@ -62,7 +62,7 @@ double          FindIrrigationVolume (int opLayer, double opWaterDepletion, cons
 /* MiscFunc.c */
 int             IsLeapYear (int year);
 int             doy (int year, int month, int mday, int leap_year_mode);
-int             t2doy (time_t *rawtime);
+int             t2doy (time_t * rawtime);
 void            doy2date (int year, int jday, int *month, int *mday, int leap_year_mode);
 int             LT (double x, double y);
 int             LE (double x, double y);
@@ -74,8 +74,8 @@ int             GT (double x, double y);
 void            InitializeOutput (char *project, int layers);
 void            PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project);
 void            PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project);
-void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const char *project);
-void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, char *project);
+void            PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const char *project);
+void            PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, char *project);
 
 /* ReadCrop.c */
 void            ReadCrop (char *project, CropManagementStruct *CropManagement);
@@ -192,7 +192,7 @@ void            CalculateDerivedWeather (WeatherStruct *Weather, int total_years
 void            PrintSimContrl (SimControlStruct SimControl);
 void            PrintSoil (SoilStruct Soil);
 void            PrintCrop (describedCropStruct *describedCrop, int NumCrop);
-void		PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *ForcedHarvest, int NumHarvest, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization);
+void            PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *ForcedHarvest, int NumHarvest, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization);
 void            PrintWeather (WeatherStruct Weather);
 
 #endif

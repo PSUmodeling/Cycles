@@ -249,8 +249,8 @@ void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double ro
         rootSum = rootSum + rootDistribution[i];
 
     /* compute input of biomass from roots to each layer */
-    for (i = 0; i < j; i++)     
-    {   /* exits loop on the same layer as the previous loop */
+    for (i = 0; i < j; i++)
+    {                           /* exits loop on the same layer as the previous loop */
         if (rootMass > 0.0)
         {
             fractionRootsByLayer[i] = rootDistribution[i] / rootSum;
