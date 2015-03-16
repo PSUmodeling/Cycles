@@ -4,5 +4,7 @@ run-Cycles
 */*.o
 */*/*.o
 src/vb/
+src/*~
+src/*/*~
 *.dat
 output/*
