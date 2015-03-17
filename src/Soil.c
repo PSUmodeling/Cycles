@@ -202,6 +202,7 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         printf ("\n*%-30s\t", "Initial soil temp");
         for (i = 0; i < Soil->totalLayers; i++)
             printf ("%-10.3lf\t", Soil->soilTemperature[i]);
+	printf ("\n");
     }
 }
 

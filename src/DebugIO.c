@@ -23,7 +23,6 @@ void PrintSimContrl (SimControlStruct SimControl)
     printf ("*%-22s\t%-4d\n", "Annual Profile Out", SimControl.profileOutput);
     printf ("*%-22s\t%-4d\n", "Season_Out", SimControl.seasonOutput);
     printf ("\n");
-    printf ("(Press any key to continue ...)\n");
 }
 
 void PrintSoil (SoilStruct Soil)
@@ -38,7 +37,6 @@ void PrintSoil (SoilStruct Soil)
     for (i = 0; i < Soil.totalLayers; i++)
         printf ("*%-10d\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\t%-10.2lf\n", i + 1, Soil.layerThickness[i], Soil.Clay[i], Soil.Sand[i], Soil.IOM[i], Soil.BD[i], Soil.FC[i], Soil.PWP[i], Soil.NO3[i], Soil.NH4[i]);
     printf ("\n");
-    printf ("(Press any key to continue ...)\n");
 }
 
 void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
@@ -46,7 +44,6 @@ void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
     int             i;
 
     printf ("\n\n*Crop description file contains descriptions of %d crop types.\n\n", NumCrop);
-    printf ("(Press any key to continue ...)\n");
 
     for (i = 0; i < NumCrop; i++)
     {
@@ -84,7 +81,6 @@ void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
         printf ("*%-38s\t%-3d\n", "ANNUAL", describedCrop[i].userAnnual);
         printf ("*%-38s\t%-3d\n", "LEGUME", describedCrop[i].userLegume);
         printf ("*%-38s\t%-3d\n\n", "C3", describedCrop[i].userC3orC4);
-        printf ("(Press any key to continue ...)\n");
     }
     printf ("\n");
 }
@@ -102,10 +98,9 @@ void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldO
         printf ("*%-18s\t%-10s\n", "CROP", plantedCrops[i].cropName);
         printf ("*%-18s\t%-3d\n", "AUTO IRRIGATION", plantedCrops[i].usesAutoIrrigation);
         printf ("*%-18s\t%-3d\n", "AUTO FERTILIAZTION", plantedCrops[i].usesAutoFertilization);
-        printf ("*%-18s\t%-3d\n", "PLANT ID", plantedCrops[i].plantID);
+        printf ("*%-18s\t%-3d\n\n", "PLANT ID", plantedCrops[i].plantID);
     }
     printf ("\n");
-    printf ("(Press any key to continue ...)\n");
 
     printf ("\n*Forced harvest:\n");
     for (i = 0; i < NumHarvest; i++)
@@ -113,7 +108,7 @@ void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldO
         printf ("*%-18s\t%-3d\n", "YEAR", ForcedHarvest[i].opYear);
         printf ("*%-18s\t%-3d\n", "DOY", ForcedHarvest[i].opDay);
         printf ("*%-18s\t%-10s\n", "CROP", ForcedHarvest[i].cropName);
-        printf ("*%-18s\t%-3d\n", "PLANT ID", ForcedHarvest[i].plantID);
+        printf ("*%-18s\t%-3d\n\n", "PLANT ID", ForcedHarvest[i].plantID);
     }
     printf ("\n");
 
@@ -126,10 +121,9 @@ void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldO
         printf ("*%-18s\t%-128s\n", "TOOL", p->opToolName);
         printf ("*%-18s\t%-4.2lf\n", "DEPTH", p->opDepth);
         printf ("*%-18s\t%-4.2lf\n", "SOIL DISTURB RATIO", p->opSDR);
-        printf ("*%-18s\t%-4.2lf\n", "MIXING EFFICIENCY", p->opMixingEfficiency);
-        printf ("\n");
+        printf ("*%-18s\t%-4.2lf\n\n", "MIXING EFFICIENCY", p->opMixingEfficiency);
     }
-    printf ("(Press any key to continue ...)\n");
+    printf ("\n");
 
     printf ("*Fixed Irrigation:\n");
     for (i = 0; i < NumIrrigation; i++)
@@ -137,10 +131,9 @@ void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldO
         p = &FixedIrrigation[i];
         printf ("*%-18s\t%-3d\n", "YEAR", p->opYear);
         printf ("*%-18s\t%-3d\n", "DOY", p->opDay);
-        printf ("*%-18s\t%-4.2lf\n", "VOLUME", p->opVolume);
-        printf ("\n");
+        printf ("*%-18s\t%-4.2lf\n\n", "VOLUME", p->opVolume);
     }
-    printf ("(Press any key to continue ...)\n");
+    printf ("\n");
 
     printf ("*Fixed Fertilization:\n");
     for (i = 0; i < NumFertilization; i++)
@@ -163,10 +156,9 @@ void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldO
         printf ("*%-18s\t%-6.2lf\n", "P_CHARCOOAL", p->opP_Charcoal);
         printf ("*%-18s\t%-6.2lf\n", "P_INORGANIC", p->opP_Inorganic);
         printf ("*%-18s\t%-6.2lf\n", "K", p->opK);
-        printf ("*%-18s\t%-6.2lf\n", "S", p->opS);
-        printf ("\n");
+        printf ("*%-18s\t%-6.2lf\n\n", "S", p->opS);
     }
-    printf ("(Press any key to continue ...)\n");
+    printf ("\n");
 }
 
 void PrintWeather (WeatherStruct Weather)
@@ -176,5 +168,4 @@ void PrintWeather (WeatherStruct Weather)
     printf ("*%-16s\t%-6.2lf\n", "ALTITUDE", Weather.siteAltitude);
     printf ("*%-16s\t%-6.2lf\n", "SCREENING_HEIGHT", Weather.screeningHeight);
     printf ("\n");
-    printf ("(Press any key to continue ...)\n");
 }
