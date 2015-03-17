@@ -2,6 +2,16 @@
 
 void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project)
 {
+    /*
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * FixedFertilization   FieldOperationStruct*
+     * Tillage		    FieldOperationStruct*
+     * FixedIrrigation	    FieldOperationStruct*
+     */
     FieldOperationStruct *FixedFertilization;
     FieldOperationStruct *Tillage;
     FieldOperationStruct *FixedIrrigation;
@@ -48,12 +58,14 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
             printf ("DOY %3.3d %-20s %lf\n", doy, "Irrigation", FixedIrrigation->opVolume);
 
         Soil->irrigationVol += FixedIrrigation->opVolume;
+
         SelectNextOperation (CropManagement->numIrrigation, &CropManagement->irrigationIndex);
     }
 
     ComputeResidueCover (Residue);
 
     TillageFactorSettling (CropManagement->tillageFactor, Soil->totalLayers, Soil->waterContent, Soil->Porosity);
+
     SnowProcesses (Snow, y, doy, Weather, Residue->stanResidueTau, Crop->svRadiationInterception);
 
     Redistribution (y, doy, Weather->precipitation[y][doy - 1], Snow->snowFall, Snow->snowMelt, SimControl->hourlyInfiltration, Crop, Soil, Residue);
@@ -77,6 +89,13 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
      * Processes that only occur while a crop is growing are performed
      * Any needed harvests/forages have occured
      * Final Harvest date set once crop maturity achieved
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * forcedHarvest	    int
+     * i		    int
      */
     int             forcedHarvest = 0;
     int             i;
@@ -168,10 +187,8 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
 void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop)
 {
     /*
-     * new realized crop is created next crop in the rotation selected
-     * status set to growing
-     * harvestDate is reset to an unreachable date
-     * dateSet is set to false
+     * New realized crop is created next crop in the rotation selected status
+     * set to growing. HarvestDate is reset to an unreachable date.
      */
     SelectNextCrop (CropManagement);
 
@@ -181,14 +198,24 @@ void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropMana
 
     *nextSeedingYear = CropManagement->nextCropSeedingYear;
     *nextSeedingDate = CropManagement->nextCropSeedingDate;
+
     Crop->stageGrowth = PLANTING;
 }
 
 double FinalHarvestDate (int lastDoy, int d)
 {
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * harvestDate	    int		[return value]
+     */
     int             harvestDate;
 
     harvestDate = d + 10;
+
     if (harvestDate > lastDoy)
         harvestDate -= lastDoy;
 
@@ -200,6 +227,14 @@ int ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, i
     /*
      * Returns true if planted crop is within saftey margin of days of the
      * next crop to be planted
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * forced_maturity	    int
+     * margin		    int
+     * nextRotationYear	    int
      */
     int             forced_maturity = 0;
     int             margin = 10;
