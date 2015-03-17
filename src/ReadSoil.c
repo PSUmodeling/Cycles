@@ -2,6 +2,20 @@
 
 void ReadSoil (char *filename, SoilStruct *Soil)
 {
+    /*
+     * Read soil description file
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * soil_file	    FILE*	File pointer of soil description file
+     * fullname		    char*	Full file name of the soil description
+     *					  file
+     * cmdstr		    char[MAXSTRING]
+     *					Command string
+     * i		    int		Loop counter
+     */
     FILE           *soil_file;
     char           *fullname;
     char            cmdstr[MAXSTRING];
@@ -21,6 +35,7 @@ void ReadSoil (char *filename, SoilStruct *Soil)
         printf ("Read soil initialization file: %s.\n", filename);
 
     free (fullname);
+
     /* Read soil file */
     fgets (cmdstr, MAXSTRING, soil_file);
     sscanf (cmdstr, "%*s %lf", &Soil->Curve_Number);
