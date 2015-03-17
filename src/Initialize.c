@@ -2,7 +2,6 @@
 
 void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement, SnowStruct *Snow)
 {
-    int             i, j;
     /* Initialize weather variables */
     CalculateDerivedWeather (Weather, SimControl->totalYears);
 
@@ -15,18 +14,26 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
     /* Initialize soil carbon */
     InitializeSoilCarbon (SoilCarbon, Soil->totalLayers);
 
-    ///* Initialize crops */
+    /* Initialize crops */
     Crop->cropUniqueIdentifier = -1;
 
     /* Initialize tillage factors */
     CropManagement->tillageFactor = (double *)malloc (Soil->totalLayers * sizeof (double));
 
     /* Initialize snow structure */
-    Snow->Snow = 0.;
+    Snow->Snow = 0.0;
 }
 
 void FreeCyclesStruct (CyclesStruct Cycles, int total_years)
 {
+    /*
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * i		    int		Loop counter
+     */
     int             i;
 
     free (Cycles->CropManagement.tillageFactor);
