@@ -2,6 +2,23 @@
 
 void ReadCrop (char *filename, CropManagementStruct *CropManagement)
 {
+    /*
+     * Read crop description file
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * crop_file	    FILE*	File pointer of crop description file
+     * fullname		    char*	Full file name of the crop description
+     *					  file
+     * cmdstr		    char[MAXSTRING]
+     *					Command string
+     * optstr		    char[MAXSTRING]
+     *					Option argument string
+     * crop_counter	    int		Crop counter
+     * i		    int		Loop counter
+     */
     FILE           *crop_file;
     char           *fullname;
     char            cmdstr[MAXSTRING];
@@ -10,7 +27,6 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
     int             i;
 
     /* Open simulation control file */
-
     fullname = (char *)malloc ((strlen (filename) + 7) * sizeof (char));
     sprintf (fullname, "input/%s", filename);
     crop_file = fopen (fullname, "r");
@@ -28,7 +44,6 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
     /* Read crop description file */
     /* First count how many crop types are there in the description file */
     fgets (cmdstr, MAXSTRING, crop_file);
-
     while (!feof (crop_file))
     {
         if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
@@ -139,6 +154,7 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
                     CropManagement->describedCrop[i].userClippingTiming = CropManagement->describedCrop[i].userClippingTiming / 100.0;
                 else
                     CropManagement->describedCrop[i].userClippingTiming = 0.0;
+
                 CropManagement->describedCrop[i].calculatedFloweringTT = 0.0;
                 CropManagement->describedCrop[i].calculatedMaturityTT = 0.0;
                 CropManagement->describedCrop[i].calculatedSimAvgYield = 0.0;
