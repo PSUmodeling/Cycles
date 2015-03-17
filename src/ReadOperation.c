@@ -2,6 +2,33 @@
 
 void ReadOperation (char *filename, CropManagementStruct *CropManagement, int yearsInRotation)
 {
+    /*
+     * Read field operation description file
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * operation_file	    FILE*	File pointer of fiedl operation file
+     * fullname		    char*	Full file name of the field operation
+     *					  file
+     * cmdstr		    char[MAXSTRING]
+     *					Command string
+     * optstr		    char[MAXSTRING]
+     *					Option argument string
+     * tillage_counter	    int		Tillage operation counter
+     * planting_counter	    int		Planting operatin counter
+     * irrigation_counter   int		Fixed irrigation operation counter
+     * fertilization_counter
+     *			    int		Fixed fertilization operation counter
+     * auto_irrigation_counter
+     *			    int		Automatic irrigation operation counter
+     * harvest_counter	    int		Forced harvest operation counter
+     * tempyear		    int
+     * i		    int		Loop counter
+     * j		    int		Loop counter
+     * q		    FieldOperationStruct*
+     */
     FILE           *operation_file;
     char           *fullname;
     char            cmdstr[MAXSTRING];
@@ -47,7 +74,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                 if (tempyear <= yearsInRotation)
                     planting_counter++;
             }
-            if (strcasecmp ("FORCED_HARVEST", optstr) == 0)
+            else if (strcasecmp ("FORCED_HARVEST", optstr) == 0)
             {
                 strcpy (optstr, "\0");
                 fgets (cmdstr, MAXSTRING, operation_file);
@@ -80,7 +107,6 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
     }
 
     /* Allocate memories for field operation classes */
-
     CropManagement->totalCropsPerRotation = planting_counter;
     CropManagement->plantingOrder = (FieldOperationStruct *)malloc (planting_counter * sizeof (FieldOperationStruct));
 
@@ -325,9 +351,9 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                     sscanf (cmdstr, "%*s %lf", &q->opK);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opS);
-                    if (q->opC_Organic + q->opC_Charcoal + q->opN_Organic + q->opN_Charcoal + q->opN_NH4 + q->opN_NO3 + q->opP_Organic + q->opP_Charcoal + q->opP_Inorganic + q->opK + q->opS <= 1.)
+                    if (q->opC_Organic + q->opC_Charcoal + q->opN_Organic + q->opN_Charcoal + q->opN_NH4 + q->opN_NO3 + q->opP_Organic + q->opP_Charcoal + q->opP_Inorganic + q->opK + q->opS <= 1.0)
                     {
-                        q->opMass = q->opMass / 1000.;
+                        q->opMass = q->opMass / 1000.0;
                         i++;
                     }
                     else
