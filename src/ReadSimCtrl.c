@@ -2,6 +2,17 @@
 
 void ReadSimControl (char *project, SimControlStruct *SimControl)
 {
+    /*
+     * Read simulation control file
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * simctrl_file	    FILE*	File pointer of simulation control
+     *					  file
+     * filename		    char*	Simulation control file name
+     */
     FILE           *simctrl_file;
     char           *filename;
 
