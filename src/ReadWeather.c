@@ -2,6 +2,25 @@
 
 void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int total_years)
 {
+    /*
+     * Read weather file
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * weather_file	    FILE*	File pointer of weather file
+     * fullname		    char*	Full file name of the weather file
+     * cmdstr		    char[MAXSTRING]
+     *					Command string
+     * optstr		    char[MAXSTRING]
+     *					Option argument string
+     * y		    int		year counter
+     * doy		    int		Day of year counter
+     * temp_year	    int
+     * temp_doy		    int
+     * start_year_str	    char[5]
+     */
     FILE           *weather_file;
     char           *fullname;
     char            cmdstr[MAXSTRING];
@@ -11,7 +30,6 @@ void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int to
     char            start_year_str[5];
 
     /* Open simulation control file */
-
     fullname = (char *)malloc ((strlen (filename) + 7) * sizeof (char));
     sprintf (fullname, "input/%s", filename);
     weather_file = fopen (fullname, "r");
@@ -51,6 +69,7 @@ void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int to
     }
 
     sprintf (start_year_str, "%4.4d", start_year);
+
     /* Read weather file */
     fgets (cmdstr, MAXSTRING, weather_file);
 
