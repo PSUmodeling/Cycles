@@ -5,6 +5,25 @@ int             debug_mode;
 
 int main (int argc, char *argv[])
 {
+    /*
+     * Cycles main function
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * rotationYear	    int		Rotation year
+     * nextSeedingDate	    int
+     * nextSeedingYear	    int
+     * y		    int
+     * doy		    int
+     * i		    int
+     * c		    int
+     * begin_t		    time_t	Time Cycles simulation begins
+     * end_t		    time_t	Time Cycles simulation ends
+     * Cycles		    CyclesStruct
+     * project		    char*	Name of project
+     */
     int             rotationYear;
     int             nextSeedingDate;
     int             nextSeedingYear;
@@ -12,17 +31,15 @@ int main (int argc, char *argv[])
     int             doy;
     int             i;
     int             c;
-    time_t          begin, end;
+    time_t          begin_t, end_t;
 
     CyclesStruct    Cycles;     /* Model structure */
     char           *project;    /* Name of simulation */
 
-    //begin = clock ();
-    time (&begin);
+    time (&begin_t);
 
     Cycles = (CyclesStruct)malloc (sizeof (*Cycles));
 
-    system ("clear");
     printf ("\n\n");
     printf ("\t\t ######  ##    ##  ######  ##       ########  ######\n");
     printf ("\t\t##    ##  ##  ##  ##    ## ##       ##       ##    ##\n");
@@ -108,7 +125,8 @@ int main (int argc, char *argv[])
     Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop, &Cycles->CropManagement, &Cycles->Snow);
 
     /* Compute crop thermal time */
-    printf ("Compute crop thermal time.\n");
+    if (verbose_mode)
+	printf ("Compute crop thermal time.\n");
     ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->CropManagement, &Cycles->Weather);
 
     SelectCropInitialPosition (&Cycles->CropManagement);
@@ -132,7 +150,8 @@ int main (int argc, char *argv[])
 
     for (y = 0; y < Cycles->SimControl.totalYears; y++)
     {
-        printf ("Year %4d\n", y + 1);
+        printf ("Year %4d (%4d)\n", y + 1, Cycles->SimControl.simStartYear + y);
+
         if (rotationYear < Cycles->SimControl.yearsInRotation)
             rotationYear++;
         else
@@ -144,6 +163,7 @@ int main (int argc, char *argv[])
         SelectOperationYear (rotationYear, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, &Cycles->CropManagement.irrigationIndex);
         SelectOperationYear (rotationYear, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization, &Cycles->CropManagement.fertilizationIndex);
 
+	/* Initialize annual variables */
         for (i = 0; i < Cycles->Soil.totalLayers; i++)
         {
             Cycles->SoilCarbon.carbonMassInitial[i] = Cycles->Soil.SOC_Mass[i];
@@ -181,10 +201,9 @@ int main (int argc, char *argv[])
     free (project);
     free (Cycles);
 
-    //end = clock ();
-    time (&end);
+    time (&end_t);
 
-    printf ("\nSimulation time: %-d seconds.\n", (int)(end - begin));
+    printf ("\nSimulation time: %-d seconds.\n", (int)(end_t - begin_t));
 
     return (0);
 }
