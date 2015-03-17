@@ -8,10 +8,9 @@ void SelectNextOperation (int NumOperation, int *operationIndex)
     (*operationIndex)++;
     if (*operationIndex >= NumOperation)
         *operationIndex = -1;
-
 }
 
-void SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex)
+void SelectOperationYear (int rotationYear, const FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex)
 {
     if (NumOperation == 0)
     {
@@ -38,10 +37,16 @@ void SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation
     }
 }
 
-int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int operationIndex)
+int IsOperationToday (int rotationYear, int doy, const FieldOperationStruct *FieldOperation, int operationIndex)
 {
     /*
      * Returns a true or false indicating if an operation happens on that day
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * operation_today	    int		[return value]
      */
     int             operation_today;
 

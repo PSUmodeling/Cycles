@@ -49,8 +49,8 @@ void            ApplyFertilizer (FieldOperationStruct *fixedFertilization, SoilS
 
 /* FieldOperations.c */
 void            SelectNextOperation (int NumOperation, int *operationIndex);
-void            SelectOperationYear (int rotationYear, FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
-int             IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int operationIndex);
+void            SelectOperationYear (int rotationYear, const FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
+int             IsOperationToday (int rotationYear, int doy, const FieldOperationStruct *FieldOperation, int operationIndex);
 
 /* Initialize.c */
 void            Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement, SnowStruct *Snow);
