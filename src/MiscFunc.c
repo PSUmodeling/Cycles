@@ -19,7 +19,7 @@ int doy (int year, int month, int mday, int leap_year_mode)
     else
         leap = 0;
 
-    return days[leap][month] + mday;
+    return (days[leap][month] + mday);
 }
 
 void doy2date (int year, int jday, int *month, int *mday, int leap_year_mode)
@@ -45,13 +45,11 @@ void doy2date (int year, int jday, int *month, int *mday, int leap_year_mode)
             break;
         }
         else
-        {
-            i = i + 1;
-        }
+	    i++;
     }
 }
 
-int t2doy (time_t * rawtime)
+int t2doy (time_t *rawtime)
 {
     struct tm      *timestamp;
     int             jday;
