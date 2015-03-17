@@ -6,6 +6,7 @@ void            SelectCropInitialPosition (CropManagementStruct *CropManagement)
 void            SelectNextCrop (CropManagementStruct *CropManagement);
 void            PeekNextCrop (CropManagementStruct *CropManagement);
 void            NewCrop (CropStruct *Crop, const CropManagementStruct *CropManagement);
+void            AddCrop (CropStruct *Crop);
 void            KillCrop (CropStruct *Crop);
 
 /* CropHarvest.c */
@@ -93,7 +94,6 @@ void            ReadSoil (char *project, SoilStruct *Soil);
 void            ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years);
 
 /* RealizedCrop.c */
-void            AddCrop (CropStruct *Crop);
 
 /* ReferenceET.c */
 double          CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);

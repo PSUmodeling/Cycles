@@ -38,7 +38,6 @@ SRCS_ =	Cycles.c \
     SoilNitrogen.c \
     CropProcess.c \
     CropTranspiration.c \
-    RealizedCrop.c \
     Print.c \
     MiscFunc.c
 

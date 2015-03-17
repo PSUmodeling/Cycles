@@ -143,6 +143,24 @@ void NewCrop (CropStruct *Crop, const CropManagementStruct *CropManagement)
     Crop->stageGrowth = -1;
 }
 
+void AddCrop (CropStruct *Crop)
+{
+    Crop->rcForageYield = 0.0;
+    Crop->rcGrainYield = 0.0;
+    Crop->rcBiomass = 0.0;
+    Crop->rcRoot = 0.0;
+    Crop->rcResidueBiomass = 0.0;
+    Crop->rcCropTranspiration = 0.0;
+    Crop->rcCropTranspirationPotential = 0.0;
+    Crop->rcSoilWaterEvaporation = 0.0;
+    Crop->rcHarvestIndex = 0;
+    Crop->rcTotalNitrogen = 0.0;
+    Crop->rcRootNitrogen = 0.0;
+    Crop->rcGrainNitrogenYield = 0.0;
+    Crop->rcForageNitrogenYield = 0.0;
+    Crop->rcNitrogenCumulative = 0.0;
+}
+
 void KillCrop (CropStruct *Crop)
 {
     Crop->cropUniqueIdentifier = -1;
