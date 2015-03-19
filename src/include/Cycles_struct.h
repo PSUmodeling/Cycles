@@ -536,6 +536,13 @@ typedef struct WeatherStruct
     double          atmosphericPressure;
 } WeatherStruct;
 
+typedef struct PrintStruct
+{
+    char	    var_name[16];
+    char	    unit[16];
+    double	   *print_var;
+} PrintStruct;
+
 typedef struct CyclesStruct
 {
     SimControlStruct SimControl;
@@ -546,6 +553,9 @@ typedef struct CyclesStruct
     SoilCarbonStruct SoilCarbon;
     WeatherStruct   Weather;
     SnowStruct      Snow;
+
+    PrintStruct    *daily_output;
+    PrintStruct    *annual_output;
 }              *CyclesStruct;
 
 #endif
