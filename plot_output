@@ -14,7 +14,7 @@ if [ "$1" != "" ]; then
   echo "5 - Cumulative Nitrogen stress"
   echo "6 - Water use efficiency"
   echo "7 - Nitrogen concentration"
-  echo -n "Select (1--7) > "
+  echo -n "Select (1--7) ? "
   read var
 else
   echo "Please specify the project for plotting!"
@@ -49,10 +49,10 @@ elif [ $var = 7 ]; then
   col=102
   file="output/$1/season.dat"
   var="N Concentration (Mg Mg^{-1})"
+else
+  echo "Invalid option!"
+  exit 1
 fi
-
-echo $file
-echo $col
 
 gnuplot -e "filename='$file';col='$col';var='$var'" src/tool/plot_output.gpl
 
