@@ -16,7 +16,3 @@ else \
 	filename2 using 1: (col > 100 ? (col == 101 ? ($3/$10) : (col == 102 ? ($14/$5) : 0)) : column(col)) every ::2 with linespoints title title2 ls 2
     
 pause -1
-
-#set output "test.eps"
-#plot	"../../output/Lebanon/season.dat" using 1:8 title "1", \
-#	"../../output/UEPP/season.dat" using 1:8 title "2"

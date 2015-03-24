@@ -57,13 +57,9 @@ else
 fi
 
 if [ $n = 1 ]; then
-  gnuplot -e "n='$n';filename='output/$1/$file';col='$col';var='$var'" src/tool/plot_output.gpl
+  gnuplot -e "n='$n';filename='output/$1/$file';col='$col';var='$var'" src/tool/plot_output.gpi
 elif [ $n = 2 ]; then
-  gnuplot -e "n='$n';filename1='output/$1/$file';title1='$1';filename2='output/$2/$file';title2='$2';col='$col';var='$var'" src/tool/plot_output.gpl
+  gnuplot -e "n='$n';filename1='output/$1/$file';title1='$1';filename2='output/$2/$file';title2='$2';col='$col';var='$var'" src/tool/plot_output.gpi
 fi
 
 exit 0
-
-#gnuplot -e "filename2='output/$project/season.dat';title1='$project';title2='$2'" comparison.plg
-#gnuplot -e "filename1='output/$1/season.dat';filename2='output/$2/season.dat';title1='$1';title2='$2'" comparison.plg
-
