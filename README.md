@@ -33,4 +33,18 @@ The optional -d parameter will turn on the debug mode.
 
 INPUT FILES
 -----------
-The Cycles requires XX input files:
+The Cycles requires XX input files: `.crop`, `.ctrl`, `.operation`, `.soil`, and `.weather` files.
+
+PLOTTING TOOLS
+--------------
+The Cycles provides simple plotting tools to visualize model results using gnuplot script.
+To check the output variables of a project, please use the `preview` shell script:
+~~~shell
+$ ./preview <project name>
+~~~
+You can then choose the variable to be plotted.
+
+You can also compare the model results between two projects using `preview`:
+~~~shell
+$ ./preview <project name A> <project name B>
+~~~
