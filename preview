@@ -3,9 +3,11 @@
 # Bash script to plot Cycles outputs
 # Author: Yuning Shi (yshi.at.psu.edu)
 
-if [ "$2" != "" ]; then
+clear
+
+if [[ "$2" != "" ]]; then
   n=2
-elif [ "$1" != "" ]; then
+elif [[ "$1" != "" ]]; then
   n=1
 else
   echo "Please specify the project for plotting!"
@@ -23,42 +25,43 @@ echo "7 - Nitrogen concentration"
 echo -n "Select (1--7) ? "
 read var
 
-if [ $var = 1 ]; then
+if [[ $var = 1 ]]; then
   col=3
   file="season.dat"
   var="Total Biomass (Mg ha^{-1})"
-elif [ $var = 2 ]; then
+elif [[ $var = 2 ]]; then
   col=5
   file="season.dat"
   var="Grain Yield (Mg ha^{-1})"
-elif [ $var = 3 ]; then
+elif [[ $var = 3 ]]; then
   col=8
   file="season.dat"
   var="Havest Index (Mg Mg^{-1})"
-elif [ $var = 4 ]; then
+elif [[ $var = 4 ]]; then
   col=9
   file="season.dat"
   var="Potential Transpiration (mm)"
-elif [ $var = 5 ]; then
+elif [[ $var = 5 ]]; then
   col=16
   file="season.dat"
   var="Cumulative N stress (-)"
-elif [ $var = 6 ]; then
+elif [[ $var = 6 ]]; then
   col=101
   file="season.dat"
   var="Water Use Efficiency (-)"
-elif [ $var = 7 ]; then
+elif [[ $var = 7 ]]; then
   col=102
   file="season.dat"
   var="N Concentration (Mg Mg^{-1})"
 else
+  echo
   echo "Invalid option!"
   exit 1
 fi
 
-if [ $n = 1 ]; then
+if [[ $n = 1 ]]; then
   gnuplot -e "n='$n';filename='output/$1/$file';col='$col';var='$var'" src/tool/plot_output.gpi
-elif [ $n = 2 ]; then
+elif [[ $n = 2 ]]; then
   gnuplot -e "n='$n';filename1='output/$1/$file';title1='$1';filename2='output/$2/$file';title2='$2';col='$col';var='$var'" src/tool/plot_output.gpi
 fi
 
