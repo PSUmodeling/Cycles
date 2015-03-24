@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# Bash script to plot Cycles outputs
+# Author: Yuning Shi (yshi.at.psu.edu)
+
+if [ "$2" != "" ]; then
+  n=2
+elif [ "$1" != "" ]; then
+  n=1
+else
+  echo "Please specify the project for plotting!"
+  exit 1
+fi
+
+echo "Please select the variable to be plotted:"
+echo "1 - Total biomass"
+echo "2 - Grain yield"
+echo "3 - Harvest index"
+echo "4 - Potential transpiration"
+echo "5 - Cumulative Nitrogen stress"
+echo "6 - Water use efficiency"
+echo "7 - Nitrogen concentration"
+echo -n "Select (1--7) ? "
+read var
+
+if [ $var = 1 ]; then
+  col=3
+  file="season.dat"
+  var="Total Biomass (Mg ha^{-1})"
+elif [ $var = 2 ]; then
+  col=5
+  file="season.dat"
+  var="Grain Yield (Mg ha^{-1})"
+elif [ $var = 3 ]; then
+  col=8
+  file="season.dat"
+  var="Havest Index (Mg Mg^{-1})"
+elif [ $var = 4 ]; then
+  col=9
+  file="season.dat"
+  var="Potential Transpiration (mm)"
+elif [ $var = 5 ]; then
+  col=16
+  file="season.dat"
+  var="Cumulative N stress (-)"
+elif [ $var = 6 ]; then
+  col=101
+  file="season.dat"
+  var="Water Use Efficiency (-)"
+elif [ $var = 7 ]; then
+  col=102
+  file="season.dat"
+  var="N Concentration (Mg Mg^{-1})"
+else
+  echo "Invalid option!"
+  exit 1
+fi
+
+if [ $n = 1 ]; then
+  gnuplot -e "n='$n';filename='output/$1/$file';col='$col';var='$var'" src/tool/plot_output.gpl
+elif [ $n = 2 ]; then
+  gnuplot -e "n='$n';filename1='output/$1/$file';title1='$1';filename2='output/$2/$file';title2='$2';col='$col';var='$var'" src/tool/plot_output.gpl
+fi
+
+exit 0
+
+#gnuplot -e "filename2='output/$project/season.dat';title1='$project';title2='$2'" comparison.plg
+#gnuplot -e "filename1='output/$1/season.dat';filename2='output/$2/season.dat';title1='$1';title2='$2'" comparison.plg
+

@@ -1,10 +1,20 @@
-set terminal x11 enhanced
+set terminal x11 enhanced size 1000,750 
 set xdata time
-set size 1.0, 1.0
 set timefmt "%Y-%m-%d"
-set ylabel var
-unset key
-plot filename using 1: (col > 100 ? (col == 101 ? ($3/$10) : (col == 102 ? ($14/$5) : 0)) : column(col)) every ::2 with linespoints
+set ylabel var font ",20"
+set xlabel font ",20"
+set tics font ",13"
+set style line 1 lw 2 linecolor rgb "blue"
+set style line 2 lw 2 linecolor rgb "red"
+
+if (n==1) unset key
+
+if (n==1) \
+    plot filename using 1: (col > 100 ? (col == 101 ? ($3/$10) : (col == 102 ? ($14/$5) : 0)) : column(col)) every ::2 with linespoints ls 1; \
+else \
+    plot filename1 using 1: (col > 100 ? (col == 101 ? ($3/$10) : (col == 102 ? ($14/$5) : 0)) : column(col)) every ::2 with linespoints title title1 ls 1, \
+	filename2 using 1: (col > 100 ? (col == 101 ? ($3/$10) : (col == 102 ? ($14/$5) : 0)) : column(col)) every ::2 with linespoints title title2 ls 2
+    
 pause -1
 
 #set output "test.eps"
