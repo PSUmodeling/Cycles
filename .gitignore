@@ -1,10 +1,49 @@
-Cycles
-run-Cycles
+# Object files
 *.o
+*.ko
+*.obj
+*.elf
+
 */*.o
 */*/*.o
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+Cycles
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Temporary files
 src/vb/
 src/*~
 src/*/*~
-*.dat
+
+# Outputs
 output/*
+!output/Lebanon/*
+
+# Inputs
+input/*
+!input/Lebanon.*
+
+# Scripts
+*.pbs
