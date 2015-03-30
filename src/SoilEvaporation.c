@@ -2,19 +2,45 @@
 
 void Evaporation (SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, double ETo, double SnowCover)
 {
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * i		    int		Loop counter
+     * EvaporativeDemand    double	(mm/day)
+     * WC_AirDry	    double	(m3/m3)
+     * layerTop		    double[]	(m)
+     * layerBottom	    double[]	(m)
+     * layerMidpoint	    double	(m)
+     * WaterAvailable	    double	Layer available water for evaporation
+     *					  (mm)
+     * WaterSupply	    double	Layer water supply (mm)
+     * DepthLimitation	    double	Factor that limits evaporable water
+     *					  based on depth
+     * WaterContentLimitation
+     *			    double	Factor that limits evaporable water
+     *					  based on WC
+     * Evaporation	    double	Evaporation by layer (mm)
+     * WCi		    double[]	Copy initial soil water content
+     * EvapFlux		    double[]	Store flux from each layer to compute
+     *					  solute transport
+     */
     int             i;
-    double          EvaporativeDemand;  /* mm/day */
-    double          WC_AirDry;  /* m3/m3 */
-    double          layerTop[Soil->totalLayers];    /* m */
-    double          layerBottom[Soil->totalLayers]; /* m */
-    double          layerMidpoint;  /* m */
-    double          WaterAvailable; /* layer available water for evaporation, mm */
-    double          WaterSupply;    /* layer water supply, mm */
-    double          DepthLimitation;    /* factor that limits evaporable water based on depth */
-    double          WaterContentLimitation; /* factor that limits evaporable water based on WC */
-    double          Evaporation;    /* evaporation by layer, mm */
-    double          WCi[Soil->totalLayers]; /* copy initial soil water content */
-    double          EvapFlux[Soil->totalLayers];    /* store flux from each layer to compute solute transport */
+    double          EvaporativeDemand;
+    double          WC_AirDry;
+    double          layerTop[Soil->totalLayers];
+    double          layerBottom[Soil->totalLayers];
+    double          layerMidpoint;
+    double          WaterAvailable;
+    double          WaterSupply;
+    double          DepthLimitation;
+    double          WaterContentLimitation;
+    double          Evaporation;
+    double          WCi[Soil->totalLayers];
+    double          EvapFlux[Soil->totalLayers];
 
     for (i = 0; i < Soil->totalLayers; i++)
         WCi[i] = Soil->waterContent[i];
@@ -42,7 +68,7 @@ void Evaporation (SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, do
         }
 
         layerMidpoint = 0.5 * (layerTop[i] + layerBottom[i]);
-        WC_AirDry = Soil->PWP[i] / 3.0; /* an approximation to air dry */
+        WC_AirDry = Soil->PWP[i] / 3.0;	    /* An approximation to air dry */
         WaterAvailable = (Soil->waterContent[i] - WC_AirDry) * Soil->layerThickness[i] * WATER_DENSITY;
 
         DepthLimitation = 1.0 / 3.0 * (Depth_Limitation_To_Evaporation (layerTop[i]) + Depth_Limitation_To_Evaporation (layerMidpoint) + Depth_Limitation_To_Evaporation (layerBottom[i]));
