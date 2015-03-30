@@ -24,14 +24,27 @@ void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers)
 
 void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int last_doy, SoilStruct *Soil)
 {
-    double          waterPotential; /* J/kg */
-    double          airContent; /* m3/m3 */
-    double          factorMoisture; /* unitless */
-    double          factorTemperature;  /* unitless */
-    double          factorAeration = 1.0;   /* cumulative aeration factor accounts
-                                             * empirically for air content of layers above
-                                             * that considered in the calculations
-                                             */
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * waterPotential	    double	(J/kg)
+     * airContent	    double	(m3/m3)
+     * factorMoisture	    double	(-)
+     * factorTemperature    double	(-)
+     * factorAeration	    double	Cumulative aeration factor accounts
+     *					  empirically for air content of
+     *					  layers above that considered in the
+     *					  calculations (-)
+     * i		    int		Loop counter
+     */
+    double          waterPotential;
+    double          airContent;
+    double          factorMoisture;
+    double          factorTemperature;
+    double          factorAeration = 1.0;
     int             i;
 
     for (i = 0; i < Soil->totalLayers; i++)
@@ -53,8 +66,135 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int l
     }
 }
 
-void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor)
+void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor)
 {
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * i		    int		Loop counter
+     * socDecompositionRate double
+     * micrDecompositionRate
+     *			    double
+     * humifiedCarbon	    double
+     * humifiedNitrogen	    double
+     * abgdHumificationFactor
+     *			    double
+     * rootHumificationFactor
+     *			    double
+     * rhizHumificationFactor
+     *			    double
+     * manuHumificationFactor
+     *			    double
+     * micrHumificationFactor
+     *			    double
+     * soilMass		    double
+     * satSOCConc	    double	(g C/kg soil)
+     * humificationAdjustmentBySOC
+     *			    double
+     * decompositionAdjustmentBySOC
+     *			    double
+     * contactFractionFlat  double	Fraction of surface residues subject
+     *					  to decomposition
+     * contactFractionStan  double	Fraction of surface residues subject
+     *					  to decomposition
+     * xx0		    double	Residue mass decomposition (Mg/ha/day)
+     * xx1		    double	Residue mass decomposition (Mg/ha/day)
+     * xx2		    double	Residue mass decomposition (Mg/ha/day)
+     * xx3		    double	Residue mass decomposition (Mg/ha/day)
+     * xx4		    double	Residue mass decomposition (Mg/ha/day)
+     * xx5		    double	Residue mass decomposition (Mg/ha/day)
+     * xx6		    double	Manure carbon decomposition
+     *					  (Mg/ha/day)
+     * xx7		    double	Manure carbon decomposition
+     *					  (Mg/ha/day)
+     * xx8		    double	Organic matter decomposition
+     *					  (Mg/ha/day)
+     * xx9		    double	Microbial pool decomposition
+     *					  (Mg/ha/day)
+     * nm0		    double	Residue nitrogen net mineralization
+     * nm1		    double	Residue nitrogen net mineralization
+     * nm2		    double	Residue nitrogen net mineralization
+     * nm3		    double	Residue nitrogen net mineralization
+     * nm4		    double	Residue nitrogen net mineralization
+     * nm5		    double	Residue nitrogen net mineralization
+     * nm6		    double	Residue nitrogen net mineralization
+     * nm7		    double	Residue nitrogen net mineralization
+     * nm8		    double	Residue nitrogen net mineralization
+     * nm9		    double	Residue nitrogen net mineralization
+     * nr0		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nr1		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nr2		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nr3		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nr4		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nr5		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nr6		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nr7		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nr8		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nr9		    double	Residue nitrogen removed by
+     *					  decomposition from each residue pool
+     * nh0		    double	Residue nitrogen transfered to
+     *					  microbial biomass
+     * nh1		    double	Residue nitrogen transfered to
+     *					  microbial biomass
+     * nh2		    double	Residue nitrogen transfered to
+     *					  microbial biomass
+     * nh3		    double	Residue nitrogen transfered to
+     *					  microbial biomass
+     * nh4		    double	Residue nitrogen transfered to
+     *					  microbial biomass
+     * nh5		    double	Residue nitrogen transfered to
+     *					  microbial biomass
+     * nh6		    double	Residue nitrogen transfered to
+     *					  microbial biomass
+     * nh7		    double	Residue nitrogen transfered to
+     *					  microbial biomass
+     * nh8		    double	Residue nitrogen transfered to
+     *					  microbial biomass
+     * nh9		    double	Residue Nitrogen trasfered from
+     *					  microbial biomass to SOM
+     * aux1		    double
+     * aux2		    double
+     * aux3		    double
+     * xxPartialSum	    double
+     * NMineralization	    double
+     * NImmobilization	    double
+     * NNetMineralization   double
+     * stanCNRatio	    double	CN ratio of standing residues
+     * flatCNRatio	    double	CN ratio of flat residues
+     * abgdCNRatio	    double	CN ratio of aboveground residues (in
+     *					  each soil layer)
+     * rootCNRatio	    double	CN ratio of root residues
+     * rhizCNRatio	    double	CN ratio of rizhodeposition
+     * smanCNRatio	    double	CN ratio of surface manure
+     * manuCNRatio	    double	CN ratio of manure
+     * micrCNRatio	    double	CN ratio of microbial biomass
+     * somCNratio	    double	sman = surface manure, manu = manure
+     * CNnew		    double	CN of destiny pool (microbial biomass)
+     *					  calculated before each microbial
+     *					  attack; for microbial biomass it
+     *					  equals CN microbial biomass
+     * NMineralConcentration
+     *			    double	(g N-NO3/g soil)
+     * NMineral		    double	Sum of NO3 and NH4 (be careful with
+     *					  units
+     * NH4_Fraction	    double	Fraction of NH4 in the sum NO3 + NH4
+     * decompReductionFactor
+     *			    double
+     * NInitial		    double
+     * NFinal		    double
+     */
     int             i;
     double          socDecompositionRate;
     double          micrDecompositionRate;
@@ -66,49 +206,35 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
     double          manuHumificationFactor;
     double          micrHumificationFactor;
     double          soilMass;
-    double          satSOCConc; /* g C kg soil */
+    double          satSOCConc;
     double          humificationAdjustmentBySOC;
     double          decompositionAdjustmentBySOC;
-    double          contactFractionFlat;    /* fraction of surface residues
-                                             * subject to decomposition */
-    double          contactFractionStan;    /* fraction of surface residues
-                                             * subject to decomposition */
+    double          contactFractionFlat;
+    double          contactFractionStan;
 
-    /* residue mass decomposition (xx1-5), manure carbon decomposition (xx6-7)
-     * and organic matter and microbial pool decomposition (xx8 and xx9)
-     * (Mg/ha/day) */
     double          xx0, xx1, xx2, xx3, xx4, xx5, xx6, xx7, xx8, xx9;
-
-    /* residue nitrogen net mineralization */
     double          nm0, nm1, nm2, nm3, nm4, nm5, nm6, nm7, nm8, nm9;
-
-    /* residue nitrogen removed by decomposition from each residue pool */
     double          nr0, nr1, nr2, nr3, nr4, nr5, nr6, nr7, nr8, nr9;
-
-    /* residue nitrogen transfered to microbial biomass (nh1-8) or from
-     * microbial biomass to SOM */
     double          nh0, nh1, nh2, nh3, nh4, nh5, nh6, nh7, nh8, nh9;
+
     double          aux1, aux2, aux3;
     double          xxPartialSum;
     double          NMineralization;
     double          NImmobilization;
     double          NNetMineralization;
-    double          stanCNRatio;    /* CN ratio of standing residues */
-    double          flatCNRatio;    /* CN ratio of flat residues */
-    double          abgdCNRatio;    /* CN ratio of aboveground residues (in each soil
-                                     * layer) */
-    double          rootCNRatio;    /* CN ratio of root residues */
-    double          rhizCNRatio;    /* CN ratio of rizhodeposition */
-    double          smanCNRatio;    /* CN ratio of surface manure */
-    double          manuCNRatio;    /* CN ratio of manure */
-    double          micrCNRatio;    /* CN ratio of microbial biomass */
-    double          somCNratio; /* sman = surface manure, manu = manure */
-    double          CNnew;      /* CN of destiny pool (microbial biomass)
-                                 * calculated before each microbial attack; for
-                                 * microbial biomass it equal CN microbial biomass */
-    double          NMineralConcentration;  /* g N-NO3 g soil */
-    double          NMineral;   /* sum of NO3 and NH4 (be careful with units) */
-    double          NH4_Fraction;   /* fraction of NH4 in the sum NO3 + NH4 */
+    double          stanCNRatio;
+    double          flatCNRatio;
+    double          abgdCNRatio;
+    double          rootCNRatio; 
+    double          rhizCNRatio;
+    double          smanCNRatio;
+    double          manuCNRatio;
+    double          micrCNRatio;
+    double          somCNratio;
+    double          CNnew;
+    double          NMineralConcentration;
+    double          NMineral;
+    double          NH4_Fraction;
     double          decompReductionFactor;
     double          NInitial, NFinal;
 
@@ -157,15 +283,15 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         nr0 = nr1 = nr2 = nr3 = nr4 = nr5 = nr6 = nr7 = nr8 = nr9 = 0.0;
         nh0 = nh1 = nh2 = nh3 = nh4 = nh5 = nh6 = nh7 = nh8 = nh9 = 0.0;
 
-        /* compute auxiliar variables */
-        soilMass = 10000.0 * Soil->BD[i] * Soil->layerThickness[i]; /* 10000
-                                                                     * converts from Mg/m2 to Mg/ha */
+        /* Compute auxiliar variables */
+	/* 10000 converts from Mg/m2 to Mg/ha */
+        soilMass = 10000.0 * Soil->BD[i] * Soil->layerThickness[i];
         NMineral = Soil->NO3[i] + Soil->NH4[i];
         NH4_Fraction = Soil->NH4[i] / NMineral;
         NMineralConcentration = Soil->NO3[i] / soilMass;
         satSOCConc = 21.1 + 0.375 * Soil->Clay[i] * 100.0;
 
-        /* compute C/N ratios */
+        /* Compute C/N ratios */
         if (i == 0)
         {
             if (Residue->stanResidueMass > 0.0)
@@ -188,8 +314,8 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         if (Residue->manureC[i] > 0.0)
             manuCNRatio = Residue->manureC[i] / Residue->manureN[i];
 
-        /* humification */
-        /* humification reduction when C conc approaches saturation */
+        /* Humification */
+        /* Humification reduction when C conc approaches saturation */
         humificationAdjustmentBySOC = 1.0 - pow (Soil->SOC_Conc[i] / satSOCConc, SOC_HUMIFICATION_POWER);
         humificationAdjustmentBySOC = humificationAdjustmentBySOC > 0.0 ? humificationAdjustmentBySOC : 0.0;
 
@@ -198,11 +324,11 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         rhizHumificationFactor = sqrt (MaximumRhizHumificationFactor (Soil->Clay[i]) * humificationAdjustmentBySOC);
         manuHumificationFactor = sqrt (MaximumManuHumificationFactor (Soil->Clay[i]) * humificationAdjustmentBySOC);
 
-        /* temporarily assigned abgd humification, then checked if it can be
+        /* Temporarily assigned abgd humification, then checked if it can be
          * higher if manure is decomposing, but never lower */
         micrHumificationFactor = abgdHumificationFactor;
 
-        /* RESIDUE AND MANURE DECOMPOSITION */
+        /* Residue and manure decomposition */
         if (i == 0)
         {
             contactFractionStan = pow (Residue->stanResidueTau, exp (-1.5 / sqrt (1.0 - Residue->stanResidueTau)));
@@ -218,8 +344,8 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         xx5 = SoilCarbon->factorComposite[i] * MAXIMUM_RHIZO_DECOMPOSITION_RATE * Residue->residueRz[i];
         xx7 = SoilCarbon->factorComposite[i] * MAXIMUM_MANURE_DECOMPOSITION_RATE * Residue->manureC[i];
 
-        /* inorganic N limitation for decomposition */
-        /* if decomposition > 0 then compute net N mineralization and
+        /* Inorganic N limitation for decomposition */
+        /* If decomposition > 0 then compute net N mineralization and
          * accumulate negatives */
         if (i == 0)
         {
@@ -284,7 +410,7 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
 
         if (decompReductionFactor < 1.0)
         {
-            /* adjust actual decomposition as a function on mineral N
+            /* Adjust actual decomposition as a function on mineral N
              * availability */
             if (nm1 < 0.0)
                 xx1 *= decompReductionFactor;
@@ -301,7 +427,7 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
             if (nm7 < 0.0)
                 xx7 *= decompReductionFactor;
 
-            /* recalculate net mineralization only for pools with adjusted
+            /* Recalculate net mineralization only for pools with adjusted
              * decomposition */
             if (nm1 < 0.0)
             {
@@ -340,7 +466,7 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
             }
         }
 
-        /* calculate weighted C retention efficiency from microbial biomass to
+        /* Calculate weighted C retention efficiency from microbial biomass to
          * soil organic matter */
         xxPartialSum = xx1 + xx2 + xx3 + xx4 + xx5 + xx6 + xx7;
         if (xxPartialSum > 0.0)
@@ -358,10 +484,10 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
             nm8 = NitrogenMineralization (somCNratio, CNnew, micrHumificationFactor, xx8);
         }
 
-        /* microbial biomass decomposition and N mineralization */
+        /* Microbial biomass decomposition and N mineralization */
+	/* Acceleration of microbial * turnover if > 3% of SOC */
         aux1 = (Soil->MBC_Mass[i] / Soil->SOC_Mass[i]) / 0.03;
-        aux2 = exp (10.0 * (aux1 - 1.0));   /* acceleration of microbial
-                                             * turnover if > 3% of SOC */
+        aux2 = exp (10.0 * (aux1 - 1.0));
 
         /* Charlie's steady state km so that Cm = 0.03 of organic carbon
          * km = 0.97ks / 0.03(ex(1-Cs/Cx))1/2.
@@ -373,7 +499,7 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         if (xx9 > 0.0)
             nm9 = NitrogenMineralization (micrCNRatio, micrCNRatio, micrHumificationFactor, xx9);
 
-        /* calculate N removal from decomposing pools */
+        /* Calculate N removal from decomposing pools */
         if (xx1 > 0.0)
             nr1 = xx1 * FRACTION_CARBON_PLANT / abgdCNRatio;
         if (xx2 > 0.0)
@@ -393,7 +519,8 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         if (xx9 > 0.0)
             nr9 = xx9 / micrCNRatio;
 
-        /* calculate N contribution (N humification) to microbial pool of each decomposing pool */
+        /* Calculate N contribution (N humification) to microbial pool of each
+	 * decomposing pool */
         if (nm1 > 0.0)
             nh1 = nr1 - nm1;
         else
@@ -431,15 +558,15 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         else
             nh9 = nr9;
 
-        /* calculate total residue, manure, and som carbon tansfer to
+        /* Calculate total residue, manure, and som carbon tansfer to
          * microbial pool */
         humifiedCarbon = abgdHumificationFactor * FRACTION_CARBON_PLANT * (xx1 + xx2 + xx3) + rootHumificationFactor * FRACTION_CARBON_PLANT * xx4 + rhizHumificationFactor * FRACTION_CARBON_RIZHO * xx5 + manuHumificationFactor * (xx6 + xx7) + micrHumificationFactor * xx8;
 
-        /* calculate total residue, manure, and som nitrogen transfer to
+        /* Calculate total residue, manure, and som nitrogen transfer to
          * microbial pool */
         humifiedNitrogen = nh1 + nh2 + nh3 + nh4 + nh5 + nh6 + nh7 + nh8;
 
-        /* accumulate N mineralization, immobilization, and net
+        /* Accumulate N mineralization, immobilization, and net
          * mineralization */
         if (nm1 > 0.0)
             NMineralization += nm1;
@@ -480,7 +607,7 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
 
         NNetMineralization = NMineralization + NImmobilization;
 
-        /* UPDATE POOLS (N immobilization is negative) */
+        /* Update pools (N immobilization is negative) */
         Soil->NO3[i] += NImmobilization * (1.0 - NH4_Fraction);
         Soil->NH4[i] += NImmobilization * NH4_Fraction + NMineralization;
 
@@ -515,13 +642,13 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         Soil->MBN_Mass[i] += humifiedNitrogen + (-NImmobilization) - nr9;
         SoilCarbon->carbonRespired[i] = (1.0 - abgdHumificationFactor) * FRACTION_CARBON_PLANT * (xx1 + xx2 + xx3) + (1.0 - rootHumificationFactor) * FRACTION_CARBON_PLANT * xx4 + (1.0 - rhizHumificationFactor) * FRACTION_CARBON_RIZHO * xx5 + (1.0 - manuHumificationFactor) * (xx6 + xx7) + (1.0 - micrHumificationFactor) * (xx8 + xx9);
 
-        /* for OUTPUT */
+        /* For output */
         SoilCarbon->annualSoilCarbonDecompositionRate[i] += socDecompositionRate;
 
-        /* excludes residue and manure */
+        /* Excludes residue and manure */
         SoilCarbon->annualRespiredCarbonMass[i] += (1.0 - micrHumificationFactor) * (xx8 + xx9);
 
-        /* residue, roots and manure only */
+        /* Residue, roots and manure only */
         SoilCarbon->annualRespiredResidueCarbonMass[i] += SoilCarbon->carbonRespired[i] - (1.0 - micrHumificationFactor) * (xx8 + xx9);
         SoilCarbon->abgdCarbonInput[i] += FRACTION_CARBON_PLANT * (xx1 + xx2 + xx3);
         SoilCarbon->rootCarbonInput[i] += FRACTION_CARBON_PLANT * xx4;
@@ -540,22 +667,28 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
         /* C that goes to SOC and C that goes to microbial mass */
         Soil->C_Humified += xx9 * micrHumificationFactor + humifiedCarbon;
 
-        /* residues, roots and manure */
+        /* Residues, roots and manure */
         Soil->C_ResidueRespired += SoilCarbon->carbonRespired[i] - (1.0 - micrHumificationFactor) * (xx8 + xx9);
         Soil->C_SoilRespired += (1.0 - micrHumificationFactor) * (xx8 + xx9);
         NFinal += Soil->SON_Mass[i] + Soil->MBN_Mass[i] + Soil->NO3[i] + Soil->NH4[i] + Residue->residueAbgdN[i] + Residue->residueRtN[i] + Residue->residueRzN[i] + Residue->manureN[i];
-    }                           /* End soil layer loop */
+    }	/* End soil layer loop */
 
     NFinal += Residue->stanResidueN + Residue->flatResidueN + Residue->manureSurfaceN;
 
     if (fabs (NFinal - NInitial) > 0.00001)
-    {
         exit (1);
-    }
 }
 
 void StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass)
 {
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * i		    int		Loop counter
+     */
     int             i;
 
     for (i = 0; i < totalLayers; i++)
@@ -564,29 +697,59 @@ void StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *
 
 double Aeration (double AC)
 {
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * A1		    double
+     * A2		    double
+     */
     /* AC = soil air content */
     const double    A1 = 0.05;
-    const double    A2 = 4;
+    const double    A2 = 4.0;
 
     return (1.0 - 0.6 / (1.0 + pow (AC / A1, A2)));
 }
 
 double Moisture (double wp)
 {
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * M1		    double
+     * M2		    double
+     */
     /* WP = soil water potential */
-    double          M1 = -600.0;
-    double          M2 = 3.0;
+    const double    M1 = -600.0;
+    const double    M2 = 3.0;
 
     return (1.0 / (1.0 + pow (wp / M1, M2)));
 }
 
 double TemperatureFunction (double T)
 {
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * temp		    double
+     * Q		    double
+     * tMin		    double
+     * tOpt		    double
+     * tMax		    double
+     */
     double          temp;
     double          Q;
-    double          tMin = -5.0;
-    double          tOpt = 35.0;
-    double          tMax = 50.0;
+    const double    tMin = -5.0;
+    const double    tOpt = 35.0;
+    const double    tMax = 50.0;
 
     if (T < 0.0 || T > tMax)
         temp = 0.0;
@@ -598,7 +761,7 @@ double TemperatureFunction (double T)
             temp = 1.0;
     }
 
-    return temp;
+    return (temp);
 }
 
 double MaximumAbgdHumificationFactor (double clayFraction)
@@ -629,9 +792,16 @@ double NitrogenMineralization (double CNDecomposing, double CNnew, double humRat
 double CNdestiny (double NmineralConc, double CNdecomposing)
 {
 
-    /* returns CN ratio of newly formed microbial biomass based on CN or
+    /* Returns CN ratio of newly formed microbial biomass based on CN or
      * decomposing residue and N mineral in soil. Same function that for one-
-     * pool model, but applied to microbial biomass */
+     * pool model, but applied to microbial biomass
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * YY2		    double
+     */
     double          YY2;
 
     NmineralConc = NmineralConc + 0.0000001;
@@ -642,7 +812,16 @@ double CNdestiny (double NmineralConc, double CNdecomposing)
 
 double PoolNitrogenMineralization (double NmineralConc, double CNRatioDecomposing, double humRate, double decomposedMass, double carbonConc)
 {
-    double          newCN;      /* CN of new organic matter (humified residue) */
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * newCN		    double      CN of new organic matter (humified
+     *					  residue)
+     */
+    double          newCN;
 
     decomposedMass *= carbonConc;
     newCN = Function_CNnew (NmineralConc, CNRatioDecomposing);
@@ -653,8 +832,15 @@ double PoolNitrogenMineralization (double NmineralConc, double CNRatioDecomposin
 double Function_CNnew (double NmineralConc, double CNDecomposingPool)
 {
 
-    /* returns CN ratio of newly formed organic matter based on CN or
-     * decomposing residue and N mineral in soil */
+    /* Returns CN ratio of newly formed organic matter based on CN or
+     * decomposing residue and N mineral in soil
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * YY2		    double
+     */
     double          YY2;
 
     NmineralConc = NmineralConc + 0.0000001;

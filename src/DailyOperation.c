@@ -78,7 +78,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
 
     ComputeFactorComposite (SoilCarbon, doy, y, Weather->lastDoy[y], Soil);
 
-    ComputeSoilCarbonBalance (SoilCarbon, y, Residue, Soil, CropManagement->tillageFactor);
+    ComputeSoilCarbonBalanceMB (SoilCarbon, y, Residue, Soil, CropManagement->tillageFactor);
 
     NitrogenTransformation (y, doy, Soil, Crop, Residue, Weather, SoilCarbon);
 }
