@@ -2,7 +2,22 @@
 
 void SnowProcesses (SnowStruct *Snow, int y, int doy, WeatherStruct *Weather, double TauStandingRes, double CropInterception)
 {
-    double          PP, Tavg, Tx, Tn;
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * PP		    double	Daily precipitation
+     * Tavg		    double	Daily average air temperature
+     * Tx		    double	Daily maximum air temperature
+     * Tn		    double	Daily minimum air temperature
+     */
+    double          PP;
+    double	    Tavg;
+    double	    Tx
+    double	    Tn;
 
     Snow->snowFall = 0.0;
     Snow->snowMelt = 0.0;
@@ -30,12 +45,21 @@ void CalculateSnowFall (SnowStruct *Snow, double Tavg, double PP)
     if (PP > 0.0 && Tavg < THRESHOLD_TEMPERATURE_SNOWFALL)
     {
         Snow->snowFall = PP;
-        Snow->Snow = Snow->Snow + Snow->snowFall;
+        Snow->Snow += Snow->snowFall;
     }
 }
 
 void CalculateSnowMelt (SnowStruct *Snow, double Tavg, double Tx, double Tn)
 {
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * TTmelt		    double
+     */
     double          TTmelt;
 
     if (Tn > THRESHOLD_TEMPERATURE_SNOWMELT)
@@ -53,6 +77,15 @@ void CalculateSnowMelt (SnowStruct *Snow, double Tavg, double Tx, double Tn)
 
 void CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRes, double CropInterception, double ETo)
 {
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * evaporativeDemand    double
+     */
     double          evaporativeDemand;
 
     evaporativeDemand = TauStandingRes * (1.0 - CropInterception) * ETo;
@@ -67,6 +100,15 @@ void CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRes, double C
 
 double CalculateSnowCover (SnowStruct *Snow)
 {
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * snow_cover	    double	[return value]
+     */
     double          snow_cover;
 
     snow_cover = (1.0 - exp (-0.43 * pow (Snow->Snow, 1.14)));
