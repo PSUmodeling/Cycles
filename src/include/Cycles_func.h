@@ -127,6 +127,7 @@ double          BulkDensity (double Clay, double Sand, double OM);
 void            InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers);
 void            ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int last_doy, SoilStruct *Soil);
 void            ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor);
+void            ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor);
 void            StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass);
 double          Aeration (double AC);
 double          Moisture (double wp);
