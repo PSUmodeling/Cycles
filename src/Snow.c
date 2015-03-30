@@ -16,7 +16,7 @@ void SnowProcesses (SnowStruct *Snow, int y, int doy, WeatherStruct *Weather, do
      */
     double          PP;
     double	    Tavg;
-    double	    Tx
+    double	    Tx;
     double	    Tn;
 
     Snow->snowFall = 0.0;

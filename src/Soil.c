@@ -2,13 +2,26 @@
 
 void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl)
 {
-    //double          WC33;       /* volumetric water content at 33 J/kg */
-    //double          WC1500;     /* volumetric water contetn at 1500 J/kg */
-    double          sb;         /* Saxton's b coefficient  */
-    double          sAP;        /* Saxton's air entry potential */
-    double          sBD;        /* Saxton's bulk density */
-    double          s33;        /* Saxton's volumetric WC at 33 J/kg */
-    double          s1500;      /* Saxton's volumetric WC at 1500 J/kg */
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * sb		    double	Saxton's b coefficient
+     * sAP		    double	Saxton's air entry potential
+     * sBD		    double	Saxton's bulk density
+     * s33		    double	Saxton's volumetric WC at 33 J/kg
+     * s1500		    double	Saxton's volumetric WC at 1500 J/kg
+     * rr		    double
+     * i		    int		Loop counter
+     */
+    double          sb;
+    double          sAP;
+    double          sBD;
+    double          s33;
+    double          s1500;
     double          rr;
 
     int             i;
@@ -17,7 +30,6 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     Soil->nodeDepth = (double *)malloc ((Soil->totalLayers + 1) * sizeof (double));
     Soil->cumulativeDepth = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->waterContent = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    //Soil->soilTemperature = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->Porosity = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->PAW = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->FC_WaterPotential = (double *)malloc ((Soil->totalLayers) * sizeof (double));
@@ -62,9 +74,10 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         s33 = VolumetricWCAt33Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
         s1500 = VolumetricWCAt1500Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
         sb = (log (1500.0) - log (33.0)) / (log (s33) - log (s1500));
-        sAP = -33. * pow (s33 / (1.0 - sBD / 2.65), sb);
+        sAP = -33.0 * pow (s33 / (1.0 - sBD / 2.65), sb);
 
-        if (Soil->BD[i] != BADVAL)  /* Buld Density switch */
+	/* Buld Density switch */
+        if ((int)Soil->BD[i] != (int)BADVAL)  
             Soil->airEntryPotential[i] = sAP * pow (Soil->BD[i] / sBD, 0.67 * sb);
         else
         {
@@ -76,7 +89,8 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         Soil->B_Value[i] = sb;
         Soil->M_Value[i] = 2.0 * Soil->B_Value[i] + 3.0;
 
-        if (Soil->FC[i] == BADVAL)  /* Field Capacity switch */
+	/* Field Capacity switch */
+        if ((int)Soil->FC[i] == (int)BADVAL)
         {
             Soil->FC_WaterPotential[i] = -0.35088 * Soil->Clay[i] * 100.0 - 28.947;
             Soil->FC[i] = SoilWaterContent (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->FC_WaterPotential[i]);
@@ -84,7 +98,8 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         else
             Soil->FC_WaterPotential[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->FC[i]);
 
-        if (Soil->PWP[i] == BADVAL) /* Permanent Wilting Point switch */
+	/* Permanent Wilting Point switch */
+        if ((int)Soil->PWP[i] == (int)BADVAL)
             Soil->PWP[i] = SoilWaterContent (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], -1500.0);
 
         if (Soil->PWP[i] >= Soil->FC[i])
@@ -104,15 +119,17 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         }
     }
 
-    /* initialize variables depending on previous loop */
+    /* Initialize variables depending on previous loop */
     for (i = 0; i < Soil->totalLayers; i++)
     {
         Soil->SOC_Conc[i] = Soil->IOM[i] * 10.0 * 0.58;
         Soil->SOC_Mass[i] = Soil->IOM[i] / 100.0 * 0.58 * Soil->layerThickness[i] * Soil->BD[i] * 10000.0;
-        Soil->SON_Mass[i] = Soil->SOC_Mass[i] / 10.0;   /* Initializes with CN ratio = 10 */
-        Soil->MBC_Mass[i] = 0.03 * Soil->SOC_Mass[i];   /* Initializes as 3% of SOC_Mass
-                                                         * but "added" C */
-        Soil->MBN_Mass[i] = Soil->MBC_Mass[i] / 10.0;   /* Initializes with CN ratio = 10 */
+	/* Initializes with CN ratio = 10 */
+        Soil->SON_Mass[i] = Soil->SOC_Mass[i] / 10.0;
+	/* Initializes as 3% of SOC_Mass but "added" C */
+        Soil->MBC_Mass[i] = 0.03 * Soil->SOC_Mass[i];
+	/* Initializes with CN ratio = 10 */
+        Soil->MBN_Mass[i] = Soil->MBC_Mass[i] / 10.0;
         Soil->PAW[i] = Soil->FC[i] - Soil->PWP[i];
         Soil->waterContent[i] = (Soil->FC[i] + Soil->PWP[i]) / 2.0;
     }
@@ -208,6 +225,15 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
 
 double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campbell_b, double WC)
 {
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * swp		    double	Soil water potential [return value]
+     */
     double          swp;
 
     swp = AirEntryPot * pow (WC / SaturationWC, -Campbell_b);
@@ -218,10 +244,19 @@ double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campb
 double VolumetricWCAt33Jkg (double Clay, double Sand, double OM)
 {
     /*
+     * Calculate volumetric water content at 33 Jkg
      * Saxton and Rawls 2006 SSSAJ 70:1569-1578 Eq 2 (r2 = 0.63)
+     * Clay and sand fractional, OM as %
+     * (original paper says % for everything, results make no sense)
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * x1		    double
+     * vwc		    double	Volumetric soil water content [return
+     *					  value]
      */
-    /* Clay and sand fractional, OM as %
-     * (original paper says % for everything, results make no sense) */
     double          x1;
     double          vwc;
 
@@ -234,10 +269,19 @@ double VolumetricWCAt33Jkg (double Clay, double Sand, double OM)
 double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM)
 {
     /*
+     * Calculate volumetric water content at 33 Jkg
      * Saxton and Rawls 2006 SSSAJ 70:1569-1578 Eq 1 (r2 = 0.86)
+     * Clay and sand fractional, OM as %
+     * (original paper says % for everything, results make no sense)
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * x1		    double
+     * vwc		    double	Volumetric soil water content [return
+     *					  value]
      */
-    /* Clay and sand fractional, OM as %
-     * (original paper says % for everything, results make no sense) */
     double          x1;
     double          vwc;
 
@@ -249,6 +293,14 @@ double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM)
 
 double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential)
 {
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * swc		    double	Soil water content [return value]
+     */
     double          swc;
 
     swc = SaturationWC * pow (Water_Potential / AirEntryPot, -1.0 / Campbell_b);
@@ -261,13 +313,22 @@ double BulkDensity (double Clay, double Sand, double OM)
     /*
      * Saxton and Rawls 2006 SSSAJ 70:1569-1578 Eq 6,5 (r2 = 0.29)
      * really poor fit
-     */
-    /* Clay and sand fractional, OM as %
+     * Clay and sand fractional, OM as %
      * (original paper says % for everything, results make no sense)
      * Note: X2 is Eq 3, supposedly representing moisture from FC to
      * saturation;
-     * however, porosity is further adjusted by sand, an inconsistency */
-
+     * however, porosity is further adjusted by sand, an inconsistency
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * x1		    double
+     * x2		    double
+     * FC		    double
+     * Porosity		    double
+     * bd		    double	Bulk density [return value]
+     */
     double          x1;
     double          x2;
     double          FC;
