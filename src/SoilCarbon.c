@@ -20,6 +20,9 @@ void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers)
     SoilCarbon->annualRespiredCarbonMass = (double *)calloc (totalLayers, sizeof (double));
     SoilCarbon->annualRespiredResidueCarbonMass = (double *)calloc (totalLayers, sizeof (double));
     SoilCarbon->annualHumificationCoefficient = (double *)calloc (totalLayers, sizeof (double));
+    SoilCarbon->annualNmineralization = (double *)calloc (totalLayers, sizeof (double));
+    SoilCarbon->annualNImmobilization = (double *)calloc (totalLayers, sizeof (double));
+    SoilCarbon->annualNNetMineralization = (double *)calloc (totalLayers, sizeof (double));
 }
 
 void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int last_doy, SoilStruct *Soil)
@@ -670,10 +673,23 @@ void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStr
         /* Residues, roots and manure */
         Soil->C_ResidueRespired += SoilCarbon->carbonRespired[i] - (1.0 - micrHumificationFactor) * (xx8 + xx9);
         Soil->C_SoilRespired += (1.0 - micrHumificationFactor) * (xx8 + xx9);
+
+        SoilCarbon->annualNmineralization[i] += NMineralization * 1000.0;
+        SoilCarbon->annualNImmobilization[i] += NImmobilization * 1000.0;
+        SoilCarbon->annualNNetMineralization[i] += NNetMineralization * 1000.0;
+
         NFinal += Soil->SON_Mass[i] + Soil->MBN_Mass[i] + Soil->NO3[i] + Soil->NH4[i] + Residue->residueAbgdN[i] + Residue->residueRtN[i] + Residue->residueRzN[i] + Residue->manureN[i];
     }	/* End soil layer loop */
 
     NFinal += Residue->stanResidueN + Residue->flatResidueN + Residue->manureSurfaceN;
+
+    SoilCarbon->annualAmmoniumNitrification += Soil->NH4_Nitrification * 1000.0;
+    SoilCarbon->annualNitrousOxidefromNitrification += Soil->N2O_Nitrification * 1000.0;
+    SoilCarbon->annualAmmoniaVolatilization += Soil->NH4_Volatilization * 1000.0;
+    SoilCarbon->annualNO3Denitrification += Soil->NO3_Denitrification * 1000.0;
+    SoilCarbon->annualNitrousOxidefromDenitrification += Soil->N2O_Denitrification * 1000.0;
+    SoilCarbon->annualNitrateLeaching += Soil->NO3Leaching * 1000.0;
+    SoilCarbon->annualAmmoniumLeaching += Soil->NH4Leaching * 1000.0;
 
     if (fabs (NFinal - NInitial) > 0.00001)
         exit (1);

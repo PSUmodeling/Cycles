@@ -356,6 +356,9 @@ typedef struct CropStruct
     double          rcGrainNitrogenYield;
     double          rcForageNitrogenYield;
     double          rcNitrogenCumulative;
+    double          rcNitrogenInHarvest;
+    double          rcNitrogenInResidue;
+    double          rcNitrogenForageConc;
     //double          totalRealizedCrops;
 } CropStruct;
 
@@ -514,6 +517,16 @@ typedef struct SoilCarbonStruct
     double         *annualRespiredCarbonMass;
     double         *annualRespiredResidueCarbonMass;
     double         *annualHumificationCoefficient;
+    double         *annualNmineralization;
+    double         *annualNImmobilization;
+    double         *annualNNetMineralization;
+    double          annualAmmoniumNitrification;
+    double          annualNitrousOxidefromNitrification;
+    double          annualAmmoniaVolatilization;
+    double          annualNO3Denitrification;
+    double          annualNitrousOxidefromDenitrification;
+    double          annualNitrateLeaching;
+    double          annualAmmoniumLeaching;
 } SoilCarbonStruct;
 
 typedef struct WeatherStruct
@@ -543,6 +556,29 @@ typedef struct PrintStruct
     double	   *print_var;
 } PrintStruct;
 
+typedef struct SummaryStruct
+{
+    double          abgd_c_input;
+    double          root_c_input;
+    double          residue_biomass;
+    double          produced_root;
+    double          residue_resp;
+    double          hum;
+    double          soil_resp;
+    double          n_mineralization;
+    double          n_immobilization;
+    double          n_net_mineralization;
+    double          nh4_nitrification;
+    double          n2o_from_nitrification;
+    double          nh3_volatilization;
+    double          no3_denirification;
+    double          n2o_from_denitrification;
+    double          no3_leaching;
+    double          nh4_leaching;
+    double          initial_soc;
+    double          final_soc;
+} SummaryStruct;
+
 typedef struct CyclesStruct
 {
     SimControlStruct SimControl;
@@ -553,6 +589,7 @@ typedef struct CyclesStruct
     SoilCarbonStruct SoilCarbon;
     WeatherStruct   Weather;
     SnowStruct      Snow;
+    SummaryStruct   Summary;
 
     PrintStruct    *daily_output;
     PrintStruct    *annual_output;

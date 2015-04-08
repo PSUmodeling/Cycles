@@ -77,6 +77,8 @@ void            PrintDailyOutput (int y, int doy, int start_year, const WeatherS
 void            PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project);
 void            PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const char *project);
 void            PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, char *project);
+void            StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, int totalLayers, int y);
+void            PrintSummary (const SummaryStruct *Summary, int totalYears);
 
 /* ReadCrop.c */
 void            ReadCrop (char *project, CropManagementStruct *CropManagement);

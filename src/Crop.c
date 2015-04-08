@@ -159,6 +159,10 @@ void AddCrop (CropStruct *Crop)
     Crop->rcGrainNitrogenYield = 0.0;
     Crop->rcForageNitrogenYield = 0.0;
     Crop->rcNitrogenCumulative = 0.0;
+    Crop->rcNitrogenInHarvest = 0.0;
+    Crop->rcNitrogenInResidue = 0.0;
+    Crop->rcNitrogenForageConc = 0.0;
+
 }
 
 void KillCrop (CropStruct *Crop)
@@ -255,4 +259,7 @@ void KillCrop (CropStruct *Crop)
     Crop->rcGrainNitrogenYield = 0.0;
     Crop->rcForageNitrogenYield = 0.0;
     Crop->rcNitrogenCumulative = 0.0;
+    Crop->rcNitrogenInHarvest = 0.0;
+    Crop->rcNitrogenInResidue = 0.0;
+    Crop->rcNitrogenForageConc = 0.0;
 }

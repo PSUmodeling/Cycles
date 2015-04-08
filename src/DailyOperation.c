@@ -237,7 +237,7 @@ int ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, i
      * nextRotationYear	    int
      */
     int             forced_maturity = 0;
-    int             margin = 10;
+    int             margin = 9;
     int             nextRotationYear;
 
     nextRotationYear = rotationYear;

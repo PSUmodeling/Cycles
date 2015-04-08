@@ -148,6 +148,8 @@ int main (int argc, char *argv[])
 
     printf ("\nSimulation running ...\n");
 
+    Cycles->Summary = (SummaryStruct) {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
     for (y = 0; y < Cycles->SimControl.totalYears; y++)
     {
         printf ("Year %4d (%4d)\n", y + 1, Cycles->SimControl.simStartYear + y);
@@ -170,15 +172,27 @@ int main (int argc, char *argv[])
             Cycles->SoilCarbon.carbonMassFinal[i] = 0.0;
             Cycles->SoilCarbon.annualHumifiedCarbonMass[i] = 0.0;
             Cycles->SoilCarbon.annualRespiredCarbonMass[i] = 0.0;
-
+            Cycles->SoilCarbon.annualRespiredResidueCarbonMass[i] = 0.0;
             Cycles->SoilCarbon.annualSoilCarbonDecompositionRate[i] = 0.0;
             Cycles->SoilCarbon.abgdBiomassInput[i] = 0.0;
             Cycles->SoilCarbon.rootBiomassInput[i] = 0.0;
             Cycles->SoilCarbon.rhizBiomassInput[i] = 0.0;
             Cycles->SoilCarbon.abgdCarbonInput[i] = 0.0;
             Cycles->SoilCarbon.rootCarbonInput[i] = 0.0;
+            Cycles->SoilCarbon.annualNmineralization[i] = 0.0;
+            Cycles->SoilCarbon.annualNImmobilization[i] = 0.0;
+            Cycles->SoilCarbon.annualNNetMineralization[i] = 0.0;
+            Cycles->SoilCarbon.annualAmmoniumNitrification = 0.0;
+            Cycles->SoilCarbon.annualNitrousOxidefromNitrification = 0.0;
+            Cycles->SoilCarbon.annualAmmoniaVolatilization = 0.0;
+            Cycles->SoilCarbon.annualNO3Denitrification = 0.0;
+            Cycles->SoilCarbon.annualNitrousOxidefromDenitrification = 0.0;
+            Cycles->SoilCarbon.annualNitrateLeaching = 0.0;
+            Cycles->SoilCarbon.annualAmmoniumLeaching = 0.0;
+
             Cycles->Residue.yearResidueBiomass = 0.0;
             Cycles->Residue.yearRootBiomass = 0.0;
+            Cycles->Residue.yearRhizodepositionBiomass = 0.0;
         }
 
         /* Daily operations */
@@ -195,7 +209,10 @@ int main (int argc, char *argv[])
 
         PrintAnnualOutput (y, Cycles->SimControl.simStartYear, &Cycles->Soil, &Cycles->SoilCarbon, project);
         PrintCarbonEvolution (y, Cycles->SimControl.simStartYear, Cycles->Soil.totalLayers, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Residue, project);
+        StoreSummary (&Cycles->Summary, &Cycles->SoilCarbon, &Cycles->Residue, Cycles->Soil.totalLayers, y);
     }
+
+    PrintSummary (&Cycles->Summary, Cycles->SimControl.totalYears);
 
     FreeCyclesStruct (Cycles, Cycles->SimControl.totalYears);
     free (project);

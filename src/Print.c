@@ -16,8 +16,9 @@ void InitializeOutput (char *project, int layers)
     /* Initialize season output files */
     sprintf (filename, "output/%s/season.dat", project);
     output_file = fopen (filename, "w");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "CROP", "TOTAL BIOMASS", "ROOT BIOMASS", "GRAIN YIELD", "FORAGE YIELD", "AG RESIDUE", "HARVEST INDEX", "POTENTIAL TR", "ACTUAL TR", "SOIL EVAP", "TOTAL N", "ROOT N", "GRAIN N", "FORAGE N", "CUM. N STRESS", "GRAIN N YIELD", "FORAGE N YIELD");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/Mg", "mm", "mm", "mm", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "-");
+    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n",
+        "DATE", "CROP", "TOTAL BIOMASS", "ROOT BIOMASS", "GRAIN YIELD", "FORAGE YIELD", "AG RESIDUE", "HARVEST INDEX", "POTENTIAL TR", "ACTUAL TR", "SOIL EVAP", "TOTAL N", "ROOT N", "GRAIN N", "FORAGE N", "CUM. N STRESS", "N IN HARVEST", "N IN RESIDUE", "N CONCN FORAGE");
+    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/Mg", "mm", "mm", "mm", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "-", "kg/ha", "kg/ha", "%");
     fflush (output_file);
     fclose (output_file);
 
@@ -52,7 +53,7 @@ void InitializeOutput (char *project, int layers)
 
     sprintf (filename, "output/%s/residue.dat", project);
     output_file = fopen (filename, "w");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "FRAC INTERCEP", "AG RES BIOMASS", "BG RES BIOMASS", "ROOT RES BIOMASS", "SFC MANURE C", "AG RES N", "BG RES N", "ROOT RES N", "SFC MANURE N", "STD RES MOIST", "FLAT RES MOIST");
+    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "FRAC INTERCEP", "AG RES BIOMASS", "BG RES BIOMASS", "ROOT RES BIOMAS", "SFC MANURE C", "AG RES N", "BG RES N", "ROOT RES N", "SFC MANURE N", "STD RES MOIST", "FLAT RES MOIST");
     fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "kg/ha", "kg/ha", "kg/ha", "Mg/ha", "kg/kg", "kg/kg");
     fflush (output_file);
     fclose (output_file);
@@ -158,14 +159,14 @@ void InitializeOutput (char *project, int layers)
     for (i = 0; i < layers; i++)
         fprintf (output_file, "\tLAYER %-9d", i + 1);
     fprintf (output_file, "\t%-15s\t%-15s", "ABOVE 30 cm", "BELOW 30 cm");
-    fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "RES BIOMASS", "ROOT BIOMASS", "RES BIOMASS IN", "ROOT BIOMASS IN", "INIT PROF C", "RES C INPUT", "ROOT C INPUT", "HUMIFIED C", "RESPIRED C", "FINAL PROF C", "YEAR C DIFF");
+    fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "RES BIOMASS", "ROOT BIOMASS", "RES BIOMASS IN", "ROOT BIOMASS IN", "INIT PROF C", "RES C INPUT", "ROOT C INPUT", "HUMIFIED C", "RESPIRED C", "FINAL PROF C", "YEAR C DIFF", "N GROSS MINERAL", "N IMMOBIL", "N NET MINERAL", "NH4 NITRIFICAT", "N2O FROM NITRIF", "NH3 VOLATIL", "NO3 DENITRIF", "N2O FROM DENIT", "NO3 LEACHING", "NH4 LEACHING");
 
     fprintf (output_file, "%-7s\t%-15s", "YYYY", "Mg C/ha");
     for (i = 0; i < layers; i++)
         fprintf (output_file, "\t%-15s", "Mg C/ha");
     fprintf (output_file, "\t%-15s\t%-15s", "Mg C/ha", "Mg C/ha");
 
-    fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s", "Mg/year", "Mg/year", "Mg/year", "Mg/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year");
+    fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s", "Mg/year", "Mg/year", "Mg/year", "Mg/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year");
     fprintf (output_file, "\n");
     fflush (output_file);
 
@@ -460,8 +461,9 @@ void PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Wea
     fprintf (output_file, "%-15.4lf\t", Crop->rcGrainNitrogenYield);
     fprintf (output_file, "%-15.3lf\t", Crop->rcForageNitrogenYield);
     fprintf (output_file, "%-15.3lf\t", Crop->rcNitrogenCumulative);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcGrainNitrogenYield);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcForageNitrogenYield);
+    fprintf (output_file, "%-15.3lf\t", Crop->rcNitrogenInHarvest);
+    fprintf (output_file, "%-15.3lf\t", Crop->rcNitrogenInResidue);
+    fprintf (output_file, "%-15.3lf\t", Crop->rcNitrogenForageConc);
     fprintf (output_file, "\n");
 
     fflush (output_file);
@@ -549,19 +551,13 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
     double          SOC_sum;
     double          SOC_Mass_Depth1, SOC_Mass_Depth2;
     double          layerSplit;
-    double          sumProfile1, sumProfile2, sumProfile3, sumProfile4, sumProfile5, sumProfile6, sumProfile7, sumProfile8;
+    double          sumProfile[18];
 
     sprintf (filename, "output/%s/SoilCEvol.dat", project);
     output_file = fopen (filename, "a");
 
-    sumProfile1 = 0.0;
-    sumProfile2 = 0.0;
-    sumProfile3 = 0.0;
-    sumProfile4 = 0.0;
-    sumProfile5 = 0.0;
-    sumProfile6 = 0.0;
-    sumProfile7 = 0.0;
-    sumProfile8 = 0.0;
+    for (i = 0; i < 18; i++)
+        sumProfile[i] = 0.0;
 
     SOC_Mass_Depth1 = 0.0;
     SOC_Mass_Depth2 = 0.0;
@@ -569,14 +565,18 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
 
     for (i = 0; i < total_layers; i++)
     {
-        sumProfile1 += SoilCarbon->abgdBiomassInput[i];
-        sumProfile2 += SoilCarbon->rootBiomassInput[i] + SoilCarbon->rhizCarbonInput[i];
-        sumProfile3 += SoilCarbon->abgdCarbonInput[i];
-        sumProfile4 += SoilCarbon->rootCarbonInput[i] + SoilCarbon->rhizCarbonInput[i];
-        sumProfile5 += SoilCarbon->carbonMassInitial[i];
-        sumProfile6 += SoilCarbon->annualHumifiedCarbonMass[i];
-        sumProfile7 += SoilCarbon->annualRespiredCarbonMass[i];
-        sumProfile8 += SoilCarbon->carbonMassFinal[i];
+        sumProfile[0] += SoilCarbon->abgdBiomassInput[i];
+        sumProfile[1] += SoilCarbon->rootBiomassInput[i] + SoilCarbon->rhizCarbonInput[i];
+        sumProfile[2] += SoilCarbon->abgdCarbonInput[i];
+        sumProfile[3] += SoilCarbon->rootCarbonInput[i] + SoilCarbon->rhizCarbonInput[i];
+        sumProfile[4] += SoilCarbon->carbonMassInitial[i];
+        sumProfile[5] += SoilCarbon->annualHumifiedCarbonMass[i];
+        sumProfile[6] += SoilCarbon->annualRespiredCarbonMass[i];
+        sumProfile[7] += SoilCarbon->carbonMassFinal[i];
+
+        sumProfile[8] += SoilCarbon->annualNmineralization[i];
+        sumProfile[9] += SoilCarbon->annualNImmobilization[i];
+        sumProfile[10] += SoilCarbon->annualNNetMineralization[i];
 
         //soilCarbonEvolutionVars(y, 2 + i) = SoilCarbon.carbonMassFinal(y, i) 'Updated_SOC_Mass(i)
 
@@ -591,6 +591,14 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
             SOC_Mass_Depth2 += Soil->SOC_Mass[i];
     }
 
+    sumProfile[11] = SoilCarbon->annualAmmoniumNitrification;
+    sumProfile[12] = SoilCarbon->annualNitrousOxidefromNitrification;
+    sumProfile[13] = SoilCarbon->annualAmmoniaVolatilization;
+    sumProfile[14] = SoilCarbon->annualNO3Denitrification;
+    sumProfile[15] = SoilCarbon->annualNitrousOxidefromDenitrification;
+    sumProfile[16] = SoilCarbon->annualNitrateLeaching;
+    sumProfile[17] = SoilCarbon->annualAmmoniumLeaching;
+
     fprintf (output_file, "%4.4d", y + start_year);
     SOC_sum = 0.0;
     for (i = 0; i < total_layers; i++)
@@ -601,17 +609,75 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
     fprintf (output_file, "\t%-15.6lf\t%-15.6lf", SOC_Mass_Depth1, SOC_Mass_Depth2);
     fprintf (output_file, "\t%-15.6lf", Residue->yearResidueBiomass);
     fprintf (output_file, "\t%-15.6lf", Residue->yearRootBiomass);
-    fprintf (output_file, "\t%-15.6lf", sumProfile1);
-    fprintf (output_file, "\t%-15.6lf", sumProfile2);
-    fprintf (output_file, "\t%-15.6lf", sumProfile5);
-    fprintf (output_file, "\t%-15.6lf", sumProfile3);
-    fprintf (output_file, "\t%-15.6lf", sumProfile4);
-    fprintf (output_file, "\t%-15.6lf", sumProfile6);
-    fprintf (output_file, "\t%-15.6lf", sumProfile7);
-    fprintf (output_file, "\t%-15.6lf", sumProfile8);
-    fprintf (output_file, "\t%-15.6lf", sumProfile8 - sumProfile5);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[0]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[1]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[4]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[2]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[3]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[5]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[6]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[7]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[7] - sumProfile[4]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[8]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[9]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[10]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[11]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[12]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[13]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[14]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[15]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[16]);
+    fprintf (output_file, "\t%-15.6lf", sumProfile[17]);
 
     fprintf (output_file, "\n");
     fflush (output_file);
     fclose (output_file);
 }
+
+void StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, int totalLayers, int y)
+{
+    int             i;
+
+    Summary->final_soc = 0.0;
+
+    for (i = 0; i < totalLayers; i++)
+    {
+        Summary->abgd_c_input += SoilCarbon->abgdCarbonInput[i];
+        Summary->root_c_input += SoilCarbon->rootCarbonInput[i] + SoilCarbon->rhizCarbonInput[i];
+        Summary->residue_resp += SoilCarbon->annualRespiredResidueCarbonMass[i];
+        Summary->hum += SoilCarbon->annualHumifiedCarbonMass[i];
+        Summary->soil_resp += SoilCarbon->annualRespiredCarbonMass[i];
+        
+        Summary->n_mineralization += SoilCarbon->annualNmineralization[i];
+        Summary->n_immobilization += SoilCarbon->annualNImmobilization[i];
+        Summary->n_net_mineralization += SoilCarbon->annualNNetMineralization[i];
+        Summary->final_soc += SoilCarbon->carbonMassFinal[i];
+        if (y == 0)
+            Summary->initial_soc += SoilCarbon->carbonMassInitial[i];
+    }
+    
+    Summary->nh4_nitrification += SoilCarbon->annualAmmoniumNitrification;
+    Summary->n2o_from_denitrification += SoilCarbon->annualNitrousOxidefromNitrification;
+    Summary->nh3_volatilization += SoilCarbon->annualAmmoniaVolatilization;
+    Summary->no3_denirification += SoilCarbon->annualNO3Denitrification;
+    Summary->n2o_from_denitrification += SoilCarbon->annualNitrousOxidefromDenitrification;
+    Summary->no3_leaching += SoilCarbon->annualNitrateLeaching;
+    Summary->nh4_leaching += SoilCarbon->annualAmmoniumLeaching;
+    
+    Summary->residue_biomass += Residue->yearResidueBiomass;
+    Summary->produced_root += Residue->yearRootBiomass + Residue->yearRhizodepositionBiomass;
+}
+
+void PrintSummary (const SummaryStruct *Summary, int totalYears)
+{
+    printf ("\nSoil Carbon Summary:\n");
+    printf ("%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "INIT PROF C", "FINAL PROF C", "PROF C DIFF", "RES C INPUT", "ROOT C INPUT", "HUMIFIED C", "RESP SOIL C", "RESP RES C", "RETAINED RES", "PRODUCED ROOT", "SOIL C CHG/YR");
+    printf ("%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "Mg C", "Mg C", "Mg C", "Mg C", "Mg C", "Mg C", "Mg C", "Mg/ha", "Mg/ha", "Mg/ha", "kg C");
+    printf ("%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\n", Summary->initial_soc, Summary->final_soc, Summary->final_soc - Summary->initial_soc, Summary->abgd_c_input, Summary->root_c_input, Summary->hum, Summary->soil_resp, Summary->residue_resp, Summary->residue_biomass, Summary->produced_root, (Summary->final_soc - Summary->initial_soc) / (double) totalYears * 1000.0);
+
+}
+
+
+
+
+

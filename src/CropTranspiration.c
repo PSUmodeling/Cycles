@@ -154,6 +154,7 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const Weat
 
             if (LWP < LWP_StressOnset)
                 LWP = (plantHC * SWP_Average * (LWP_StressOnset - LWP_WiltingPoint) + LWP_WiltingPoint * TE) / (plantHC * (LWP_StressOnset - LWP_WiltingPoint) + TE);
+
             if (LWP < LWP_WiltingPoint)
                 LWP = LWP_WiltingPoint;
 
