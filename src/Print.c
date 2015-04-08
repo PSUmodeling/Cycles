@@ -65,6 +65,10 @@ void InitializeOutput (char *project, int layers)
     fflush (output_file);
     fclose (output_file);
 
+    sprintf (filename, "output/%s/summary.dat", project);
+    output_file = fopen (filename, "w");
+    fclose (output_file);
+
     /* Initialize annual output files */
     sprintf (filename, "output/%s/annualSoilC.dat", project);
     output_file = fopen (filename, "w");
@@ -156,9 +160,9 @@ void InitializeOutput (char *project, int layers)
     sprintf (filename, "output/%s/SoilCEvol.dat", project);
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-7s\t%-15s", "YEAR", "Profile");
+    fprintf (output_file, "\t%-15s\t%-15s", "ABOVE 30 cm", "BELOW 30 cm");
     for (i = 0; i < layers; i++)
         fprintf (output_file, "\tLAYER %-9d", i + 1);
-    fprintf (output_file, "\t%-15s\t%-15s", "ABOVE 30 cm", "BELOW 30 cm");
     fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "RES BIOMASS", "ROOT BIOMASS", "RES BIOMASS IN", "ROOT BIOMASS IN", "INIT PROF C", "RES C INPUT", "ROOT C INPUT", "HUMIFIED C", "RESPIRED C", "FINAL PROF C", "YEAR C DIFF", "N GROSS MINERAL", "N IMMOBIL", "N NET MINERAL", "NH4 NITRIFICAT", "N2O FROM NITRIF", "NH3 VOLATIL", "NO3 DENITRIF", "N2O FROM DENIT", "NO3 LEACHING", "NH4 LEACHING");
 
     fprintf (output_file, "%-7s\t%-15s", "YYYY", "Mg C/ha");
@@ -604,9 +608,9 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
     for (i = 0; i < total_layers; i++)
         SOC_sum = SOC_sum + Soil->SOC_Mass[i];
     fprintf (output_file, "\t%-15.6lf", SOC_sum);
+    fprintf (output_file, "\t%-15.6lf\t%-15.6lf", SOC_Mass_Depth1, SOC_Mass_Depth2);
     for (i = 0; i < Soil->totalLayers; i++)
         fprintf (output_file, "\t%-15.6lf", Soil->SOC_Mass[i]);
-    fprintf (output_file, "\t%-15.6lf\t%-15.6lf", SOC_Mass_Depth1, SOC_Mass_Depth2);
     fprintf (output_file, "\t%-15.6lf", Residue->yearResidueBiomass);
     fprintf (output_file, "\t%-15.6lf", Residue->yearRootBiomass);
     fprintf (output_file, "\t%-15.6lf", sumProfile[0]);
@@ -657,7 +661,7 @@ void StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, c
     }
     
     Summary->nh4_nitrification += SoilCarbon->annualAmmoniumNitrification;
-    Summary->n2o_from_denitrification += SoilCarbon->annualNitrousOxidefromNitrification;
+    Summary->n2o_from_nitrification += SoilCarbon->annualNitrousOxidefromNitrification;
     Summary->nh3_volatilization += SoilCarbon->annualAmmoniaVolatilization;
     Summary->no3_denirification += SoilCarbon->annualNO3Denitrification;
     Summary->n2o_from_denitrification += SoilCarbon->annualNitrousOxidefromDenitrification;
@@ -668,13 +672,33 @@ void StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, c
     Summary->produced_root += Residue->yearRootBiomass + Residue->yearRhizodepositionBiomass;
 }
 
-void PrintSummary (const SummaryStruct *Summary, int totalYears)
+void PrintSummary (const SummaryStruct *Summary, int totalYears, const char *project)
 {
+    char            filename[50];
+    FILE           *output_file;
+
+    sprintf (filename, "output/%s/summary.dat", project);
+    output_file = fopen (filename, "a");
+
     printf ("\nSoil Carbon Summary:\n");
     printf ("%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "INIT PROF C", "FINAL PROF C", "PROF C DIFF", "RES C INPUT", "ROOT C INPUT", "HUMIFIED C", "RESP SOIL C", "RESP RES C", "RETAINED RES", "PRODUCED ROOT", "SOIL C CHG/YR");
     printf ("%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "Mg C", "Mg C", "Mg C", "Mg C", "Mg C", "Mg C", "Mg C", "Mg/ha", "Mg/ha", "Mg/ha", "kg C");
     printf ("%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\n", Summary->initial_soc, Summary->final_soc, Summary->final_soc - Summary->initial_soc, Summary->abgd_c_input, Summary->root_c_input, Summary->hum, Summary->soil_resp, Summary->residue_resp, Summary->residue_biomass, Summary->produced_root, (Summary->final_soc - Summary->initial_soc) / (double) totalYears * 1000.0);
 
+    fprintf (output_file, "%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "INIT PROF C", "FINAL PROF C", "PROF C DIFF", "RES C INPUT", "ROOT C INPUT", "HUMIFIED C", "RESP SOIL C", "RESP RES C", "RETAINED RES", "PRODUCED ROOT", "SOIL C CHG/YR");
+    fprintf (output_file, "%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "Mg C", "Mg C", "Mg C", "Mg C", "Mg C", "Mg C", "Mg C", "Mg/ha", "Mg/ha", "Mg/ha", "kg C");
+    fprintf (output_file, "%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\n", Summary->initial_soc, Summary->final_soc, Summary->final_soc - Summary->initial_soc, Summary->abgd_c_input, Summary->root_c_input, Summary->hum, Summary->soil_resp, Summary->residue_resp, Summary->residue_biomass, Summary->produced_root, (Summary->final_soc - Summary->initial_soc) / (double) totalYears * 1000.0);
+
+    printf ("\n");
+    printf ("%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "AVG GROSS N MIN", "AVG N IMMOB", "AVG NET N MIN", "AVG NH4 NITRIF", "AVG N2O FR NIT", "AVG NH3 VOLATIL", "AVG NO3 DENIT", "AVG N2O FR DENI", "AVG NO3 LEACH", "AVG NH4 LEACH", "AVG TOT N2O EMI");
+    printf ("%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr");
+    printf ("%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\n", Summary->n_mineralization / (double) totalYears, Summary->n_immobilization / (double) totalYears, Summary->n_net_mineralization / (double) totalYears, Summary->nh4_nitrification / (double) totalYears, Summary->n2o_from_nitrification / (double) totalYears, Summary->nh3_volatilization / (double) totalYears, Summary->no3_denirification / (double) totalYears, Summary->n2o_from_denitrification / (double) totalYears, Summary->no3_leaching / (double) totalYears, Summary->nh4_leaching / (double) totalYears, (Summary->n2o_from_nitrification + Summary->n2o_from_denitrification) / (double) totalYears);
+
+    fprintf (output_file, "\n");
+    fprintf (output_file, "%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "AVG GROSS N MIN", "AVG N IMMOB", "AVG NET N MIN", "AVG NH4 NITRIF", "AVG N2O FR NIT", "AVG NH3 VOLATIL", "AVG NO3 DENIT", "AVG N2O FR DENI", "AVG NO3 LEACH", "AVG NH4 LEACH", "AVG TOT N2O EMI");
+    fprintf (output_file, "%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr");
+    fprintf (output_file, "%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\n", Summary->n_mineralization / (double) totalYears, Summary->n_immobilization / (double) totalYears, Summary->n_net_mineralization / (double) totalYears, Summary->nh4_nitrification / (double) totalYears, Summary->n2o_from_nitrification / (double) totalYears, Summary->nh3_volatilization / (double) totalYears, Summary->no3_denirification / (double) totalYears, Summary->n2o_from_denitrification / (double) totalYears, Summary->no3_leaching / (double) totalYears, Summary->nh4_leaching / (double) totalYears, (Summary->n2o_from_nitrification + Summary->n2o_from_denitrification) / (double) totalYears);
+    fflush (output_file);
 }
 
 

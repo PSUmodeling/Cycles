@@ -212,7 +212,7 @@ int main (int argc, char *argv[])
         StoreSummary (&Cycles->Summary, &Cycles->SoilCarbon, &Cycles->Residue, Cycles->Soil.totalLayers, y);
     }
 
-    PrintSummary (&Cycles->Summary, Cycles->SimControl.totalYears);
+    PrintSummary (&Cycles->Summary, Cycles->SimControl.totalYears, project);
 
     FreeCyclesStruct (Cycles, Cycles->SimControl.totalYears);
     free (project);

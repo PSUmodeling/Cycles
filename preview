@@ -22,7 +22,9 @@ echo "4 - Potential transpiration"
 echo "5 - Cumulative Nitrogen stress"
 echo "6 - Water use efficiency"
 echo "7 - Nitrogen concentration"
-echo -n "Select (1--7) ? "
+echo "8 - Carbon mass above 30 cm"
+echo "9 - Carbon mass below 30 cm"
+echo -n "Select (1--9) ? "
 read var
 
 if [[ $var = 1 ]]; then
@@ -53,6 +55,14 @@ elif [[ $var = 7 ]]; then
   col=102
   file="season.dat"
   var="N Concentration (Mg Mg^{-1})"
+elif [[ $var = 8 ]]; then
+  col=3
+  file="SoilCEvol.dat"
+  var="Above 30 cm C Mass (MgC ha^{-1})"
+elif [[ $var = 9 ]]; then
+  col=4
+  file="SoilCEvol.dat"
+  var="Below 30 cm C Mass (MgC ha^{-1})"
 else
   echo
   echo "Invalid option!"
