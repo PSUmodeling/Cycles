@@ -2,12 +2,29 @@
 
 void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CropStruct *Crop, const ResidueStruct *Residue, const WeatherStruct *Weather, const SoilCarbonStruct *SoilCarbon)
 {
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * i                    int
+     * Profile_N_Nitrified  double      N daily nitrification [Mg N/ha]
+     * Profile_N2O_Nitri    double      N daily N2O from nitrification [Mg/ha]
+     * Profile_N_Denitrified
+     *                      double      N daily denitrification [Mg N/ha]
+     * Profile_N2O_Denit    double      N daily denitrification in the form of
+     *                                    N2O [Mg N/ha]
+     * Profile_NH4_Volatilization
+     *                      double      NH4 volatilization [Mg N/ha]
+     */
     int             i;
-    double          Profile_N_Nitrified;    /* N daily nitrification, Mg N/ha */
-    double          Profile_N2O_Nitri;  /* N daily N2O from nitrification, Mg/ha */
-    double          Profile_N_Denitrified;  /* N daily denitrification, Mg N/ha */
-    double          Profile_N2O_Denit;  /* N daily denitrification in the form of N2O, Mg N/ha */
-    double          Profile_NH4_Volatilization; /* NH4 volatilization, Mg N/ha */
+    double          Profile_N_Nitrified;
+    double          Profile_N2O_Nitri;
+    double          Profile_N_Denitrified;
+    double          Profile_N2O_Denit;
+    double          Profile_NH4_Volatilization;
 
     Profile_N_Nitrified = 0.0;
     Profile_N2O_Nitri = 0.0;
@@ -41,25 +58,45 @@ void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CropStruct 
 
 void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon)
 {
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * i                    int
+     * NH4_Nitrified        double      N daily nitrification [Mg/ha]
+     * N2O_Nitrified        double      N daily N2O from denitrification and
+     *                                    nitrification [Mg/ha]
+     * pH_Factor            double      pH function controlling nitrification
+     * NO3NH4Ratio          double      Ratio of NO3 to NH4
+     * ratioFactor          double      Nitrification control by NO3/NH4 ratio
+     * AirContent           double      Porosity - watercontent [m3/m3]
+     * AirFactor            double      Nitrification control by air content
+     * N2O_Fraction         double      Fraction of nitrification released as
+     *                                    N2O
+     * TempFactor           double      Nitrification control by temperature
+     */
     int             i;
-    double          NH4_Nitrified;  /* N daily nitrification, Mg/ha */
-    double          N2O_Nitrified;  /* N daily N2O from denitrification and nitrification, Mg/ha */
-    double          pH_Factor = 1.0;    /* pH function controlling nitrification */
-    double          NO3NH4Ratio;    /* ratio of NO3 to NH4 */
-    double          ratioFactor;    /* nitrification control by NO3/NH4 ratio */
-    double          AirContent; /* porosity - watercontent, m3/m3 */
-    double          AirFactor;  /* nitrification control by air content */
-    double          N2O_Fraction;   /* fraction of nitrification released as N2O */
-    double          TempFactor; /* nitrification control by temperature */
+    double          NH4_Nitrified;
+    double          N2O_Nitrified;
+    double          pH_Factor = 1.0;
+    double          NO3NH4Ratio;
+    double          ratioFactor;
+    double          AirContent;
+    double          AirFactor;
+    double          N2O_Fraction;
+    double          TempFactor;
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
         if (Soil->NH4[i] > 0.0)
         {
             NO3NH4Ratio = Soil->NO3[i] / Soil->NH4[i];
-            ratioFactor = 1.0 / (1.0 + pow (NO3NH4Ratio / 8.0, 6.0));
+            ratioFactor = 1.0 / (1.0 + pow (NO3NH4Ratio / 8.0, 6));
             AirContent = Soil->Porosity[i] - Soil->waterContent[i];
-            AirFactor = 1.0 - 1.0 / (1.0 + pow (AirContent / 0.1, 3.0));
+            AirFactor = 1.0 - 1.0 / (1.0 + pow (AirContent / 0.1, 3));
             N2O_Fraction = N2OFractionNitrification (AirContent);
             TempFactor = TemperatureFunction (Soil->soilTemperature[i]);
             NH4_Nitrified = Soil->NH4[i] * NITRIFICATION_CONSTANT * ratioFactor * pH_Factor * AirFactor * TempFactor;
@@ -81,18 +118,50 @@ void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, 
 
 void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon)
 {
-    double          N_Denit;    /* nitrogen daily denitrification (N2 + N2O), Mg N/ha */
-    double          N2O_Emission;   /* nitrogen daily denitrification as N2O, kg/m2 */
-    double          N2O_Fraction;   /* ratio of N2O to total denitrification */
-    double          Soil_Mass;  /* Mg/ha */
-    double          NO3_Conc;   /* Mg NO3 / Mg dry soil */
-    double          NO3_Factor; /* nitrate concentration control of denitrification */
-    double          Res_Factor; /* this respiration factor considers temperature control already */
-    double          Oxy_Factor; /* oxygen control of denitrification, using porosity occupied by air as a surrogate */
-    double          rr1;        /* carbon respired Mg C / Mg dry soil */
-    double          AirVol;     /* fractional volume of air in the soil, m3/m3 */
-    double          cc1;        /* compute coefficient for denitrification based on clay concentration */
-    double          cc2 = 60.0; /* coefficient of denitrification curve response to aereation */
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * N_Denit              double      Nitrogen daily denitrification (N2 +
+     *                                    N2O) [Mg N/ha]
+     * N2O_Emission         double      Nitrogen daily denitrification as N2O
+     *                                    [kg/m2]
+     * N2O_Fraction         double      Ratio of N2O to total denitrification
+     * Soil_Mass            double      [Mg/ha]
+     * NO3_Conc             double      [Mg NO3 / Mg dry soil]
+     * NO3_Factor           double      Nitrate concentration control of
+     *                                    denitrification
+     * Res_Factor           double      This respiration factor considers
+     *                                    temperature control already
+     * Oxy_Factor           double      Oxygen control of denitrification,
+     *                                    using porosity occupied by air as a
+     *                                    surrogate
+     * rr1                  double      Carbon respired [Mg C / Mg dry soil]
+     * AirVol               double      Fractional volume of air in the soil
+     *                                    [m3/m3]
+     * cc1                  double      Compute coefficient for
+     *                                    denitrification based on clay
+     *                                    concentration
+     * cc2                  double      Coefficient of denitrification curve
+     *                                    response to aereation
+     * i                    int         Loop counter
+     */
+
+    double          N_Denit;
+    double          N2O_Emission;
+    double          N2O_Fraction;
+    double          Soil_Mass;
+    double          NO3_Conc;
+    double          NO3_Factor;
+    double          Res_Factor;
+    double          Oxy_Factor;
+    double          rr1;
+    double          AirVol;
+    double          cc1;
+    const double    cc2 = 60.0;
     int             i;
 
     for (i = 0; i < Soil->totalLayers; i++)
@@ -138,36 +207,79 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
      * atmosphere and a proxy for conductance from the soil surface to the
      * canopy exchange surface an Eulerian approach with daily time step can
      * cause excess volatilization in a day
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * i                    int         Loop counter
+     * layerTop             double[]    [m]
+     * layerBottom          double[]    [m]
+     * layerMidpoint        double      [m]
+     * DepthFactor          double      Depth factor affection fraction of
+     *                                    ammonium volatilizable (no diffusion
+     *                                    processes in soil simulated)
+     * CEC                  double      CEC, estimated from clay and soil
+     *                                    organic carbon
+     * CECFactor            double      CEC factor controlling fraction of
+     *                                    ammonia that is available for
+     *                                    volatilization
+     * fVol                 double      Fraction of layer ammonium that can
+     *                                    volatilize
+     * NH4Volatilizable     double      NH4 of a layer subject to
+     *                                    volatilization
+     * NH4Volatilized       double      NH4 volatilized from a given layer
+     * Tavg                 double      Weighted daily average temperature
+     *                                    (favoring daytime temperature)
+     * pAtm                 double      Atmospheric pressure [Pa]
+     * AMD                  double      Air molar density [mol/m3]
+     * GBL                  double      Molar atmospheric boundary layer
+     *                                    conductance [mol/m3/s]
+     * GG1                  double      NH3 flux correction based on flat
+     *                                    residue cover, 0 - 1 temporary
+     * GG2                  double      NH3 flux correction based on canopy
+     *                                    cover,  0 - 1 temporary
+     * GG3                  double      Product GBL*GG2*GG3
+     * pK                   double
+     * pH                   double
+     * henrysCoeff          double
+     * henrysConst          double      Henry's constant, [Litre Pa / mol]
+     * waterVolume          double
+     * NH4Conc              double
+     * NH3Conc              double
+     * NH3MolarFraction     double      Molar fraction
+     * profile_volatilization
+     *                      double
      */
 
     int             i = 0;
-    double          layerTop[Soil->totalLayers];    /* m */
-    double          layerBottom[Soil->totalLayers]; /* m */
-    double          layerMidpoint;  /* m */
-    double          DepthFactor;    /* depth factor affection fraction of ammonium volatilizable (no diffusion processes in soil simulated) */
-    double          CEC;        /* CEC, estimated from clay and soil organic carbon */
-    double          CECFactor;  /* CEC factor controlling fraction of ammonia that is available for volatilization */
-    double          fVol;       /* fraction of layer ammonium that can volatilize */
-    double          NH4Volatilizable;   /* NH4 of a layer subject to volatilization */
-    double          NH4Volatilized; /* NH4 volatilized from a given layer */
-    double          Tavg;       /* weighted daily average temperature (favoring daytime temperature) */
-    double          pAtm;       /* atmospheric pressure, Pa */
-    double          AMD;        /* air molar density, mol/m3 */
-    double          GBL;        /* molar atmospheric boundary layer conductance, mol/m3/second */
-    double          GG1;        /* NH3 flux correction based on flat residue cover, 0 - 1 temporary */
-    double          GG2;        /* NH3 flux correction based on canopy cover,  0 - 1 temporary */
-    double          GG3;        /* product GBL*GG2*GG3 */
+    double          layerTop[Soil->totalLayers];
+    double          layerBottom[Soil->totalLayers];
+    double          layerMidpoint;
+    double          DepthFactor;
+    double          CEC;
+    double          CECFactor;
+    double          fVol;
+    double          NH4Volatilizable;
+    double          NH4Volatilized;
+    double          Tavg;
+    double          pAtm;
+    double          AMD;
+    double          GBL;
+    double          GG1;
+    double          GG2;
+    double          GG3;
     double          pK;
     double          pH;
     double          henrysCoeff;
-    double          henrysConst;    /* Henry's constant, (liter Pa) / mol */
+    double          henrysConst;
     double          waterVolume;
     double          NH4Conc;
     double          NH3Conc;
-    double          NH3MolarFraction;   /* molar fraction */
+    double          NH3MolarFraction;
     double          profile_volatilization;
 
-    pH = 6.5;                   /* FIX THIS INPUT */
+    pH = 6.5;
 
     profile_volatilization = *Profile_NH4_Volatilization;
 
@@ -181,7 +293,8 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
 
     pK = 0.09018 + 2729.92 / Tavg;
     henrysCoeff = pow (10.0, 1477.7 / Tavg - 1.69);
-    henrysConst = 1000.0 * 8.3143 * Tavg / henrysCoeff; /* 1000 converts from m3 to liters */
+    henrysConst = 1000.0 * 8.3143 * Tavg / henrysCoeff; /* 1000 converts from
+                                                         * m3 to liters */
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
@@ -216,13 +329,27 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
         Soil->NH4[i] -= NH4Volatilized;
         profile_volatilization += NH4Volatilized;
     }
-    *Profile_NH4_Volatilization = profile_volatilization;
 
-    return;
+    *Profile_NH4_Volatilization = profile_volatilization;
 }
 
 double N2OFractionNitrification (double air)
 {
+    /*
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * N2OFraction_Function double
+     * Q                    double
+     * f_Base               double
+     * f_Max                double
+     * a_Min                double
+     * a_Opt                double
+     * a_Max                double
+     */
+
     double          N2OFraction_Function;
     double          Q;
     const double    f_Base = 0.0025;
@@ -246,6 +373,16 @@ double N2OFractionNitrification (double air)
 
 double pHFunction (double pH)
 {
+    /*
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * pH_Min               double
+     * pH_Max               double
+     */
+
     double          pH_Min = 3.5;
     double          pH_Max = 6.5;
 
@@ -269,6 +406,23 @@ double BoundaryLayerConductance (double RI, double RM, double WS, double AMD)
      * RM = mass of standing residue, Mg/ha
      * AMD = air molar density, mol/m3
      * WS = wind speed at 2 meters, m/s */
+    /*
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * CropHeight           double
+     * SoilHeight           double
+     * ResidueHeight        double
+     * h                    double
+     * d                    double      Zero plane displacement (at
+     *                                    d' = d + Zm, wind speed profile
+     *                                    extrapolates to zero)
+     * Zm                   double      Momentum roughness length
+     * Zs                   double      Scalar roughness length
+     */
+
     double          CropHeight;
     double          SoilHeight;
     double          ResidueHeight;
