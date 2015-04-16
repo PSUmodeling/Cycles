@@ -2,14 +2,33 @@
 
 void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *leachate, const double *WFlux, double *soluteMass, const double *BD, const double *thickness, const double *porosity, const double *WCinitial)
 {
+    /*
+     * 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * i                    int         Loop counter
+     * soluteConc           double      Solute concentration, current layer
+     *                                    [kg solute / m3]
+     * soluteFlow           double[]    Solute flow [kg solute/time step]
+     * waterInitial         double      Initial layer soil water storage
+     *                                    [kg/m2]
+     * ratio                double      Ratio of flux out of a layer to the
+     *                                    layer porosity (or effective
+     *                                    porosity)
+     * soluteMassAdsorbed   double      [kg/m2]
+     * soluteMassSolution   double      [kg/m2]
+     */
+
     int             i;
-    //double          C[totalLayers]; /* solute concentration at end of equilibrium, kg solute / m3 */
-    double          soluteConc; /* solute concentration, current layer, kg solute / m3 */
-    double          soluteFlow[totalLayers + 1];    /* solute flow, kg solute per time step */
-    double          waterInitial;   /* initial layer soil water storage, kg / m2 */
-    double          ratio;      /* ratio of flux out of a layer to the layer porosity (or effective porosity) */
-    double          soluteMassAdsorbed; /* kg/m2 */
-    double          soluteMassSolution; /* kg/m2 */
+    double          soluteConc;
+    double          soluteFlow[totalLayers + 1];
+    double          waterInitial;
+    double          ratio;
+    double          soluteMassAdsorbed;
+    double          soluteMassSolution;
 
     soluteFlow[0] = WInConc * WFlux[0];
 
@@ -24,9 +43,9 @@ void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *le
 
         soluteMassAdsorbed = soluteMass[i] - waterInitial * soluteConc;
 
-        if (WFlux[i + 1] > 0.0 + 1e-6)
+        if (WFlux[i + 1] > 0.0)
         {
-            /* note: the 0.67 is temporary, likely not needed, and if needed
+            /* Note: the 0.67 is temporary, likely not needed, and if needed
              * use a relationship with B */
             ratio = 0.67 * WFlux[i + 1] / (porosity[i] * thickness[i] * WATER_DENSITY);
             soluteMassSolution = (soluteFlow[i] / ratio + (waterInitial * soluteConc - soluteFlow[i] / ratio) * exp (-ratio));
@@ -40,7 +59,7 @@ void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *le
             soluteFlow[i + 1] = 0.0;
         }
 
-        /* this equilibrium can cause a mass balance error if "mass" is based
+        /* This equilibrium can cause a mass balance error if "mass" is based
          * on concentration at the end ignoring initial mass, not using it */
         //SoluteMass(i) = LinearEquilibriumSoluteMass(Sol_Kd, BD(i), Thickness(i), WCFinal, C(i))
         soluteMass[i] = soluteMassAdsorbed + soluteMassSolution;
@@ -49,10 +68,24 @@ void SoluteTransport (int totalLayers, double Sol_Kd, double WInConc, double *le
 
 void SoluteTransportEvaporation (int totalLayers, double Sol_Kd, const double *WFlux, double *soluteMass, const double *BD, const double *thickness, const double *porosity, double *WCinitial)
 {
-    /* this is a rough attempt to move solutes upward due to evaporation */
+    /*
+     * This is a rough attempt to move solutes upward due to evaporation
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * i                    int
+     * soluteConc           double      Solute concentration, current layer
+     *                                    [kg solute/m3]
+     * waterInitial         double      Initial layer soil water storage
+     *                                    [kg/m2]
+     * soluteFlux           double[]
+     */
+
     int             i;
-    double          soluteConc; /* solute concentration, current layer, kg solute / m3 */
-    double          waterInitial;   /* initial layer soil water storage, kg / m2 */
+    double          soluteConc;
+    double          waterInitial;
     double          soluteFlux[totalLayers];
 
     for (i = 1; i < totalLayers; i++)
@@ -78,30 +111,67 @@ void SoluteTransportEvaporation (int totalLayers, double Sol_Kd, const double *W
     }
 }
 
+/*****************************************************************************
+ * FUNCTION NAME:   LinearEquilibriumConcentration
+ *
+ * ARGUMENT LIST
+ *
+ * Argument             Type        IO  Description
+ * ==========           ==========  ==  ====================
+ * Kd                   double      I   Slope of the adsortion isotherm
+ *                                        [m3/kg]
+ * bulkDensity          double      I   Soil bulk density [kg/m3]
+ * layerThickness       double      I
+ * waterContent         double      I
+ * soluteMass           double      I
+ *
+ * RETURN VALUE: double (solute equilibrium concentration [kg solute/m3])
+ ****************************************************************************/
 double LinearEquilibriumConcentration (double Kd, double bulkDensity, double layerThickness, double waterContent, double soluteMass)
 {
+    /* LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * soilBufferPower      double      [m3/m3]
+     */
     double          soilBufferPower;
 
-    /* soil buffer power, m3/m3
-     * soil bulk density, kg/m3
-     * kd is the slope of the adsortion isotherm, m3/kg
-     * solute equilibrium concentration, kg solute / m3 */
-    bulkDensity *= 1000.0;      /* convert Mg/m3 to kg/m3 */
+    bulkDensity *= 1000.0;      /* Convert Mg/m3 to kg/m3 */
     soilBufferPower = Kd * bulkDensity + waterContent;
 
     return (soluteMass / (soilBufferPower * layerThickness * WATER_DENSITY));
 }
 
+/*****************************************************************************
+ * FUNCTION NAME:   LinearEquilibriumSoluteMass
+ *
+ * ARGUMENT LIST
+ *
+ * Argument             Type        IO  Description
+ * ==========           ==========  ==  ====================
+ * Kd                   double      I   Slope of the adsortion isotherm
+ *                                        [m3/kg]
+ * bulkDensity          double      I   Soil bulk density [kg/m3]
+ * layerThickness       double      I
+ * waterContent         double      I
+ * concentration        double      I   Solute equilibrium concentration
+ *                                        [kg solute / m3]
+ *
+ * RETURN VALUE: double (total solute mass based on concentration in the
+ *   solution)
+ ****************************************************************************/
 double LinearEquilibriumSoluteMass (double Kd, double bulkDensity, double layerThickness, double waterContent, double concentration)
 {
-    /* returns the total solute mass based on concentration in the solution */
+    /* LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * soilBufferPower      double      [m3/m3]
+     */
+
     double          soilBufferPower;
 
-    /* soil buffer power, m3/m3
-     * soil bulk density, kg/m3
-     * kd is the slope of the adsortion isotherm, m3/kg
-     * solute equilibrium concentration, kg solute / m3
-     * solute mass, kg solute / m3 */
     bulkDensity *= 1000.0;      /* convert Mg/m3 to kg/m3 */
     soilBufferPower = Kd * bulkDensity + waterContent;
 
