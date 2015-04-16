@@ -1,13 +1,48 @@
 #include "Cycles.h"
 
+/*****************************************************************************
+ * FUNCTION NAME: SatVP
+ *
+ * ARGUMENT LIST
+ *
+ * Argument             Type        IO  Description
+ * ==========           ==========  ==  ====================
+ * T                    double      I   Air temperature
+ *
+ * RETURN VALUE: double (saturated vapor pressur [kPa])
+ ****************************************************************************/
+
 double SatVP (double T)
 {
-    // Saturated vapor pressure (kPa).
     return 0.6108 * exp (17.27 * T / (T + 237.3));
 }
 
+/*****************************************************************************
+ * FUNCTION NAME: CalculateDerivedWeather
+ *
+ * ARGUMENT LIST
+ *
+ * Argument             Type        IO  Description
+ * ==========           ==========  ==  ====================
+ * Weather              WeatherStruct
+ *                                  IO
+ * total_years          int         I
+ *
+ * RETURN VALUE: void
+ ****************************************************************************/
 void CalculateDerivedWeather (WeatherStruct *Weather, int total_years)
 {
+    /* LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * y                    int         Year
+     * doy                  int         Day of year
+     * annualMaxTemperatureSum
+     *                      double
+     * annualMinTemperatureSum
+     *                      double
+     */
     int             y, doy;
     double          annualMaxTemperatureSum;
     double          annualMinTemperatureSum;
