@@ -77,6 +77,9 @@ void ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct *Till
     }
 
     totalSoilMassMixed = 0.0;
+    for (j = 0; j < mixVariables; j++)
+        mixed[j] = 0.0;
+
     for (i = 0; i < lastLayer; i++)
     {
         if (toolDepth >= Soil->cumulativeDepth[i])
