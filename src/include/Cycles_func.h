@@ -182,10 +182,10 @@ double          HeatConductivity (double bulkDensity, double volumetricWC, doubl
 double          EstimatedSoilTemperature (double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth);
 
 /* Tillage.c */
-void            ExecuteTillage (int y, double *abgdBiomassInput, FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, ResidueStruct *Residue);
+void            ExecuteTillage (double *abgdBiomassInput, const FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, ResidueStruct *Residue);
 void            TillageFactorSettling (double *tillageFactor, int totalLayers, const double *waterContent, const double *Porosity);
 double          Fraction (double a, double b, double c, double d, double f);
-void            ComputeTillageFactor (const FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, double *soilLayerBottom, double toolDepth);
+void            ComputeTillageFactor (const FieldOperationStruct *Tillage, double *tillageFactor, const SoilStruct *Soil, const double *soilLayerBottom, double toolDepth);
 double          ComputeTextureFactor (double Clay);
 
 /* Weather.c */

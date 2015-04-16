@@ -43,7 +43,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
             printf ("DOY %3.3d %-20s %s\n", doy, "Tillage", Tillage->opToolName);
 
         if (strcasecmp (Tillage->opToolName, "Kill_Crop") != 0)
-            ExecuteTillage (y, SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
+            ExecuteTillage (SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
         else if (Crop->cropUniqueIdentifier >= 0)
             HarvestCrop (y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
 
