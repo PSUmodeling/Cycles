@@ -78,7 +78,6 @@ void CascadeRedistribution (SoilStruct *Soil)
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * i                    int         Loop counter
      * j                    int         Loop counter
      * Win                  double      Infiltration
      * Wout                 double
@@ -86,14 +85,17 @@ void CascadeRedistribution (SoilStruct *Soil)
      * WCi                  double[]    Initial soil water content
      */
 
-    int             i, j;
+    int             j;
     double          Win = Soil->infiltrationVol;
     double          Wout;
     double          WFlux[Soil->totalLayers + 1];
     double          WCi[Soil->totalLayers];
 
-    for (i = 0; i < Soil->totalLayers; i++)
-        WCi[i] = Soil->waterContent[i];
+    for (j = 0; j < Soil->totalLayers; j++)
+        WCi[j] = Soil->waterContent[j];
+
+    for (j = 0; j < Soil->totalLayers + 1; j++)
+        WFlux[j] = 0.0;
 
     WFlux[0] = Win;
 

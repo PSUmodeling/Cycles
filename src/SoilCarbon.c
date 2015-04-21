@@ -694,6 +694,7 @@ void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStr
     if (fabs (NFinal - NInitial) > 0.00001)
         exit (1);
 }
+
 void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor)
 {
     /* 
