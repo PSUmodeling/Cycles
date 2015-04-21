@@ -2,7 +2,7 @@
 
 void InitializeOutput (char *project, int layers)
 {
-    char            filename[50];
+    char            filename[150];
     char           *output_dir;
     FILE           *output_file;
     int             i;
@@ -173,6 +173,7 @@ void InitializeOutput (char *project, int layers)
     fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s", "Mg/year", "Mg/year", "Mg/year", "Mg/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year");
     fprintf (output_file, "\n");
     fflush (output_file);
+    fclose (output_file);
 
     sprintf (filename, "output/%s/annualSoilProfile.dat", project);
     output_file = fopen (filename, "w");
@@ -241,8 +242,8 @@ void InitializeOutput (char *project, int layers)
 
     fflush (output_file);
     fclose (output_file);
-
     free (output_dir);
+
 }
 
 void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project)
@@ -586,7 +587,7 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
 
         if (Soil->cumulativeDepth[i] <= layerSplit)
             SOC_Mass_Depth1 += Soil->SOC_Mass[i];
-        else if (Soil->cumulativeDepth[i] > layerSplit && Soil->cumulativeDepth[i] < layerSplit + Soil->layerThickness[i + 1])
+        else if (Soil->cumulativeDepth[i] > layerSplit && Soil->cumulativeDepth[i] < layerSplit + (i == total_layers - 1 ? 0 : Soil->layerThickness[i + 1]))
         {
             SOC_Mass_Depth1 += Soil->SOC_Mass[i] * (layerSplit - (Soil->cumulativeDepth[i] - Soil->layerThickness[i])) / Soil->layerThickness[i];
             SOC_Mass_Depth2 += Soil->SOC_Mass[i] * (Soil->cumulativeDepth[i] - layerSplit) / Soil->layerThickness[i];
@@ -699,6 +700,7 @@ void PrintSummary (const SummaryStruct *Summary, int totalYears, const char *pro
     fprintf (output_file, "%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr", "kg N/yr");
     fprintf (output_file, "%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\t%-15.6lf\n", Summary->n_mineralization / (double) totalYears, Summary->n_immobilization / (double) totalYears, Summary->n_net_mineralization / (double) totalYears, Summary->nh4_nitrification / (double) totalYears, Summary->n2o_from_nitrification / (double) totalYears, Summary->nh3_volatilization / (double) totalYears, Summary->no3_denirification / (double) totalYears, Summary->n2o_from_denitrification / (double) totalYears, Summary->no3_leaching / (double) totalYears, Summary->nh4_leaching / (double) totalYears, (Summary->n2o_from_nitrification + Summary->n2o_from_denitrification) / (double) totalYears);
     fflush (output_file);
+    fclose (output_file);
 }
 
 

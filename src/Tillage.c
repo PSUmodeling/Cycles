@@ -125,7 +125,12 @@ void ExecuteTillage (double *abgdBiomassInput, const FieldOperationStruct *Tilla
             soilMassMixed[i] = Tillage->opMixingEfficiency * soilMass[i];
 
         else
-            soilMassMixed[i] = Tillage->opMixingEfficiency * soilMass[i] * (toolDepth - Soil->cumulativeDepth[i - 1]) / Soil->layerThickness[i];
+        {
+            if (i == 0)
+                soilMassMixed[i] = Tillage->opMixingEfficiency * soilMass[i] * toolDepth / Soil->layerThickness[i];
+            else
+                soilMassMixed[i] = Tillage->opMixingEfficiency * soilMass[i] * (toolDepth - Soil->cumulativeDepth[i - 1]) / Soil->layerThickness[i];
+        }
         soilMassNotMixed[i] = soilMass[i] - soilMassMixed[i];
 
         partialSoilMassMixed = totalSoilMassMixed + soilMassMixed[i];
@@ -305,6 +310,8 @@ void ComputeTillageFactor (const FieldOperationStruct *Tillage, double *tillageF
 
         if (soilLayerBottom[i] <= toolDepth)
             SDR += Tillage->opSDR;
+        else if (soilLayerBottom[i] > toolDepth && i == 0)
+            SDR += Tillage->opSDR * toolDepth / Soil->layerThickness[i];
         else if (soilLayerBottom[i] > toolDepth && soilLayerBottom[i - 1] < toolDepth)
             SDR += Tillage->opSDR * (toolDepth - soilLayerBottom[i - 1]) / Soil->layerThickness[i];
 

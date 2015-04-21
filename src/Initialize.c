@@ -43,6 +43,7 @@ void FreeCyclesStruct (CyclesStruct Cycles, int total_years)
     free (Cycles->CropManagement.FixedIrrigation);
     free (Cycles->CropManagement.Tillage);
     free (Cycles->CropManagement.autoIrrigation);
+    free (Cycles->CropManagement.ForcedHarvest);
 
     free (Cycles->Soil.layerThickness);
     free (Cycles->Soil.Clay);
@@ -122,4 +123,7 @@ void FreeCyclesStruct (CyclesStruct Cycles, int total_years)
     free (Cycles->SoilCarbon.annualRespiredCarbonMass);
     free (Cycles->SoilCarbon.annualRespiredResidueCarbonMass);
     free (Cycles->SoilCarbon.annualHumificationCoefficient);
+    free (Cycles->SoilCarbon.annualNmineralization);
+    free (Cycles->SoilCarbon.annualNImmobilization);
+    free (Cycles->SoilCarbon.annualNNetMineralization);
 }

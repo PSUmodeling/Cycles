@@ -98,8 +98,6 @@
  ***************************************************************************/
 typedef struct SimControlStruct
 {
-    int            *yearSpecificLastDOY;
-
     int             simStartYear;
     int             simEndYear;
     int             totalYears;
