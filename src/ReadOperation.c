@@ -54,7 +54,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
         exit (1);
     }
     else
-        printf ("Read field operation file: %s.\n", filename);
+        printf ("%-30s input/%s.\n", "Read field operation file:", filename);
 
     free (fullname);
 

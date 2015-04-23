@@ -32,7 +32,7 @@ void ReadSoil (char *filename, SoilStruct *Soil)
         exit (1);
     }
     else
-        printf ("Read soil initialization file: %s.\n", filename);
+        printf ("%-30s input/%s.\n", "Read soil initialization file:", filename);
 
     free (fullname);
 

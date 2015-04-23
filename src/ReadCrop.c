@@ -37,7 +37,7 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
         exit (1);
     }
     else
-        printf ("Read crop description file: %s.\n", filename);
+        printf ("%-30s input/%s.\n", "Read crop description file:", filename);
 
     free (fullname);
 

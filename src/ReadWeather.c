@@ -40,7 +40,7 @@ void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int to
         exit (1);
     }
     else
-        printf ("Read weather file: %s.\n", filename);
+        printf ("%-30s input/%s.\n", "Read weather file:", filename);
 
     free (fullname);
 

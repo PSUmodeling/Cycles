@@ -20,7 +20,7 @@ void ReadSimControl (char *project, SimControlStruct *SimControl)
     filename = (char *)malloc ((strlen (project) + 12) * sizeof (char));
     sprintf (filename, "input/%s.ctrl", project);
     simctrl_file = fopen (filename, "r");
-    printf ("Read simulation control file: %s.\n", filename);
+    printf ("%-30s %s.\n", "Read simulation control file:", filename);
     free (filename);
 
     if (simctrl_file == NULL)
