@@ -315,23 +315,23 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
         }
     }
 
-    fprintf (output_file, "%-15.2lf\t", Crop->svTT_Cumulative);
-    fprintf (output_file, "%-15.3lf\t", Crop->svBiomass);
-    fprintf (output_file, "%-15.3lf\t", Crop->svShoot);
-    fprintf (output_file, "%-15.3lf\t", Crop->svRoot);
-    fprintf (output_file, "%-15.4lf\t", Crop->svRadiationInterception);
-    fprintf (output_file, "%-15.2lf\t", (Crop->svN_Shoot + Crop->svN_Root) * 1000.);
-    fprintf (output_file, "%-15.2lf\t", Crop->svN_Shoot * 1000.);
-    fprintf (output_file, "%-15.2lf\t", Crop->svN_Root * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Crop->svTT_Cumulative);
+    fprintf (output_file, "%-15.6lf\t", Crop->svBiomass);
+    fprintf (output_file, "%-15.6lf\t", Crop->svShoot);
+    fprintf (output_file, "%-15.6lf\t", Crop->svRoot);
+    fprintf (output_file, "%-15.6lf\t", Crop->svRadiationInterception);
+    fprintf (output_file, "%-15.6lf\t", (Crop->svN_Shoot + Crop->svN_Root) * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Crop->svN_Shoot * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Crop->svN_Root * 1000.);
     if (Crop->svShoot > 0.)
-        fprintf (output_file, "%-15.2lf\t", (Crop->svN_Shoot / Crop->svShoot) * 1000.);
+        fprintf (output_file, "%-15.6lf\t", (Crop->svN_Shoot / Crop->svShoot) * 1000.);
     else
-        fprintf (output_file, "%-15.2lf\t", 0.);
-    fprintf (output_file, "%-15.2lf\t", Crop->svN_Fixation * 1000.);
-    fprintf (output_file, "%-15.2lf\t", Crop->svN_AutoAdded * 1000.);
-    fprintf (output_file, "%-15.2lf\t", Crop->svN_StressFactor);
-    fprintf (output_file, "%-15.2lf\t", Crop->svWaterStressFactor);
-    fprintf (output_file, "%-15.2lf\n", Crop->svTranspirationPotential);
+        fprintf (output_file, "%-15.6lf\t", 0.);
+    fprintf (output_file, "%-15.6lf\t", Crop->svN_Fixation * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Crop->svN_AutoAdded * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Crop->svN_StressFactor);
+    fprintf (output_file, "%-15.6lf\t", Crop->svWaterStressFactor);
+    fprintf (output_file, "%-15.6lf\n", Crop->svTranspirationPotential);
 
     fflush (output_file);
     fclose (output_file);
@@ -343,14 +343,14 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     output_file = fopen (filename, "a");
 
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-15.3lf\t", Soil->irrigationVol);
-    fprintf (output_file, "%-15.3lf\t", Soil->runoffVol);
-    fprintf (output_file, "%-15.3lf\t", Soil->infiltrationVol);
-    fprintf (output_file, "%-15.3lf\t", Soil->drainageVol);
-    fprintf (output_file, "%-15.3lf\t", Soil->evaporationVol);
-    fprintf (output_file, "%-15.3lf\t", Soil->residueEvaporationVol);
-    fprintf (output_file, "%-15.3lf\t", Snow->snowEvaporationVol);
-    fprintf (output_file, "%-15.3lf\n", Crop->svTranspiration);
+    fprintf (output_file, "%-15.6lf\t", Soil->irrigationVol);
+    fprintf (output_file, "%-15.6lf\t", Soil->runoffVol);
+    fprintf (output_file, "%-15.6lf\t", Soil->infiltrationVol);
+    fprintf (output_file, "%-15.6lf\t", Soil->drainageVol);
+    fprintf (output_file, "%-15.6lf\t", Soil->evaporationVol);
+    fprintf (output_file, "%-15.6lf\t", Soil->residueEvaporationVol);
+    fprintf (output_file, "%-15.6lf\t", Snow->snowEvaporationVol);
+    fprintf (output_file, "%-15.6lf\n", Crop->svTranspiration);
 
     fflush (output_file);
     fclose (output_file);
@@ -362,19 +362,19 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     output_file = fopen (filename, "a");
 
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-15.1lf\t", Soil->SONProfile * 1000.);
-    fprintf (output_file, "%-15.2lf\t", Soil->NO3Profile * 1000.);
-    fprintf (output_file, "%-15.3lf\t", Soil->NH4Profile * 1000.);
-    fprintf (output_file, "%-15.4lf\t", Soil->N_Mineralization * 1000.);
-    fprintf (output_file, "%-15.3lf\t", Soil->N_Immobilization * 1000.);
-    fprintf (output_file, "%-15.3lf\t", Soil->N_NetMineralization * 1000.);
-    fprintf (output_file, "%-15.4lf\t", Soil->NH4_Nitrification * 1000.);
-    fprintf (output_file, "%-15.5lf\t", Soil->N2O_Nitrification * 1000.);
-    fprintf (output_file, "%-15.5lf\t", Soil->NH4_Volatilization * 1000.);
-    fprintf (output_file, "%-15.5lf\t", Soil->NO3_Denitrification * 1000.);
-    fprintf (output_file, "%-15.5lf\t", Soil->N2O_Denitrification * 1000.);
-    fprintf (output_file, "%-15.5lf\t", Soil->NO3Leaching * 1000.);
-    fprintf (output_file, "%-15.5lf\n", Soil->NH4Leaching * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->SONProfile * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->NO3Profile * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->NH4Profile * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->N_Mineralization * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->N_Immobilization * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->N_NetMineralization * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->NH4_Nitrification * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->N2O_Nitrification * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->NH4_Volatilization * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->NO3_Denitrification * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->N2O_Denitrification * 1000.);
+    fprintf (output_file, "%-15.6lf\t", Soil->NO3Leaching * 1000.);
+    fprintf (output_file, "%-15.6lf\n", Soil->NH4Leaching * 1000.);
 
     fflush (output_file);
     fclose (output_file);
@@ -386,10 +386,10 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     output_file = fopen (filename, "a");
 
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-15.2lf\t", Soil->SOCProfile);
-    fprintf (output_file, "%-15.5lf\t", Soil->C_Humified);
-    fprintf (output_file, "%-15.5lf\t", Soil->C_ResidueRespired);
-    fprintf (output_file, "%-15.5lf\n", Soil->C_SoilRespired);
+    fprintf (output_file, "%-15.6lf\t", Soil->SOCProfile);
+    fprintf (output_file, "%-15.6lf\t", Soil->C_Humified);
+    fprintf (output_file, "%-15.6lf\t", Soil->C_ResidueRespired);
+    fprintf (output_file, "%-15.6lf\n", Soil->C_SoilRespired);
 
     fflush (output_file);
     fclose (output_file);
@@ -401,35 +401,35 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     output_file = fopen (filename, "a");
 
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-15.4lf\t", Residue->residueInterception);
-    fprintf (output_file, "%-15.4lf\t", Residue->stanResidueMass + Residue->flatResidueMass);
+    fprintf (output_file, "%-15.6lf\t", Residue->residueInterception);
+    fprintf (output_file, "%-15.6lf\t", Residue->stanResidueMass + Residue->flatResidueMass);
     sum = 0.0;
     for (i = 0; i < Soil->totalLayers; i++)
         sum = sum + Residue->residueAbgd[i];
-    fprintf (output_file, "%-15.4lf\t", sum);
+    fprintf (output_file, "%-15.6lf\t", sum);
     sum = 0.0;
     for (i = 0; i < Soil->totalLayers; i++)
         sum = sum + Residue->residueRt[i] + Residue->residueRz[i];
-    fprintf (output_file, "%-15.4lf\t", sum);
-    fprintf (output_file, "%-15.5lf\t", Residue->manureSurfaceC);
-    fprintf (output_file, "%-15.5lf\t", Residue->stanResidueN + Residue->flatResidueN);
+    fprintf (output_file, "%-15.6lf\t", sum);
+    fprintf (output_file, "%-15.6lf\t", Residue->manureSurfaceC);
+    fprintf (output_file, "%-15.6lf\t", Residue->stanResidueN + Residue->flatResidueN);
     sum = 0.0;
     for (i = 0; i < Soil->totalLayers; i++)
         sum = sum + Residue->residueAbgdN[i];
-    fprintf (output_file, "%-15.5lf\t", sum);
+    fprintf (output_file, "%-15.6lf\t", sum);
     sum = 0.0;
     for (i = 0; i < Soil->totalLayers; i++)
         sum = sum + Residue->residueRtN[i] + Residue->residueRzN[i];
-    fprintf (output_file, "%-15.5lf\t", sum);
-    fprintf (output_file, "%-15.5lf\t", Residue->manureSurfaceN);
+    fprintf (output_file, "%-15.6lf\t", sum);
+    fprintf (output_file, "%-15.6lf\t", Residue->manureSurfaceN);
     if (Residue->stanResidueMass > 0.0)
-        fprintf (output_file, "%-15.5lf\t", Residue->stanResidueWater / (Residue->stanResidueWater + Residue->stanResidueMass / 10.0));
+        fprintf (output_file, "%-15.6lf\t", Residue->stanResidueWater / (Residue->stanResidueWater + Residue->stanResidueMass / 10.0));
     else
-        fprintf (output_file, "%-15.5lf\t", 0.0);
+        fprintf (output_file, "%-15.6lf\t", 0.0);
     if (Residue->flatResidueMass > 0.0)
-        fprintf (output_file, "%-15.5lf\n", Residue->flatResidueWater / (Residue->flatResidueWater + Residue->flatResidueMass / 10.0));
+        fprintf (output_file, "%-15.6lf\n", Residue->flatResidueWater / (Residue->flatResidueWater + Residue->flatResidueMass / 10.0));
     else
-        fprintf (output_file, "%-15.5lf\n", 0.0);
+        fprintf (output_file, "%-15.6lf\n", 0.0);
 
     fflush (output_file);
     fclose (output_file);
@@ -452,23 +452,23 @@ void PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Wea
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
     fprintf (output_file, "%-15s\t", Crop->cropName);
 
-    fprintf (output_file, "%-15.3lf\t", Crop->rcBiomass);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcRoot);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcGrainYield);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcForageYield);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcResidueBiomass);
-    fprintf (output_file, "%-15.4lf\t", Crop->rcHarvestIndex);
-    fprintf (output_file, "%-15.2lf\t", Crop->rcCropTranspirationPotential);
-    fprintf (output_file, "%-15.2lf\t", Crop->rcCropTranspiration);
-    fprintf (output_file, "%-15.2lf\t", Crop->rcSoilWaterEvaporation);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcTotalNitrogen);
-    fprintf (output_file, "%-15.4lf\t", Crop->rcRootNitrogen);
-    fprintf (output_file, "%-15.4lf\t", Crop->rcGrainNitrogenYield);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcForageNitrogenYield);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcNitrogenCumulative);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcNitrogenInHarvest);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcNitrogenInResidue);
-    fprintf (output_file, "%-15.3lf\t", Crop->rcNitrogenForageConc);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcBiomass);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcRoot);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcGrainYield);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcForageYield);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcResidueBiomass);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcHarvestIndex);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcCropTranspirationPotential);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcCropTranspiration);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcSoilWaterEvaporation);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcTotalNitrogen);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcRootNitrogen);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcGrainNitrogenYield);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcForageNitrogenYield);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcNitrogenCumulative);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcNitrogenInHarvest);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcNitrogenInResidue);
+    fprintf (output_file, "%-15.6lf\t", Crop->rcNitrogenForageConc);
     fprintf (output_file, "\n");
 
     fflush (output_file);
@@ -486,11 +486,11 @@ void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const Soi
 
     fprintf (output_file, "%4.4d", y + start_year);
     for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.3lf", Soil->layerThickness[i]);
+        fprintf (output_file, "\t%-15.6lf", Soil->layerThickness[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.3lf", Soil->BD[i]);
+        fprintf (output_file, "\t%-15.6lf", Soil->BD[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.3lf", Soil->Clay[i] * 100.0);
+        fprintf (output_file, "\t%-15.6lf", Soil->Clay[i] * 100.0);
     for (i = 0; i < Soil->totalLayers; i++)
         fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualDecompositionFactor[i]);
     for (i = 0; i < Soil->totalLayers; i++)
@@ -525,11 +525,11 @@ void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const Soi
 
     fprintf (output_file, "%4.4d", y + start_year);
     for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.3lf", SoilCarbon->abgdBiomassInput[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->abgdBiomassInput[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.3lf", SoilCarbon->rootBiomassInput[i] + SoilCarbon->rhizBiomassInput[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->rootBiomassInput[i] + SoilCarbon->rhizBiomassInput[i]);
     for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.3lf", SoilCarbon->abgdCarbonInput[i]);
+        fprintf (output_file, "\t%-15.6lf", SoilCarbon->abgdCarbonInput[i]);
     for (i = 0; i < Soil->totalLayers; i++)
         fprintf (output_file, "\t%-15.6lf", SoilCarbon->rootCarbonInput[i] + SoilCarbon->rhizCarbonInput[i]);
     for (i = 0; i < Soil->totalLayers; i++)
@@ -702,8 +702,3 @@ void PrintSummary (const SummaryStruct *Summary, int totalYears, const char *pro
     fflush (output_file);
     fclose (output_file);
 }
-
-
-
-
-
