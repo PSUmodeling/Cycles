@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, WeatherStruct *Weather)
+void ComputeThermalTime (int total_years, CommunityStruct *Community, WeatherStruct *Weather)
 {
     /* 
      * Calculate flowering and Maturity thermal time for each crop
@@ -18,7 +18,6 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
      * c		    int
      * y		    int
      * d		    int
-     * describedCrop	    describedCropStruct*
      */
 
     double          sumTT = 0.0;
@@ -31,16 +30,15 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
     int		    y;
     int		    d;
 
-    describedCropStruct *describedCrop;
+    CropStruct *Crop;
 
-    SelectCropInitialPosition (CropManagement);
+    //SelectCropInitialPosition (CropManagement);
 
-    for (c = 0; c < CropManagement->totalCropsPerRotation; c++)
+    for (c = 0; c < Community->NumCrop; c++)
     {
-        SelectNextCrop (CropManagement);
-        describedCrop = &(CropManagement->describedCrop[CropManagement->describedIndex]);
+        Crop = &(Community->Crop[c]);
 
-        if (describedCrop->calculatedMaturityTT == 0.0)
+        if (Crop->calculatedMaturityTT == 0.0)
         {
             /* Computes thermal time for 1st instance of crop in each
              * rotation */
@@ -51,17 +49,17 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
             {
                 for (d = 1; d <= Weather->lastDoy[y]; d++)
                 {
-                    if (d == describedCrop->userSeedingDate)
+                    if (d == Crop->userSeedingDate)
                         cropON = 1;
 
                     if (cropON)
                     {
-                        sumTT = sumTT + 0.5 * (ThermalTime (describedCrop->userTemperatureBase, describedCrop->userTemperatureOptimum, describedCrop->userTemperatureMaximum, Weather->tMax[y][d - 1]) + ThermalTime (describedCrop->userTemperatureBase, describedCrop->userTemperatureOptimum, describedCrop->userTemperatureMaximum, Weather->tMin[y][d - 1]));
+                        sumTT = sumTT + 0.5 * (ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMax[y][d - 1]) + ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMin[y][d - 1]));
 
-                        if (d == describedCrop->userFloweringDate)
+                        if (d == Crop->userFloweringDate)
                             sumFTTbyYear = sumFTTbyYear + sumTT;
 
-                        if (d == describedCrop->userMaturityDate)
+                        if (d == Crop->userMaturityDate)
                         {
                             cropEvents = cropEvents + 1;
                             sumMTTbyYear = sumMTTbyYear + sumTT;
@@ -77,13 +75,13 @@ void ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, 
              * rotation */
             if (cropEvents > 0)
             {
-                describedCrop->calculatedFloweringTT = sumFTTbyYear / cropEvents;
-                describedCrop->calculatedMaturityTT = sumMTTbyYear / cropEvents;
+                Crop->calculatedFloweringTT = sumFTTbyYear / cropEvents;
+                Crop->calculatedMaturityTT = sumMTTbyYear / cropEvents;
             }
             else
             {
-                describedCrop->calculatedFloweringTT = 0.0;
-                describedCrop->calculatedMaturityTT = 0.0;
+                Crop->calculatedFloweringTT = 0.0;
+                Crop->calculatedMaturityTT = 0.0;
             }
         }
         sumFTTbyYear = 0.0;

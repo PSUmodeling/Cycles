@@ -127,7 +127,7 @@ int main (int argc, char *argv[])
     /* Compute crop thermal time */
     if (verbose_mode)
 	printf ("Compute crop thermal time.\n");
-    ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->CropManagement, &Cycles->Weather);
+    ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->Community, &Cycles->Weather);
 
     SelectCropInitialPosition (&Cycles->CropManagement);
 

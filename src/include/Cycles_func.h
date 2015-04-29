@@ -30,7 +30,7 @@ void            ComputeColdDamage (int y, int doy, CropStruct *Crop, const Weath
 double          ColdDamage (const double T, const double Crop_Tn, const double Crop_Tth);
 
 /* CropThermalTime.c */
-void            ComputeThermalTime (int total_years, CropManagementStruct *CropManagement, WeatherStruct *Weather);
+void            ComputeThermalTime (int total_years, CommunityStruct *Community, WeatherStruct *Weather);
 double          ThermalTime (double T_base, double T_op, double T_Max, double Temperature);
 
 /* CropTranspiration.c */
