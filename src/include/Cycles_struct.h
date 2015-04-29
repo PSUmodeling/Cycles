@@ -341,6 +341,7 @@ typedef struct CommunityStruct
     double          svWaterStressFactor;
     double          svN_StressFactor;
 
+    CropStruct     *Crop;
     int             NumCrop;
 } CommunityStruct;
 
@@ -565,7 +566,6 @@ typedef struct CyclesStruct
     SimControlStruct SimControl;
     SoilStruct      Soil;
     CropManagementStruct CropManagement;
-    CropStruct     *Crop;
     CommunityStruct Community;
     ResidueStruct   Residue;
     SoilCarbonStruct SoilCarbon;
