@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ReadCrop (char *filename, CropManagementStruct *CropManagement)
+void ReadCrop (char *filename, CommunityStruct *Community)
 {
     /*
      * Read crop description file
@@ -25,6 +25,7 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
     char            optstr[MAXSTRING];
     int             crop_counter = 0;
     int             i;
+    CropStruct     *Crop;
 
     /* Open simulation control file */
     fullname = (char *)malloc ((strlen (filename) + 7) * sizeof (char));
@@ -59,8 +60,8 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
     }
 
     /* Allocate memories for Crop classes */
-    CropManagement->NumDescribedCrop = crop_counter;
-    CropManagement->describedCrop = (describedCropStruct *)malloc (crop_counter * sizeof (describedCropStruct));
+    Community->NumCrop = crop_counter;
+    Community->Crop = (CropStruct *)malloc (crop_counter * sizeof (CropStruct));
 
     /* Rewind to the beginning of file and reset crop_counter */
     rewind (crop_file);
@@ -77,89 +78,90 @@ void ReadCrop (char *filename, CropManagementStruct *CropManagement)
             if (strcasecmp ("NAME", optstr) == 0)
             {
                 strcpy (optstr, "\0");
-                sscanf (cmdstr, "%*s %s", CropManagement->describedCrop[i].userCropName);
+                Crop = &(Community->Crop[i]);
+                sscanf (cmdstr, "%*s %s", Crop->userCropName);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &CropManagement->describedCrop[i].userSeedingDate);
+                sscanf (cmdstr, "%*s %d", &Crop->userSeedingDate);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &CropManagement->describedCrop[i].userFloweringDate);
+                sscanf (cmdstr, "%*s %d", &Crop->userFloweringDate);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &CropManagement->describedCrop[i].userMaturityDate);
+                sscanf (cmdstr, "%*s %d", &Crop->userMaturityDate);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userMaximumSoilCoverage);
+                sscanf (cmdstr, "%*s %lf", &Crop->userMaximumSoilCoverage);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userMaximumRootingDepth);
+                sscanf (cmdstr, "%*s %lf", &Crop->userMaximumRootingDepth);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userExpectedYieldAvg);
+                sscanf (cmdstr, "%*s %lf", &Crop->userExpectedYieldAvg);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userExpectedYieldMax);
+                sscanf (cmdstr, "%*s %lf", &Crop->userExpectedYieldMax);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userExpectedYieldMin);
+                sscanf (cmdstr, "%*s %lf", &Crop->userExpectedYieldMin);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userPercentMoistureInYield);
+                sscanf (cmdstr, "%*s %lf", &Crop->userPercentMoistureInYield);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userFractionResidueStanding);
+                sscanf (cmdstr, "%*s %lf", &Crop->userFractionResidueStanding);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userFractionResidueRemoved);
+                sscanf (cmdstr, "%*s %lf", &Crop->userFractionResidueRemoved);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userClippingTiming);
+                sscanf (cmdstr, "%*s %lf", &Crop->userClippingTiming);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userTranspirationMinTemperature);
+                sscanf (cmdstr, "%*s %lf", &Crop->userTranspirationMinTemperature);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userTranspirationThresholdTemperature);
+                sscanf (cmdstr, "%*s %lf", &Crop->userTranspirationThresholdTemperature);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userColdDamageMinTemperature);
+                sscanf (cmdstr, "%*s %lf", &Crop->userColdDamageMinTemperature);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userColdDamageThresholdTemperature);
+                sscanf (cmdstr, "%*s %lf", &Crop->userColdDamageThresholdTemperature);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userTemperatureBase);
+                sscanf (cmdstr, "%*s %lf", &Crop->userTemperatureBase);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userTemperatureOptimum);
+                sscanf (cmdstr, "%*s %lf", &Crop->userTemperatureOptimum);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userTemperatureMaximum);
+                sscanf (cmdstr, "%*s %lf", &Crop->userTemperatureMaximum);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userShootPartitionInitial);
+                sscanf (cmdstr, "%*s %lf", &Crop->userShootPartitionInitial);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userShootPartitionFinal);
+                sscanf (cmdstr, "%*s %lf", &Crop->userShootPartitionFinal);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userRadiationUseEfficiency);
+                sscanf (cmdstr, "%*s %lf", &Crop->userRadiationUseEfficiency);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userTranspirationUseEfficiency);
+                sscanf (cmdstr, "%*s %lf", &Crop->userTranspirationUseEfficiency);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userHIx);
+                sscanf (cmdstr, "%*s %lf", &Crop->userHIx);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userHIo);
+                sscanf (cmdstr, "%*s %lf", &Crop->userHIo);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userHIk);
+                sscanf (cmdstr, "%*s %lf", &Crop->userHIk);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userEmergenceTT);
+                sscanf (cmdstr, "%*s %lf", &Crop->userEmergenceTT);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userNMaxConcentration);
+                sscanf (cmdstr, "%*s %lf", &Crop->userNMaxConcentration);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userNDilutionSlope);
+                sscanf (cmdstr, "%*s %lf", &Crop->userNDilutionSlope);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %lf", &CropManagement->describedCrop[i].userKc);
+                sscanf (cmdstr, "%*s %lf", &Crop->userKc);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &CropManagement->describedCrop[i].userAnnual);
+                sscanf (cmdstr, "%*s %d", &Crop->userAnnual);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &CropManagement->describedCrop[i].userLegume);
+                sscanf (cmdstr, "%*s %d", &Crop->userLegume);
                 fgets (cmdstr, MAXSTRING, crop_file);
-                sscanf (cmdstr, "%*s %d", &CropManagement->describedCrop[i].userC3orC4);
+                sscanf (cmdstr, "%*s %d", &Crop->userC3orC4);
 
                 /* Convert units */
-                CropManagement->describedCrop[i].userMaximumSoilCoverage = CropManagement->describedCrop[i].userMaximumSoilCoverage * 0.94 / 100.0;
-                CropManagement->describedCrop[i].userPercentMoistureInYield = CropManagement->describedCrop[i].userPercentMoistureInYield / 100.0;
-                CropManagement->describedCrop[i].userFractionResidueStanding = CropManagement->describedCrop[i].userFractionResidueStanding / 100.0;
-                CropManagement->describedCrop[i].userFractionResidueRemoved = CropManagement->describedCrop[i].userFractionResidueRemoved / 100.0;
-                if (CropManagement->describedCrop[i].userClippingTiming != BADVAL)
-                    CropManagement->describedCrop[i].userClippingTiming = CropManagement->describedCrop[i].userClippingTiming / 100.0;
+                Crop->userMaximumSoilCoverage = Crop->userMaximumSoilCoverage * 0.94 / 100.0;
+                Crop->userPercentMoistureInYield = Crop->userPercentMoistureInYield / 100.0;
+                Crop->userFractionResidueStanding = Crop->userFractionResidueStanding / 100.0;
+                Crop->userFractionResidueRemoved = Crop->userFractionResidueRemoved / 100.0;
+                if (Crop->userClippingTiming != BADVAL)
+                    Crop->userClippingTiming = Crop->userClippingTiming / 100.0;
                 else
-                    CropManagement->describedCrop[i].userClippingTiming = 0.0;
+                    Crop->userClippingTiming = 0.0;
 
-                CropManagement->describedCrop[i].calculatedFloweringTT = 0.0;
-                CropManagement->describedCrop[i].calculatedMaturityTT = 0.0;
-                CropManagement->describedCrop[i].calculatedSimAvgYield = 0.0;
-                CropManagement->describedCrop[i].calculatedSimMaxYield = 0.0;
-                CropManagement->describedCrop[i].calculatedSimMinYield = 0.0;
+                Crop->calculatedFloweringTT = 0.0;
+                Crop->calculatedMaturityTT = 0.0;
+                Crop->calculatedSimAvgYield = 0.0;
+                Crop->calculatedSimMaxYield = 0.0;
+                Crop->calculatedSimMinYield = 0.0;
                 i++;
             }
         }

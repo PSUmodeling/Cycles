@@ -39,48 +39,48 @@ void PrintSoil (SoilStruct Soil)
     printf ("\n");
 }
 
-void PrintCrop (describedCropStruct *describedCrop, int NumCrop)
+void PrintCrop (CommunityStruct Community)
 {
     int             i;
 
-    printf ("\n\n*Crop description file contains descriptions of %d crop types.\n\n", NumCrop);
+    printf ("\n\n*Crop description file contains descriptions of %d crop types.\n\n", Community.NumCrop);
 
     for (i = 0; i < NumCrop; i++)
     {
-        printf ("*%-38s\t%-10s\n", "NAME", describedCrop[i].userCropName);
-        printf ("*%-38s\t%-3d\n", "AVERAGE SEEDING DATE", describedCrop[i].userSeedingDate);
-        printf ("*%-38s\t%-3d\n", "AVERAGE 50% FLOWERING DATE", describedCrop[i].userFloweringDate);
-        printf ("*%-38s\t%-3d\n", "AVERAGE MATURITY DATE", describedCrop[i].userMaturityDate);
-        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_SOIL_COVERAGE", describedCrop[i].userMaximumSoilCoverage);
-        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_ROOTING_DEPTH", describedCrop[i].userMaximumRootingDepth);
-        printf ("*%-38s\t%-9.2lf\n", "AVERAGE_EXPECTED_YIELD", describedCrop[i].userExpectedYieldAvg);
-        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_EXPECTED_YIELD", describedCrop[i].userExpectedYieldMax);
-        printf ("*%-38s\t%-9.2lf\n", "MINIMUM_EXPECTED_YIELD", describedCrop[i].userExpectedYieldMin);
-        printf ("*%-38s\t%-9.2lf\n", "COMMERCIAL_YIELD_MOISTURE", describedCrop[i].userPercentMoistureInYield);
-        printf ("*%-38s\t%-9.2lf\n", "STANDING_RESIDUE_AT_HARVEST", describedCrop[i].userFractionResidueStanding);
-        printf ("*%-38s\t%-9.2lf\n", "RESIDUE_REMOVED", describedCrop[i].userFractionResidueRemoved);
-        printf ("*%-38s\t%-9.2lf\n", "HARVEST_TIMING", describedCrop[i].userClippingTiming);
-        printf ("*%-38s\t%-9.2lf\n", "MIN_TEMPERATURE_FOR_TRANSPIRATION", describedCrop[i].userTranspirationMinTemperature);
-        printf ("*%-38s\t%-9.2lf\n", "THRESHOLD_TEMPERATURE_FOR_TRANPIRATION", describedCrop[i].userTranspirationThresholdTemperature);
-        printf ("*%-38s\t%-9.2lf\n", "MIN_TEMPERATURE_FOR_COLD_DAMAGE", describedCrop[i].userColdDamageMinTemperature);
-        printf ("*%-38s\t%-9.2lf\n", "THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE", describedCrop[i].userColdDamageThresholdTemperature);
-        printf ("*%-38s\t%-9.2lf\n", "BASE_TEMPERATURE_FOR_DEVELOPMENT", describedCrop[i].userTemperatureBase);
-        printf ("*%-38s\t%-9.2lf\n", "OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT", describedCrop[i].userTemperatureOptimum);
-        printf ("*%-38s\t%-9.2lf\n", "MAX_TEMPERATURE_FOR_DEVELOPMENT", describedCrop[i].userTemperatureMaximum);
-        printf ("*%-38s\t%-9.2lf\n", "INITIAL_PARTITIONING_TO_SHOOT", describedCrop[i].userShootPartitionInitial);
-        printf ("*%-38s\t%-9.2lf\n", "FINAL_PARTITIONING_TO_SHOOT", describedCrop[i].userShootPartitionFinal);
-        printf ("*%-38s\t%-9.2lf\n", "RAIDATION_USE_EFFICIENCY", describedCrop[i].userRadiationUseEfficiency);
-        printf ("*%-38s\t%-9.2lf\n", "TRANSPIRATION_USE_EFFICIENCY", describedCrop[i].userTranspirationUseEfficiency);
-        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_HARVEST_INDEX", describedCrop[i].userHIx);
-        printf ("*%-38s\t%-9.2lf\n", "MINIMUM_HARVEST_INDEX", describedCrop[i].userHIo);
-        printf ("*%-38s\t%-9.2lf\n", "HARVEST_INDEX", describedCrop[i].userHIk);
-        printf ("*%-38s\t%-9.2lf\n", "THERMAL_TIME_TO_EMERGENCE", describedCrop[i].userEmergenceTT);
-        printf ("*%-38s\t%-9.2lf\n", "N_MAX_CONCENTRATION", describedCrop[i].userNMaxConcentration);
-        printf ("*%-38s\t%-9.2lf\n", "N_DILUTION_SLOPE", describedCrop[i].userNDilutionSlope);
-        printf ("*%-38s\t%-9.2lf\n", "KC", describedCrop[i].userKc);
-        printf ("*%-38s\t%-3d\n", "ANNUAL", describedCrop[i].userAnnual);
-        printf ("*%-38s\t%-3d\n", "LEGUME", describedCrop[i].userLegume);
-        printf ("*%-38s\t%-3d\n\n", "C3", describedCrop[i].userC3orC4);
+        printf ("*%-38s\t%-10s\n", "NAME", Community.Crop[i].userCropName);
+        printf ("*%-38s\t%-3d\n", "AVERAGE SEEDING DATE", Community.Crop[i].userSeedingDate);
+        printf ("*%-38s\t%-3d\n", "AVERAGE 50% FLOWERING DATE", Community.Crop[i].userFloweringDate);
+        printf ("*%-38s\t%-3d\n", "AVERAGE MATURITY DATE", Community.Crop[i].userMaturityDate);
+        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_SOIL_COVERAGE", Community.Crop[i].userMaximumSoilCoverage);
+        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_ROOTING_DEPTH", Community.Crop[i].userMaximumRootingDepth);
+        printf ("*%-38s\t%-9.2lf\n", "AVERAGE_EXPECTED_YIELD", Community.Crop[i].userExpectedYieldAvg);
+        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_EXPECTED_YIELD", Community.Crop[i].userExpectedYieldMax);
+        printf ("*%-38s\t%-9.2lf\n", "MINIMUM_EXPECTED_YIELD", Community.Crop[i].userExpectedYieldMin);
+        printf ("*%-38s\t%-9.2lf\n", "COMMERCIAL_YIELD_MOISTURE", Community.Crop[i].userPercentMoistureInYield);
+        printf ("*%-38s\t%-9.2lf\n", "STANDING_RESIDUE_AT_HARVEST", Community.Crop[i].userFractionResidueStanding);
+        printf ("*%-38s\t%-9.2lf\n", "RESIDUE_REMOVED", Community.Crop[i].userFractionResidueRemoved);
+        printf ("*%-38s\t%-9.2lf\n", "HARVEST_TIMING", Community.Crop[i].userClippingTiming);
+        printf ("*%-38s\t%-9.2lf\n", "MIN_TEMPERATURE_FOR_TRANSPIRATION", Community.Crop[i].userTranspirationMinTemperature);
+        printf ("*%-38s\t%-9.2lf\n", "THRESHOLD_TEMPERATURE_FOR_TRANPIRATION", Community.Crop[i].userTranspirationThresholdTemperature);
+        printf ("*%-38s\t%-9.2lf\n", "MIN_TEMPERATURE_FOR_COLD_DAMAGE", Community.Crop[i].userColdDamageMinTemperature);
+        printf ("*%-38s\t%-9.2lf\n", "THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE", Community.Crop[i].userColdDamageThresholdTemperature);
+        printf ("*%-38s\t%-9.2lf\n", "BASE_TEMPERATURE_FOR_DEVELOPMENT", Community.Crop[i].userTemperatureBase);
+        printf ("*%-38s\t%-9.2lf\n", "OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT", Community.Crop[i].userTemperatureOptimum);
+        printf ("*%-38s\t%-9.2lf\n", "MAX_TEMPERATURE_FOR_DEVELOPMENT", Community.Crop[i].userTemperatureMaximum);
+        printf ("*%-38s\t%-9.2lf\n", "INITIAL_PARTITIONING_TO_SHOOT", Community.Crop[i].userShootPartitionInitial);
+        printf ("*%-38s\t%-9.2lf\n", "FINAL_PARTITIONING_TO_SHOOT", Community.Crop[i].userShootPartitionFinal);
+        printf ("*%-38s\t%-9.2lf\n", "RAIDATION_USE_EFFICIENCY", Community.Crop[i].userRadiationUseEfficiency);
+        printf ("*%-38s\t%-9.2lf\n", "TRANSPIRATION_USE_EFFICIENCY", Community.Crop[i].userTranspirationUseEfficiency);
+        printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_HARVEST_INDEX", Community.Crop[i].userHIx);
+        printf ("*%-38s\t%-9.2lf\n", "MINIMUM_HARVEST_INDEX", Community.Crop[i].userHIo);
+        printf ("*%-38s\t%-9.2lf\n", "HARVEST_INDEX", Community.Crop[i].userHIk);
+        printf ("*%-38s\t%-9.2lf\n", "THERMAL_TIME_TO_EMERGENCE", Community.Crop[i].userEmergenceTT);
+        printf ("*%-38s\t%-9.2lf\n", "N_MAX_CONCENTRATION", Community.Crop[i].userNMaxConcentration);
+        printf ("*%-38s\t%-9.2lf\n", "N_DILUTION_SLOPE", Community.Crop[i].userNDilutionSlope);
+        printf ("*%-38s\t%-9.2lf\n", "KC", Community.Crop[i].userKc);
+        printf ("*%-38s\t%-3d\n", "ANNUAL", Community.Crop[i].userAnnual);
+        printf ("*%-38s\t%-3d\n", "LEGUME", Community.Crop[i].userLegume);
+        printf ("*%-38s\t%-3d\n\n", "C3", Community.Crop[i].userC3orC4);
     }
     printf ("\n");
 }

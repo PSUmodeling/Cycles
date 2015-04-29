@@ -105,9 +105,9 @@ int main (int argc, char *argv[])
         PrintSoil (Cycles->Soil);
 
     /* Read crop description file */
-    ReadCrop (Cycles->SimControl.crop_filename, &Cycles->CropManagement);
+    ReadCrop (Cycles->SimControl.crop_filename, &Cycles->Community);
     if (debug_mode)
-        PrintCrop (Cycles->CropManagement.describedCrop, Cycles->CropManagement.NumDescribedCrop);
+        PrintCrop (Cycles->Community);
 
     /* Read field operation file */
     ReadOperation (Cycles->SimControl.operation_filename, &Cycles->CropManagement, Cycles->SimControl.yearsInRotation);

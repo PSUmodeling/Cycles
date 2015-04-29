@@ -81,7 +81,7 @@ void            StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *So
 void            PrintSummary (const SummaryStruct *Summary, int totalYears, const char *project);
 
 /* ReadCrop.c */
-void            ReadCrop (char *project, CropManagementStruct *CropManagement);
+void            ReadCrop (char *project, CommunityStruct *Community);
 
 /* ReadOperation.c */
 void            ReadOperation (char *project, CropManagementStruct *CropManagement, int yearsInRotation);
@@ -194,7 +194,7 @@ void            CalculateDerivedWeather (WeatherStruct *Weather, int total_years
 
 void            PrintSimContrl (SimControlStruct SimControl);
 void            PrintSoil (SoilStruct Soil);
-void            PrintCrop (describedCropStruct *describedCrop, int NumCrop);
+void            PrintCrop (CommunityStruct Community);
 void            PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *ForcedHarvest, int NumHarvest, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization);
 void            PrintWeather (WeatherStruct Weather);
 
