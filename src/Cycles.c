@@ -110,7 +110,7 @@ int main (int argc, char *argv[])
         PrintCrop (Cycles->Community);
 
     /* Read field operation file */
-    ReadOperation (Cycles->SimControl.operation_filename, &Cycles->CropManagement, Cycles->SimControl.yearsInRotation);
+    ReadOperation (Cycles->SimControl.operation_filename, &Cycles->CropManagement, &Cycles->Community, Cycles->SimControl.yearsInRotation);
     if (debug_mode)
         PrintOperation (Cycles->CropManagement.plantingOrder, Cycles->CropManagement.totalCropsPerRotation, Cycles->CropManagement.ForcedHarvest, Cycles->CropManagement.numHarvest, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization);
 

@@ -84,7 +84,7 @@ void            PrintSummary (const SummaryStruct *Summary, int totalYears, cons
 void            ReadCrop (char *project, CommunityStruct *Community);
 
 /* ReadOperation.c */
-void            ReadOperation (char *project, CropManagementStruct *CropManagement, int yearsInRotation);
+void            ReadOperation (char *project, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation);
 
 /* ReadSimControl.c */
 void            ReadSimControl (char *project, SimControlStruct *SimControl);

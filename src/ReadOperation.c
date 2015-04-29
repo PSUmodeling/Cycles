@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ReadOperation (char *filename, CropManagementStruct *CropManagement, int yearsInRotation)
+void ReadOperation (char *filename, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation)
 {
     /*
      * Read field operation description file
@@ -161,15 +161,15 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                             CropManagement->plantingOrder[i].usesAutoFertilization = -1;
 
                         /* Link planting order and crop description */
-                        for (j = 0; j < CropManagement->NumDescribedCrop; j++)
+                        for (j = 0; j < Community->NumCrop; j++)
                         {
-                            if (strcmp (CropManagement->plantingOrder[i].cropName, CropManagement->describedCrop[j].userCropName) == 0)
+                            if (strcmp (CropManagement->plantingOrder[i].cropName, Community->Crop[j].CropName) == 0)
                             {
                                 CropManagement->plantingOrder[i].plantID = j;
                                 break;
                             }
                         }
-                        if (j >= CropManagement->NumDescribedCrop)
+                        if (j >= Community->NumCrop)
                         {
                             printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->plantingOrder[i].cropName);
                             exit (1);
@@ -210,15 +210,15 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                         sscanf (cmdstr, "%*s %s", CropManagement->ForcedHarvest[i].cropName);
 
                         /* Link forced harvest and crop description */
-                        for (j = 0; j < CropManagement->NumDescribedCrop; j++)
+                        for (j = 0; j < Community->NumCrop; j++)
                         {
-                            if (strcmp (CropManagement->ForcedHarvest[i].cropName, CropManagement->describedCrop[j].userCropName) == 0)
+                            if (strcmp (CropManagement->ForcedHarvest[i].cropName, Community->Crop[j].CropName) == 0)
                             {
                                 CropManagement->ForcedHarvest[i].plantID = j;
                                 break;
                             }
                         }
-                        if (j >= CropManagement->NumDescribedCrop)
+                        if (j >= Community->NumCrop)
                         {
                             printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->ForcedHarvest[i].cropName);
                             exit (1);
@@ -261,6 +261,16 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, int ye
                     sscanf (cmdstr, "%*s %lf", &q->opSDR);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opMixingEfficiency);
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %s", q->cropNameT);
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %lf", &q->fractionThermalTime);
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %lf", &q->killEfficiency);
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %d", &q->grainHarvest);
+                    fgets (cmdstr, MAXSTRING, operation_file);
+                    sscanf (cmdstr, "%*s %lf", &q->forageHarvest);
                     i++;
                 }
             }
