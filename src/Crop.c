@@ -3,7 +3,7 @@
 void SelectCropInitialPosition (CropManagementStruct *CropManagement)
 {
     CropManagement->plantingIndex = -1;
-    CropManagement->describedIndex = -1;
+    //CropManagement->describedIndex = -1;
     PeekNextCrop (CropManagement);
 }
 
@@ -19,7 +19,7 @@ void SelectNextCrop (CropManagementStruct *CropManagement)
     else
         CropManagement->plantingIndex = 0;
 
-    CropManagement->describedIndex = CropManagement->plantingOrder[CropManagement->plantingIndex].plantID;
+    //CropManagement->describedIndex = CropManagement->plantingOrder[CropManagement->plantingIndex].plantID;
 
     PeekNextCrop (CropManagement);
 }
@@ -51,10 +51,10 @@ void NewCrop (CropStruct *Crop, const CropManagementStruct *CropManagement)
 {
     FieldOperationStruct *plantingOrder;
     autoIrrigationStruct *autoIrrigation;
-    describedCropStruct *describedCrop;
+    //describedCropStruct *describedCrop;
 
     plantingOrder = &(CropManagement->plantingOrder[CropManagement->plantingIndex]);
-    describedCrop = &(CropManagement->describedCrop[CropManagement->describedIndex]);
+    //describedCrop = &(CropManagement->describedCrop[CropManagement->describedIndex]);
 
     Crop->cropUniqueIdentifier = plantingOrder->plantID;
     strcpy (Crop->cropName, plantingOrder->cropName);
@@ -98,45 +98,45 @@ void NewCrop (CropStruct *Crop, const CropManagementStruct *CropManagement)
     Crop->svShootUnstressed = 0.0;
     Crop->svN_StressCumulative = 0.0;
 
-    Crop->userSeedingDate = describedCrop->userSeedingDate;
-    Crop->userFloweringDate = describedCrop->userFloweringDate;
-    Crop->userMaturityDate = describedCrop->userMaturityDate;
-    Crop->userMaximumSoilCoverage = describedCrop->userMaximumSoilCoverage;
-    Crop->userMaximumRootingDepth = describedCrop->userMaximumRootingDepth;
-    Crop->userExpectedYieldAvg = describedCrop->userExpectedYieldAvg;
-    Crop->userExpectedYieldMax = describedCrop->userExpectedYieldMax;
-    Crop->userExpectedYieldMin = describedCrop->userExpectedYieldMin;
-    Crop->userPercentMoistureInYield = describedCrop->userPercentMoistureInYield;
-    Crop->userFractionResidueStanding = describedCrop->userFractionResidueStanding;
-    Crop->userFractionResidueRemoved = describedCrop->userFractionResidueRemoved;
-    Crop->userClippingTiming = describedCrop->userClippingTiming;
-    Crop->userTranspirationMinTemperature = describedCrop->userTranspirationMinTemperature;
-    Crop->userTranspirationThresholdTemperature = describedCrop->userTranspirationThresholdTemperature;
-    Crop->userColdDamageMinTemperature = describedCrop->userColdDamageMinTemperature;
-    Crop->userColdDamageThresholdTemperature = describedCrop->userColdDamageThresholdTemperature;
-    Crop->userTemperatureBase = describedCrop->userTemperatureBase;
-    Crop->userTemperatureOptimum = describedCrop->userTemperatureOptimum;
-    Crop->userTemperatureMaximum = describedCrop->userTemperatureMaximum;
-    Crop->userShootPartitionInitial = describedCrop->userShootPartitionInitial;
-    Crop->userShootPartitionFinal = describedCrop->userShootPartitionFinal;
-    Crop->userRadiationUseEfficiency = describedCrop->userRadiationUseEfficiency;
-    Crop->userTranspirationUseEfficiency = describedCrop->userTranspirationUseEfficiency;
-    Crop->userHIx = describedCrop->userHIx;
-    Crop->userHIo = describedCrop->userHIo;
-    Crop->userHIk = describedCrop->userHIk;
-    Crop->userEmergenceTT = describedCrop->userEmergenceTT;
-    Crop->userNMaxConcentration = describedCrop->userNMaxConcentration;
-    Crop->userNDilutionSlope = describedCrop->userNDilutionSlope;
-    Crop->userKc = describedCrop->userKc;
-    Crop->userAnnual = describedCrop->userAnnual;
-    Crop->userLegume = describedCrop->userLegume;
-    Crop->userC3orC4 = describedCrop->userC3orC4;
+    //Crop->userSeedingDate = describedCrop->userSeedingDate;
+    //Crop->userFloweringDate = describedCrop->userFloweringDate;
+    //Crop->userMaturityDate = describedCrop->userMaturityDate;
+    //Crop->userMaximumSoilCoverage = describedCrop->userMaximumSoilCoverage;
+    //Crop->userMaximumRootingDepth = describedCrop->userMaximumRootingDepth;
+    //Crop->userExpectedYieldAvg = describedCrop->userExpectedYieldAvg;
+    //Crop->userExpectedYieldMax = describedCrop->userExpectedYieldMax;
+    //Crop->userExpectedYieldMin = describedCrop->userExpectedYieldMin;
+    //Crop->userPercentMoistureInYield = describedCrop->userPercentMoistureInYield;
+    //Crop->userFractionResidueStanding = describedCrop->userFractionResidueStanding;
+    //Crop->userFractionResidueRemoved = describedCrop->userFractionResidueRemoved;
+    //Crop->userClippingTiming = describedCrop->userClippingTiming;
+    //Crop->userTranspirationMinTemperature = describedCrop->userTranspirationMinTemperature;
+    //Crop->userTranspirationThresholdTemperature = describedCrop->userTranspirationThresholdTemperature;
+    //Crop->userColdDamageMinTemperature = describedCrop->userColdDamageMinTemperature;
+    //Crop->userColdDamageThresholdTemperature = describedCrop->userColdDamageThresholdTemperature;
+    //Crop->userTemperatureBase = describedCrop->userTemperatureBase;
+    //Crop->userTemperatureOptimum = describedCrop->userTemperatureOptimum;
+    //Crop->userTemperatureMaximum = describedCrop->userTemperatureMaximum;
+    //Crop->userShootPartitionInitial = describedCrop->userShootPartitionInitial;
+    //Crop->userShootPartitionFinal = describedCrop->userShootPartitionFinal;
+    //Crop->userRadiationUseEfficiency = describedCrop->userRadiationUseEfficiency;
+    //Crop->userTranspirationUseEfficiency = describedCrop->userTranspirationUseEfficiency;
+    //Crop->userHIx = describedCrop->userHIx;
+    //Crop->userHIo = describedCrop->userHIo;
+    //Crop->userHIk = describedCrop->userHIk;
+    //Crop->userEmergenceTT = describedCrop->userEmergenceTT;
+    //Crop->userNMaxConcentration = describedCrop->userNMaxConcentration;
+    //Crop->userNDilutionSlope = describedCrop->userNDilutionSlope;
+    //Crop->userKc = describedCrop->userKc;
+    //Crop->userAnnual = describedCrop->userAnnual;
+    //Crop->userLegume = describedCrop->userLegume;
+    //Crop->userC3orC4 = describedCrop->userC3orC4;
 
-    Crop->calculatedFloweringTT = describedCrop->calculatedFloweringTT;
-    Crop->calculatedMaturityTT = describedCrop->calculatedMaturityTT;
-    Crop->calculatedSimAvgYield = describedCrop->calculatedSimAvgYield;
-    Crop->calculatedSimMaxYield = describedCrop->calculatedSimMaxYield;
-    Crop->calculatedSimMinYield = describedCrop->calculatedSimMinYield;
+    //Crop->calculatedFloweringTT = describedCrop->calculatedFloweringTT;
+    //Crop->calculatedMaturityTT = describedCrop->calculatedMaturityTT;
+    //Crop->calculatedSimAvgYield = describedCrop->calculatedSimAvgYield;
+    //Crop->calculatedSimMaxYield = describedCrop->calculatedSimMaxYield;
+    //Crop->calculatedSimMinYield = describedCrop->calculatedSimMinYield;
 
     Crop->harvestDateFinal = -1;
     Crop->harvestCount = 0;
@@ -175,44 +175,44 @@ void KillCrop (CropStruct *Crop)
     Crop->autoIrrigationStopDay = 0;
     Crop->autoIrrigationWaterDepletion = 0.0;
     Crop->autoIrrigationLastSoilLayer = 0;
-    Crop->userSeedingDate = 0;
-    Crop->userFloweringDate = 0;
-    Crop->userMaturityDate = 0;
-    Crop->userMaximumSoilCoverage = 0.0;
-    Crop->userMaximumRootingDepth = 0.0;
-    Crop->userExpectedYieldAvg = 0.0;
-    Crop->userExpectedYieldMax = 0.0;
-    Crop->userExpectedYieldMin = 0.0;
-    Crop->userPercentMoistureInYield = 0.0;
-    Crop->userFractionResidueStanding = 0.0;
-    Crop->userFractionResidueRemoved = 0.0;
-    Crop->userClippingTiming = 0.0;
-    Crop->userTranspirationMinTemperature = 0.0;
-    Crop->userTranspirationThresholdTemperature = 0.0;
-    Crop->userColdDamageMinTemperature = 0.0;
-    Crop->userColdDamageThresholdTemperature = 0.0;
-    Crop->userTemperatureBase = 0.0;
-    Crop->userTemperatureOptimum = 0.0;
-    Crop->userTemperatureMaximum = 0.0;
-    Crop->userShootPartitionInitial = 0.0;
-    Crop->userShootPartitionFinal = 0.0;
-    Crop->userRadiationUseEfficiency = 0.0;
-    Crop->userTranspirationUseEfficiency = 0.0;
-    Crop->userHIx = 0.0;
-    Crop->userHIo = 0.0;
-    Crop->userHIk = 0.0;
-    Crop->userEmergenceTT = 0.0;
-    Crop->userNMaxConcentration = 0.0;
-    Crop->userNDilutionSlope = 0.0;
-    Crop->userKc = 0.0;
-    Crop->userAnnual = 0;
-    Crop->userLegume = 0;
-    Crop->userC3orC4 = 0;
-    Crop->calculatedFloweringTT = 0.0;
-    Crop->calculatedMaturityTT = 0.0;
-    Crop->calculatedSimAvgYield = 0.0;
-    Crop->calculatedSimMaxYield = 0.0;
-    Crop->calculatedSimMinYield = 0.0;
+    //Crop->userSeedingDate = 0;
+    //Crop->userFloweringDate = 0;
+    //Crop->userMaturityDate = 0;
+    //Crop->userMaximumSoilCoverage = 0.0;
+    //Crop->userMaximumRootingDepth = 0.0;
+    //Crop->userExpectedYieldAvg = 0.0;
+    //Crop->userExpectedYieldMax = 0.0;
+    //Crop->userExpectedYieldMin = 0.0;
+    //Crop->userPercentMoistureInYield = 0.0;
+    //Crop->userFractionResidueStanding = 0.0;
+    //Crop->userFractionResidueRemoved = 0.0;
+    //Crop->userClippingTiming = 0.0;
+    //Crop->userTranspirationMinTemperature = 0.0;
+    //Crop->userTranspirationThresholdTemperature = 0.0;
+    //Crop->userColdDamageMinTemperature = 0.0;
+    //Crop->userColdDamageThresholdTemperature = 0.0;
+    //Crop->userTemperatureBase = 0.0;
+    //Crop->userTemperatureOptimum = 0.0;
+    //Crop->userTemperatureMaximum = 0.0;
+    //Crop->userShootPartitionInitial = 0.0;
+    //Crop->userShootPartitionFinal = 0.0;
+    //Crop->userRadiationUseEfficiency = 0.0;
+    //Crop->userTranspirationUseEfficiency = 0.0;
+    //Crop->userHIx = 0.0;
+    //Crop->userHIo = 0.0;
+    //Crop->userHIk = 0.0;
+    //Crop->userEmergenceTT = 0.0;
+    //Crop->userNMaxConcentration = 0.0;
+    //Crop->userNDilutionSlope = 0.0;
+    //Crop->userKc = 0.0;
+    //Crop->userAnnual = 0;
+    //Crop->userLegume = 0;
+    //Crop->userC3orC4 = 0;
+    //Crop->calculatedFloweringTT = 0.0;
+    //Crop->calculatedMaturityTT = 0.0;
+    //Crop->calculatedSimAvgYield = 0.0;
+    //Crop->calculatedSimMaxYield = 0.0;
+    //Crop->calculatedSimMinYield = 0.0;
     Crop->harvestDateFinal = -1;
     Crop->harvestCount = -1;
     Crop->stageGrowth = -1;
