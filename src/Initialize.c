@@ -40,13 +40,14 @@ void FreeCyclesStruct (CyclesStruct Cycles, int total_years)
     int             i;
 
     free (Cycles->CropManagement.tillageFactor);
-    free (Cycles->CropManagement.describedCrop);
     free (Cycles->CropManagement.plantingOrder);
     free (Cycles->CropManagement.FixedFertilization);
     free (Cycles->CropManagement.FixedIrrigation);
     free (Cycles->CropManagement.Tillage);
     free (Cycles->CropManagement.autoIrrigation);
     free (Cycles->CropManagement.ForcedHarvest);
+
+    free (Cycles->Community.Crop);
 
     free (Cycles->Soil.layerThickness);
     free (Cycles->Soil.Clay);

@@ -45,9 +45,9 @@ void PrintCrop (CommunityStruct Community)
 
     printf ("\n\n*Crop description file contains descriptions of %d crop types.\n\n", Community.NumCrop);
 
-    for (i = 0; i < NumCrop; i++)
+    for (i = 0; i < Community.NumCrop; i++)
     {
-        printf ("*%-38s\t%-10s\n", "NAME", Community.Crop[i].userCropName);
+        printf ("*%-38s\t%-10s\n", "NAME", Community.Crop[i].cropName);
         printf ("*%-38s\t%-3d\n", "AVERAGE SEEDING DATE", Community.Crop[i].userSeedingDate);
         printf ("*%-38s\t%-3d\n", "AVERAGE 50% FLOWERING DATE", Community.Crop[i].userFloweringDate);
         printf ("*%-38s\t%-3d\n", "AVERAGE MATURITY DATE", Community.Crop[i].userMaturityDate);

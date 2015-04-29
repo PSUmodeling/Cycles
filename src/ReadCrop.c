@@ -79,7 +79,7 @@ void ReadCrop (char *filename, CommunityStruct *Community)
             {
                 strcpy (optstr, "\0");
                 Crop = &(Community->Crop[i]);
-                sscanf (cmdstr, "%*s %s", Crop->userCropName);
+                sscanf (cmdstr, "%*s %s", Crop->cropName);
                 fgets (cmdstr, MAXSTRING, crop_file);
                 sscanf (cmdstr, "%*s %d", &Crop->userSeedingDate);
                 fgets (cmdstr, MAXSTRING, crop_file);

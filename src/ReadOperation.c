@@ -163,7 +163,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
                         /* Link planting order and crop description */
                         for (j = 0; j < Community->NumCrop; j++)
                         {
-                            if (strcmp (CropManagement->plantingOrder[i].cropName, Community->Crop[j].CropName) == 0)
+                            if (strcmp (CropManagement->plantingOrder[i].cropName, Community->Crop[j].cropName) == 0)
                             {
                                 CropManagement->plantingOrder[i].plantID = j;
                                 break;
@@ -212,7 +212,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
                         /* Link forced harvest and crop description */
                         for (j = 0; j < Community->NumCrop; j++)
                         {
-                            if (strcmp (CropManagement->ForcedHarvest[i].cropName, Community->Crop[j].CropName) == 0)
+                            if (strcmp (CropManagement->ForcedHarvest[i].cropName, Community->Crop[j].cropName) == 0)
                             {
                                 CropManagement->ForcedHarvest[i].plantID = j;
                                 break;
