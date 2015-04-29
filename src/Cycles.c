@@ -122,7 +122,7 @@ int main (int argc, char *argv[])
     InitializeOutput (project, Cycles->Soil.totalLayers);
 
     /* Initialize model variables and parameters */
-    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Crop, &Cycles->CropManagement, &Cycles->Snow);
+    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Community, &Cycles->CropManagement, &Cycles->Snow);
 
     /* Compute crop thermal time */
     if (verbose_mode)

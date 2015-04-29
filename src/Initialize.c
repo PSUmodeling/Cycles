@@ -1,7 +1,9 @@
 #include "Cycles.h"
 
-void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CropStruct *Crop, CropManagementStruct *CropManagement, SnowStruct *Snow)
+void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow)
 {
+    int             i;
+
     /* Initialize weather variables */
     CalculateDerivedWeather (Weather, SimControl->totalYears);
 
@@ -15,7 +17,8 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
     InitializeSoilCarbon (SoilCarbon, Soil->totalLayers);
 
     /* Initialize crops */
-    Crop->cropUniqueIdentifier = -1;
+    for (i = 0; i < Community->NumCrop; i++)
+        Community->Crop[i].cropUniqueIdentifier = -1;
 
     /* Initialize tillage factors */
     CropManagement->tillageFactor = (double *)malloc (Soil->totalLayers * sizeof (double));
