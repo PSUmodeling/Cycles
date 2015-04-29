@@ -193,50 +193,6 @@ typedef struct SoilStruct
     double          NH4_Volatilization;
 } SoilStruct;
 
-typedef struct describedCropStruct
-{
-    /* User Defined Data */
-    char            userCropName[128];
-    int             userSeedingDate;
-    int             userFloweringDate;
-    int             userMaturityDate;
-    double          userMaximumSoilCoverage;
-    double          userMaximumRootingDepth;
-    double          userExpectedYieldAvg;
-    double          userExpectedYieldMax;
-    double          userExpectedYieldMin;
-    double          userPercentMoistureInYield;
-    double          userFractionResidueStanding;
-    double          userFractionResidueRemoved;
-    double          userClippingTiming;
-    double          userTranspirationMinTemperature;
-    double          userTranspirationThresholdTemperature;
-    double          userColdDamageMinTemperature;
-    double          userColdDamageThresholdTemperature;
-    double          userTemperatureBase;
-    double          userTemperatureOptimum;
-    double          userTemperatureMaximum;
-    double          userShootPartitionInitial;
-    double          userShootPartitionFinal;
-    double          userRadiationUseEfficiency;
-    double          userTranspirationUseEfficiency;
-    double          userHIx;
-    double          userHIo;    /* intercept harvest index */
-    double          userHIk;
-    double          userEmergenceTT;
-    double          userNMaxConcentration;
-    double          userNDilutionSlope;
-    double          userKc;
-    int             userAnnual;
-    int             userLegume;
-    int             userC3orC4;
-    double          calculatedFloweringTT;
-    double          calculatedMaturityTT;
-    double          calculatedSimAvgYield;
-    double          calculatedSimMaxYield;
-    double          calculatedSimMinYield;
-} describedCropStruct;
-
 typedef struct CropStruct
 {
     /* Instance of the crop that is being planted */
@@ -360,6 +316,34 @@ typedef struct CropStruct
     //double          totalRealizedCrops;
 } CropStruct;
 
+typedef struct CommunityStruct
+{
+    /* State Variables */
+    double          svRadiationInterception;
+    double          svBiomass;
+    double          svShoot;
+    double          svRoot;
+    double          svRizho;
+    double          svShootDailyGrowth;
+    double          svRootDailyGrowth;
+    double          svRizhoDailyDeposition;
+    //double          svUnstressedShootDailyGrowth;
+    //double          svUnstressedRootDailyGrowth;
+    double          svRootingDepth; /* maximum */
+    double          svTranspiration;
+    double          svTranspirationPotential;
+    double          svN_Shoot;
+    double          svN_Root;
+    double          svN_Rhizo;
+    double          svN_RizhoDailyDeposition;
+    double          svN_AutoAdded;
+    double          svN_Fixation;
+    double          svWaterStressFactor;
+    double          svN_StressFactor;
+
+    int             NumCrop;
+} CommunityStruct;
+
 typedef struct FieldOperationStruct
 {
     int             opYear;
@@ -377,6 +361,11 @@ typedef struct FieldOperationStruct
     double          opDepth;
     double          opSDR;
     double          opMixingEfficiency;
+    char            cropNameT[128];
+    double          fractionThermalTime;
+    double          killEfficiency;
+    int             grainHarvest;
+    double          forageHarvest;
 
     /* Fixed Irrigation */
     double          opVolume;
@@ -441,12 +430,6 @@ typedef struct CropManagementStruct
 
     FieldOperationStruct *ForcedHarvest;
     int             numHarvest;
-
-    describedCropStruct *describedCrop;
-    int             NumDescribedCrop;
-    int             describedIndex;
-
-    int             cropCount;
 
     autoIrrigationStruct *autoIrrigation;
     int             usingAutoIrr;
@@ -582,7 +565,8 @@ typedef struct CyclesStruct
     SimControlStruct SimControl;
     SoilStruct      Soil;
     CropManagementStruct CropManagement;
-    CropStruct      Crop;
+    CropStruct     *Crop;
+    CommunityStruct Community;
     ResidueStruct   Residue;
     SoilCarbonStruct SoilCarbon;
     WeatherStruct   Weather;
