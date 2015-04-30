@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void Processes (int y, int doy, int autoNitrogen, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct *Weather, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
+void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, ResidueStruct *Residue, const WeatherStruct *Weather, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -33,28 +33,38 @@ void Processes (int y, int doy, int autoNitrogen, CropStruct *Crop, ResidueStruc
     double          NnAbgd = 0.0;
     double          NaAbgd = 0.0;
     double          NxRoot = 0.0;
+    int             i;
+    CropStruct     *Crop;
 
-    if (Crop->svRadiationInterception > 0.0)
+    for (i = 0; i < Community->NumCrop; i++)
     {
-        stage = (Crop->svTT_Cumulative - Crop->userEmergenceTT) / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
+        Crop = &Community->Crop[i];
 
-        /* Compute reference N concentration of biomass and required
-         * concentration of new growth (Eulerian) */
-        CropNitrogenConcentration (&N_AbgdConcReq, &N_RootConcReq, &NaAbgd, &NxAbgd, &NcAbgd, &NnAbgd, &NxRoot, stage, Crop);
-
-        /* Compute nitrogen stress */
-        CropNitrogenStress (NaAbgd, NcAbgd, NnAbgd, Crop);
-
-        /* Compute growth */
-        CropGrowth (y, doy, &dailyGrowth, stage, Crop, Residue, Weather);
-
-        if (dailyGrowth > 0.0)
+        if (Crop->stageGrowth > NO_CROP)
         {
-            /* Compute N demand based on growth and N uptake */
-            CropNitrogenUptake (N_AbgdConcReq, N_RootConcReq, NaAbgd, NxAbgd, NxRoot, autoNitrogen, Crop, Soil);
+            if (Crop->svRadiationInterception > 0.0)
+            {
+                stage = (Crop->svTT_Cumulative - Crop->userEmergenceTT) / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
 
-            /* Distribute rizhodeposition in soil layers */
-            DistributeRootDetritus (y, 0.0, Crop->svRizhoDailyDeposition, 0.0, Crop->svN_RizhoDailyDeposition, Soil, Crop, Residue, SoilCarbon);
+                /* Compute reference N concentration of biomass and required
+                 * concentration of new growth (Eulerian) */
+                CropNitrogenConcentration (&N_AbgdConcReq, &N_RootConcReq, &NaAbgd, &NxAbgd, &NcAbgd, &NnAbgd, &NxRoot, stage, Crop);
+
+                /* Compute nitrogen stress */
+                CropNitrogenStress (NaAbgd, NcAbgd, NnAbgd, Crop);
+
+                /* Compute growth */
+                CropGrowth (y, doy, &dailyGrowth, stage, Crop, Residue, Weather);
+
+                if (dailyGrowth > 0.0)
+                {
+                    /* Compute N demand based on growth and N uptake */
+                    CropNitrogenUptake (N_AbgdConcReq, N_RootConcReq, NaAbgd, NxAbgd, NxRoot, autoNitrogen, Crop, Soil);
+
+                    /* Distribute rizhodeposition in soil layers */
+                    DistributeRootDetritus (y, 0.0, Crop->svRizhoDailyDeposition, 0.0, Crop->svN_RizhoDailyDeposition, Soil, Crop, Residue, SoilCarbon);
+                }
+            }
         }
     }
 }
@@ -508,7 +518,7 @@ double ShootBiomassPartitioning (double Stage, double Po, double Pf)
 }
 
 
-void RadiationInterception (int y, int doy, CropStruct *Crop)
+void RadiationInterception (int y, int doy, CommunityStruct *Community)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -569,85 +579,105 @@ void RadiationInterception (int y, int doy, CropStruct *Crop)
     const double    e = 5.0;
     const double    f = 15.0;
     const double    rde = 0.3;
+    int             i;
+    CropStruct     *Crop;
 
-    Fractional_TT = (Crop->svTT_Cumulative - 1.0 * Crop->svTT_Daily) / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
-    Delta_Fractional_TT = Crop->svTT_Daily / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
-
-    if (Crop->svTT_Cumulative < Crop->calculatedMaturityTT)
+    for (i = 0; i < Community->NumCrop; i++)
     {
-        if (Crop->svTT_Cumulative < Crop->userEmergenceTT)
+        Crop = &Community->Crop[i];
+
+        if (Crop->stageGrowth > NO_CROP)
         {
-            Crop->svRadiationInterception = 0.0;
-            Crop->svRootingDepth = rde * Crop->svTT_Cumulative / Crop->userEmergenceTT;
+            Fractional_TT = (Crop->svTT_Cumulative - 1.0 * Crop->svTT_Daily) / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
+            Delta_Fractional_TT = Crop->svTT_Daily / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
+
+            if (Crop->svTT_Cumulative < Crop->calculatedMaturityTT)
+            {
+                if (Crop->svTT_Cumulative < Crop->userEmergenceTT)
+                {
+                    Crop->svRadiationInterception = 0.0;
+                    Crop->svRootingDepth = rde * Crop->svTT_Cumulative / Crop->userEmergenceTT;
+                }
+                else
+                {
+                    Rate_Crop_Interception = (b * exp (a - b * Fractional_TT) - c * exp (c * Fractional_TT - d)) / pow (1.0 + exp (a - b * Fractional_TT) + exp (c * Fractional_TT - d), 2.0);
+                    Rate_Root_Depth = f * exp (e - f * Fractional_TT) / pow (1.0 + exp (e - f * Fractional_TT), 2.0);
+
+                    /* Compute stress effect on canopy expansion or senescence */
+                    WSF = 1.0 - Crop->svWaterStressFactor;
+                    NSF = pow (1.0 - Crop->svN_StressFactor, 3.0);
+
+                    /* Select max and min stress */
+                    if (WSF > NSF)
+                    {
+                        Sx = WSF;
+                        Sn = NSF;
+                    }
+                    else
+                    {
+                        Sx = NSF;
+                        Sn = WSF;
+                    }
+
+                    /* Stress reduces rate of increase of canopy interception or
+                     * accelerates senescence */
+                    if (Rate_Crop_Interception > 0.0)
+                        SF = 1.0 - pow (1.0 - Sn, Sx);
+                    else
+                        SF = 1.0 + pow (1.0 - Sn, 3.0 * Sx);
+
+                    /* Compute compensatory expansion factor and reserves use
+                     * allowance */
+                    if (Rate_Crop_Interception > 0.0)
+                    {
+                        Compensatory_Expansion = sqrt ((Crop->userMaximumSoilCoverage / (1.0 + exp (a - b * Fractional_TT) + exp (-c + d * Fractional_TT))) / Crop->svRadiationInterception);
+                        Reserves_Use_Allowance = 1.0 + 3.0 / (1.0 + pow (Crop->svRadiationInterception / 0.15, 4.0));
+                    }
+                    else
+                    {
+                        Compensatory_Expansion = 1.0;
+                        Reserves_Use_Allowance = 1.0;
+                    }
+
+                    Delta_Crop_Interception = Crop->userMaximumSoilCoverage * Rate_Crop_Interception * Delta_Fractional_TT * SF * Compensatory_Expansion;
+                    Delta_Crop_Interception_Growth = Reserves_Use_Allowance * 0.75 * (1.0 - Crop->svRadiationInterception) * (0.1 * Crop->svShootDailyGrowth * 25.0);
+                    if (Delta_Crop_Interception > Delta_Crop_Interception_Growth)
+                        Delta_Crop_Interception = Delta_Crop_Interception_Growth;
+
+                    Crop->svRadiationInterception += Delta_Crop_Interception;
+
+                    /* Just in case stress accelerates senescence too much - not sure
+                     * it is needed */
+                    /* Just in case cold damage defoliates too much - not sure it is
+                     * needed */
+                    if (Crop->svRadiationInterception < 0.001)
+                        Crop->svRadiationInterception = 0.001;
+                    if (Crop->svRadiationInterception > 0.98)
+                        Crop->svRadiationInterception = 0.98;
+
+                    Crop->svRootingDepth += (Crop->userMaximumRootingDepth - rde) * Rate_Root_Depth * Delta_Fractional_TT;
+                    if (Crop->svRootingDepth > Crop->userMaximumRootingDepth)
+                        Crop->svRootingDepth = Crop->userMaximumRootingDepth;
+                } /* end if Crop->svTT_Cumulative >= Crop->userEmergenceTT */
+            }	/* end if Crop->svTT_Cumulative < Crop->calculatedMaturityTT */
         }
-        else
-        {
-            Rate_Crop_Interception = (b * exp (a - b * Fractional_TT) - c * exp (c * Fractional_TT - d)) / pow (1.0 + exp (a - b * Fractional_TT) + exp (c * Fractional_TT - d), 2.0);
-            Rate_Root_Depth = f * exp (e - f * Fractional_TT) / pow (1.0 + exp (e - f * Fractional_TT), 2.0);
-
-            /* Compute stress effect on canopy expansion or senescence */
-            WSF = 1.0 - Crop->svWaterStressFactor;
-            NSF = pow (1.0 - Crop->svN_StressFactor, 3.0);
-
-            /* Select max and min stress */
-            if (WSF > NSF)
-            {
-                Sx = WSF;
-                Sn = NSF;
-            }
-            else
-            {
-                Sx = NSF;
-                Sn = WSF;
-            }
-
-            /* Stress reduces rate of increase of canopy interception or
-	     * accelerates senescence */
-            if (Rate_Crop_Interception > 0.0)
-                SF = 1.0 - pow (1.0 - Sn, Sx);
-            else
-                SF = 1.0 + pow (1.0 - Sn, 3.0 * Sx);
-
-            /* Compute compensatory expansion factor and reserves use
-	     * allowance */
-            if (Rate_Crop_Interception > 0.0)
-            {
-                Compensatory_Expansion = sqrt ((Crop->userMaximumSoilCoverage / (1.0 + exp (a - b * Fractional_TT) + exp (-c + d * Fractional_TT))) / Crop->svRadiationInterception);
-                Reserves_Use_Allowance = 1.0 + 3.0 / (1.0 + pow (Crop->svRadiationInterception / 0.15, 4.0));
-            }
-            else
-            {
-                Compensatory_Expansion = 1.0;
-                Reserves_Use_Allowance = 1.0;
-            }
-
-            Delta_Crop_Interception = Crop->userMaximumSoilCoverage * Rate_Crop_Interception * Delta_Fractional_TT * SF * Compensatory_Expansion;
-            Delta_Crop_Interception_Growth = Reserves_Use_Allowance * 0.75 * (1.0 - Crop->svRadiationInterception) * (0.1 * Crop->svShootDailyGrowth * 25.0);
-            if (Delta_Crop_Interception > Delta_Crop_Interception_Growth)
-                Delta_Crop_Interception = Delta_Crop_Interception_Growth;
-
-            Crop->svRadiationInterception += Delta_Crop_Interception;
-
-            /* Just in case stress accelerates senescence too much - not sure
-	     * it is needed */
-            /* Just in case cold damage defoliates too much - not sure it is
-	     * needed */
-            if (Crop->svRadiationInterception < 0.001)
-                Crop->svRadiationInterception = 0.001;
-            if (Crop->svRadiationInterception > 0.98)
-                Crop->svRadiationInterception = 0.98;
-
-            Crop->svRootingDepth += (Crop->userMaximumRootingDepth - rde) * Rate_Root_Depth * Delta_Fractional_TT;
-            if (Crop->svRootingDepth > Crop->userMaximumRootingDepth)
-                Crop->svRootingDepth = Crop->userMaximumRootingDepth;
-        } /* end if Crop->svTT_Cumulative >= Crop->userEmergenceTT */
-    }	/* end if Crop->svTT_Cumulative < Crop->calculatedMaturityTT */
+    }
 }
 
-void Phenology (int y, int doy, const WeatherStruct *Weather, CropStruct *Crop)
+void Phenology (int y, int doy, const WeatherStruct *Weather, CommunityStruct *Community)
 {
-    Crop->svTT_Daily = 0.5 * (ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMin[y][doy - 1]) + ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMax[y][doy - 1]));
-    Crop->svTT_Cumulative += Crop->svTT_Daily;
+    int             i;
+    CropStruct     *Crop;
+
+    for (i = 0; i < Community->NumCrop; i++)
+    {
+        Crop = &Community->Crop[i];
+        if (Crop->stageGrowth > NO_CROP)
+        {
+            Crop->svTT_Daily = 0.5 * (ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMin[y][doy - 1]) + ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMax[y][doy - 1]));
+            Crop->svTT_Cumulative += Crop->svTT_Daily;
+        }
+    }
 }
 
 void ComputeColdDamage (int y, int doy, CropStruct *Crop, const WeatherStruct *Weather, const SnowStruct *Snow, ResidueStruct *Residue)

@@ -118,7 +118,7 @@ void ResidueWetting (ResidueStruct *Residue, SoilStruct *Soil)
     Soil->infiltrationVol -= waterRetainedResidue;
 }
 
-void ResidueEvaporation (ResidueStruct *Residue, SoilStruct *Soil, CropStruct *Crop, double ETo, double snowCover)
+void ResidueEvaporation (ResidueStruct *Residue, SoilStruct *Soil, const CommunityStruct *Community, double ETo, double snowCover)
 {
     /*
      * Compute residue evaporation
@@ -148,7 +148,7 @@ void ResidueEvaporation (ResidueStruct *Residue, SoilStruct *Soil, CropStruct *C
     if (Residue->stanResidueWater > 0.0 || Residue->flatResidueWater > 0.0)
     {
         Soil->residueEvaporationVol = 0.0;
-        residueEvapDemand = Residue->residueInterception * (1.0 - snowCover) * (1.0 - Crop->svRadiationInterception) * ETo;
+        residueEvapDemand = Residue->residueInterception * (1.0 - snowCover) * (1.0 - Community->svRadiationInterception) * ETo;
 	/* 10 converts residue from Mg/ha to kg/m2 */
         standingEvapFactor = pow (Residue->stanResidueWater / (residueMaxWaterConcentration * Residue->stanResidueMass / 10.0), 2.0);
         flatEvapFactor = pow (Residue->flatResidueWater / (residueMaxWaterConcentration * Residue->flatResidueMass / 10.0), 2.0);

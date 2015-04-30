@@ -281,7 +281,7 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     output_file = fopen (filename, "a");
 
     fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    if (Crop->cropUniqueIdentifier < 0)
+    if (Crop->stageGrowth <= 0)
     {
         fprintf (output_file, "%-15s\t", "Fallow");
         fprintf (output_file, "%-23s\t", "N/A");

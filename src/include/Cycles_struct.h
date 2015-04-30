@@ -196,7 +196,7 @@ typedef struct SoilStruct
 typedef struct CropStruct
 {
     /* Instance of the crop that is being planted */
-    int             cropUniqueIdentifier;
+    //int             cropUniqueIdentifier;
     char            cropName[128];
 
     /* User Defined Auto Irrigation */
@@ -343,6 +343,7 @@ typedef struct CommunityStruct
 
     CropStruct     *Crop;
     int             NumCrop;
+    int             NumActiveCrop;
 } CommunityStruct;
 
 typedef struct FieldOperationStruct

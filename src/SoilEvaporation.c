@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void Evaporation (SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, double ETo, double SnowCover)
+void Evaporation (SoilStruct *Soil, const CommunityStruct *Community, ResidueStruct *Residue, double ETo, double SnowCover)
 {
     /*
      * 
@@ -50,9 +50,9 @@ void Evaporation (SoilStruct *Soil, CropStruct *Crop, ResidueStruct *Residue, do
     /* It uses the maximum cover of either flat residues or snow to calculate
      * radiation reaching the soil surface */
     if (1.0 - Residue->flatResidueTau >= SnowCover)
-        EvaporativeDemand = (1.0 - Residue->residueInterception) * (1.0 - Crop->svRadiationInterception) * ETo;
+        EvaporativeDemand = (1.0 - Residue->residueInterception) * (1.0 - Community->svRadiationInterception) * ETo;
     else
-        EvaporativeDemand = Residue->stanResidueTau * (1.0 - SnowCover) * (1.0 - Crop->svRadiationInterception) * ETo;
+        EvaporativeDemand = Residue->stanResidueTau * (1.0 - SnowCover) * (1.0 - Community->svRadiationInterception) * ETo;
 
     for (i = 0; i < Soil->totalLayers; i++)
     {

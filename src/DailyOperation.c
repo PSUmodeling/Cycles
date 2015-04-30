@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project)
+void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project)
 {
     /*
      * -----------------------------------------------------------------------
@@ -16,14 +16,12 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     FieldOperationStruct *Tillage;
     FieldOperationStruct *FixedIrrigation;
 
-    if (Crop->cropUniqueIdentifier >= 0)
-        GrowingCrop (rotationYear, y, doy, nextSeedingYear, nextSeedingDate, CropManagement->ForcedHarvest, CropManagement->numHarvest, Crop, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
-    else if (doy == *nextSeedingDate && rotationYear == *nextSeedingYear)
-    {
-        PlantingCrop (doy, nextSeedingYear, nextSeedingDate, CropManagement, Crop);
-        if (verbose_mode)
-            printf ("DOY %3.3d %-20s %s\n", doy, "Planting", Crop->cropName);
-    }
+        /* If any crop in the community is growing, run the growing crop subroutine */
+    if (Community->NumActiveCrop > 0)
+        GrowingCrop (rotationYear, y, doy, nextSeedingYear, nextSeedingDate, CropManagement->ForcedHarvest, CropManagement->numHarvest, Community, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
+
+    if (doy == *nextSeedingDate && rotationYear == *nextSeedingYear)
+        PlantingCrop (doy, nextSeedingYear, nextSeedingDate, CropManagement, Community);
 
     while (IsOperationToday (rotationYear, doy, CropManagement->FixedFertilization, CropManagement->fertilizationIndex))
     {
@@ -44,8 +42,8 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
 
         if (strcasecmp (Tillage->opToolName, "Kill_Crop") != 0)
             ExecuteTillage (SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
-        else if (Crop->cropUniqueIdentifier >= 0)
-            HarvestCrop (y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
+        //else if (Crop->cropUniqueIdentifier >= 0)
+        //    HarvestCrop (y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
 
         SelectNextOperation (CropManagement->numTillage, &CropManagement->tillageIndex);
     }
@@ -66,24 +64,24 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
 
     TillageFactorSettling (CropManagement->tillageFactor, Soil->totalLayers, Soil->waterContent, Soil->Porosity);
 
-    SnowProcesses (Snow, y, doy, Weather, Residue->stanResidueTau, Crop->svRadiationInterception);
+    SnowProcesses (Snow, y, doy, Weather, Residue->stanResidueTau, Community->svRadiationInterception);
 
-    Redistribution (y, doy, Weather->precipitation[y][doy - 1], Snow->snowFall, Snow->snowMelt, SimControl->hourlyInfiltration, Crop, Soil, Residue);
+    Redistribution (y, doy, Weather->precipitation[y][doy - 1], Snow->snowFall, Snow->snowMelt, SimControl->hourlyInfiltration, Community, Soil, Residue);
 
-    ResidueEvaporation (Residue, Soil, Crop, Weather->ETref[y][doy - 1], Snow->snowCover);
+    ResidueEvaporation (Residue, Soil, Community, Weather->ETref[y][doy - 1], Snow->snowCover);
 
-    Evaporation (Soil, Crop, Residue, Weather->ETref[y][doy - 1], Snow->snowCover);
+    Evaporation (Soil, Community, Residue, Weather->ETref[y][doy - 1], Snow->snowCover);
 
-    Temperature (y, doy, Snow->snowCover, Crop->svRadiationInterception, Soil, Weather, Residue);
+    Temperature (y, doy, Snow->snowCover, Community->svRadiationInterception, Soil, Weather, Residue);
 
     ComputeFactorComposite (SoilCarbon, doy, y, Weather->lastDoy[y], Soil);
 
     ComputeSoilCarbonBalanceMB (SoilCarbon, y, Residue, Soil, CropManagement->tillageFactor);
 
-    NitrogenTransformation (y, doy, Soil, Crop, Residue, Weather, SoilCarbon);
+    NitrogenTransformation (y, doy, Soil, Community, Residue, Weather, SoilCarbon);
 }
 
-void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, FieldOperationStruct *ForcedHarvest, int numHarvest, CropStruct *Crop, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
+void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, FieldOperationStruct *ForcedHarvest, int numHarvest, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
 {
     /*
      * Processes that only occur while a crop is growing are performed
@@ -100,106 +98,172 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
     int             forcedHarvest = 0;
     int             i;
 
-    forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
+    //forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
 
-    for (i = 0; i < numHarvest; i++)
+    //for (i = 0; i < numHarvest; i++)
+    //{
+    //    if (ForcedHarvest[i].opYear == rotationYear && ForcedHarvest[i].opDay == d && ForcedHarvest[i].plantID == Crop->cropUniqueIdentifier)
+    //    {
+    //        forcedHarvest = 1;
+    //        break;
+    //    }
+    //}
+
+    for (i = 0; i < Community->NumCrop; i++)
     {
-        if (ForcedHarvest[i].opYear == rotationYear && ForcedHarvest[i].opDay == d && ForcedHarvest[i].plantID == Crop->cropUniqueIdentifier)
+        if (Community->Crop[i].stageGrowth > NO_CROP)
         {
-            forcedHarvest = 1;
-            break;
-        }
-    }
-
-    if (Crop->svTT_Cumulative < Crop->userEmergenceTT)
-        Crop->stageGrowth = PRE_EMERGENCE;
-    else if (Crop->svTT_Cumulative < Crop->calculatedFloweringTT)
-    {
-        if (Crop->userAnnual)
-            Crop->stageGrowth = VEGETATIVE_GROWTH;
-        else
-            Crop->stageGrowth = PERENNIAL;
-    }
-    else if (Crop->svTT_Cumulative < Crop->calculatedMaturityTT)
-    {
-        if (Crop->userAnnual)
-            Crop->stageGrowth = REPRODUCTIVE_GROWTH;
-        else
-            Crop->stageGrowth = PERENNIAL;
-    }
-    else if (Crop->svTT_Cumulative >= Crop->calculatedMaturityTT)
-    {
-        Crop->stageGrowth = MATURITY;
-
-        if (Crop->harvestDateFinal < 1)
-        {
-            /* SetCropStatusToMature */
-            Crop->cropMature = 1;
-            Crop->harvestDateFinal = FinalHarvestDate (Weather->lastDoy[y], d);
-        }
-    }
-
-    Phenology (y, d, Weather, Crop);
-
-    RadiationInterception (y, d, Crop);
-
-    WaterUptake (y, d, Crop, Soil, Weather);
-
-    Processes (y, d, SimControl->automaticNitrogen, Crop, Residue, Weather, Soil, SoilCarbon);
-
-    if (Weather->tMin[y][d - 1] < Crop->userColdDamageThresholdTemperature)
-    {
-        if (Crop->userAnnual && Crop->svTT_Cumulative > Crop->calculatedFloweringTT)
-            GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
-        else
-            ComputeColdDamage (y, d, Crop, Weather, Snow, Residue);
-    }
-
-    if (d == Crop->harvestDateFinal || forcedHarvest)
-    {
-        if (Crop->userAnnual)
-            GrainHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
-        else
-        {
-            ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
-            HarvestCrop (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
-        }
-    }
-    else if (Crop->userClippingTiming > 0.0)
-    {
-        if (Crop->userClippingTiming <= Crop->svTT_Cumulative / Crop->calculatedMaturityTT)
-        {
-            if ((Crop->harvestCount < 3 && Crop->userAnnual) || (!Crop->userAnnual))
+            if (Community->Crop[i].svTT_Cumulative < Community->Crop[i].userEmergenceTT)
+                Community->Crop[i].stageGrowth = PRE_EMERGENCE;
+            else if (Community->Crop[i].svTT_Cumulative < Community->Crop[i].calculatedFloweringTT)
             {
-                ForageHarvest (y, d, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
-                AddCrop (Crop);
-                Crop->stageGrowth = CLIPPING;
-                Crop->harvestCount += 1;
+                if (Community->Crop[i].userAnnual)
+                    Community->Crop[i].stageGrowth = VEGETATIVE_GROWTH;
+                else
+                    Community->Crop[i].stageGrowth = PERENNIAL;
+            }
+            else if (Community->Crop[i].svTT_Cumulative < Community->Crop[i].calculatedMaturityTT)
+            {
+                if (Community->Crop[i].userAnnual)
+                    Community->Crop[i].stageGrowth = REPRODUCTIVE_GROWTH;
+                else
+                    Community->Crop[i].stageGrowth = PERENNIAL;
+            }
+            else if (Community->Crop[i].svTT_Cumulative >= Community->Crop[i].calculatedMaturityTT)
+            {
+                Community->Crop[i].stageGrowth = MATURITY;
+
+                if (Community->Crop[i].harvestDateFinal < 1)
+                {
+                    /* SetCropStatusToMature */
+                    Community->Crop[i].cropMature = 1;
+                    Community->Crop[i].harvestDateFinal = FinalHarvestDate (Weather->lastDoy[y], d);
+                }
             }
         }
     }
 
-    Crop->rcCropTranspirationPotential += Crop->svTranspirationPotential;
-    Crop->rcCropTranspiration += Crop->svTranspiration;
-    Crop->rcSoilWaterEvaporation += Soil->evaporationVol;
+    Phenology (y, d, Weather, Community);
+
+    RadiationInterception (y, d, Community);
+
+    WaterUptake (y, d, Community, Soil, Weather);
+
+    Processes (y, d, SimControl->automaticNitrogen, Community, Residue, Weather, Soil, SoilCarbon);
+
+    for (i = 0; i < Community->NumCrop; i++)
+    {
+        if (Community->Crop[i].stageGrowth > NO_CROP)
+        {
+            if (Weather->tMin[y][d - 1] < Community->Crop[i].userColdDamageThresholdTemperature)
+            {
+                if (Community->Crop[i].userAnnual && Community->Crop[i].svTT_Cumulative > Community->Crop[i].calculatedFloweringTT)
+                {
+                    GrainHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                    Community->NumActiveCrop--;
+                }
+                else
+                    ComputeColdDamage (y, d, &Community->Crop[i], Weather, Snow, Residue);
+            }
+
+            if (d == Community->Crop[i].harvestDateFinal || forcedHarvest)
+            {
+                if (Community->Crop[i].userAnnual)
+                {
+                    GrainHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                    Community->NumActiveCrop--;
+                }
+                else
+                {
+                    ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                    HarvestCrop (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                    Community->NumActiveCrop--;
+                }
+            }
+            else if (Community->Crop[i].userClippingTiming > 0.0)
+            {
+                if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT)
+                {
+                    if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
+                    {
+                        ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                        AddCrop (&Community->Crop[i]);
+                        Community->Crop[i].stageGrowth = CLIPPING;
+                        Community->Crop[i].harvestCount += 1;
+                    }
+                }
+            }
+
+            Community->Crop[i].rcCropTranspirationPotential += Community->Crop[i].svTranspirationPotential;
+            Community->Crop[i].rcCropTranspiration += Community->Crop[i].svTranspiration;
+            Community->Crop[i].rcSoilWaterEvaporation += Soil->evaporationVol;
+        }
+    }
+
+    Community->svRadiationInterception = 0.0;
+    Community->svBiomass = 0.0;
+    Community->svShoot = 0.0;
+    Community->svRoot = 0.0;
+    Community->svRizho = 0.0;
+    Community->svShootDailyGrowth = 0.0;
+    Community->svRootDailyGrowth = 0.0;
+    Community->svRizhoDailyDeposition = 0.0;
+    Community->svRootingDepth = 0.0;
+    Community->svTranspiration = 0.0;
+    Community->svTranspirationPotential = 0.0;
+    Community->svN_Shoot = 0.0;
+    Community->svN_Root = 0.0;
+    Community->svN_Rhizo = 0.0;
+    Community->svN_RizhoDailyDeposition = 0.0;
+    Community->svN_AutoAdded = 0.0;
+    Community->svN_Fixation = 0.0;
+    Community->svWaterStressFactor = 0.0;
+    Community->svN_StressFactor = 0.0;
+    
+    for (i = 0; i < Community->NumCrop; i++)
+    {
+        Community->svRadiationInterception += Community->Crop[i].svRadiationInterception;
+        Community->svBiomass += Community->Crop[i].svBiomass;
+        Community->svShoot += Community->Crop[i].svShoot;
+        Community->svRoot += Community->Crop[i].svRoot;
+        Community->svRizho += Community->Crop[i].svRizho;
+        Community->svShootDailyGrowth += Community->Crop[i].svShootDailyGrowth;
+        Community->svRootDailyGrowth += Community->Crop[i].svRootDailyGrowth;
+        Community->svRizhoDailyDeposition += Community->Crop[i].svRizhoDailyDeposition;
+        //Community->svRootingDepth += Community->Crop[i].svRootingDepth;
+        Community->svTranspiration += Community->Crop[i].svTranspiration;
+        Community->svTranspirationPotential += Community->Crop[i].svTranspirationPotential;
+        Community->svN_Shoot += Community->Crop[i].svN_Shoot;
+        Community->svN_Root += Community->Crop[i].svN_Root;
+        Community->svN_Rhizo += Community->Crop[i].svN_Rhizo;
+        Community->svN_RizhoDailyDeposition += Community->Crop[i].svN_RizhoDailyDeposition;
+        Community->svN_AutoAdded += Community->Crop[i].svN_AutoAdded;
+        Community->svN_Fixation += Community->Crop[i].svN_Fixation;
+        Community->svWaterStressFactor += Community->Crop[i].svWaterStressFactor;
+        Community->svN_StressFactor += Community->Crop[i].svN_StressFactor;
+    }
 }
 
-void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CropStruct *Crop)
+void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community)
 {
     /*
      * New realized crop is created next crop in the rotation selected status
      * set to growing. HarvestDate is reset to an unreachable date.
      */
+    if (verbose_mode)
+        printf ("DOY %3.3d %-20s", doy, "Planting");
+
     SelectNextCrop (CropManagement);
 
-    NewCrop (Crop, CropManagement);
+    NewCrop (Community, CropManagement);
 
-    AddCrop (Crop);
+    Community->NumActiveCrop++;
+
+    //AddCrop (Crop);
 
     *nextSeedingYear = CropManagement->nextCropSeedingYear;
     *nextSeedingDate = CropManagement->nextCropSeedingDate;
-
-    Crop->stageGrowth = PLANTING;
+    
 }
 
 double FinalHarvestDate (int lastDoy, int d)

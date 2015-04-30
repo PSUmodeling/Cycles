@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CropStruct *Crop, const ResidueStruct *Residue, const WeatherStruct *Weather, const SoilCarbonStruct *SoilCarbon)
+void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CommunityStruct *Community, const ResidueStruct *Residue, const WeatherStruct *Weather, const SoilCarbonStruct *SoilCarbon)
 {
     /*
      * 
@@ -39,7 +39,7 @@ void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CropStruct 
 
     Denitrification (&Profile_N_Denitrified, &Profile_N2O_Denit, Soil, SoilCarbon);
     Nitrification (&Profile_N_Nitrified, &Profile_N2O_Nitri, Soil, SoilCarbon);
-    Volatilization (y, doy, &Profile_NH4_Volatilization, Soil, Crop, Residue, Weather);
+    Volatilization (y, doy, &Profile_NH4_Volatilization, Soil, Community, Residue, Weather);
 
     Soil->NO3Profile = 0.0;
     Soil->NH4Profile = 0.0;
@@ -198,7 +198,7 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
     }
 }
 
-void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStruct *Soil, const CropStruct *Crop, const ResidueStruct *Residue, const WeatherStruct *Weather)
+void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStruct *Soil, const CommunityStruct *Community, const ResidueStruct *Residue, const WeatherStruct *Weather)
 {
     /*
      * This subroutine uses an empirical approach to estimate the amount of
@@ -286,8 +286,8 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStr
     Tavg = 273.15 + 0.67 * Weather->tMax[y][doy - 1] + 0.33 * Weather->tMin[y][doy - 1];
     pAtm = Weather->atmosphericPressure * 1000.0;
     AMD = AirMolarDensity (Tavg, pAtm);
-    GBL = BoundaryLayerConductance (Crop->svRadiationInterception, Residue->stanResidueMass, Weather->wind[y][doy - 1], AMD);
-    GG1 = 1.0 - 0.85 * pow (Crop->svRadiationInterception, 3.0);
+    GBL = BoundaryLayerConductance (Community->svRadiationInterception, Residue->stanResidueMass, Weather->wind[y][doy - 1], AMD);
+    GG1 = 1.0 - 0.85 * pow (Community->svRadiationInterception, 3.0);
     GG2 = 0.95 * pow (Residue->flatResidueTau, 2.0);
     GG3 = GBL * GG1 * GG2;
 

@@ -47,17 +47,25 @@ void PeekNextCrop (CropManagementStruct *CropManagement)
     }
 }
 
-void NewCrop (CropStruct *Crop, const CropManagementStruct *CropManagement)
+void NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement)
 {
     FieldOperationStruct *plantingOrder;
     autoIrrigationStruct *autoIrrigation;
+    CropStruct           *Crop;
     //describedCropStruct *describedCrop;
 
     plantingOrder = &(CropManagement->plantingOrder[CropManagement->plantingIndex]);
     //describedCrop = &(CropManagement->describedCrop[CropManagement->describedIndex]);
 
-    Crop->cropUniqueIdentifier = plantingOrder->plantID;
-    strcpy (Crop->cropName, plantingOrder->cropName);
+    //Crop->cropUniqueIdentifier = plantingOrder->plantID;
+    //strcpy (Crop->cropName, plantingOrder->cropName);
+
+    Crop = &Community->Crop[plantingOrder->plantID];
+
+    if (verbose_mode)
+        printf (" %s\n", Crop->cropName);
+
+    Crop->stageGrowth = PLANTING;
 
     if (plantingOrder->usesAutoIrrigation > 0)
     {
@@ -98,6 +106,23 @@ void NewCrop (CropStruct *Crop, const CropManagementStruct *CropManagement)
     Crop->svShootUnstressed = 0.0;
     Crop->svN_StressCumulative = 0.0;
 
+    Crop->rcForageYield = 0.0;
+    Crop->rcGrainYield = 0.0;
+    Crop->rcBiomass = 0.0;
+    Crop->rcRoot = 0.0;
+    Crop->rcResidueBiomass = 0.0;
+    Crop->rcCropTranspiration = 0.0;
+    Crop->rcCropTranspirationPotential = 0.0;
+    Crop->rcSoilWaterEvaporation = 0.0;
+    Crop->rcHarvestIndex = 0;
+    Crop->rcTotalNitrogen = 0.0;
+    Crop->rcRootNitrogen = 0.0;
+    Crop->rcGrainNitrogenYield = 0.0;
+    Crop->rcForageNitrogenYield = 0.0;
+    Crop->rcNitrogenCumulative = 0.0;
+    Crop->rcNitrogenInHarvest = 0.0;
+    Crop->rcNitrogenInResidue = 0.0;
+    Crop->rcNitrogenForageConc = 0.0;
     //Crop->userSeedingDate = describedCrop->userSeedingDate;
     //Crop->userFloweringDate = describedCrop->userFloweringDate;
     //Crop->userMaturityDate = describedCrop->userMaturityDate;
@@ -167,9 +192,7 @@ void AddCrop (CropStruct *Crop)
 
 void KillCrop (CropStruct *Crop)
 {
-    Crop->cropUniqueIdentifier = -1;
-
-    strcpy (Crop->cropName, "\0");
+    //strcpy (Crop->cropName, "\0");
     Crop->autoIrrigationUsed = -1;
     Crop->autoIrrigationStartDay = 0;
     Crop->autoIrrigationStopDay = 0;

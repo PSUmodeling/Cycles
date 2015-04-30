@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const WeatherStruct *Weather)
+void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, const WeatherStruct *Weather)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -42,7 +42,7 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const Weat
      * soilWP		    double[]
      * layerSalinityFactor  double[]
      */
-    int             i;
+    int             i, j;
 
     double          PTx = 15.0;
     double          PT = 0.00001;
@@ -71,119 +71,128 @@ void WaterUptake (int y, int doy, CropStruct *Crop, SoilStruct *Soil, const Weat
     double          SWP_Average;
     double          soilWP[Soil->totalLayers];
     double          layerSalinityFactor[Soil->totalLayers];
+    CropStruct     *Crop;
 
-    Crop->svTranspiration = 0.0;
-    Crop->svTranspirationPotential = 0.0;
-    Crop->svWaterStressFactor = 0.0;
-
-    for (i = 0; i < Soil->totalLayers; i++)
+    for (j = 0; j < Community->NumCrop; j++)
     {
-        rootFraction[i] = 0.0;
-        layerShootHC[i] = 0.0;
-        layerPlantHC[i] = 0.0;
-    }
+        Crop = &Community->Crop[j];
 
-    if (Crop->cropUniqueIdentifier >= 0 && Crop->svTT_Cumulative > Crop->userEmergenceTT)
-    {
-        temperatureAvg = 0.5 * (Weather->tMax[y][doy - 1] + Weather->tMin[y][doy - 1]);
-        factorTemperature = TemperatureLimitation (temperatureAvg, Crop->userTranspirationMinTemperature, Crop->userTranspirationThresholdTemperature);
-
-        /* Calculate potential transpiration rate (kg/m2/d = mm/d) */
-        PT = (1.0 + (Crop->userKc - 1.0) * Crop->svRadiationInterception) * factorTemperature * Crop->svRadiationInterception * Weather->ETref[y][doy - 1];
-
-        /* Calculate crop maximum water uptake rate (kg/m2/d = mm/d) */
-        PTx = PTx * factorTemperature * Crop->svRadiationInterception;
-
-        /* Calculate maximum crop transpiration rate (kg/m2/d = mm/d) */
-        TE = PT < PTx ? PT : PTx;
-
-        /* Calculate root fraction per soil layer */
-        for (i = 0; i < Soil->totalLayers; i++)
+        if (Crop->stageGrowth > NO_CROP)
         {
-            Soil->waterUptake[i] = 0.0;
-            soilWP[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
-        }
+            Crop->svTranspiration = 0.0;
+            Crop->svTranspirationPotential = 0.0;
+            Crop->svWaterStressFactor = 0.0;
 
-        CalcRootFraction (rootFraction, Soil, Crop);
-
-        /* Calculate plant hydraulic conductivity (kg^2)/(m2 J d)
-         * This is the hydraulic conductivity of a canopy fully covering the ground */
-        plantHC = PTx / (SWP_FC - LWP_StressOnset);
-        rootHC = plantHC / 0.65;
-        shootHC = plantHC / 0.35;
-
-        /* Adjust plant hydraulic conductance based on soil dryness */
-        Root_HC_Adjustment = 0.0;
-        for (i = 0; i < Soil->totalLayers; i++)
-        {
-            rootActivity[i] = 1.0;
-            layerSalinityFactor[i] = 1.0;
-            rootActivity[i] = 1.0 - pow ((soilWP[i] - SWP_FC) / (LWP_WiltingPoint - SWP_FC), 8.0);
-            rootActivity[i] = rootActivity[i] > 1.0 ? 1.0 : rootActivity[i];
-            rootActivity[i] = rootActivity[i] < 0.0 ? 0.0 : rootActivity[i];
-
-            Layer_Root_HC_Adjustment[i] = rootActivity[i] * rootFraction[i] * layerSalinityFactor[i];
-            layerRootHC[i] = rootHC * Layer_Root_HC_Adjustment[i];
-            Root_HC_Adjustment += Layer_Root_HC_Adjustment[i];
-        }
-
-        for (i = 0; i < Soil->totalLayers; i++)
-        {
-            if (Layer_Root_HC_Adjustment[i] > 0.0)
+            for (i = 0; i < Soil->totalLayers; i++)
             {
-                layerShootHC[i] = shootHC * Layer_Root_HC_Adjustment[i] / Root_HC_Adjustment;
-                layerPlantHC[i] = layerRootHC[i] * layerShootHC[i] / (layerRootHC[i] + layerShootHC[i]);
-            }
-            else
+                rootFraction[i] = 0.0;
+                layerShootHC[i] = 0.0;
                 layerPlantHC[i] = 0.0;
-        }
-
-        rootHC *= Root_HC_Adjustment;
-        plantHC = (rootHC * shootHC) / (rootHC + shootHC);
-
-        if (plantHC > 0.0)
-        {
-            /* Calculate average soil water potential (J/kg) */
-            SWP_Average = 0.0;
-
-            for (i = 0; i < Soil->totalLayers; i++)
-                SWP_Average += soilWP[i] * Layer_Root_HC_Adjustment[i] / Root_HC_Adjustment;
-
-            /* Calculate leaf water potential */
-            LWP = SWP_Average - TE / plantHC;
-
-            if (LWP < LWP_StressOnset)
-                LWP = (plantHC * SWP_Average * (LWP_StressOnset - LWP_WiltingPoint) + LWP_WiltingPoint * TE) / (plantHC * (LWP_StressOnset - LWP_WiltingPoint) + TE);
-
-            if (LWP < LWP_WiltingPoint)
-                LWP = LWP_WiltingPoint;
-
-            /* Reduce transpiration when LWP < LWP at the onset of stomatal
-             * closure */
-            if (LWP < LWP_StressOnset)
-            {
-                TA = TE * (LWP - LWP_WiltingPoint) / (LWP_StressOnset - LWP_WiltingPoint);
-                transpirationRatio = TA / TE;
             }
-            else
-                transpirationRatio = 1.0;
 
-            /* Calculate crop water uptake (kg/m2/d = mm/d) */
-            for (i = 0; i < Soil->totalLayers; i++)
+            if (Crop->svTT_Cumulative > Crop->userEmergenceTT)
             {
-                Soil->waterUptake[i] = layerPlantHC[i] * (soilWP[i] - LWP) * transpirationRatio;
-                Soil->waterContent[i] -= Soil->waterUptake[i] / (Soil->layerThickness[i] * WATER_DENSITY);
-            }
-        }
+                temperatureAvg = 0.5 * (Weather->tMax[y][doy - 1] + Weather->tMin[y][doy - 1]);
+                factorTemperature = TemperatureLimitation (temperatureAvg, Crop->userTranspirationMinTemperature, Crop->userTranspirationThresholdTemperature);
 
-        Crop->svTranspiration = 0.0;
-        for (i = 0; i < Soil->totalLayers; i++)
-        {
-            Crop->svTranspiration += Soil->waterUptake[i];
+                /* Calculate potential transpiration rate (kg/m2/d = mm/d) */
+                PT = (1.0 + (Crop->userKc - 1.0) * Crop->svRadiationInterception) * factorTemperature * Crop->svRadiationInterception * Weather->ETref[y][doy - 1];
+
+                /* Calculate crop maximum water uptake rate (kg/m2/d = mm/d) */
+                PTx = PTx * factorTemperature * Crop->svRadiationInterception;
+
+                /* Calculate maximum crop transpiration rate (kg/m2/d = mm/d) */
+                TE = PT < PTx ? PT : PTx;
+
+                /* Calculate root fraction per soil layer */
+                for (i = 0; i < Soil->totalLayers; i++)
+                {
+                    Soil->waterUptake[i] = 0.0;
+                    soilWP[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
+                }
+
+                CalcRootFraction (rootFraction, Soil, Crop);
+
+                /* Calculate plant hydraulic conductivity (kg^2)/(m2 J d)
+                 * This is the hydraulic conductivity of a canopy fully covering the ground */
+                plantHC = PTx / (SWP_FC - LWP_StressOnset);
+                rootHC = plantHC / 0.65;
+                shootHC = plantHC / 0.35;
+
+                /* Adjust plant hydraulic conductance based on soil dryness */
+                Root_HC_Adjustment = 0.0;
+                for (i = 0; i < Soil->totalLayers; i++)
+                {
+                    rootActivity[i] = 1.0;
+                    layerSalinityFactor[i] = 1.0;
+                    rootActivity[i] = 1.0 - pow ((soilWP[i] - SWP_FC) / (LWP_WiltingPoint - SWP_FC), 8.0);
+                    rootActivity[i] = rootActivity[i] > 1.0 ? 1.0 : rootActivity[i];
+                    rootActivity[i] = rootActivity[i] < 0.0 ? 0.0 : rootActivity[i];
+
+                    Layer_Root_HC_Adjustment[i] = rootActivity[i] * rootFraction[i] * layerSalinityFactor[i];
+                    layerRootHC[i] = rootHC * Layer_Root_HC_Adjustment[i];
+                    Root_HC_Adjustment += Layer_Root_HC_Adjustment[i];
+                }
+
+                for (i = 0; i < Soil->totalLayers; i++)
+                {
+                    if (Layer_Root_HC_Adjustment[i] > 0.0)
+                    {
+                        layerShootHC[i] = shootHC * Layer_Root_HC_Adjustment[i] / Root_HC_Adjustment;
+                        layerPlantHC[i] = layerRootHC[i] * layerShootHC[i] / (layerRootHC[i] + layerShootHC[i]);
+                    }
+                    else
+                        layerPlantHC[i] = 0.0;
+                }
+
+                rootHC *= Root_HC_Adjustment;
+                plantHC = (rootHC * shootHC) / (rootHC + shootHC);
+
+                if (plantHC > 0.0)
+                {
+                    /* Calculate average soil water potential (J/kg) */
+                    SWP_Average = 0.0;
+
+                    for (i = 0; i < Soil->totalLayers; i++)
+                        SWP_Average += soilWP[i] * Layer_Root_HC_Adjustment[i] / Root_HC_Adjustment;
+
+                    /* Calculate leaf water potential */
+                    LWP = SWP_Average - TE / plantHC;
+
+                    if (LWP < LWP_StressOnset)
+                        LWP = (plantHC * SWP_Average * (LWP_StressOnset - LWP_WiltingPoint) + LWP_WiltingPoint * TE) / (plantHC * (LWP_StressOnset - LWP_WiltingPoint) + TE);
+
+                    if (LWP < LWP_WiltingPoint)
+                        LWP = LWP_WiltingPoint;
+
+                    /* Reduce transpiration when LWP < LWP at the onset of stomatal
+                     * closure */
+                    if (LWP < LWP_StressOnset)
+                    {
+                        TA = TE * (LWP - LWP_WiltingPoint) / (LWP_StressOnset - LWP_WiltingPoint);
+                        transpirationRatio = TA / TE;
+                    }
+                    else
+                        transpirationRatio = 1.0;
+
+                    /* Calculate crop water uptake (kg/m2/d = mm/d) */
+                    for (i = 0; i < Soil->totalLayers; i++)
+                    {
+                        Soil->waterUptake[i] = layerPlantHC[i] * (soilWP[i] - LWP) * transpirationRatio;
+                        Soil->waterContent[i] -= Soil->waterUptake[i] / (Soil->layerThickness[i] * WATER_DENSITY);
+                    }
+                }
+
+                Crop->svTranspiration = 0.0;
+                for (i = 0; i < Soil->totalLayers; i++)
+                {
+                    Crop->svTranspiration += Soil->waterUptake[i];
+                }
+                Crop->svTranspirationPotential = TE;
+                Crop->svWaterStressFactor = 1.0 - Crop->svTranspiration / TE;
+            }	/* end plant growing */
         }
-        Crop->svTranspirationPotential = TE;
-        Crop->svWaterStressFactor = 1.0 - Crop->svTranspiration / TE;
-    }	/* end plant growing */
+    }
 }
 
 void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil, CropStruct *Crop)
