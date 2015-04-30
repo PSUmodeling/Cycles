@@ -15,6 +15,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     FieldOperationStruct *FixedFertilization;
     FieldOperationStruct *Tillage;
     FieldOperationStruct *FixedIrrigation;
+    int             i;
 
         /* If any crop in the community is growing, run the growing crop subroutine */
     if (Community->NumActiveCrop > 0)
@@ -42,8 +43,14 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
 
         if (strcasecmp (Tillage->opToolName, "Kill_Crop") != 0)
             ExecuteTillage (SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
-        //else if (Crop->cropUniqueIdentifier >= 0)
-        //    HarvestCrop (y, doy, SimControl->simStartYear, Crop, Residue, Soil, SoilCarbon, Weather, project);
+        else if (Community->NumActiveCrop > 0)
+        {
+            for (i = 0; i < Community->NumCrop; i++)
+            {
+                if (Community->Crop[i].stageGrowth > NO_CROP)
+                    HarvestCrop (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+            }
+        }
 
         SelectNextOperation (CropManagement->numTillage, &CropManagement->tillageIndex);
     }
