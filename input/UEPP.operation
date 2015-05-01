@@ -5,6 +5,11 @@ TOOL                Harvest_grain
 DEPTH               0.01
 SOIL_DISTURB_RATIO  5   
 MIXING_EFFICIENCY   0   
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
 
 FIXED_FERTILIZATION
 YEAR                1   
@@ -33,6 +38,11 @@ TOOL                Planter_double_disk_opnr
 DEPTH               0.03
 SOIL_DISTURB_RATIO  5   
 MIXING_EFFICIENCY   0.071554
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
 
 PLANTING
 YEAR                1   
@@ -48,6 +58,11 @@ TOOL                Kill_Crop
 DEPTH               0   
 SOIL_DISTURB_RATIO  0   
 MIXING_EFFICIENCY   0   
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
 
 FIXED_FERTILIZATION
 YEAR                1   
@@ -83,6 +98,11 @@ TOOL                Planter_double_disk_opnr
 DEPTH               0.05
 SOIL_DISTURB_RATIO  6   
 MIXING_EFFICIENCY   0.071554
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
 
 FIXED_FERTILIZATION
 YEAR                1   
@@ -111,6 +131,11 @@ TOOL                Harvest_grain
 DEPTH               0.01
 SOIL_DISTURB_RATIO  5   
 MIXING_EFFICIENCY   0   
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
 
 FIXED_FERTILIZATION
 YEAR                2   
@@ -146,6 +171,11 @@ TOOL                Planter_double_disk_opnr
 DEPTH               0.03
 SOIL_DISTURB_RATIO  5   
 MIXING_EFFICIENCY   0.071554
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
 
 TILLAGE
 YEAR                2   
@@ -154,6 +184,11 @@ TOOL                Kill_Crop
 DEPTH               0   
 SOIL_DISTURB_RATIO  0   
 MIXING_EFFICIENCY   0   
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
 
 FIXED_FERTILIZATION
 YEAR                2   
@@ -222,6 +257,11 @@ TOOL                Planter_double_disk_opnr
 DEPTH               0.05
 SOIL_DISTURB_RATIO  5   
 MIXING_EFFICIENCY   0.071554
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
 
 PLANTING
 YEAR                2   

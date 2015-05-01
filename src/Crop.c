@@ -165,7 +165,7 @@ void NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManage
 
     Crop->harvestDateFinal = -1;
     Crop->harvestCount = 0;
-    Crop->stageGrowth = -1;
+    //Crop->stageGrowth = -1;
 }
 
 void AddCrop (CropStruct *Crop)
@@ -192,6 +192,7 @@ void AddCrop (CropStruct *Crop)
 
 void KillCrop (CropStruct *Crop)
 {
+    Crop->stageGrowth = NO_CROP;
     //strcpy (Crop->cropName, "\0");
     Crop->autoIrrigationUsed = -1;
     Crop->autoIrrigationStartDay = 0;
@@ -238,7 +239,7 @@ void KillCrop (CropStruct *Crop)
     //Crop->calculatedSimMinYield = 0.0;
     Crop->harvestDateFinal = -1;
     Crop->harvestCount = -1;
-    Crop->stageGrowth = -1;
+    //Crop->stageGrowth = -1;
 
     Crop->svTT_Daily = 0.0;
     Crop->svTT_Cumulative = 0.0;
