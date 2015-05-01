@@ -73,6 +73,9 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
     double          layerSalinityFactor[Soil->totalLayers];
     CropStruct     *Crop;
 
+    for (i = 0; i < Soil->totalLayers; i++)
+        Soil->waterUptake[i] = 0.0;
+
     for (j = 0; j < Community->NumCrop; j++)
     {
         Crop = &Community->Crop[j];
@@ -178,8 +181,7 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
                     /* Calculate crop water uptake (kg/m2/d = mm/d) */
                     for (i = 0; i < Soil->totalLayers; i++)
                     {
-                        Soil->waterUptake[i] = layerPlantHC[i] * (soilWP[i] - LWP) * transpirationRatio;
-                        Soil->waterContent[i] -= Soil->waterUptake[i] / (Soil->layerThickness[i] * WATER_DENSITY);
+                        Soil->waterUptake[i] += layerPlantHC[i] * (soilWP[i] - LWP) * transpirationRatio;
                     }
                 }
 
@@ -193,6 +195,9 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
             }	/* end plant growing */
         }
     }
+
+    for (i = 0; i < Soil->totalLayers; i++)
+        Soil->waterContent[i] -= Soil->waterUptake[i] / (Soil->layerThickness[i] * WATER_DENSITY);
 }
 
 void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil, CropStruct *Crop)
