@@ -242,7 +242,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
             Community->svShootDailyGrowth += Community->Crop[i].svShootDailyGrowth;
             Community->svRootDailyGrowth += Community->Crop[i].svRootDailyGrowth;
             Community->svRizhoDailyDeposition += Community->Crop[i].svRizhoDailyDeposition;
-            //Community->svRootingDepth += Community->Crop[i].svRootingDepth;
+            Community->svRootingDepth = Community->Crop[i].svRootingDepth > Community->svRootingDepth ? Community->Crop[i].svRootingDepth : Community->svRootingDepth;
             Community->svTranspiration += Community->Crop[i].svTranspiration;
             Community->svTranspirationPotential += Community->Crop[i].svTranspirationPotential;
             Community->svN_Shoot += Community->Crop[i].svN_Shoot;
