@@ -146,6 +146,10 @@ void ReadCrop (char *filename, CommunityStruct *Community)
                 sscanf (cmdstr, "%*s %d", &Crop->userLegume);
                 fgets (cmdstr, MAXSTRING, crop_file);
                 sscanf (cmdstr, "%*s %d", &Crop->userC3orC4);
+                fgets (cmdstr, MAXSTRING, crop_file);
+                sscanf (cmdstr, "%*s %lf", &Crop->LWP_StressOnset);
+                fgets (cmdstr, MAXSTRING, crop_file);
+                sscanf (cmdstr, "%*s %lf", &Crop->LWP_WiltingPoint);
 
                 /* Convert units */
                 Crop->userMaximumSoilCoverage = Crop->userMaximumSoilCoverage * 0.94 / 100.0;

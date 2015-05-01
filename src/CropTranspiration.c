@@ -65,8 +65,8 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
     double          rootFraction[Soil->totalLayers];
 
     double          LWP;
-    double          LWP_StressOnset = -1100.0;
-    double          LWP_WiltingPoint = -2000.0;
+    //double          LWP_StressOnset = -1100.0;
+    //double          LWP_WiltingPoint = -2000.0;
     double          SWP_FC = -33.0;
     double          SWP_Average;
     double          soilWP[Soil->totalLayers];
@@ -118,7 +118,7 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
 
                 /* Calculate plant hydraulic conductivity (kg^2)/(m2 J d)
                  * This is the hydraulic conductivity of a canopy fully covering the ground */
-                plantHC = PTx / (SWP_FC - LWP_StressOnset);
+                plantHC = PTx / (SWP_FC - Crop->LWP_StressOnset);
                 rootHC = plantHC / 0.65;
                 shootHC = plantHC / 0.35;
 
@@ -128,7 +128,7 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
                 {
                     rootActivity[i] = 1.0;
                     layerSalinityFactor[i] = 1.0;
-                    rootActivity[i] = 1.0 - pow ((soilWP[i] - SWP_FC) / (LWP_WiltingPoint - SWP_FC), 8.0);
+                    rootActivity[i] = 1.0 - pow ((soilWP[i] - SWP_FC) / (Crop->LWP_WiltingPoint - SWP_FC), 8.0);
                     rootActivity[i] = rootActivity[i] > 1.0 ? 1.0 : rootActivity[i];
                     rootActivity[i] = rootActivity[i] < 0.0 ? 0.0 : rootActivity[i];
 
@@ -162,17 +162,17 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
                     /* Calculate leaf water potential */
                     LWP = SWP_Average - TE / plantHC;
 
-                    if (LWP < LWP_StressOnset)
-                        LWP = (plantHC * SWP_Average * (LWP_StressOnset - LWP_WiltingPoint) + LWP_WiltingPoint * TE) / (plantHC * (LWP_StressOnset - LWP_WiltingPoint) + TE);
+                    if (LWP < Crop->LWP_StressOnset)
+                        LWP = (plantHC * SWP_Average * (Crop->LWP_StressOnset - Crop->LWP_WiltingPoint) + Crop->LWP_WiltingPoint * TE) / (plantHC * (Crop->LWP_StressOnset - Crop->LWP_WiltingPoint) + TE);
 
-                    if (LWP < LWP_WiltingPoint)
-                        LWP = LWP_WiltingPoint;
+                    if (LWP < Crop->LWP_WiltingPoint)
+                        LWP = Crop->LWP_WiltingPoint;
 
                     /* Reduce transpiration when LWP < LWP at the onset of stomatal
                      * closure */
-                    if (LWP < LWP_StressOnset)
+                    if (LWP < Crop->LWP_StressOnset)
                     {
-                        TA = TE * (LWP - LWP_WiltingPoint) / (LWP_StressOnset - LWP_WiltingPoint);
+                        TA = TE * (LWP - Crop->LWP_WiltingPoint) / (Crop->LWP_StressOnset - Crop->LWP_WiltingPoint);
                         transpirationRatio = TA / TE;
                     }
                     else

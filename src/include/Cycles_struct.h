@@ -286,6 +286,8 @@ typedef struct CropStruct
     double          calculatedSimAvgYield;
     double          calculatedSimMaxYield;
     double          calculatedSimMinYield;
+    double          LWP_StressOnset;
+    double          LWP_WiltingPoint;
 
     int             harvestDateFinal;
     int             harvestCount;
