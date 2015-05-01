@@ -582,6 +582,8 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
     int             i;
     CropStruct     *Crop;
 
+    double          tau[Community->NumCrop];
+
     for (i = 0; i < Community->NumCrop; i++)
     {
         Crop = &Community->Crop[i];
@@ -660,6 +662,36 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
                         Crop->svRootingDepth = Crop->userMaximumRootingDepth;
                 } /* end if Crop->svTT_Cumulative >= Crop->userEmergenceTT */
             }	/* end if Crop->svTT_Cumulative < Crop->calculatedMaturityTT */
+        }
+    }
+
+    /* Begin community code */
+    if (Community->NumActiveCrop > 1)
+    {
+        sum_fi = 0.0;
+        tau_product = 1.0;
+
+        for (i = 0; i < Community->NumCrop; i++)
+        {
+            if (Community->Crop[i].stageGrowth > NO_CROP)
+            {
+                tau[i] = 1.0 - Community->Crop[i].svRadiationInterception;
+                tau_product *= tau[i];
+                fi[i] = 1.0 - tau[i];
+                sum_fi += fi[i];
+            }
+            else
+            {
+                tau[i] = 1.0;
+                fi[i] = 0.0;
+            }
+        }
+
+        for (i = 0; i < Community->NumCrop; i++)
+        {
+            /* Actual interception of each crop weighted by fi */
+            if (fi[i] > 0.0)
+                Community->Crop[i].svRadiationInterception = fi[i] / sum_fi * (1.0 - tauProduct);
         }
     }
 }
