@@ -62,9 +62,6 @@ void NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManage
 
     Crop = &Community->Crop[plantingOrder->plantID];
 
-    if (verbose_mode)
-        printf (" %s\n", Crop->cropName);
-
     Crop->stageGrowth = PLANTING;
 
     if (plantingOrder->usesAutoIrrigation > 0)
