@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void InitializeOutput (char *project, int layers)
+void InitializeOutput (char *project, const CommunityStruct *Community, int layers)
 {
     char            filename[150];
     char           *output_dir;
@@ -30,12 +30,15 @@ void InitializeOutput (char *project, int layers)
     fflush (output_file);
     fclose (output_file);
 
-    sprintf (filename, "output/%s/crop.dat", project);
-    output_file = fopen (filename, "w");
-    fprintf (output_file, "%-10s\t%-15s\t%-23s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", " DATE", "CROP", "STAGE", "THERMAL TIME", "CUM. BIOMASS", "AG BIOMASS", "ROOT BIOMASS", "FRAC INTERCEP", "TOTAL N", "AG N", "ROOT N", "AG N CONCN", "N FIXATION", "N ADDED", "N STRESS", " WATER STRESS", "POTENTIAL TR");
-    fprintf (output_file, "%-10s\t%-15s\t%-23s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "-", "C-day", "Mg/ha", "Mg/ha", "Mg/ha", "-", "kg/ha", "kg/ha", "kg/ha", "g/kg", "kg/ha", "kg/ha", "%", "%", "mm/day");
-    fflush (output_file);
-    fclose (output_file);
+    for (i = 0; i < Community->NumCrop; i++)
+    {
+        sprintf (filename, "output/%s/%s.dat", project, Community->Crop[i].cropName);
+        output_file = fopen (filename, "w");
+        fprintf (output_file, "%-10s\t%-15s\t%-23s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", " DATE", "CROP", "STAGE", "THERMAL TIME", "CUM. BIOMASS", "AG BIOMASS", "ROOT BIOMASS", "FRAC INTERCEP", "TOTAL N", "AG N", "ROOT N", "AG N CONCN", "N FIXATION", "N ADDED", "N STRESS", " WATER STRESS", "POTENTIAL TR");
+        fprintf (output_file, "%-10s\t%-15s\t%-23s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "-", "C-day", "Mg/ha", "Mg/ha", "Mg/ha", "-", "kg/ha", "kg/ha", "kg/ha", "g/kg", "kg/ha", "kg/ha", "%", "%", "mm/day");
+        fflush (output_file);
+        fclose (output_file);
+    }
 
     sprintf (filename, "output/%s/water.dat", project);
     output_file = fopen (filename, "w");
@@ -246,7 +249,7 @@ void InitializeOutput (char *project, int layers)
 
 }
 
-void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project)
+void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CommunityStruct *Community, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project)
 {
     char            filename[50];
     FILE           *output_file;
@@ -254,6 +257,7 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     int             i;
     double          sum;
     int             leap_year = 0;
+    CropStruct     *Crop;
 
     if (Weather->lastDoy[y] == 366)
         leap_year = 1;
@@ -277,64 +281,76 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     /*
      * Print crop output
      */
-    sprintf (filename, "output/%s/crop.dat", project);
-    output_file = fopen (filename, "a");
+    for (i = 0; i < Community->NumCrop; i++)
+    {
+        Crop = &Community->Crop[i];
+        sprintf (filename, "output/%s/%s.dat", project, Crop->cropName);
+        output_file = fopen (filename, "a");
 
-    fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    if (Crop->stageGrowth <= 0)
-    {
-        fprintf (output_file, "%-15s\t", "Fallow");
-        fprintf (output_file, "%-23s\t", "N/A");
-    }
-    else
-    {
-        fprintf (output_file, "%-15s\t", Crop->cropName);
-        switch (Crop->stageGrowth)
+        fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+        if (Community->NumActiveCrop <= 0)
         {
-            case PRE_EMERGENCE:
-                fprintf (output_file, "%-23s\t", "PRE_EMERGENCE");
-                break;
-            case VEGETATIVE_GROWTH:
-                fprintf (output_file, "%-23s\t", "VEGETATIVE_GROWTH");
-                break;
-            case PERENNIAL:
-                fprintf (output_file, "%-23s\t", "PERENNIAL");
-                break;
-            case REPRODUCTIVE_GROWTH:
-                fprintf (output_file, "%-23s\t", "REPRODUCTIVE_GROWTH");
-                break;
-            case MATURITY:
-                fprintf (output_file, "%-23s\t", "MATURITY");
-                break;
-            case CLIPPING:
-                fprintf (output_file, "%-23s\t", "CLIPPING");
-                break;
-            case PLANTING:
-                fprintf (output_file, "%-23s\t", "PLANTING");
-                break;
+            fprintf (output_file, "%-15s\t", "FALLOW");
+            fprintf (output_file, "%-23s\t", "N/A");
         }
+        else if (Crop->stageGrowth == NO_CROP)
+        {
+            fprintf (output_file, "%-15s\t", "NO_CROP");
+            fprintf (output_file, "%-23s\t", "N/A");
+        }
+        else
+        {
+            fprintf (output_file, "%-15s\t", Crop->cropName);
+            switch (Crop->stageGrowth)
+            {
+                case NO_CROP:
+                    /* Do nothing */
+                    break;
+                case PRE_EMERGENCE:
+                    fprintf (output_file, "%-23s\t", "PRE_EMERGENCE");
+                    break;
+                case VEGETATIVE_GROWTH:
+                    fprintf (output_file, "%-23s\t", "VEGETATIVE_GROWTH");
+                    break;
+                case PERENNIAL:
+                    fprintf (output_file, "%-23s\t", "PERENNIAL");
+                    break;
+                case REPRODUCTIVE_GROWTH:
+                    fprintf (output_file, "%-23s\t", "REPRODUCTIVE_GROWTH");
+                    break;
+                case MATURITY:
+                    fprintf (output_file, "%-23s\t", "MATURITY");
+                    break;
+                case CLIPPING:
+                    fprintf (output_file, "%-23s\t", "CLIPPING");
+                    break;
+                case PLANTING:
+                    fprintf (output_file, "%-23s\t", "PLANTING");
+                    break;
+            }
+        }
+
+        fprintf (output_file, "%-15.6lf\t", Crop->svTT_Cumulative);
+        fprintf (output_file, "%-15.6lf\t", Crop->svBiomass);
+        fprintf (output_file, "%-15.6lf\t", Crop->svShoot);
+        fprintf (output_file, "%-15.6lf\t", Crop->svRoot);
+        fprintf (output_file, "%-15.6lf\t", Crop->svRadiationInterception);
+        fprintf (output_file, "%-15.6lf\t", (Crop->svN_Shoot + Crop->svN_Root) * 1000.);
+        fprintf (output_file, "%-15.6lf\t", Crop->svN_Shoot * 1000.);
+        fprintf (output_file, "%-15.6lf\t", Crop->svN_Root * 1000.);
+        if (Crop->svShoot > 0.)
+            fprintf (output_file, "%-15.6lf\t", (Crop->svN_Shoot / Crop->svShoot) * 1000.);
+        else
+            fprintf (output_file, "%-15.6lf\t", 0.);
+        fprintf (output_file, "%-15.6lf\t", Crop->svN_Fixation * 1000.);
+        fprintf (output_file, "%-15.6lf\t", Crop->svN_AutoAdded * 1000.);
+        fprintf (output_file, "%-15.6lf\t", Crop->svN_StressFactor);
+        fprintf (output_file, "%-15.6lf\t", Crop->svWaterStressFactor);
+        fprintf (output_file, "%-15.6lf\n", Crop->svTranspirationPotential);
+
+        fflush (output_file);
+        fclose (output_file);
     }
-
-    fprintf (output_file, "%-15.6lf\t", Crop->svTT_Cumulative);
-    fprintf (output_file, "%-15.6lf\t", Crop->svBiomass);
-    fprintf (output_file, "%-15.6lf\t", Crop->svShoot);
-    fprintf (output_file, "%-15.6lf\t", Crop->svRoot);
-    fprintf (output_file, "%-15.6lf\t", Crop->svRadiationInterception);
-    fprintf (output_file, "%-15.6lf\t", (Crop->svN_Shoot + Crop->svN_Root) * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Crop->svN_Shoot * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Crop->svN_Root * 1000.);
-    if (Crop->svShoot > 0.)
-        fprintf (output_file, "%-15.6lf\t", (Crop->svN_Shoot / Crop->svShoot) * 1000.);
-    else
-        fprintf (output_file, "%-15.6lf\t", 0.);
-    fprintf (output_file, "%-15.6lf\t", Crop->svN_Fixation * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Crop->svN_AutoAdded * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Crop->svN_StressFactor);
-    fprintf (output_file, "%-15.6lf\t", Crop->svWaterStressFactor);
-    fprintf (output_file, "%-15.6lf\n", Crop->svTranspirationPotential);
-
-    fflush (output_file);
-    fclose (output_file);
 
     /*
      * Print Water output

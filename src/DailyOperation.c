@@ -48,7 +48,10 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
             for (i = 0; i < Community->NumCrop; i++)
             {
                 if (Community->Crop[i].stageGrowth > NO_CROP)
+                {
                     HarvestCrop (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                    Community->NumActiveCrop--;
+                }
             }
         }
 

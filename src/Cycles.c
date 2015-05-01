@@ -119,7 +119,7 @@ int main (int argc, char *argv[])
     if (debug_mode)
         PrintWeather (Cycles->Weather);
 
-    InitializeOutput (project, Cycles->Soil.totalLayers);
+    InitializeOutput (project, &Cycles->Community, Cycles->Soil.totalLayers);
 
     /* Initialize model variables and parameters */
     Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Community, &Cycles->CropManagement, &Cycles->Snow);
