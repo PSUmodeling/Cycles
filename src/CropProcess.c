@@ -25,7 +25,7 @@ void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, Re
      *                                    cumulative root biomass
      */
     double          stage;
-    double          dailyGrowth = 0.0;
+    double          dailyGrowth[Community->NumCrop];
     double          N_AbgdConcReq = 0.0;
     double          N_RootConcReq = 0.0;
     double          NxAbgd = 0.0;
@@ -35,10 +35,31 @@ void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, Re
     double          NxRoot = 0.0;
     int             i;
     CropStruct     *Crop;
+    double          N_Uptake[Community->NumCrop];
+    double          N_ReqAbgdGrowth[Community->NumCrop];
+    double          N_ReqRootGrowth[Community->NumCrop];
+    double          N_ReqRhizodeposition[Community->NumCrop];
+    double          N_CropDemand[Community->NumCrop];
+    double          NO3supply, NH4supply;
+    double          NO3Uptake[Soil->totalLayers];
+    double          NH4Uptake[Soil->totalLayers];
 
     for (i = 0; i < Community->NumCrop; i++)
     {
         Crop = &Community->Crop[i];
+        N_Uptake[i] = 0.0;
+        N_ReqAbgdGrowth[i] = 0.0;
+        N_ReqRootGrowth[i] = 0.0;
+        N_ReqRhizodeposition[i] = 0.0;
+        N_CropDemand[i] = 0.0;
+        dailyGrowth[i] = 0.0;
+        N_AbgdConcReq = 0.0;
+        N_RootConcReq = 0.0;
+        NaAbgd = 0.0;
+        NxAbgd = 0.0;
+        NcAbgd = 0.0;
+        NnAbgd = 0.0;
+        NxAbgd = 0.0;
 
         if (Crop->stageGrowth > NO_CROP)
         {
@@ -54,18 +75,28 @@ void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, Re
                 CropNitrogenStress (NaAbgd, NcAbgd, NnAbgd, Crop);
 
                 /* Compute growth */
-                CropGrowth (y, doy, &dailyGrowth, stage, Crop, Residue, Weather);
-
-                if (dailyGrowth > 0.0)
+                CropGrowth (y, doy, &dailyGrowth[i], stage, Crop, Residue, Weather);
+                if (dailyGrowth[i] > 0.0)
                 {
-                    /* Compute N demand based on growth and N uptake */
-                    CropNitrogenUptake (N_AbgdConcReq, N_RootConcReq, NaAbgd, NxAbgd, NxRoot, autoNitrogen, Crop, Soil);
-
-                    /* Distribute rizhodeposition in soil layers */
-                    DistributeRootDetritus (y, 0.0, Crop->svRizhoDailyDeposition, 0.0, Crop->svN_RizhoDailyDeposition, Soil, Crop, Residue, SoilCarbon);
+                    CropNitrogenDemand (N_AbgdConcReq, N_RootConcReq, &N_ReqAbgdGrowth[i], &N_ReqRootGrowth[i], &N_ReqRhizodeposition[i], &N_CropDemand[i], Crop);
                 }
             }
         }
+    }
+
+    PotentialSoluteUptakeOption2 (&NO3supply, NO3Uptake, 0.0, Soil->totalLayers, Soil->BD, Soil->layerThickness, Soil->waterUptake, Soil->NO3, Soil->waterContent);
+    PotentialSoluteUptakeOption2 (&NH4supply, NH4Uptake, 5.6, Soil->totalLayers, Soil->BD, Soil->layerThickness, Soil->waterUptake, Soil->NH4, Soil->waterContent);
+
+    /* Compute N demand based on growth and N uptake */
+    CropNitrogenUptake (N_ReqAbgdGrowth, N_ReqRootGrowth, N_ReqRhizodeposition, NxAbgd, NxRoot, autoNitrogen, NO3supply, NH4supply, NO3Uptake, NH4Uptake, N_CropDemand, Community, Soil);
+
+    for (i = 0; i < Community->NumCrop; i++)
+    {
+        Crop = &Community->Crop[i];
+
+        /* Distribute rizhodeposition in soil layers */
+        if (Crop->stageGrowth > NO_CROP && dailyGrowth[i] > 0.0)
+            DistributeRootDetritus (y, 0.0, Crop->svRizhoDailyDeposition, 0.0, Crop->svN_RizhoDailyDeposition, Soil, Crop, Residue, SoilCarbon);
     }
 }
 
@@ -276,154 +307,146 @@ void CropNitrogenStress (double NaAbgd, double NcAbgd, double NnAbgd, CropStruct
         Crop->svN_StressCumulative += Crop->svN_StressFactor * Crop->svTT_Daily / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
 }
 
-void CropNitrogenUptake (double N_AbgdConcReq, double N_RootConcReq, double NaAbgd, double NxAbgd, double NxRoot, int autoNitrogen, CropStruct *Crop, SoilStruct *Soil)
+void CropNitrogenDemand (double N_AbgdConcReq, double N_RootConcReq, double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *N_CropDemand, CropStruct *Crop)
 {
-    /* 
-     * -----------------------------------------------------------------------
-     * LOCAL VARIABLES
-     *
-     * Variable             Type        Description
-     * ==========           ==========  ====================
-     * i		    int
-     * N_CropDemand	    double
-     * N_ReqAbgdGrowth	    double	N mass required to satisfy abgd growth
-     *					  based on luxury consumption
-     * N_ReqRootGrowth	    double	N mass required to satisfy root growth
-     *					  based on luxury consumption
-     * N_ReqRhizodeposition double	N mass required to satisfy
-     *					  rizhodeposition
-     * N_AbgdConc	    double	Aboveground N concentration in biomass
-     * N_RootConc	    double	Root N concentration in biomass
-     * NO3Uptake	    double[]	Array passed to Subrouthine
-     *					  PotentialSoluteUptake
-     * NH4Uptake	    double[]	Array passed to Subrouthine
-     *					  PotentialSoluteUptake
-     * NO3supply	    double	NO3 cumulative supply through the
-     *					  rooting depth
-     * NH4supply	    double	NH4 cumulative supply through the
-     *					  rooting depth
-     * N_SoilSupply	    double	NO3 and NH4 cumulative supply
-     * N_Uptake		    double	NO3 and NH4 total N uptake
-     * N_FractionalSatisfiedDemand
-     *			    double
-     * N_FractionalSatisfiedSupply
-     *			    double
-     * N_Surplus	    double	Variable used to remove excess N in
-     *					  biomass due to dilution
-     * Nfixation	    double
-     * Nratio		    double
-     */
-    int             i;
-    double          N_CropDemand;
-    double          N_ReqAbgdGrowth;
-    double          N_ReqRootGrowth;
-    double          N_ReqRhizodeposition;
+    *N_CropDemand = 0.0;
+
+    /* calculate N demand for today's growth
+     * (assume no deficit demand to be satisfied - testing) */
+    *N_ReqAbgdGrowth = Crop->svShootDailyGrowth * N_AbgdConcReq;
+    *N_ReqRootGrowth = Crop->svRootDailyGrowth * N_RootConcReq;
+    *N_ReqRhizodeposition = Crop->svRizhoDailyDeposition * N_RootConcReq;
+    *N_CropDemand = *N_ReqAbgdGrowth + *N_ReqRootGrowth + *N_ReqRhizodeposition;
+}
+
+void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double NxAbgd, double NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, CommunityStruct *Community, SoilStruct *Soil)
+{
+    int             i, j;
     double          N_AbgdConc, N_RootConc;
-    double          NO3Uptake[Soil->totalLayers];
-    double          NH4Uptake[Soil->totalLayers];
-    double          NO3supply, NH4Supply;
     double          N_SoilSupply;
-    double          N_Uptake;
+    double          N_Uptake[Community->NumCrop];
     double          N_FractionalSatisfiedDemand;
     double          N_FractionalSatisfiedSupply;
     double          N_Surplus;  
     double          Nfixation = 0.0;
     double          Nratio;
+    double          NaAbgd;
+    double          total_uptake;
+    CropStruct     *Crop;
 
-    N_CropDemand = 0.0;
     N_Surplus = 0.0;
 
-    /* calculate N demand for today's growth
-     * (assume no deficit demand to be satisfied - testing) */
-    N_ReqAbgdGrowth = Crop->svShootDailyGrowth * N_AbgdConcReq;
-    N_ReqRootGrowth = Crop->svRootDailyGrowth * N_RootConcReq;
-    N_ReqRhizodeposition = Crop->svRizhoDailyDeposition * N_RootConcReq;
-    N_CropDemand = N_ReqAbgdGrowth + N_ReqRootGrowth + N_ReqRhizodeposition;
-
-    /* PotentialSoluteUptakeOption2 */
-    /* Mg solute/ha */
-    PotentialSoluteUptakeOption2 (&NO3supply, NO3Uptake, 0.0, Soil->totalLayers, Soil->BD, Soil->layerThickness, Soil->waterUptake, Soil->NO3, Soil->waterContent);
-    PotentialSoluteUptakeOption2 (&NH4Supply, NH4Uptake, 5.6, Soil->totalLayers, Soil->BD, Soil->layerThickness, Soil->waterUptake, Soil->NH4, Soil->waterContent);
-
     /* Calculate actual N uptake and update plant N concentrations */
-    N_SoilSupply = NO3supply + NH4Supply;
+    N_SoilSupply = NO3supply + NH4supply;
 
-    Nratio = N_SoilSupply / N_CropDemand;
-
-    N_Uptake = N_CropDemand * (1.0 - exp (-Nratio));
-    N_FractionalSatisfiedDemand = N_Uptake / N_CropDemand;
-    N_FractionalSatisfiedSupply = N_Uptake / N_SoilSupply;
-
-    /* Update soil NO3 and NH4 pools */
-    for (i = 0; i < Soil->totalLayers; i++)
+    total_uptake = 0.0;
+    for (j = 0; j < Community->NumCrop; j++)
     {
-        Soil->NO3[i] -= N_FractionalSatisfiedSupply * NO3Uptake[i];
-        Soil->NH4[i] -= N_FractionalSatisfiedSupply * NH4Uptake[i];
-    }
-
-    /* Split the code below in update pools surrogate for removal from seed
-     * nitrogen fixation autofertilization */
-    Crop->svN_Shoot += N_FractionalSatisfiedDemand * N_ReqAbgdGrowth;
-    Crop->svN_Root += N_FractionalSatisfiedDemand * N_ReqRootGrowth;
-    Crop->svN_RizhoDailyDeposition = N_FractionalSatisfiedDemand * N_ReqRhizodeposition;
-    NaAbgd = Crop->svN_Shoot / Crop->svShoot;
-
-    /* Legume condition
-     * Auto nitrogen for no N limitation
-     * Auto nitrogen to consider N seed storage (auto nitrogen if stressed and
-     * 1.5 leaf stage, approx.) */
-    if (Crop->userLegume)
-    {	/* N fixation */
-        if (N_FractionalSatisfiedDemand < 0.9)
+        if (Community->Crop[j].stageGrowth > NO_CROP && N_CropDemand[j] > 0.0)
         {
-            Crop->svN_Shoot += N_ReqAbgdGrowth * (0.9 - N_FractionalSatisfiedDemand);
-            Crop->svN_Root += N_ReqRootGrowth * (0.9 - N_FractionalSatisfiedDemand);
-            Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition * (0.9 - N_FractionalSatisfiedDemand);
-            Crop->svN_Fixation += (0.9 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth + N_ReqRootGrowth + N_ReqRhizodeposition);
-            Nfixation = (0.9 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth + N_ReqRootGrowth + N_ReqRhizodeposition);
-        }
-    }
-    else if (autoNitrogen)
-    {
-        if (N_FractionalSatisfiedDemand < 0.65)
-        {
-            Crop->svN_Shoot += N_ReqAbgdGrowth * (0.65 - N_FractionalSatisfiedDemand);
-            Crop->svN_Root += N_ReqRootGrowth * (0.65 - N_FractionalSatisfiedDemand);
-            Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition * (0.65 - N_FractionalSatisfiedDemand);
-            Crop->svN_AutoAdded += (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth + N_ReqRootGrowth + N_ReqRhizodeposition);
-            //Nauto = (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth + N_ReqRootGrowth + N_ReqRhizodeposition)
-        }
-    }
-    else if (Crop->svTT_Cumulative < 2.5 * Crop->userEmergenceTT && NaAbgd < 0.65 * NxAbgd)
-    {
-        if (N_FractionalSatisfiedDemand < 0.65)
-        {
-            Crop->svN_Shoot += N_ReqAbgdGrowth * (0.65 - N_FractionalSatisfiedDemand);
-            Crop->svN_Root += N_ReqRootGrowth * (0.65 - N_FractionalSatisfiedDemand);
-            Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition * (0.65 - N_FractionalSatisfiedDemand);
-            Crop->svN_AutoAdded += (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth + N_ReqRootGrowth + N_ReqRhizodeposition);
+            Nratio = N_SoilSupply / N_CropDemand[j];
+            N_Uptake[j] = N_CropDemand[j] * (1.0 - exp (-Nratio));
+            total_uptake += N_Uptake[j];
         }
     }
 
-    Crop->svN_Rhizo += Crop->svN_RizhoDailyDeposition;
-    N_AbgdConc = Crop->svN_Shoot / Crop->svShoot;
-    N_RootConc = Crop->svN_Root / Crop->svRoot;
-
-    /* Trim N above maximum and return to soil layer 0 as nitrate */
-    if (N_AbgdConc > NxAbgd)
+    if (total_uptake > N_SoilSupply)
     {
-        N_Surplus = 0.0;
-        N_Surplus = Crop->svShoot * (N_AbgdConc - NxAbgd);
-        Soil->NO3[0] += N_Surplus;
-        Crop->svN_Shoot = NxAbgd * Crop->svShoot;
+        for (j = 0; j < Community->NumCrop; j++)
+        {
+            if (Community->Crop[j].stageGrowth > NO_CROP)
+            {
+                N_Uptake[j] *= N_SoilSupply / total_uptake;
+                for (i = 0; i < Soil->totalLayers; i++)
+                {
+                    NO3Uptake[i] *= N_SoilSupply / total_uptake;
+                    NH4Uptake[i] *= N_SoilSupply / total_uptake;
+                }
+            }
+        }
     }
 
-    if (N_RootConc > NxRoot)
+    for (j = 0; j < Community->NumCrop; j++)
     {
-        N_Surplus = 0.0;
-        N_Surplus = Crop->svRoot * (N_RootConc - NxRoot);
-        Soil->NO3[0] += N_Surplus;
-        Crop->svN_Root = NxRoot * Crop->svRoot;
+        Crop = &Community->Crop[j];
+
+        if (Crop->stageGrowth > NO_CROP && N_CropDemand[j] > 0.0)
+        {
+            N_FractionalSatisfiedDemand = N_Uptake[j] / N_CropDemand[j];
+            N_FractionalSatisfiedSupply = N_Uptake[j] / N_SoilSupply;
+
+            /* Update soil NO3 and NH4 pools */
+            for (i = 0; i < Soil->totalLayers; i++)
+            {
+                Soil->NO3[i] -= N_FractionalSatisfiedSupply * NO3Uptake[i];
+                Soil->NH4[i] -= N_FractionalSatisfiedSupply * NH4Uptake[i];
+            }
+
+            /* Split the code below in update pools surrogate for removal from seed
+             * nitrogen fixation autofertilization */
+            Crop->svN_Shoot += N_FractionalSatisfiedDemand * N_ReqAbgdGrowth[i];
+            Crop->svN_Root += N_FractionalSatisfiedDemand * N_ReqRootGrowth[i];
+            Crop->svN_RizhoDailyDeposition = N_FractionalSatisfiedDemand * N_ReqRhizodeposition[i];
+            NaAbgd = Crop->svN_Shoot / Crop->svShoot;
+
+            /* Legume condition
+             * Auto nitrogen for no N limitation
+             * Auto nitrogen to consider N seed storage (auto nitrogen if stressed and
+             * 1.5 leaf stage, approx.) */
+            if (Crop->userLegume)
+            {	/* N fixation */
+                if (N_FractionalSatisfiedDemand < 0.9)
+                {
+                    Crop->svN_Shoot += N_ReqAbgdGrowth[i] * (0.9 - N_FractionalSatisfiedDemand);
+                    Crop->svN_Root += N_ReqRootGrowth[i] * (0.9 - N_FractionalSatisfiedDemand);
+                    Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition[i] * (0.9 - N_FractionalSatisfiedDemand);
+                    Crop->svN_Fixation += (0.9 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i]);
+                    Nfixation = (0.9 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i]);
+                }
+            }
+            else if (autoNitrogen)
+            {
+                if (N_FractionalSatisfiedDemand < 0.65)
+                {
+                    Crop->svN_Shoot += N_ReqAbgdGrowth[i] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_Root += N_ReqRootGrowth[i] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition[i] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_AutoAdded += (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i]);
+                    //Nauto = (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i])
+                }
+            }
+            else if (Crop->svTT_Cumulative < 2.5 * Crop->userEmergenceTT && NaAbgd < 0.65 * NxAbgd)
+            {
+                if (N_FractionalSatisfiedDemand < 0.65)
+                {
+                    Crop->svN_Shoot += N_ReqAbgdGrowth[i] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_Root += N_ReqRootGrowth[i] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition[i] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_AutoAdded += (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i]);
+                }
+            }
+
+            Crop->svN_Rhizo += Crop->svN_RizhoDailyDeposition;
+            N_AbgdConc = Crop->svN_Shoot / Crop->svShoot;
+            N_RootConc = Crop->svN_Root / Crop->svRoot;
+
+            /* Trim N above maximum and return to soil layer 0 as nitrate */
+            if (N_AbgdConc > NxAbgd)
+            {
+                N_Surplus = 0.0;
+                N_Surplus = Crop->svShoot * (N_AbgdConc - NxAbgd);
+                Soil->NO3[0] += N_Surplus;
+                Crop->svN_Shoot = NxAbgd * Crop->svShoot;
+            }
+
+            if (N_RootConc > NxRoot)
+            {
+                N_Surplus = 0.0;
+                N_Surplus = Crop->svRoot * (N_RootConc - NxRoot);
+                Soil->NO3[0] += N_Surplus;
+                Crop->svN_Root = NxRoot * Crop->svRoot;
+            }
+        }
     }
 }
 

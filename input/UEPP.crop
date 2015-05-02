@@ -50,7 +50,7 @@ MAXIMUM_ROOTING_DEPTH                       1.70
 AVERAGE_EXPECTED_YIELD                      5500.00
 MAXIMUM_EXPECTED_YIELD                      9000.00
 MINIMUM_EXPECTED_YIELD                      3000.00
-COMMERCIAL_YIELD_MOISTURE                   14.00 
+COMMERCIAL_YIELD_MOISTURE                   0.00 
 STANDING_RESIDUE_AT_HARVEST                 60.00 
 RESIDUE_REMOVED                             40.00 
 HARVEST_TIMING                              -999  
@@ -90,7 +90,7 @@ MAXIMUM_ROOTING_DEPTH                       1.40
 AVERAGE_EXPECTED_YIELD                      2500.00
 MAXIMUM_EXPECTED_YIELD                      4500.00
 MINIMUM_EXPECTED_YIELD                      800.00
-COMMERCIAL_YIELD_MOISTURE                   13.00 
+COMMERCIAL_YIELD_MOISTURE                   0.00 
 STANDING_RESIDUE_AT_HARVEST                 30.00 
 RESIDUE_REMOVED                             70.00 
 HARVEST_TIMING                              -999  

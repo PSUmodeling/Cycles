@@ -19,9 +19,10 @@ double          ComputeHarvestIndex (double HIx, double HIo, double HIk, double 
 /* CropProcess.c */
 void            Processes (const int y, const int doy, const int autoNitrogen, CommunityStruct *Community, ResidueStruct *Residue, const WeatherStruct *Weather, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon);
 void            CropGrowth (int y, int doy, double *DailyGrowth, const double Stage, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct *Weather);
+void            CropNitrogenDemand (double N_AbgdConcReq, double N_RootConcReq, double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *N_CropDemand, CropStruct *Crop);
 void            CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, double *NaAbgd, double *NxAbgd, double *NcAbgd, double *NnAbgd, double *NxRoot, const double Stage, const CropStruct *Crop);
 void            CropNitrogenStress (const double NaAbgd, const double NcAbgd, const double NnAbgd, CropStruct *Crop);
-void            CropNitrogenUptake (double N_AbgdConcReq, double N_RootConcReq, double NaAbgd, double NxAbgd, double NxRoot, int autoNitrogen, CropStruct *Crop, SoilStruct *Soil);
+void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double NxAbgd, double NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, CommunityStruct *Community, SoilStruct *Soil);
 void            PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake, double Kd, int totalLayers, const double *BD, const double *dz, const double *WaterUptake, const double *Solute, const double *WC);
 double          ShootBiomassPartitioning (const double Stage, const double Po, const double Pf);
 void            RadiationInterception (int y, int doy, CommunityStruct *Community);
