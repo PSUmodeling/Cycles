@@ -366,7 +366,7 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     fprintf (output_file, "%-15.6lf\t", Soil->evaporationVol);
     fprintf (output_file, "%-15.6lf\t", Soil->residueEvaporationVol);
     fprintf (output_file, "%-15.6lf\t", Snow->snowEvaporationVol);
-    fprintf (output_file, "%-15.6lf\n", Crop->svTranspiration);
+    fprintf (output_file, "%-15.6lf\n", Community->svTranspiration);
 
     fflush (output_file);
     fclose (output_file);
