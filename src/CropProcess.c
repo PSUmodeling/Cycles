@@ -28,11 +28,11 @@ void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, Re
     double          dailyGrowth[Community->NumCrop];
     double          N_AbgdConcReq = 0.0;
     double          N_RootConcReq = 0.0;
-    double          NxAbgd = 0.0;
+    double          NxAbgd[Community->NumCrop];
     double          NcAbgd = 0.0;
     double          NnAbgd = 0.0;
     double          NaAbgd = 0.0;
-    double          NxRoot = 0.0;
+    double          NxRoot[Community->NumCrop];
     int             i;
     CropStruct     *Crop;
     double          N_Uptake[Community->NumCrop];
@@ -56,10 +56,10 @@ void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, Re
         N_AbgdConcReq = 0.0;
         N_RootConcReq = 0.0;
         NaAbgd = 0.0;
-        NxAbgd = 0.0;
+        NxAbgd[i] = 0.0;
         NcAbgd = 0.0;
         NnAbgd = 0.0;
-        NxAbgd = 0.0;
+        NxRoot[i] = 0.0;
 
         if (Crop->stageGrowth > NO_CROP)
         {
@@ -69,7 +69,7 @@ void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, Re
 
                 /* Compute reference N concentration of biomass and required
                  * concentration of new growth (Eulerian) */
-                CropNitrogenConcentration (&N_AbgdConcReq, &N_RootConcReq, &NaAbgd, &NxAbgd, &NcAbgd, &NnAbgd, &NxRoot, stage, Crop);
+                CropNitrogenConcentration (&N_AbgdConcReq, &N_RootConcReq, &NaAbgd, &NxAbgd[i], &NcAbgd, &NnAbgd, &NxRoot[i], stage, Crop);
 
                 /* Compute nitrogen stress */
                 CropNitrogenStress (NaAbgd, NcAbgd, NnAbgd, Crop);
@@ -319,7 +319,7 @@ void CropNitrogenDemand (double N_AbgdConcReq, double N_RootConcReq, double *N_R
     *N_CropDemand = *N_ReqAbgdGrowth + *N_ReqRootGrowth + *N_ReqRhizodeposition;
 }
 
-void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double NxAbgd, double NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, CommunityStruct *Community, SoilStruct *Soil)
+void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *NxAbgd, double *NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, CommunityStruct *Community, SoilStruct *Soil)
 {
     int             i, j;
     double          N_AbgdConc, N_RootConc;
@@ -384,9 +384,9 @@ void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, doubl
 
             /* Split the code below in update pools surrogate for removal from seed
              * nitrogen fixation autofertilization */
-            Crop->svN_Shoot += N_FractionalSatisfiedDemand * N_ReqAbgdGrowth[i];
-            Crop->svN_Root += N_FractionalSatisfiedDemand * N_ReqRootGrowth[i];
-            Crop->svN_RizhoDailyDeposition = N_FractionalSatisfiedDemand * N_ReqRhizodeposition[i];
+            Crop->svN_Shoot += N_FractionalSatisfiedDemand * N_ReqAbgdGrowth[j];
+            Crop->svN_Root += N_FractionalSatisfiedDemand * N_ReqRootGrowth[j];
+            Crop->svN_RizhoDailyDeposition = N_FractionalSatisfiedDemand * N_ReqRhizodeposition[j];
             NaAbgd = Crop->svN_Shoot / Crop->svShoot;
 
             /* Legume condition
@@ -397,32 +397,32 @@ void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, doubl
             {	/* N fixation */
                 if (N_FractionalSatisfiedDemand < 0.9)
                 {
-                    Crop->svN_Shoot += N_ReqAbgdGrowth[i] * (0.9 - N_FractionalSatisfiedDemand);
-                    Crop->svN_Root += N_ReqRootGrowth[i] * (0.9 - N_FractionalSatisfiedDemand);
-                    Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition[i] * (0.9 - N_FractionalSatisfiedDemand);
-                    Crop->svN_Fixation += (0.9 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i]);
-                    Nfixation = (0.9 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i]);
+                    Crop->svN_Shoot += N_ReqAbgdGrowth[j] * (0.9 - N_FractionalSatisfiedDemand);
+                    Crop->svN_Root += N_ReqRootGrowth[j] * (0.9 - N_FractionalSatisfiedDemand);
+                    Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition[j] * (0.9 - N_FractionalSatisfiedDemand);
+                    Crop->svN_Fixation += (0.9 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[j] + N_ReqRootGrowth[j] + N_ReqRhizodeposition[j]);
+                    Nfixation = (0.9 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[j] + N_ReqRootGrowth[j] + N_ReqRhizodeposition[j]);
                 }
             }
             else if (autoNitrogen)
             {
                 if (N_FractionalSatisfiedDemand < 0.65)
                 {
-                    Crop->svN_Shoot += N_ReqAbgdGrowth[i] * (0.65 - N_FractionalSatisfiedDemand);
-                    Crop->svN_Root += N_ReqRootGrowth[i] * (0.65 - N_FractionalSatisfiedDemand);
-                    Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition[i] * (0.65 - N_FractionalSatisfiedDemand);
-                    Crop->svN_AutoAdded += (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i]);
-                    //Nauto = (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i])
+                    Crop->svN_Shoot += N_ReqAbgdGrowth[j] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_Root += N_ReqRootGrowth[j] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition[j] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_AutoAdded += (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[j] + N_ReqRootGrowth[j] + N_ReqRhizodeposition[j]);
+                    //Nauto = (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[j] + N_ReqRootGrowth[j] + N_ReqRhizodeposition[j])
                 }
             }
-            else if (Crop->svTT_Cumulative < 2.5 * Crop->userEmergenceTT && NaAbgd < 0.65 * NxAbgd)
+            else if (Crop->svTT_Cumulative < 2.5 * Crop->userEmergenceTT && NaAbgd < 0.65 * NxAbgd[j])
             {
                 if (N_FractionalSatisfiedDemand < 0.65)
                 {
-                    Crop->svN_Shoot += N_ReqAbgdGrowth[i] * (0.65 - N_FractionalSatisfiedDemand);
-                    Crop->svN_Root += N_ReqRootGrowth[i] * (0.65 - N_FractionalSatisfiedDemand);
-                    Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition[i] * (0.65 - N_FractionalSatisfiedDemand);
-                    Crop->svN_AutoAdded += (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[i] + N_ReqRootGrowth[i] + N_ReqRhizodeposition[i]);
+                    Crop->svN_Shoot += N_ReqAbgdGrowth[j] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_Root += N_ReqRootGrowth[j] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_RizhoDailyDeposition += N_ReqRhizodeposition[j] * (0.65 - N_FractionalSatisfiedDemand);
+                    Crop->svN_AutoAdded += (0.65 - N_FractionalSatisfiedDemand) * (N_ReqAbgdGrowth[j] + N_ReqRootGrowth[j] + N_ReqRhizodeposition[j]);
                 }
             }
 
@@ -431,20 +431,20 @@ void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, doubl
             N_RootConc = Crop->svN_Root / Crop->svRoot;
 
             /* Trim N above maximum and return to soil layer 0 as nitrate */
-            if (N_AbgdConc > NxAbgd)
+            if (N_AbgdConc > NxAbgd[j])
             {
                 N_Surplus = 0.0;
-                N_Surplus = Crop->svShoot * (N_AbgdConc - NxAbgd);
+                N_Surplus = Crop->svShoot * (N_AbgdConc - NxAbgd[j]);
                 Soil->NO3[0] += N_Surplus;
-                Crop->svN_Shoot = NxAbgd * Crop->svShoot;
+                Crop->svN_Shoot = NxAbgd[j] * Crop->svShoot;
             }
 
-            if (N_RootConc > NxRoot)
+            if (N_RootConc > NxRoot[j])
             {
                 N_Surplus = 0.0;
-                N_Surplus = Crop->svRoot * (N_RootConc - NxRoot);
+                N_Surplus = Crop->svRoot * (N_RootConc - NxRoot[j]);
                 Soil->NO3[0] += N_Surplus;
-                Crop->svN_Root = NxRoot * Crop->svRoot;
+                Crop->svN_Root = NxRoot[j] * Crop->svRoot;
             }
         }
     }
