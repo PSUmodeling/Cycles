@@ -37,6 +37,7 @@ LEGUME                                      0
 C3                                          1
 LWP_STRESS_ONSET                            -1100.0
 LWP_WILTING_POINT                           -2000.0
+TRANSPIRATION_MAX                           8.00
 
 ####################################################
 # CROP DESCRIPTION                                 #
@@ -77,6 +78,7 @@ LEGUME                                      0
 C3                                          0
 LWP_STRESS_ONSET                            -1200.0
 LWP_WILTING_POINT                           -2200.0
+TRANSPIRATION_MAX                           8.00
 
 ####################################################
 # CROP DESCRIPTION                                 #
@@ -117,3 +119,4 @@ LEGUME                                      1
 C3                                          1
 LWP_STRESS_ONSET                            -1000.0
 LWP_WILTING_POINT                           -1800.0
+TRANSPIRATION_MAX                           8.00

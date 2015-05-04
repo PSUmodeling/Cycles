@@ -58,52 +58,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
         SelectNextOperation (CropManagement->numTillage, &CropManagement->tillageIndex);
     }
 
-    Community->svRadiationInterception = 0.0;
-    Community->svBiomass = 0.0;
-    Community->svShoot = 0.0;
-    Community->svRoot = 0.0;
-    Community->svRizho = 0.0;
-    Community->svShootDailyGrowth = 0.0;
-    Community->svRootDailyGrowth = 0.0;
-    Community->svRizhoDailyDeposition = 0.0;
-    Community->svRootingDepth = 0.0;
-    Community->svTranspiration = 0.0;
-    Community->svTranspirationPotential = 0.0;
-    Community->svN_Shoot = 0.0;
-    Community->svN_Root = 0.0;
-    Community->svN_Rhizo = 0.0;
-    Community->svN_RizhoDailyDeposition = 0.0;
-    Community->svN_AutoAdded = 0.0;
-    Community->svN_Fixation = 0.0;
-    Community->svWaterStressFactor = 0.0;
-    Community->svN_StressFactor = 0.0;
-    
-    for (i = 0; i < Community->NumCrop; i++)
-    {
-        if (Community->Crop[i].stageGrowth > NO_CROP)
-        {
-            Community->svRadiationInterception += Community->Crop[i].svRadiationInterception;
-            Community->svBiomass += Community->Crop[i].svBiomass;
-            Community->svShoot += Community->Crop[i].svShoot;
-            Community->svRoot += Community->Crop[i].svRoot;
-            Community->svRizho += Community->Crop[i].svRizho;
-            Community->svShootDailyGrowth += Community->Crop[i].svShootDailyGrowth;
-            Community->svRootDailyGrowth += Community->Crop[i].svRootDailyGrowth;
-            Community->svRizhoDailyDeposition += Community->Crop[i].svRizhoDailyDeposition;
-            Community->svRootingDepth = Community->Crop[i].svRootingDepth > Community->svRootingDepth ? Community->Crop[i].svRootingDepth : Community->svRootingDepth;
-            Community->svTranspiration += Community->Crop[i].svTranspiration;
-            Community->svTranspirationPotential += Community->Crop[i].svTranspirationPotential;
-            Community->svN_Shoot += Community->Crop[i].svN_Shoot;
-            Community->svN_Root += Community->Crop[i].svN_Root;
-            Community->svN_Rhizo += Community->Crop[i].svN_Rhizo;
-            Community->svN_RizhoDailyDeposition += Community->Crop[i].svN_RizhoDailyDeposition;
-            Community->svN_AutoAdded += Community->Crop[i].svN_AutoAdded;
-            Community->svN_Fixation += Community->Crop[i].svN_Fixation;
-            Community->svWaterStressFactor += Community->Crop[i].svWaterStressFactor;
-            Community->svN_StressFactor += Community->Crop[i].svN_StressFactor;
-        }
-    }
-   
+    UpdateCommunity (Community);
 
     Soil->irrigationVol = 0.0;
     while (IsOperationToday (rotationYear, doy, CropManagement->FixedIrrigation, CropManagement->irrigationIndex))
@@ -257,51 +212,7 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
         }
     }
 
-    Community->svRadiationInterception = 0.0;
-    Community->svBiomass = 0.0;
-    Community->svShoot = 0.0;
-    Community->svRoot = 0.0;
-    Community->svRizho = 0.0;
-    Community->svShootDailyGrowth = 0.0;
-    Community->svRootDailyGrowth = 0.0;
-    Community->svRizhoDailyDeposition = 0.0;
-    Community->svRootingDepth = 0.0;
-    Community->svTranspiration = 0.0;
-    Community->svTranspirationPotential = 0.0;
-    Community->svN_Shoot = 0.0;
-    Community->svN_Root = 0.0;
-    Community->svN_Rhizo = 0.0;
-    Community->svN_RizhoDailyDeposition = 0.0;
-    Community->svN_AutoAdded = 0.0;
-    Community->svN_Fixation = 0.0;
-    Community->svWaterStressFactor = 0.0;
-    Community->svN_StressFactor = 0.0;
-    
-    for (i = 0; i < Community->NumCrop; i++)
-    {
-        if (Community->Crop[i].stageGrowth > NO_CROP)
-        {
-            Community->svRadiationInterception += Community->Crop[i].svRadiationInterception;
-            Community->svBiomass += Community->Crop[i].svBiomass;
-            Community->svShoot += Community->Crop[i].svShoot;
-            Community->svRoot += Community->Crop[i].svRoot;
-            Community->svRizho += Community->Crop[i].svRizho;
-            Community->svShootDailyGrowth += Community->Crop[i].svShootDailyGrowth;
-            Community->svRootDailyGrowth += Community->Crop[i].svRootDailyGrowth;
-            Community->svRizhoDailyDeposition += Community->Crop[i].svRizhoDailyDeposition;
-            Community->svRootingDepth = Community->Crop[i].svRootingDepth > Community->svRootingDepth ? Community->Crop[i].svRootingDepth : Community->svRootingDepth;
-            Community->svTranspiration += Community->Crop[i].svTranspiration;
-            Community->svTranspirationPotential += Community->Crop[i].svTranspirationPotential;
-            Community->svN_Shoot += Community->Crop[i].svN_Shoot;
-            Community->svN_Root += Community->Crop[i].svN_Root;
-            Community->svN_Rhizo += Community->Crop[i].svN_Rhizo;
-            Community->svN_RizhoDailyDeposition += Community->Crop[i].svN_RizhoDailyDeposition;
-            Community->svN_AutoAdded += Community->Crop[i].svN_AutoAdded;
-            Community->svN_Fixation += Community->Crop[i].svN_Fixation;
-            Community->svWaterStressFactor += Community->Crop[i].svWaterStressFactor;
-            Community->svN_StressFactor += Community->Crop[i].svN_StressFactor;
-        }
-    }
+    UpdateCommunity (Community);
 }
 
 void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community)

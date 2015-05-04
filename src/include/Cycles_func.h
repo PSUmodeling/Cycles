@@ -8,6 +8,7 @@ void            PeekNextCrop (CropManagementStruct *CropManagement);
 void            NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement);
 void            AddCrop (CropStruct *Crop);
 void            KillCrop (CropStruct *Crop);
+void            UpdateCommunity (CommunityStruct *Community);
 
 /* CropHarvest.c */
 void            GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project);

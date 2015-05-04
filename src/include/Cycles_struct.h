@@ -288,6 +288,7 @@ typedef struct CropStruct
     double          calculatedSimMinYield;
     double          LWP_StressOnset;
     double          LWP_WiltingPoint;
+    double          transpirationMax;
 
     int             harvestDateFinal;
     int             harvestCount;
