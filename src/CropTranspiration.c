@@ -75,7 +75,11 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
     CropStruct     *Crop;
 
     for (i = 0; i < Soil->totalLayers; i++)
+    {
         Soil->waterUptake[i] = 0.0;
+        soilWP[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
+    }
+
 
     for (j = 0; j < Community->NumCrop; j++)
     {
@@ -110,12 +114,6 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
                 TE = PT < PTx ? PT : PTx;
 
                 /* Calculate root fraction per soil layer */
-                for (i = 0; i < Soil->totalLayers; i++)
-                {
-                    Soil->waterUptake[i] = 0.0;
-                    soilWP[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
-                }
-
                 CalcRootFraction (rootFraction, Soil, Crop);
 
                 /* Calculate plant hydraulic conductivity (kg^2)/(m2 J d)
@@ -183,7 +181,8 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
                     /* Calculate crop water uptake (kg/m2/d = mm/d) */
                     for (i = 0; i < Soil->totalLayers; i++)
                     {
-                        Soil->waterUptake[i] += layerPlantHC[i] * (soilWP[i] - LWP) * transpirationRatio;
+                        //Soil->waterUptake[i] += layerPlantHC[i] * (soilWP[i] - LWP) * transpirationRatio;
+                        Soil->waterUptake[i] += layerPlantHC[i] * (soilWP[i] - LWP);
                     }
                 }
 

@@ -623,7 +623,7 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
             {
                 if (Crop->svTT_Cumulative < Crop->userEmergenceTT)
                 {
-                    Crop->svRadiationInterception = 0.0;
+                    Crop->svRadiationInterception_nc = 0.0;
                     Crop->svRootingDepth = rde * Crop->svTT_Cumulative / Crop->userEmergenceTT;
                 }
                 else
@@ -658,8 +658,8 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
                      * allowance */
                     if (Rate_Crop_Interception > 0.0)
                     {
-                        Compensatory_Expansion = sqrt ((Crop->userMaximumSoilCoverage / (1.0 + exp (a - b * Fractional_TT) + exp (-c + d * Fractional_TT))) / Crop->svRadiationInterception);
-                        Reserves_Use_Allowance = 1.0 + 3.0 / (1.0 + pow (Crop->svRadiationInterception / 0.15, 4.0));
+                        Compensatory_Expansion = sqrt ((Crop->userMaximumSoilCoverage / (1.0 + exp (a - b * Fractional_TT) + exp (-c + d * Fractional_TT))) / Crop->svRadiationInterception_nc);
+                        Reserves_Use_Allowance = 1.0 + 3.0 / (1.0 + pow (Crop->svRadiationInterception_nc / 0.15, 4.0));
                     }
                     else
                     {
@@ -668,20 +668,20 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
                     }
 
                     Delta_Crop_Interception = Crop->userMaximumSoilCoverage * Rate_Crop_Interception * Delta_Fractional_TT * SF * Compensatory_Expansion;
-                    Delta_Crop_Interception_Growth = Reserves_Use_Allowance * 0.75 * (1.0 - Crop->svRadiationInterception) * (0.1 * Crop->svShootDailyGrowth * 25.0);
+                    Delta_Crop_Interception_Growth = Reserves_Use_Allowance * 0.75 * (1.0 - Crop->svRadiationInterception_nc) * (0.1 * Crop->svShootDailyGrowth * 25.0);
                     if (Delta_Crop_Interception > Delta_Crop_Interception_Growth)
                         Delta_Crop_Interception = Delta_Crop_Interception_Growth;
 
-                    Crop->svRadiationInterception += Delta_Crop_Interception;
+                    Crop->svRadiationInterception_nc += Delta_Crop_Interception;
 
                     /* Just in case stress accelerates senescence too much - not sure
                      * it is needed */
                     /* Just in case cold damage defoliates too much - not sure it is
                      * needed */
-                    if (Crop->svRadiationInterception < 0.001)
-                        Crop->svRadiationInterception = 0.001;
-                    if (Crop->svRadiationInterception > 0.98)
-                        Crop->svRadiationInterception = 0.98;
+                    if (Crop->svRadiationInterception_nc < 0.001)
+                        Crop->svRadiationInterception_nc = 0.001;
+                    if (Crop->svRadiationInterception_nc > 0.98)
+                        Crop->svRadiationInterception_nc = 0.98;
 
                     Crop->svRootingDepth += (Crop->userMaximumRootingDepth - rde) * Rate_Root_Depth * Delta_Fractional_TT;
                     if (Crop->svRootingDepth > Crop->userMaximumRootingDepth)
@@ -701,7 +701,7 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
         {
             if (Community->Crop[i].stageGrowth > NO_CROP)
             {
-                tau[i] = 1.0 - Community->Crop[i].svRadiationInterception;
+                tau[i] = 1.0 - Community->Crop[i].svRadiationInterception_nc;
                 tau_product *= tau[i];
                 fi[i] = 1.0 - tau[i];
                 sum_fi += fi[i];
@@ -718,6 +718,14 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
             /* Actual interception of each crop weighted by fi */
             if (fi[i] > 0.0)
                 Community->Crop[i].svRadiationInterception = fi[i] / sum_fi * (1.0 - tau_product);
+        }
+    }
+    else
+    {
+        for (i = 0; i < Community->NumCrop; i++)
+        {
+            if (Community->Crop[i].stageGrowth > NO_CROP)
+                Community->Crop[i].svRadiationInterception = Community->Crop[i].svRadiationInterception_nc;
         }
     }
 }

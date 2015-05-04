@@ -120,3 +120,44 @@ C3                                          1
 LWP_STRESS_ONSET                            -1000.0
 LWP_WILTING_POINT                           -1800.0
 TRANSPIRATION_MAX                           8.00
+
+####################################################
+# CROP DESCRIPTION                                 #
+####################################################
+NAME                                        White_Clover
+AVERAGE_SEEDING_DATE                        141
+AVERAGE_50%_FLOWERING_DATE                  270
+AVERAGE_MATURITY_DATE                       330
+MAXIMUM_SOIL_COVERAGE                       100
+MAXIMUM_ROOTING_DEPTH                       1.50  
+AVERAGE_EXPECTED_YIELD                      7300.00
+MAXIMUM_EXPECTED_YIELD                      9000.00
+MINIMUM_EXPECTED_YIELD                      4000.00
+COMMERCIAL_YIELD_MOISTURE                   0.00  
+STANDING_RESIDUE_AT_HARVEST                 30.00 
+RESIDUE_REMOVED                             70.00 
+HARVEST_TIMING                              -999  
+MIN_TEMPERATURE_FOR_TRANSPIRATION           2.00 
+THRESHOLD_TEMPERATURE_FOR_TRANPIRATION      9.00  
+MIN_TEMPERATURE_FOR_COLD_DAMAGE             -10.00
+THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE       0.00 
+BASE_TEMPERATURE_FOR_DEVELOPMENT            4.00  
+OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT        22.00 
+MAX_TEMPERATURE_FOR_DEVELOPMENT             35.00 
+INITIAL_PARTITIONING_TO_SHOOT               0.35  
+FINAL_PARTITIONING_TO_SHOOT                 0.75  
+RAIDATION_USE_EFFICIENCY                    1.4 
+TRANSPIRATION_USE_EFFICIENCY                4.60  
+MAXIMUM_HARVEST_INDEX                       0.04  
+MINIMUM_HARVEST_INDEX                       0.005  
+HARVEST_INDEX                               1.00  
+THERMAL_TIME_TO_EMERGENCE                   9.00
+N_MAX_CONCENTRATION                         0.070 
+N_DILUTION_SLOPE                            0.35 
+KC                                          1.05  
+ANNUAL                                      0
+LEGUME                                      1
+C3                                          1
+LWP_STRESS_ONSET                            -1100.0
+LWP_WILTING_POINT                           -2000.0
+TRANSPIRATION_MAX                           8.00

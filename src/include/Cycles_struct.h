@@ -248,6 +248,8 @@ typedef struct CropStruct
     double          svShootUnstressed;
     double          svN_StressCumulative;
 
+    double          svRadiationInterception_nc;
+    
     int             userSeedingDate;
     int             userFloweringDate;
     int             userMaturityDate;
