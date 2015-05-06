@@ -79,6 +79,7 @@ void NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManage
     Crop->svTT_Daily = 0.0;
     Crop->svTT_Cumulative = 0.0;
     Crop->svRadiationInterception = 0.0;
+    Crop->svRadiationInterception_nc = 0.0;
     Crop->svBiomass = 0.0;
     Crop->svShoot = 0.0;
     Crop->svRoot = 0.0;
@@ -241,6 +242,7 @@ void KillCrop (CropStruct *Crop)
     Crop->svTT_Daily = 0.0;
     Crop->svTT_Cumulative = 0.0;
     Crop->svRadiationInterception = 0.0;
+    Crop->svRadiationInterception_nc = 0.0;
     Crop->svBiomass = 0.0;
     Crop->svShoot = 0.0;
     Crop->svRoot = 0.0;

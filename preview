@@ -22,8 +22,8 @@ echo "4 - Potential transpiration"
 echo "5 - Cumulative Nitrogen stress"
 echo "6 - Water use efficiency"
 echo "7 - Nitrogen concentration"
-echo "8 - Carbon mass above 30 cm"
-echo "9 - Carbon mass below 30 cm"
+#echo "8 - Carbon mass above 30 cm"
+#echo "9 - Carbon mass below 30 cm"
 echo -n "Select (1--9) ? "
 read var
 

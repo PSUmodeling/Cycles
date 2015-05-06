@@ -355,6 +355,7 @@ typedef struct FieldOperationStruct
 {
     int             opYear;
     int             opDay;
+    int             status;
 
     /* Planting Order */
     /* cropName and plantID are shared with forced harvest structure */
