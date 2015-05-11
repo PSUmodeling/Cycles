@@ -76,10 +76,11 @@ void NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManage
     else
         Crop->autoIrrigationUsed = 0;
 
+    Crop->userLaiFraction = plantingOrder->laiFraction;
+
     Crop->svTT_Daily = 0.0;
     Crop->svTT_Cumulative = 0.0;
     Crop->svRadiationInterception = 0.0;
-    Crop->svRadiationInterception_nc = 0.0;
     Crop->svBiomass = 0.0;
     Crop->svShoot = 0.0;
     Crop->svRoot = 0.0;
@@ -103,6 +104,8 @@ void NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManage
     Crop->svN_StressFactor = 0.0;
     Crop->svShootUnstressed = 0.0;
     Crop->svN_StressCumulative = 0.0;
+
+    Crop->svRadiationInterception_nc = 0.0;
 
     Crop->rcForageYield = 0.0;
     Crop->rcGrainYield = 0.0;
@@ -197,6 +200,8 @@ void KillCrop (CropStruct *Crop)
     Crop->autoIrrigationStopDay = 0;
     Crop->autoIrrigationWaterDepletion = 0.0;
     Crop->autoIrrigationLastSoilLayer = 0;
+
+    Crop->userLaiFraction = 0.0;
     //Crop->userSeedingDate = 0;
     //Crop->userFloweringDate = 0;
     //Crop->userMaturityDate = 0;

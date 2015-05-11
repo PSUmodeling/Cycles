@@ -159,6 +159,8 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
                         sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].usesAutoFertilization);
                         if (CropManagement->plantingOrder[i].usesAutoFertilization == 0)
                             CropManagement->plantingOrder[i].usesAutoFertilization = -1;
+                        fgets (cmdstr, MAXSTRING, operation_file);
+                        sscanf (cmdstr, "%*s %lf", &CropManagement->plantingOrder[i].laiFraction);
 
                         /* Link planting order and crop description */
                         for (j = 0; j < Community->NumCrop; j++)

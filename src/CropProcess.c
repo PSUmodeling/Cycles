@@ -606,6 +606,7 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
     CropStruct     *Crop;
 
     double          tau[Community->NumCrop];
+    double          dkl;
     double          sum_fi;
     double          tau_product;
     double          fi[Community->NumCrop];
@@ -696,15 +697,17 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
     {
         sum_fi = 0.0;
         tau_product = 1.0;
+        dkl = 0.0;
 
         for (i = 0; i < Community->NumCrop; i++)
         {
             if (Community->Crop[i].stageGrowth > NO_CROP)
             {
-                tau[i] = 1.0 - Community->Crop[i].svRadiationInterception_nc;
+                tau[i] = exp (log (1.0 - Community->Crop[i].svRadiationInterception_nc) * Community->Crop[i].userLaiFraction);
                 tau_product *= tau[i];
                 fi[i] = 1.0 - tau[i];
                 sum_fi += fi[i];
+                dkl = dkl - log (tau[i]);
             }
             else
             {
@@ -717,7 +720,7 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
         {
             /* Actual interception of each crop weighted by fi */
             if (fi[i] > 0.0)
-                Community->Crop[i].svRadiationInterception = fi[i] / sum_fi * (1.0 - tau_product);
+                Community->Crop[i].svRadiationInterception = -log (tau[i]) / dkl * (1.0 - tau_product);
         }
     }
     else
