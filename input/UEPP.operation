@@ -50,6 +50,7 @@ DOY                 141
 CROP                Ryegrass-Annual
 AUTO_IRRIGATION     0
 AUTO_FERTILIZATION  0
+FRACTION            1.0
 
 TILLAGE
 YEAR                1   
@@ -90,6 +91,7 @@ DOY                 310
 CROP                Sorghum
 AUTO_IRRIGATION     0
 AUTO_FERTILIZATION  0
+FRACTION            1.0
 
 TILLAGE
 YEAR                1   
@@ -163,6 +165,7 @@ DOY                 141
 CROP                Ryegrass-Annual
 AUTO_IRRIGATION     0
 AUTO_FERTILIZATION  0
+FRACTION            1.0
 
 TILLAGE
 YEAR                2   
@@ -269,4 +272,5 @@ DOY                 314
 CROP                Soybean
 AUTO_IRRIGATION     0
 AUTO_FERTILIZATION  0
+FRACTION            1.0
 

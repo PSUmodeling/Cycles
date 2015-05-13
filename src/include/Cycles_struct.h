@@ -426,20 +426,16 @@ typedef struct CropManagementStruct
 {
     FieldOperationStruct *FixedFertilization;
     int             numFertilization;
-    int             fertilizationIndex;
 
     FieldOperationStruct *FixedIrrigation;
     int             numIrrigation;
-    int             irrigationIndex;
 
     FieldOperationStruct *Tillage;
     int             numTillage;
-    int             tillageIndex;
     double         *tillageFactor;
 
     FieldOperationStruct *plantingOrder;
     int             totalCropsPerRotation;
-    int             plantingIndex;
 
     FieldOperationStruct *ForcedHarvest;
     int             numHarvest;
@@ -448,9 +444,9 @@ typedef struct CropManagementStruct
     int             usingAutoIrr;
     int             usingAutoFert;
 
-    char            nextCropName[128];
-    int             nextCropSeedingDate;
-    int             nextCropSeedingYear;
+    //char            nextCropName[128];
+    //int             nextCropSeedingDate;
+    //int             nextCropSeedingYear;
 } CropManagementStruct;
 
 typedef struct SnowStruct

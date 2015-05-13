@@ -25,8 +25,8 @@ int main (int argc, char *argv[])
      * project		    char*	Name of project
      */
     int             rotationYear;
-    int             nextSeedingDate;
-    int             nextSeedingYear;
+    //int             nextSeedingDate;
+    //int             nextSeedingYear;
     int             y;
     int             doy;
     int             i;
@@ -129,20 +129,20 @@ int main (int argc, char *argv[])
 	printf ("Compute crop thermal time.\n");
     ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->Community, &Cycles->Weather);
 
-    SelectCropInitialPosition (&Cycles->CropManagement);
+    //SelectCropInitialPosition (&Cycles->CropManagement);
 
-    if (Cycles->CropManagement.totalCropsPerRotation > 0)
-    {
-        nextSeedingYear = Cycles->CropManagement.nextCropSeedingYear;
-        nextSeedingDate = Cycles->CropManagement.nextCropSeedingDate;
-    }
-    else
-    {
-        nextSeedingYear = 0;
-        nextSeedingDate = 0;
-    }
-    if (debug_mode)
-        printf ("*Next seeding year is %-4d, next seeding date is %3d\n", nextSeedingYear, nextSeedingDate);
+    //if (Cycles->CropManagement.totalCropsPerRotation > 0)
+    //{
+    //    nextSeedingYear = Cycles->CropManagement.nextCropSeedingYear;
+    //    nextSeedingDate = Cycles->CropManagement.nextCropSeedingDate;
+    //}
+    //else
+    //{
+    //    nextSeedingYear = 0;
+    //    nextSeedingDate = 0;
+    //}
+    //if (debug_mode)
+    //    printf ("*Next seeding year is %-4d, next seeding date is %3d\n", nextSeedingYear, nextSeedingDate);
 
     rotationYear = 0;
 
@@ -161,9 +161,9 @@ int main (int argc, char *argv[])
         if (debug_mode)
             printf ("*%-15s = %-d\n", "Rotation year", rotationYear);
 
-        SelectOperationYear (rotationYear, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, &Cycles->CropManagement.tillageIndex);
-        SelectOperationYear (rotationYear, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, &Cycles->CropManagement.irrigationIndex);
-        SelectOperationYear (rotationYear, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization, &Cycles->CropManagement.fertilizationIndex);
+        //SelectOperationYear (rotationYear, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, &Cycles->CropManagement.tillageIndex);
+        //SelectOperationYear (rotationYear, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, &Cycles->CropManagement.irrigationIndex);
+        //SelectOperationYear (rotationYear, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization, &Cycles->CropManagement.fertilizationIndex);
 
 	/* Initialize annual variables */
         for (i = 0; i < Cycles->Soil.totalLayers; i++)
@@ -200,7 +200,7 @@ int main (int argc, char *argv[])
         {
             if (debug_mode)
                 printf ("DOY %3.3d\n", doy);
-            DailyOperations (rotationYear, y, doy, &nextSeedingYear, &nextSeedingDate, &Cycles->CropManagement, &Cycles->Community, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, project);
+            DailyOperations (rotationYear, y, doy, &Cycles->CropManagement, &Cycles->Community, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, project);
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Community, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue, project);
         }
 

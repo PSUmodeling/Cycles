@@ -2,10 +2,11 @@
 #define CYCLES_FUNC_HEADER
 
 /* Crop.c */
-void            SelectCropInitialPosition (CropManagementStruct *CropManagement);
-void            SelectNextCrop (CropManagementStruct *CropManagement);
-void            PeekNextCrop (CropManagementStruct *CropManagement);
-void            NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement);
+//void            SelectCropInitialPosition (CropManagementStruct *CropManagement);
+//void            SelectNextCrop (CropManagementStruct *CropManagement);
+//void            PeekNextCrop (CropManagementStruct *CropManagement);
+//void            NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement);
+void PlantingCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement, int plantingIndex);
 void            AddCrop (CropStruct *Crop);
 void            KillCrop (CropStruct *Crop);
 void            UpdateCommunity (CommunityStruct *Community);
@@ -41,9 +42,9 @@ void            CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil
 double          TemperatureLimitation (double T, double T_Min, double T_Threshold);
 
 /* DailyOperation.c */
-void            DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project);
-void            GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, FieldOperationStruct *ForcedHarvest, int numHarvest, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project);
-void            PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community);
+void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project);
+void            GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHarvest, int numHarvest, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project);
+//void            PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community);
 double          FinalHarvestDate (int lastDoy, int d);
 int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize);
 
@@ -51,9 +52,10 @@ int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSe
 void            ApplyFertilizer (FieldOperationStruct *fixedFertilization, SoilStruct *Soil, ResidueStruct *Residue);
 
 /* FieldOperations.c */
-void            SelectNextOperation (int NumOperation, int *operationIndex);
-void            SelectOperationYear (int rotationYear, const FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
-int             IsOperationToday (int rotationYear, int doy, const FieldOperationStruct *FieldOperation, int operationIndex);
+//void            SelectNextOperation (int NumOperation, int *operationIndex);
+//void            SelectOperationYear (int rotationYear, const FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
+//int             IsOperationToday (int rotationYear, int doy, const FieldOperationStruct *FieldOperation, int operationIndex);
+int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int numOperation, int *operationIndex);
 
 /* Initialize.c */
 void            Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow);

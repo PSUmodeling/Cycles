@@ -64,6 +64,7 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
     double          Layer_Root_HC_Adjustment[Soil->totalLayers];
     double          rootActivity[Soil->totalLayers];
     double          rootFraction[Soil->totalLayers];
+    double          waterUptake[Soil->totalLayers];
 
     double          LWP;
     //double          LWP_StressOnset = -1100.0;
@@ -84,6 +85,9 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
     for (j = 0; j < Community->NumCrop; j++)
     {
         Crop = &Community->Crop[j];
+
+        for (i = 0; i < Soil->totalLayers; i++)
+            waterUptake[i] = 0.0;
 
         if (Crop->stageGrowth > NO_CROP)
         {
@@ -182,14 +186,15 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
                     for (i = 0; i < Soil->totalLayers; i++)
                     {
                         //Soil->waterUptake[i] += layerPlantHC[i] * (soilWP[i] - LWP) * transpirationRatio;
-                        Soil->waterUptake[i] += layerPlantHC[i] * (soilWP[i] - LWP);
+                        waterUptake[i] = layerPlantHC[i] * (soilWP[i] - LWP);
+                        Soil->waterUptake[i] += waterUptake[i];
                     }
                 }
 
                 Crop->svTranspiration = 0.0;
                 for (i = 0; i < Soil->totalLayers; i++)
                 {
-                    Crop->svTranspiration += Soil->waterUptake[i];
+                    Crop->svTranspiration += waterUptake[i];
                 }
                 Crop->svTranspirationPotential = TE;
                 Crop->svWaterStressFactor = 1.0 - Crop->svTranspiration / TE;

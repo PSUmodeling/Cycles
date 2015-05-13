@@ -1,60 +1,60 @@
 #include "Cycles.h"
 
-void SelectCropInitialPosition (CropManagementStruct *CropManagement)
-{
-    CropManagement->plantingIndex = -1;
-    //CropManagement->describedIndex = -1;
-    PeekNextCrop (CropManagement);
-}
+//void SelectCropInitialPosition (CropManagementStruct *CropManagement)
+//{
+//    CropManagement->plantingIndex = -1;
+//    //CropManagement->describedIndex = -1;
+//    PeekNextCrop (CropManagement);
+//}
+//
+//void SelectNextCrop (CropManagementStruct *CropManagement)
+//{
+//    /*
+//     * Planting index set to next crop (if any) to be planted in the rotation
+//     * Described index set to previously searched value inside plantingOrder
+//     * Next crop in the rotation (if any)has limited values stored
+//     */
+//    if (CropManagement->plantingIndex < CropManagement->totalCropsPerRotation - 1)
+//        CropManagement->plantingIndex++;
+//    else
+//        CropManagement->plantingIndex = 0;
+//
+//    //CropManagement->describedIndex = CropManagement->plantingOrder[CropManagement->plantingIndex].plantID;
+//
+//    PeekNextCrop (CropManagement);
+//}
+//
+//void PeekNextCrop (CropManagementStruct *CropManagement)
+//{
+//    /*
+//     * Store the name, year, day, and type values for the next crop
+//     */
+//    int             tempIndex;
+//
+//    tempIndex = CropManagement->plantingIndex;
+//
+//    if (CropManagement->totalCropsPerRotation > 0)
+//    {
+//        /* Select next crop */
+//        if (tempIndex < CropManagement->totalCropsPerRotation - 1)
+//            tempIndex++;
+//        else
+//            tempIndex = 0;
+//
+//        CropManagement->nextCropSeedingYear = CropManagement->plantingOrder[tempIndex].opYear;
+//        CropManagement->nextCropSeedingDate = CropManagement->plantingOrder[tempIndex].opDay;
+//        strcpy (CropManagement->nextCropName, CropManagement->plantingOrder[tempIndex].cropName);
+//    }
+//}
 
-void SelectNextCrop (CropManagementStruct *CropManagement)
-{
-    /*
-     * Planting index set to next crop (if any) to be planted in the rotation
-     * Described index set to previously searched value inside plantingOrder
-     * Next crop in the rotation (if any)has limited values stored
-     */
-    if (CropManagement->plantingIndex < CropManagement->totalCropsPerRotation - 1)
-        CropManagement->plantingIndex++;
-    else
-        CropManagement->plantingIndex = 0;
-
-    //CropManagement->describedIndex = CropManagement->plantingOrder[CropManagement->plantingIndex].plantID;
-
-    PeekNextCrop (CropManagement);
-}
-
-void PeekNextCrop (CropManagementStruct *CropManagement)
-{
-    /*
-     * Store the name, year, day, and type values for the next crop
-     */
-    int             tempIndex;
-
-    tempIndex = CropManagement->plantingIndex;
-
-    if (CropManagement->totalCropsPerRotation > 0)
-    {
-        /* Select next crop */
-        if (tempIndex < CropManagement->totalCropsPerRotation - 1)
-            tempIndex++;
-        else
-            tempIndex = 0;
-
-        CropManagement->nextCropSeedingYear = CropManagement->plantingOrder[tempIndex].opYear;
-        CropManagement->nextCropSeedingDate = CropManagement->plantingOrder[tempIndex].opDay;
-        strcpy (CropManagement->nextCropName, CropManagement->plantingOrder[tempIndex].cropName);
-    }
-}
-
-void NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement)
+void PlantingCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement, int plantingIndex)
 {
     FieldOperationStruct *plantingOrder;
     autoIrrigationStruct *autoIrrigation;
     CropStruct           *Crop;
     //describedCropStruct *describedCrop;
 
-    plantingOrder = &(CropManagement->plantingOrder[CropManagement->plantingIndex]);
+    plantingOrder = &(CropManagement->plantingOrder[plantingIndex]);
     //describedCrop = &(CropManagement->describedCrop[CropManagement->describedIndex]);
 
     //Crop->cropUniqueIdentifier = plantingOrder->plantID;
@@ -63,6 +63,8 @@ void NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManage
     Crop = &Community->Crop[plantingOrder->plantID];
 
     Crop->stageGrowth = PLANTING;
+
+    Community->NumActiveCrop++;
 
     if (plantingOrder->usesAutoIrrigation > 0)
     {

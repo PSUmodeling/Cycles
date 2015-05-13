@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project)
+void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project)
 {
     /*
      * -----------------------------------------------------------------------
@@ -12,32 +12,37 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
      * Tillage		    FieldOperationStruct*
      * FixedIrrigation	    FieldOperationStruct*
      */
+    FieldOperationStruct *plantingOrder;
     FieldOperationStruct *FixedFertilization;
     FieldOperationStruct *Tillage;
     FieldOperationStruct *FixedIrrigation;
+    int             operation_index;
     int             i;
 
         /* If any crop in the community is growing, run the growing crop subroutine */
     if (Community->NumActiveCrop > 0)
-        GrowingCrop (rotationYear, y, doy, nextSeedingYear, nextSeedingDate, CropManagement->ForcedHarvest, CropManagement->numHarvest, Community, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
+        GrowingCrop (rotationYear, y, doy, CropManagement->ForcedHarvest, CropManagement->numHarvest, Community, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
 
-    if (doy == *nextSeedingDate && rotationYear == *nextSeedingYear)
-        PlantingCrop (doy, nextSeedingYear, nextSeedingDate, CropManagement, Community);
-
-    while (IsOperationToday (rotationYear, doy, CropManagement->FixedFertilization, CropManagement->fertilizationIndex))
+    while (IsOperationToday (rotationYear, doy, CropManagement->plantingOrder, CropManagement->totalCropsPerRotation, &operation_index))
     {
-        FixedFertilization = &CropManagement->FixedFertilization[CropManagement->fertilizationIndex];
+        plantingOrder = &CropManagement->plantingOrder[operation_index];
+        PlantingCrop (Community, CropManagement, operation_index);
+        if (verbose_mode)
+            printf ("DOY %3.3d %-20s %s\n", doy, "Planting", plantingOrder->cropName);
+    }
+
+    while (IsOperationToday (rotationYear, doy, CropManagement->FixedFertilization, CropManagement->numFertilization, &operation_index))
+    {
+        FixedFertilization = &CropManagement->FixedFertilization[operation_index];
         if (verbose_mode)
             printf ("DOY %3.3d %-20s %s\n", doy, "Fixed Fertilization", FixedFertilization->opSource);
 
         ApplyFertilizer (FixedFertilization, Soil, Residue);
-
-        SelectNextOperation (CropManagement->numFertilization, &CropManagement->fertilizationIndex);
     }
 
-    while (IsOperationToday (rotationYear, doy, CropManagement->Tillage, CropManagement->tillageIndex))
+    while (IsOperationToday (rotationYear, doy, CropManagement->Tillage, CropManagement->numTillage, &operation_index))
     {
-        Tillage = &(CropManagement->Tillage[CropManagement->tillageIndex]);
+        Tillage = &(CropManagement->Tillage[operation_index]);
         if (verbose_mode)
             printf ("DOY %3.3d %-20s %s\n", doy, "Tillage", Tillage->opToolName);
 
@@ -54,22 +59,18 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
                 }
             }
         }
-
-        SelectNextOperation (CropManagement->numTillage, &CropManagement->tillageIndex);
     }
 
     UpdateCommunity (Community);
 
     Soil->irrigationVol = 0.0;
-    while (IsOperationToday (rotationYear, doy, CropManagement->FixedIrrigation, CropManagement->irrigationIndex))
+    while (IsOperationToday (rotationYear, doy, CropManagement->FixedIrrigation, CropManagement->numIrrigation, &operation_index))
     {
-        FixedIrrigation = &(CropManagement->FixedIrrigation[CropManagement->irrigationIndex]);
+        FixedIrrigation = &(CropManagement->FixedIrrigation[operation_index]);
         if (verbose_mode)
             printf ("DOY %3.3d %-20s %lf\n", doy, "Irrigation", FixedIrrigation->opVolume);
 
         Soil->irrigationVol += FixedIrrigation->opVolume;
-
-        SelectNextOperation (CropManagement->numIrrigation, &CropManagement->irrigationIndex);
     }
 
     ComputeResidueCover (Residue);
@@ -93,7 +94,7 @@ void DailyOperations (int rotationYear, int y, int doy, int *nextSeedingYear, in
     NitrogenTransformation (y, doy, Soil, Community, Residue, Weather, SoilCarbon);
 }
 
-void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nextSeedingDate, FieldOperationStruct *ForcedHarvest, int numHarvest, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
+void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHarvest, int numHarvest, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
 {
     /*
      * Processes that only occur while a crop is growing are performed
@@ -215,27 +216,27 @@ void GrowingCrop (int rotationYear, int y, int d, int *nextSeedingYear, int *nex
     UpdateCommunity (Community);
 }
 
-void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community)
-{
-    /*
-     * New realized crop is created next crop in the rotation selected status
-     * set to growing. HarvestDate is reset to an unreachable date.
-     */
-
-    SelectNextCrop (CropManagement);
-    if (verbose_mode)
-        printf ("DOY %3.3d %-20s %s\n", doy, "Planting", CropManagement->plantingOrder[CropManagement->plantingIndex].cropName);
-
-    NewCrop (Community, CropManagement);
-
-    Community->NumActiveCrop++;
-
-    //AddCrop (Crop);
-
-    *nextSeedingYear = CropManagement->nextCropSeedingYear;
-    *nextSeedingDate = CropManagement->nextCropSeedingDate;
-    
-}
+//void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community)
+//{
+//    /*
+//     * New realized crop is created next crop in the rotation selected status
+//     * set to growing. HarvestDate is reset to an unreachable date.
+//     */
+//
+//    SelectNextCrop (CropManagement);
+//    if (verbose_mode)
+//        printf ("DOY %3.3d %-20s %s\n", doy, "Planting", CropManagement->plantingOrder[CropManagement->plantingIndex].cropName);
+//
+//    NewCrop (Community, CropManagement);
+//
+//    Community->NumActiveCrop++;
+//
+//    //AddCrop (Crop);
+//
+//    *nextSeedingYear = CropManagement->nextCropSeedingYear;
+//    *nextSeedingDate = CropManagement->nextCropSeedingDate;
+//    
+//}
 
 double FinalHarvestDate (int lastDoy, int d)
 {

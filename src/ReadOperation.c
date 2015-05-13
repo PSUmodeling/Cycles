@@ -162,6 +162,8 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
                         fgets (cmdstr, MAXSTRING, operation_file);
                         sscanf (cmdstr, "%*s %lf", &CropManagement->plantingOrder[i].laiFraction);
 
+                        CropManagement->plantingOrder[i].status = 0;
+
                         /* Link planting order and crop description */
                         for (j = 0; j < Community->NumCrop; j++)
                         {
@@ -210,6 +212,8 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
                         sscanf (cmdstr, "%*s %d", &CropManagement->ForcedHarvest[i].opDay);
                         fgets (cmdstr, MAXSTRING, operation_file);
                         sscanf (cmdstr, "%*s %s", CropManagement->ForcedHarvest[i].cropName);
+
+                        CropManagement->ForcedHarvest[i].status = 0;
 
                         /* Link forced harvest and crop description */
                         for (j = 0; j < Community->NumCrop; j++)
@@ -273,6 +277,9 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
                     sscanf (cmdstr, "%*s %d", &q->grainHarvest);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->forageHarvest);
+
+                    q->status = 0;
+
                     i++;
                 }
             }
@@ -303,6 +310,9 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
                     sscanf (cmdstr, "%*s %d", &q->opDay);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opVolume);
+
+                    q->status = 0;
+
                     i++;
                 }
             }
@@ -363,6 +373,9 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
                     sscanf (cmdstr, "%*s %lf", &q->opK);
                     fgets (cmdstr, MAXSTRING, operation_file);
                     sscanf (cmdstr, "%*s %lf", &q->opS);
+
+                    q->status = 0;
+
                     if (q->opC_Organic + q->opC_Charcoal + q->opN_Organic + q->opN_Charcoal + q->opN_NH4 + q->opN_NO3 + q->opP_Organic + q->opP_Charcoal + q->opP_Inorganic + q->opK + q->opS <= 1.0)
                     {
                         q->opMass = q->opMass / 1000.0;
