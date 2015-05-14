@@ -108,7 +108,7 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
                 factorTemperature = TemperatureLimitation (temperatureAvg, Crop->userTranspirationMinTemperature, Crop->userTranspirationThresholdTemperature);
 
                 /* Calculate potential transpiration rate (kg/m2/d = mm/d) */
-                PT = (1.0 + (Crop->userKc - 1.0) * Crop->svRadiationInterception) * factorTemperature * Crop->svRadiationInterception * Weather->ETref[y][doy - 1];
+                PT = (1.0 + (Crop->userKc - 1.0) * Community->svRadiationInterception) * factorTemperature * Crop->svRadiationInterception * Weather->ETref[y][doy - 1];
 
                 /* Calculate crop maximum water uptake rate (kg/m2/d = mm/d) */
                 //PTx = PTx * factorTemperature * Crop->svRadiationInterception;

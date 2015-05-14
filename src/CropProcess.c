@@ -254,19 +254,19 @@ void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, do
     Ac = NcEmergence / (pow (BTNc, -Crop->userNDilutionSlope));
     An = NnEmergence / (pow (BTNn, -Crop->userNDilutionSlope));
 
-    *NxAbgd = Ax * pow (Crop->svShootUnstressed, -Crop->userNDilutionSlope);
+    *NxAbgd = Ax * pow (Crop->svShootUnstressed / Crop->userPlantingDensity, -Crop->userNDilutionSlope);
     *NxAbgd = *NxAbgd < Crop->userNMaxConcentration ? *NxAbgd : Crop->userNMaxConcentration;
-    *NcAbgd = Ac * pow (Crop->svShootUnstressed, -Crop->userNDilutionSlope);
+    *NcAbgd = Ac * pow (Crop->svShootUnstressed / Crop->userPlantingDensity, -Crop->userNDilutionSlope);
     *NcAbgd = *NcAbgd < NcEmergence ? *NcAbgd : NcEmergence;
-    *NnAbgd = An * pow (Crop->svShootUnstressed, -Crop->userNDilutionSlope);
+    *NnAbgd = An * pow (Crop->svShootUnstressed / Crop->userPlantingDensity, -Crop->userNDilutionSlope);
     *NnAbgd = *NnAbgd < NnEmergence ? *NnAbgd : NnEmergence;
 
     /* Compute abgd and root N concentration of new growth based on biomass
      * y = a * x^(-b); y' =  -(a * b - a) / x^b, where x = abgd biomass */
-    if (Crop->svShoot < BTNx)
+    if (Crop->svShoot / Crop->userPlantingDensity < BTNx)
         *N_AbgdConcReq = Crop->userNMaxConcentration;
     else
-        *N_AbgdConcReq = (1.0 - Crop->userNDilutionSlope) * Ax * pow (Crop->svShootUnstressed, -Crop->userNDilutionSlope);
+        *N_AbgdConcReq = (1.0 - Crop->userNDilutionSlope) * Ax * pow (Crop->svShootUnstressed / Crop->userPlantingDensity, -Crop->userNDilutionSlope);
 
     *N_RootConcReq = Root_NxEmergence / (1.0 + pow (Stage / R1, R2));
     *NxRoot = *N_RootConcReq;   /* in this case the two have the same value */
@@ -344,7 +344,7 @@ void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, doubl
     {
         if (Community->Crop[j].stageGrowth > NO_CROP && N_CropDemand[j] > 0.0)
         {
-            Nratio = N_SoilSupply / N_CropDemand[j];
+            Nratio = N_SoilSupply * Community->Crop[j].userPlantingDensity / N_CropDemand[j];
             N_Uptake[j] = N_CropDemand[j] * (1.0 - exp (-Nratio));
             total_uptake += N_Uptake[j];
         }
@@ -669,7 +669,7 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
                     }
 
                     Delta_Crop_Interception = Crop->userMaximumSoilCoverage * Rate_Crop_Interception * Delta_Fractional_TT * SF * Compensatory_Expansion;
-                    Delta_Crop_Interception_Growth = Reserves_Use_Allowance * 0.75 * (1.0 - Crop->svRadiationInterception_nc) * (0.1 * Crop->svShootDailyGrowth * 25.0);
+                    Delta_Crop_Interception_Growth = Reserves_Use_Allowance * 0.75 * (1.0 - Crop->svRadiationInterception_nc) * (0.1 * Crop->svShootDailyGrowth / Crop->userPlantingDensity * 25.0);
                     if (Delta_Crop_Interception > Delta_Crop_Interception_Growth)
                         Delta_Crop_Interception = Delta_Crop_Interception_Growth;
 
@@ -703,7 +703,7 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
         {
             if (Community->Crop[i].stageGrowth > NO_CROP)
             {
-                tau[i] = exp (log (1.0 - Community->Crop[i].svRadiationInterception_nc) * Community->Crop[i].userLaiFraction);
+                tau[i] = exp (log (1.0 - Community->Crop[i].svRadiationInterception_nc) * Community->Crop[i].userPlantingDensity);
                 tau_product *= tau[i];
                 fi[i] = 1.0 - tau[i];
                 sum_fi += fi[i];
@@ -731,6 +731,11 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
                 Community->Crop[i].svRadiationInterception = Community->Crop[i].svRadiationInterception_nc;
         }
     }
+
+    Community->svRadiationInterception = 0.0;
+
+    for (i = 0; i < Community->NumCrop; i++)
+        Community->svRadiationInterception += Community->Crop[i].svRadiationInterception;
 }
 
 void Phenology (int y, int doy, const WeatherStruct *Weather, CommunityStruct *Community)

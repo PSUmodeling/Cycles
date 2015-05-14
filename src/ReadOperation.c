@@ -160,7 +160,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
                         if (CropManagement->plantingOrder[i].usesAutoFertilization == 0)
                             CropManagement->plantingOrder[i].usesAutoFertilization = -1;
                         fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %lf", &CropManagement->plantingOrder[i].laiFraction);
+                        sscanf (cmdstr, "%*s %lf", &CropManagement->plantingOrder[i].plantingDensity);
 
                         CropManagement->plantingOrder[i].status = 0;
 

@@ -285,7 +285,7 @@ typedef struct CropStruct
     int             userC3orC4;
     double          userExtinctionCoefficient;
 
-    double          userLaiFraction;
+    double          userPlantingDensity;
 
     double          calculatedFloweringTT;
     double          calculatedMaturityTT;
@@ -367,7 +367,7 @@ typedef struct FieldOperationStruct
     int             usesAutoIrrigation;
     int             usesAutoFertilization;
     int             plantID;
-    double          laiFraction;
+    double          plantingDensity;
 
     /* Tillage */
     char            opToolName[MAXSTRING];

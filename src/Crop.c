@@ -78,7 +78,7 @@ void PlantingCrop (CommunityStruct *Community, const CropManagementStruct *CropM
     else
         Crop->autoIrrigationUsed = 0;
 
-    Crop->userLaiFraction = plantingOrder->laiFraction;
+    Crop->userPlantingDensity = plantingOrder->plantingDensity;
 
     Crop->svTT_Daily = 0.0;
     Crop->svTT_Cumulative = 0.0;
@@ -203,7 +203,7 @@ void KillCrop (CropStruct *Crop)
     Crop->autoIrrigationWaterDepletion = 0.0;
     Crop->autoIrrigationLastSoilLayer = 0;
 
-    Crop->userLaiFraction = 0.0;
+    Crop->userPlantingDensity = 0.0;
     //Crop->userSeedingDate = 0;
     //Crop->userFloweringDate = 0;
     //Crop->userMaturityDate = 0;
