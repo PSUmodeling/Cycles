@@ -693,7 +693,7 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
     }
 
     /* Begin community code */
-    if (Community->NumActiveCrop > 1)
+    if (Community->NumActiveCrop > 0)
     {
         sum_fi = 0.0;
         tau_product = 1.0;
@@ -727,8 +727,7 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
     {
         for (i = 0; i < Community->NumCrop; i++)
         {
-            if (Community->Crop[i].stageGrowth > NO_CROP)
-                Community->Crop[i].svRadiationInterception = Community->Crop[i].svRadiationInterception_nc;
+            Community->Crop[i].svRadiationInterception = Community->Crop[i].svRadiationInterception_nc;
         }
     }
 
