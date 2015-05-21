@@ -1,0 +1,138 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[dvips, bookmarks, colorlinks=false, breaklinks=true]{hyperref}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
+\bibpunct{(}{)}{;}{a}{}{,}
+\topmargin=-0.5in    % Make letterhead start about 1 inch from top of page 
+\textheight=9in  % text height can be bigger for a longer letter
+\oddsidemargin=0pt % leftmargin is 1 inch
+\textwidth=6.5in   % textwidth of 6.5in leaves 1 inch for right margin
+\begin{document}
+\title{How to Run Cycles Competition Code}
+\author{Yuning Shi (yshi@psu.edu)}
+\maketitle
+
+\section{From your Windows PC}
+\subsection{Create input files for the Cycles C version}
+Currently, we should use the Cycles Visual Basic code to create input files for the Cycles C version.
+To do that, please follow the instruction on \url{https://gist.github.com/shiyuning}.
+Copy and paste the VB conversion code into MainClass.vb and WeatherClass.vb, and Run Cycles VB.
+You can find the corresponding .ctrl, .crop, .soil, .operation, and .weather files in your VB excel file folder.
+
+\subsection{Transfer input files to Linux system}
+Download and install MobaXterm from \url{http://mobaxterm.mobatek.net/download-home-edition.html}.
+Alternatively, you can also use SSH Secure Shell, provided by Penn State ITS (\url{https://downloads.its.psu.edu/download.cgi?os\_type=Windows\&prod=ssh}).
+Open MobaXterm on your computer, and click on the Session button.
+\begin{figure}[htb]
+  \centering
+  %\renewcommand{\baselinestretch}{1.2}
+  \includegraphics[width=\textwidth]{session.eps}
+\end{figure}
+
+In the new window, choose SSH session type. The remote host is the Linux machine you are connecting to (e.g., lionxg.rcc.psu.edu).
+You can specify your username, e.g., your Penn State ID if you are using the LionX system.
+Click OK to connect.
+\begin{figure}[htb]
+  \centering
+  %\renewcommand{\baselinestretch}{1.2}
+  \includegraphics[width=\textwidth]{lionx.eps}
+\end{figure}
+
+Once you are connected, you can use the SFTP browser to transfer files between your PC and the Linux machine.
+\begin{figure}[htb]
+  \centering
+  %\renewcommand{\baselinestretch}{1.2}
+  \includegraphics[width=0.6\textwidth]{upload.eps}
+\end{figure}
+
+\section{On your Linux machine}
+Cycles is distributed on GitHub (\url{https://github.com/PSUmodeling/Cycles}).
+Before downloading the code, you need to configure your Linux machine, following the instruction (\url{https://help.github.com/articles/generating-ssh-keys/#platform-linux}).
+You only need to do the configuration once.
+When you can connect to GitHub from your Linux machine, you can download the code.
+In the directory where you want to install Cycles, type the following command:
+
+git clone git@github.com:PSUmodeling/Cycles.git\\
+You can also find the clone URL on the GitHub page.
+
+A Cycles directory should appear in your current directory.
+Go into the Cycles directory (cd Cycles).
+There are two branches for the Cycles project:
+the master branch, which has the same functionalities as the VB version, and the competition branch, which can simulate the competition between multiple crops when planted together.
+The master branch is the default.
+If you want to use the competition code, do:
+
+git checkout competition\\
+To install Cycles, type ``make" and Cycles will be compiled and installed.
+
+The input files you converted from your windows machine should be put into the ``input" directory.
+To run Cycles for a specific project, do:
+
+./Cycles NAME\_OF\_PROJECT\\
+Cycles will gointo the input folder to look for the NAME\_OF\_PROJECT.ctrl, and determine the input files from there.
+Output files are stored in the ``output" directory.
+You can download them onto your PC and use Excel to analyze and plot.
+
+% application (folder)
+%  sample (folder)
+%   documentation (folder)
+%    setup.exe
+%     Cycles.application
+%      CyclesReadme.docx or .pdf (this file)
+%      Double click on the Setup.exe file. When prompted, click the Install button. At the end of the installation, the Cycles interface opens (you can close the program). Double-clicking on the Cycles.application file launches Cycles; you can send it to the desktop as a shortcut for easy access. Important: to run Cycles you will need Microsoft Office 2010.
+%      3. Running a sample simulation
+%      The folder sample contains the following Excel (*.xls) files:
+%       output_sample.xls
+%        settings_sample.xls
+%         weather_NewProvidence.xls (a sample weather file for New Providence, Pennsylvania)
+%
+%         Cycles uses Excel files to store input and output data. These Excel files can be created using the Cycles interface and modified in Excel. The settings file (or inputs file) stores all the information needed to run a simulation. Each sheet in the worksheet represents a specific tab in the Cycles interface. The first sheet stores the path and name of the weather file to be used in the simulation and a few simulation options. The rest of the sheets store soil, crop and management descriptions. The name of the output file is selected by the user before running the simulation. Output data can be saved on the settings file (that will overwrite the existing settings file) or in a different file (recommended). The actual settings of the current simulation are always saved in the output file. The import and export commands are used to load the settings from a excel file into the Cycles interface (import) or to save the settings of a current simulation (export).
+%         a. Launch Cycles (see 2.e)
+%         b. Load the settings of the sample simulation by clicking the import command in the Settings option of the menu bar and selecting the output_sample.xls file:
+%         c. You will be prompted to select the weather file; select the weather file weather_NewProvidence.xls) from the sample folder. (Note: the path specified in the sample setting file is the one from the developers computer and therefore not valid in your computer).
+%         d. Select the Simulation Start Year in the Duration box of the Simulation Control tab, example=1997
+%         e. Select the Simulation End Year in the Duration box of the Simulation Control tab, example=2046, with this example 50 years will be simulated.
+%         f. Select the Years in Rotation= 2 years. (Note: input this number of years since the sample simulation is already built as a two-year rotation of maize-soybean with triticale as a cover crop in between grain crops.)
+%         g. Select the output file output_sample.xls in the sample folder. You can assign other name that is practical to your purposes. Make sure that the overwrite option is checked. If not checked, the program will check if the file exists at run time and halt the simulation to avoid overwriting an existing file. If you are prompted to replace an existing file, do so or change the name of the output file.
+%         h. At this point, to update the sample simulation settings according to your computer directory structure, it is advisable to export the settings and replace the settings_sample.xls. Use the export command in the Settings option in the menu bar and replace the file.
+%         i. The sample simulation is ready to run. Before doing so, explore the tabs for Soil, Crop Descriptions, and Field Operations to acquire a minimum familiarity with the Cycles interface, but do not modify any of the input information.
+%         j. Run the sample simulation as shown below:
+%         k. Once the simulation is finished, open the output excel file to see the results. Also, browse the excel files to become familiar with both input and output information and formats.
+%         l. The reminder of the interface handling is largely self-explanatory. For the crop descriptions and field operations descriptions the interface uses input cells that can be edited. For these selections to become active (i.e. part of the simulation), these must be loaded in the active field using the arrow buttons. These buttons are intuitive and allow moving information back and forth between the active / edit windows so that inputs can be easily modified. This format is preserved in the different windows of the interface. Like any other software you will become more proficient as you use the model. Other instructions follow.
+%         4. Weather File
+%         To create a new weather file use the weather file input as a blueprint. It is critical that the temperature, precipitation, solar radiation, and humidity are accurate and from the same station. There are several methods that can help identifying errors or lack of consistency in the data. The Climgen weather generator can be used to fill in missing data or generate a longer series of weather data from, say, a minimum of 5 years of a complete dataset. Temperature and precipitation are usually easy to obtain. Humidity, if not available, can be safely derived from temperature data. Radiation was difficult to obtain until recently but now NASA made available a new product through the NASA POWER project (http://power.larc.nasa.gov/cgi-bin/cgiwrap/solar/agro.cgi?email=agroclim@larc.nasa.gov), with data available from mid 1983 until present. Temperature, precipitation and humidity are also available through NASA. However, while radiation from this source is reliable, we have found important deviations in temperature, humidity and precipitation. The wind data is adequate.
+%         5. Soil Description
+%         The soil layer thickness, texture, initial soil organic matter, and nitrate and ammonium content for each soil layer must be provided by the user. The hydraulic properties and bulk density can be provided, signaling with the check box above each respective column that the user-defined values should be used. If the check boxes are left unchecked, then an algorithm in Cycles will compute the hydraulic properties using the pedotransfer functions presented by Saxton and Rawls (2006) (Soil Sci. Soc. Am. J. 70:15691578) with a few minor modifications. The fraction of the soil volume occupied by rocks has not been included and need to be considered in the simulation. A new version will address this weakness.
+%         In addition, the user should indicate the curve number (runoff parameter) and slope of the land in the field being simulated. The curve number should be selected using the USDA - Natural Resources Conservation Service (NRCS) guideline.
+%         6. Crop Descriptions
+%         As indicated above Cycles was designed as to minimize parameterization requirements. This is particularly true for crop-specific descriptions. In Cycles one generic blueprint is used to represent all crops. Different crops are represented with different parameters; a number of crops with default parameters are available for the user. For simplicity, this forces the description of variables that are not necessarily useful nor correct such as the harvest index (grain) for forage crops.
+%         The user must, however, provide information needed to compute internally the parameters related to the species or cultivar phenology for a given location. These are the average planting date, the average date of flowering (beginning of flowering) and the average date of physiological maturity. For perennial plants, physiological maturity means maturity of the seed, even though the plant remains alive. It is very important that the date of flowering and maturity are correct. Make sure that you are no inputting an unrealistic duration of grain filling (too short or too long). Physiological maturity is not the same as harvest-ready. The date of flowering must be sometimes adjusted for perennial crops (sugarcane) as a proxy for leaf are development is tied up to this variable. In that case, set up an early flowering date (say, 1000 degree days after planting date) and then set a very low (<0.1%) harvest index so grain development is minimized.
+%         In addition, the user should indicate the crop cover under conditions of no stress. This is normally 100%. However, in dry environments in which row crops are planted with wide row-spacing, even unstressed crops are unable to fully cover the ground and this parameter is meant to represent that situation in a practical way.
+%         The user should provide the maximum rooting depth. This parameter is important and might be moved in the future to the list of parameters that are preset for each crop. In the meantime select a realistic value that matches the soil properties. If there is a restrictive layer in the soil you might consider modifying this property for each crop in the rotation, as crops respond differently to physical soil restriction and this effect has not been explicitly implemented in Cycles.
+%         For hay crops the user should indicate the phonological stage at which a mowing operation will occur and the percentage of the aboveground biomass that should be removed. This stage is usually at 60%, which means that the crop is ready for mowing when the thermal time is approximately 60% of that at maturity. The mowing operation (as well as cold damage) automatically resets the physiological clock according to the fraction of the biomass that is removed.
+%         Other input parameters are the average, minimum and maximum expected grain yield (only applicable to grain crops). These parameters are currently not being used. You can input 99999 in the three cells.
+%         A check box in the upper left of the interface gives you access to what is called advanced parameters. For the most part, we consider that the user should not modify these parameters unless solid information is available and demonstrably better than the default. If that is the case or you want to explore the effect of designing a different cultivar for a given species, you should feel free to modify the crop parameters and re-run the simulation.
+%         Finally, you can create your own crop description. To do so, just modify the name and parameters of an existing crop. In this way, you can create several cultivars of wheat or hybrids of sunflower, maize, or soybean. This is also useful to modify the length of the cycle of photoperiod sensitive cultivars when the planting date varies widely (by more than a month), even though you are using the same cultivar (if you are interested in the photoperiod response and vernalization you may consider using CropSyst). You can do this in the Cycles interface or in Excel. To do so in Excel, just copy the full row of a crop in the corresponding sheet and modify the crop name and parameters. When imported in the interface, this row, or new crop, will be automatically available as an active crop.
+%         7. Field Operations
+%         There are two types of operations: those that follow a fixed schedule (planting, tillage, and fixed irrigation and fertilization events) and those that are automatic (automatic irrigation and fertilization). All fixed operations must be input separately. Each operation is scheduled by assigning the rotation year and day of the year. The fixed operations occur independently of the crop that is on the ground. There can be more than one operation in the same day. The automatic operations depend on the crop that is on the ground.
+%         Planting: Only crops that are active in the crop description screen are available for planting. Select a crop, the rotation year and planting date, and select the box for automatic irrigation if you wish to automatically irrigate the crop. The conditions for and attributes of an automatic irrigation are defined in the tab automatic irrigation. The crop planting and the tool used for the planting constitute two separate operations. This decoupling is somewhat counterintuitive, and requires that the user adds a planter operation for each actual planting. The same concept applies for a fertilization event. The fertilization is independent of the tool used for the operation.
+%         Tillage: The tillage tab lists a number of tillage tools, using as a blueprint the list prepared by NRCS in their Soil Conditioning Index tool. Once a tool is selected, a year and date of the operation must be added. Each tool has three attributes associated to the operation: the soil depth affected, the soil disturbance rating (SDR), and the mixing efficiency. The SDR is used to compute the impact of tillage on the soil organic matter turnover rate. The mixing efficiency defines the fraction of the layer tilled that is mixed with the other layers that are tilled. There are default values for these attributes that are editable by the user. We recommend not modifying the SDR. You can create a new tillage operation by typing a new name and inputting the tillage de depth, SDR, and mixing efficiency.
+%         Fertilization: The fertilization tab lists a set of well known fertilizers and provides default values for several types of manure. The concentrations (g/g) of each nutrient are attributes of each fertilizer. Therefore, to add a given nutrient mass you need to check that the actual mass of the fertilizer times the concentration of the nutrient provides the mass of the nutrient desired. For instance, urea has 46% nitrogen. To add 100 kg N/ha you need to add 100/0.46 = 217 kg of fertilizer/ha. Other inputs required are the form (liquid or dry) and placement (layer) of the fertilizer.
+%         Irrigation: To add a fixed irrigation just type the year of the rotation, date of the year and volume of the irrigation. This option is useful to compare simulated and actual data when in irrigated trials. In addition, it can be used to create fertigation by adding a fixed irrigation and fertilization events in the same date.
+%         Automatic Irrigation: Each crop can be automatically irrigated depending on the level of plant available water depletion for a given soil thickness. These two parameters are selected by the user and are crop-specific. There are other possible criteria for deciding irrigation (e.g. actual plant water stress) that are not available in Cycles.
+%         Automatic Fertilization: this option is inactive and will be added to the new release.
+%         8. Outputs
+%         The outputs printed by Cycles are selected by the user. The seasonal outputs provide a short summary of the biomass produced by each crop, and the grain and forage yield. The soil outputs provide mostly detail on the soil carbon evolution of each layer. The daily output should be used judiciously if you are running many long simulations to avoid creating huge outputs files. It is a very useful file to scrutinize crop growth, nitrogen uptake, mineral nitrogen in the soil profile and patterns of gaseous nitrogen losses and nitrogen leaching.
+%         When looking at an output, make sure that the annual biomass production for each crop and its inter-annual variation is reasonable for the area. Gross underestimation of biomass may indicate poor choices for the crop growing season (average planting and maturity dates in the crop description), or nitrogen stress among other factors. To obtain a quick estimate of how much nitrogen fertilizer a crop may need you can run the simulation with the automatic nitrogen option checked (first window of the interface). After running the simulation, the daily file will show a column with the cumulative nitrogen that Cycles automatically added to the crop (i.e. fertilization with uptake efficiency of 100%). This can be a reasonable estimate of the nitrogen fertilizer requirement. On the contrary, lack of response to nitrogen fertilizer may indicate that the initial soil organic matter is high and that nitrogen mineralization is supplying the nitrogen required by the crop. You should see a buildup of nitrate in the profile or large amounts of nitrogen leaching.
+%         Most users have a keen interest in soil carbon evolution under different management practices. In our experience Cycles simulates soil carbon evolution reasonably well when the average annual temperature of a location is below 15 °C. In warmer environments the simulated turnover rate seems to be faster than that observed. In addition, it is worth mentioning that when the initial soil carbon is accurate, the uncertainty in the soil carbon evolution increases with depth. The reason is that there is less data (and understanding) of soil carbon cycling below 20 or 30 cm. When the initial soil carbon is estimated you should be even more cautious with the simulation results. When comparing management practices, however, the magnitude of the difference in soil carbon evolution caused by management simulated with Cycles is debatable, but the sign of the change is most likely correct. It should not be assumed that changing from inversion tillage to no-till will cause a gain in soil carbon in the simulation. That will depend on the particular case.
+%         9. Miscellaneous Notes
+%         The automatic phosphorus, automatic sulfur, and automatic fertilizer have not been implemented yet. These features, along with the possibility of simulating multispecies pastures and erosion will be implemented in a future release.
+
+
+%\bibliographystyle{ametsoc}
+
+%\bibliography{shi}
+\end{document}
