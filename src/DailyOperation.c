@@ -30,6 +30,7 @@ void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *Cr
         if (verbose_mode)
             printf ("DOY %3.3d %-20s %s\n", doy, "Planting", plantingOrder->cropName);
     }
+    UpdateOperationStatus (CropManagement->plantingOrder, CropManagement->totalCropsPerRotation);
 
     while (IsOperationToday (rotationYear, doy, CropManagement->FixedFertilization, CropManagement->numFertilization, &operation_index))
     {
@@ -39,6 +40,7 @@ void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *Cr
 
         ApplyFertilizer (FixedFertilization, Soil, Residue);
     }
+    UpdateOperationStatus (CropManagement->FixedFertilization, CropManagement->numFertilization);
 
     while (IsOperationToday (rotationYear, doy, CropManagement->Tillage, CropManagement->numTillage, &operation_index))
     {
@@ -60,6 +62,7 @@ void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *Cr
             }
         }
     }
+    UpdateOperationStatus (CropManagement->Tillage, CropManagement->numTillage);
 
     UpdateCommunity (Community);
 
@@ -72,6 +75,7 @@ void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *Cr
 
         Soil->irrigationVol += FixedIrrigation->opVolume;
     }
+    UpdateOperationStatus (CropManagement->FixedIrrigation, CropManagement->numIrrigation);
 
     ComputeResidueCover (Residue);
 

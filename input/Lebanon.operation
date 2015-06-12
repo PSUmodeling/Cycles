@@ -18,6 +18,7 @@ DOY                 110
 CROP                Maize
 AUTO_IRRIGATION     0
 AUTO_FERTILIZATION  0
+FRACTION            1.0
 
 TILLAGE
 YEAR                1

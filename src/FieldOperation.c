@@ -36,12 +36,6 @@ int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOper
                     FieldOperation[i].status = 1;
                     *operationIndex = i;
 
-                    if (i == numOperation - 1)
-                    {
-                        for (j = 0 ; j < numOperation; j++)
-                            FieldOperation[j].status = 0;
-                    }
-
                     break;
                 }
                 else
@@ -53,6 +47,33 @@ int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOper
     return (operation_today);
 }
 
+void UpdateOperationStatus (FieldOperationStruct *FieldOperation, int numOperation)
+{
+    int             i;
+    int             all_performed = 1;
+
+    if (numOperation <= 0)
+    {
+        /* Do nothing */
+    }
+    else
+    {
+        for (i = 0; i < numOperation; i++)
+        {
+            if (FieldOperation[i].status == 0)
+            {
+                all_performed = 0;
+                break;
+            }
+        }
+
+        if (all_performed)
+        {
+            for (i = 0 ; i < numOperation; i++)
+                FieldOperation[i].status = 0;
+        }
+    }
+}
 //void SelectNextOperation (int NumOperation, int *operationIndex)
 //{
 //    /*
