@@ -151,7 +151,7 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
         for (i = Soil->totalLayers - 2; i >= 0; i--)
             Tn[i] = d[i] - c[i] * Tn[i + 1];
         /* Thomas algorithm ends */
-    } while (fabs (T[0] - Tn[0]) > 0.02 || abs (T[1] - Tn[1]) > 0.02);
+    } while (fabs (T[0] - Tn[0]) > 0.02 || fabs (T[1] - Tn[1]) > 0.02);
 
     for (i = 0; i < Soil->totalLayers + 1; i++)
         Soil->soilTemperature[i] = Tn[i];
