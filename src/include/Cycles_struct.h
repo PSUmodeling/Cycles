@@ -1,6 +1,5 @@
 #ifndef CYCLES_STRUCT_HEADER
 #define CYCLES_STRUCT_HEADER
-
 /*****************************************************************************
  *
  * FILE NAME:   Cycles_struct.h
@@ -569,9 +568,9 @@ typedef struct SummaryStruct
     double          final_soc;
 } SummaryStruct;
 
-typedef struct CyclesStruct
+#ifdef _CYCLES_
+typedef struct grid_struct
 {
-    SimControlStruct SimControl;
     SoilStruct      Soil;
     CropManagementStruct CropManagement;
     CommunityStruct Community;
@@ -580,9 +579,28 @@ typedef struct CyclesStruct
     WeatherStruct   Weather;
     SnowStruct      Snow;
     SummaryStruct   Summary;
+} grid_struct;
+#endif
+
+typedef struct CyclesStruct
+{
+    SimControlStruct SimControl;
+
+#ifdef _CYCLES_
+    grid_struct    *grid;
+#else
+    SoilStruct      Soil;
+    CropManagementStruct CropManagement;
+    CommunityStruct Community;
+    ResidueStruct   Residue;
+    SoilCarbonStruct SoilCarbon;
+    WeatherStruct   Weather;
+    SnowStruct      Snow;
+    SummaryStruct   Summary;
+#endif
 
     PrintStruct    *daily_output;
     PrintStruct    *annual_output;
-}              *CyclesStruct;
+} *CyclesStruct;
 
 #endif
