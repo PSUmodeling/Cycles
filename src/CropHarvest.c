@@ -127,7 +127,7 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
 
     NStressCumulative = Crop->svN_StressCumulative;
 
-    clippingFraction = (Crop->svShoot - Crop->userClippingThreshold) / Crop->svShoot / (1.0 - fractionalHarvestLosses);
+    clippingFraction = (Crop->svShoot - Crop->userClippingBiomassThreshold) / Crop->svShoot / (1.0 - fractionalHarvestLosses);
     clippingFraction = (clippingFraction < Crop->userFractionResidueRemoved) ? clippingFraction : Crop->userFractionResidueRemoved;
 
     forageYield = Crop->svShoot * clippingFraction * (1.0 - fractionalHarvestLosses);
