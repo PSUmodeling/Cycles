@@ -215,10 +215,13 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
             }
             else if (clippingFlag == 1)
             {
-                ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                AddCrop (&Community->Crop[i]);
-                Community->Crop[i].stageGrowth = CLIPPING;
-                Community->Crop[i].harvestCount += 1;
+                if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThreshold * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
+                {
+                    ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                    AddCrop (&Community->Crop[i]);
+                    Community->Crop[i].stageGrowth = CLIPPING;
+                    Community->Crop[i].harvestCount += 1;
+                }
             }
 
             Community->Crop[i].rcCropTranspirationPotential += Community->Crop[i].svTranspirationPotential;

@@ -103,6 +103,8 @@ void ReadCrop (char *filename, CommunityStruct *Community)
                 fgets (cmdstr, MAXSTRING, crop_file);
                 sscanf (cmdstr, "%*s %lf", &Crop->userFractionResidueRemoved);
                 fgets (cmdstr, MAXSTRING, crop_file);
+                sscanf (cmdstr, "%*s %lf", &Crop->userClippingBiomassThreshold);
+                fgets (cmdstr, MAXSTRING, crop_file);
                 sscanf (cmdstr, "%*s %lf", &Crop->userClippingTiming);
                 fgets (cmdstr, MAXSTRING, crop_file);
                 sscanf (cmdstr, "%*s %lf", &Crop->userTranspirationMinTemperature);

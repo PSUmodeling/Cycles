@@ -112,11 +112,10 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
     double          NStressCumulative;
     const double    fractionalHarvestLosses = 0.05;
     double          fractionalNitrogenRemoval;
+    double          clippingFraction;
 
     if (verbose_mode)
         printf ("DOY %3.3d %-20s %s\n", doy, "Forage Harvest", Crop->cropName);
-
-    fractionalNitrogenRemoval = 1.0 - pow (1.0 - Crop->userFractionResidueRemoved, 0.7);
 
     /* With this method, forage yield is accumulated over the life of the crop
      * for season harvest (not per year) unless a new variable is created ...
@@ -128,12 +127,18 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
 
     NStressCumulative = Crop->svN_StressCumulative;
 
-    forageYield = Crop->svShoot * Crop->userFractionResidueRemoved * (1.0 - fractionalHarvestLosses);
-    residueMass = Crop->svShoot * Crop->userFractionResidueRemoved * fractionalHarvestLosses;
-    rootMassDead = Crop->svRoot * Crop->userFractionResidueRemoved;
+    clippingFraction = (Crop->svShoot - Crop->userClippingThreshold) / Crop->svShoot / (1.0 - fractionalHarvestLosses);
+    clippingFraction = (clippingFraction < Crop->userFractionResidueRemoved) ? clippingFraction : Crop->userFractionResidueRemoved;
+
+    forageYield = Crop->svShoot * clippingFraction * (1.0 - fractionalHarvestLosses);
+    residueMass = Crop->svShoot * clippingFraction * fractionalHarvestLosses;
+    rootMassDead = Crop->svRoot * clippingFraction;
+
+    fractionalNitrogenRemoval = 1.0 - pow (1.0 - clippingFraction, 0.7);
+
     nitrogenForageYield = Crop->svN_Shoot * fractionalNitrogenRemoval * (1.0 - fractionalHarvestLosses);
-    Residue_N_Mass = Crop->svN_Shoot * Crop->userFractionResidueRemoved * fractionalHarvestLosses;
-    Root_N_Mass_Dead = Crop->svN_Root * Crop->userFractionResidueRemoved;
+    Residue_N_Mass = Crop->svN_Shoot * clippingFraction * fractionalHarvestLosses;
+    Root_N_Mass_Dead = Crop->svN_Root * clippingFraction;
 
     /* Add roots of clipped crop to a root residue pool in each layer */
     DistributeRootDetritus (y, rootMassDead, 0.0, Root_N_Mass_Dead, 0.0, Soil, Crop, Residue, SoilCarbon);
@@ -144,9 +149,9 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
     Crop->svN_Shoot -= (nitrogenForageYield + Residue_N_Mass);
     Crop->svN_Root -= Root_N_Mass_Dead;
     /* Resetting of cumulative nitrogen stress after haverst */
-    Crop->svN_StressCumulative *= (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (Crop->userFractionResidueRemoved, 0.75)) / Crop->calculatedMaturityTT;
-    Crop->svTT_Cumulative = Crop->userEmergenceTT + (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (Crop->userFractionResidueRemoved, 0.75));
-    Crop->svRadiationInterception = Crop->svRadiationInterception * (1.0 - pow (Crop->userFractionResidueRemoved, 0.75));
+    Crop->svN_StressCumulative *= (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (clippingFraction, 0.75)) / Crop->calculatedMaturityTT;
+    Crop->svTT_Cumulative = Crop->userEmergenceTT + (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (clippingFraction, 0.75));
+    Crop->svRadiationInterception = Crop->svRadiationInterception * (1.0 - pow (clippingFraction, 0.75));
     Crop->svShootUnstressed = Crop->svShoot;
 
     Residue->stanResidueMass += residueMass * Crop->userFractionResidueStanding;
