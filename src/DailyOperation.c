@@ -110,6 +110,7 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
      */
     int             forcedHarvest = 0;
     int             i;
+    int             clippingFlag = 0;
 
     //forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
 
@@ -166,6 +167,21 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
 
     for (i = 0; i < Community->NumCrop; i++)
     {
+        if (Community->Crop[i].userClippingTiming > 0.0)
+        {
+            if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT)
+            {
+                if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
+                {
+                    clippingFlag = 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    for (i = 0; i < Community->NumCrop; i++)
+    {
         if (Community->Crop[i].stageGrowth > NO_CROP)
         {
             if (Weather->tMin[y][d - 1] < Community->Crop[i].userColdDamageThresholdTemperature)
@@ -193,18 +209,12 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
                     Community->NumActiveCrop--;
                 }
             }
-            else if (Community->Crop[i].userClippingTiming > 0.0)
+            else if (clippingFlag == 1)
             {
-                if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT)
-                {
-                    if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
-                    {
-                        ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                        AddCrop (&Community->Crop[i]);
-                        Community->Crop[i].stageGrowth = CLIPPING;
-                        Community->Crop[i].harvestCount += 1;
-                    }
-                }
+                ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                AddCrop (&Community->Crop[i]);
+                Community->Crop[i].stageGrowth = CLIPPING;
+                Community->Crop[i].harvestCount += 1;
             }
 
             Community->Crop[i].rcCropTranspirationPotential += Community->Crop[i].svTranspirationPotential;
