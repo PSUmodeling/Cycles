@@ -291,7 +291,7 @@ void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStr
         soilMass = 10000.0 * Soil->BD[i] * Soil->layerThickness[i];
         NMineral = Soil->NO3[i] + Soil->NH4[i];
         NH4_Fraction = Soil->NH4[i] / NMineral;
-        NMineralConcentration = Soil->NO3[i] / soilMass;
+        NMineralConcentration = NMineral / soilMass;
         satSOCConc = 21.1 + 0.375 * Soil->Clay[i] * 100.0;
 
         /* Compute C/N ratios */
