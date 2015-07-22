@@ -5,6 +5,9 @@
 #define MAXSTRING       1024
 #define BADVAL          -999
 
+#define REMOVE_CLIPPING     0
+#define RETURN_CLIPPING     1
+#define GRAZING_CLIPPING    2
 
 #define STAN_RESIDUE_SA 4.0     /* Standing residue area to mass ratio
                                  * (m2/kg) */

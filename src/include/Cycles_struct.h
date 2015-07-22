@@ -262,6 +262,7 @@ typedef struct CropStruct
     double          userFractionResidueRemoved;
     double          userClippingBiomassThreshold;
     double          userClippingTiming;
+    int             userClippingDestiny;
     double          userTranspirationMinTemperature;
     double          userTranspirationThresholdTemperature;
     double          userColdDamageMinTemperature;

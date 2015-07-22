@@ -23,6 +23,7 @@ void ReadCrop (char *filename, CommunityStruct *Community)
     char           *fullname;
     char            cmdstr[MAXSTRING];
     char            optstr[MAXSTRING];
+    char            temp[MAXSTRING];
     int             crop_counter = 0;
     int             i;
     CropStruct     *Crop;
@@ -106,6 +107,19 @@ void ReadCrop (char *filename, CommunityStruct *Community)
                 sscanf (cmdstr, "%*s %lf", &Crop->userClippingBiomassThreshold);
                 fgets (cmdstr, MAXSTRING, crop_file);
                 sscanf (cmdstr, "%*s %lf", &Crop->userClippingTiming);
+                fgets (cmdstr, MAXSTRING, crop_file);
+                sscanf (cmdstr, "%*s %s", temp);
+                if (strcasecmp ("REMOVE", temp) == 0)
+                    Crop->userClippingDestiny = REMOVE_CLIPPING;
+                else if (strcasecmp ("RETURN", temp) == 0)
+                    Crop->userClippingDestiny = RETURN_CLIPPING;
+                else if (strcasecmp ("GRAZING", temp) == 0)
+                    Crop->userClippingDestiny = GRAZING_CLIPPING;
+                else
+                {
+                    printf ("Option not recoganized!\n");
+                    exit (1);
+                }
                 fgets (cmdstr, MAXSTRING, crop_file);
                 sscanf (cmdstr, "%*s %lf", &Crop->userTranspirationMinTemperature);
                 fgets (cmdstr, MAXSTRING, crop_file);
