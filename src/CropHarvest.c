@@ -202,6 +202,7 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
 
     Residue->manureSurfaceC += manureCarbonMass;
     Residue->manureSurfaceN += manureNitrogenMass;
+    Soil->NH4[0] += NH4Mass;
 
     /* Yearly output variables */
     Residue->yearResidueBiomass += forageMassLoss + forageMassRetained;
