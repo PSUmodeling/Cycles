@@ -88,6 +88,18 @@ void            PrintSummary (const SummaryStruct *Summary, int totalYears, cons
 /* ReadCrop.c */
 void            ReadCrop (char *project, CommunityStruct *Community);
 
+/* ReadFunc.c */
+int Readable (char *cmdstr);
+int FindLine (FILE * fid, char *token);
+void NextLine (FILE * fid, char *cmdstr);
+int CountLine (FILE * fid, int num_arg, ...);
+void CheckFile (FILE * fid, char *fn);
+void ReadTS (char *cmdstr, int *ftime, double *data, int nvrbl);
+void ReadKeywordDouble (char *buffer, char *keyword, double *value);
+void ReadKeywordInt (char *buffer, char *keyword, int *value);
+void ReadKeywordTime (char *buffer, char *keyword, int *value);
+void ReadKeywordStr (char *buffer, char *keyword, char *value);
+
 /* ReadOperation.c */
 void            ReadOperation (char *project, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation);
 
@@ -99,8 +111,6 @@ void            ReadSoil (char *project, SoilStruct *Soil);
 
 /* ReadWeather.c */
 void            ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years);
-
-/* RealizedCrop.c */
 
 /* ReferenceET.c */
 double          CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
