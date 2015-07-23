@@ -1,0 +1,291 @@
+TILLAGE
+YEAR                1   
+DOY                 120
+TOOL                Harvest_grain
+DEPTH               0.01
+SOIL_DISTURB_RATIO  5   
+MIXING_EFFICIENCY   0   
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
+
+FIXED_FERTILIZATION
+YEAR                1   
+DOY                 140
+SOURCE              18-46-00_Di-Ammonium_Phoshate
+MASS                80    
+FORM                Solid
+METHOD              Broadcast
+LAYER               0     
+C_Organic           0     
+C_Charcoal          0     
+N_Organic           0     
+N_Charcoal          0     
+N_NH4               0.18  
+N_NO3               0     
+P_Organic           0     
+P_CHARCOAL         0     
+P_INORGANIC         0.202 
+K                   0     
+S                   0     
+
+TILLAGE
+YEAR                1   
+DOY                 140
+TOOL                Planter_double_disk_opnr
+DEPTH               0.03
+SOIL_DISTURB_RATIO  5   
+MIXING_EFFICIENCY   0.071554
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
+
+PLANTING
+YEAR                1   
+DOY                 141
+CROP                Ryegrass-Annual
+AUTO_IRRIGATION     0
+AUTO_FERTILIZATION  0
+FRACTION            0.7
+
+PLANTING
+YEAR                1   
+DOY                 141
+CROP                White-Clover
+AUTO_IRRIGATION     0
+AUTO_FERTILIZATION  0
+FRACTION            0.3
+
+TILLAGE
+YEAR                1   
+DOY                 268
+TOOL                Kill_Crop
+DEPTH               0   
+SOIL_DISTURB_RATIO  0   
+MIXING_EFFICIENCY   0   
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
+
+FIXED_FERTILIZATION
+YEAR                1   
+DOY                 309
+SOURCE              18-46-00_Di-Ammonium_Phoshate
+MASS                120   
+FORM                Solid
+METHOD              Broadcast
+LAYER               0     
+C_Organic           0     
+C_Charcoal          0     
+N_Organic           0     
+N_Charcoal          0     
+N_NH4               0.18  
+N_NO3               0     
+P_Organic           0     
+P_CHARCOAL         0     
+P_INORGANIC         0.202 
+K                   0     
+S                   0     
+
+PLANTING
+YEAR                1   
+DOY                 310
+CROP                Sorghum
+AUTO_IRRIGATION     0
+AUTO_FERTILIZATION  0
+FRACTION            1.0
+
+TILLAGE
+YEAR                1   
+DOY                 310
+TOOL                Planter_double_disk_opnr
+DEPTH               0.05
+SOIL_DISTURB_RATIO  6   
+MIXING_EFFICIENCY   0.071554
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
+
+FIXED_FERTILIZATION
+YEAR                1   
+DOY                 351
+SOURCE              Urea
+MASS                100   
+FORM                Solid
+METHOD              Broadcast
+LAYER               0     
+C_Organic           0     
+C_Charcoal          0     
+N_Organic           0     
+N_Charcoal          0     
+N_NH4               0.46  
+N_NO3               0     
+P_Organic           0     
+P_CHARCOAL         0     
+P_INORGANIC         0     
+K                   0     
+S                   0     
+
+TILLAGE
+YEAR                2   
+DOY                 120
+TOOL                Harvest_grain
+DEPTH               0.01
+SOIL_DISTURB_RATIO  5   
+MIXING_EFFICIENCY   0   
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
+
+FIXED_FERTILIZATION
+YEAR                2   
+DOY                 140
+SOURCE              18-46-00_Di-Ammonium_Phoshate
+MASS                80    
+FORM                Solid
+METHOD              Broadcast
+LAYER               0     
+C_Organic           0     
+C_Charcoal          0     
+N_Organic           0     
+N_Charcoal          0     
+N_NH4               0.18  
+N_NO3               0     
+P_Organic           0     
+P_CHARCOAL         0     
+P_INORGANIC         0.202 
+K                   0     
+S                   0     
+
+PLANTING
+YEAR                2   
+DOY                 141
+CROP                Ryegrass-Annual
+AUTO_IRRIGATION     0
+AUTO_FERTILIZATION  0
+FRACTION            0.7
+
+PLANTING
+YEAR                2
+DOY                 141
+CROP                White-Clover
+AUTO_IRRIGATION     0
+AUTO_FERTILIZATION  0
+FRACTION            0.3
+
+TILLAGE
+YEAR                2   
+DOY                 141
+TOOL                Planter_double_disk_opnr
+DEPTH               0.03
+SOIL_DISTURB_RATIO  5   
+MIXING_EFFICIENCY   0.071554
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
+
+TILLAGE
+YEAR                2   
+DOY                 268
+TOOL                Kill_Crop
+DEPTH               0   
+SOIL_DISTURB_RATIO  0   
+MIXING_EFFICIENCY   0   
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
+
+FIXED_FERTILIZATION
+YEAR                2   
+DOY                 313
+SOURCE              Nitrate
+MASS                12    
+FORM                Solid
+METHOD              Incorporated
+LAYER               0     
+C_Organic           0     
+C_Charcoal          0     
+N_Organic           0     
+N_Charcoal          0     
+N_NH4               0     
+N_NO3               1     
+P_Organic           0     
+P_CHARCOAL         0     
+P_INORGANIC         0     
+K                   0     
+S                   0     
+
+FIXED_FERTILIZATION
+YEAR                2   
+DOY                 313
+SOURCE              Phosphorus
+MASS                22    
+FORM                Solid
+METHOD              Incorporated
+LAYER               0     
+C_Organic           0     
+C_Charcoal          0     
+N_Organic           0     
+N_Charcoal          0     
+N_NH4               0     
+N_NO3               0     
+P_Organic           0     
+P_CHARCOAL         0     
+P_INORGANIC         1     
+K                   0     
+S                   0     
+
+FIXED_FERTILIZATION
+YEAR                2   
+DOY                 313
+SOURCE              Potassium
+MASS                8     
+FORM                Solid
+METHOD              Broadcast
+LAYER               0     
+C_Organic           0     
+C_Charcoal          0     
+N_Organic           0     
+N_Charcoal          0     
+N_NH4               0     
+N_NO3               0     
+P_Organic           0     
+P_CHARCOAL         0     
+P_INORGANIC         0     
+K                   1     
+S                   0     
+
+TILLAGE
+YEAR                2   
+DOY                 313
+TOOL                Planter_double_disk_opnr
+DEPTH               0.05
+SOIL_DISTURB_RATIO  5   
+MIXING_EFFICIENCY   0.071554
+CROP_NAME           N/A
+FRAC_THERMAL_TIME   0.0
+KILL_EFFICIENCY     0.0
+GRAIN_HARVEST       0
+FORAGE_HARVEST      0.0
+
+PLANTING
+YEAR                2   
+DOY                 314
+CROP                Soybean
+AUTO_IRRIGATION     0
+AUTO_FERTILIZATION  0
+FRACTION            1.0
