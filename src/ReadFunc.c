@@ -1,11 +1,11 @@
-#include "Cycles"
+#include "Cycles.h"
 
 int Readable (char *cmdstr)
 {
     int             readable;
 
     if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0' &&
-        cmdstr[0] != '\t')
+        cmdstr[0] != '\t' && cmdstr[0] != '\r')
         readable = 1;
     else
         readable = 0;
@@ -19,10 +19,11 @@ int FindLine (FILE * fid, char *token)
     char            cmdstr[MAXSTRING];
     char            optstr[MAXSTRING];
 
-    rewind (fid);
-
     if (strcasecmp ("BOF", token) == 0)
+    {
+        rewind (fid);
         success = 1;
+    }
     else
     {
         /* Initialize cmdstr */
@@ -115,35 +116,35 @@ int CountLine (FILE * fid, int num_arg, ...)
     return (count);
 }
 
-//int CountOccurance (FILE *fid, char *token)
-//{
-//    /*
-//     * Count number of occurance of keyword from the current line to the end
-//     * of file
-//     */
-//
-//    char            cmdstr[MAXSTRING];
-//    char            optstr[MAXSTRING];
-//    int             count;
-//
-//    /* Initialize cmdstr */
-//    strcpy (cmdstr, "\0");
-//    count = 0;
-//
-//    while (!feof (fid))
-//    {
-//        if (Readable (cmdstr))
-//        {
-//            sscanf (cmdstr, "%s", optstr);
-//            if (strcasecmp (token, optstr) == 0)
-//                count++;
-//        }
-//        
-//        fgets (cmdstr, MAXSTRING, fid);
-//    }
-//
-//    return (count);
-//}
+int CountOccurance (FILE *fid, char *token)
+{
+    /*
+     * Count number of occurance of keyword from the current line to the end
+     * of file
+     */
+
+    char            cmdstr[MAXSTRING];
+    char            optstr[MAXSTRING];
+    int             count;
+
+    /* Initialize cmdstr */
+    strcpy (cmdstr, "\0");
+    count = 0;
+
+    while (!feof (fid))
+    {
+        if (Readable (cmdstr))
+        {
+            sscanf (cmdstr, "%s", optstr);
+            if (strcasecmp (token, optstr) == 0)
+                count++;
+        }
+        
+        fgets (cmdstr, MAXSTRING, fid);
+    }
+
+    return (count);
+}
 
 void CheckFile (FILE * fid, char *fn)
 {
@@ -262,7 +263,7 @@ void ReadKeywordStr (char *buffer, char *keyword, char *value)
     int             match;
     char            optstr[MAXSTRING];
 
-    match = sscanf (buffer, "%s %[^\n]", optstr, value);
+    match = sscanf (buffer, "%s %s", optstr, value);
     if (match != 2 || strcasecmp (keyword, optstr) != 0)
     {
         printf ("ERROR: Expected keyword \"%s\"!\n", keyword);

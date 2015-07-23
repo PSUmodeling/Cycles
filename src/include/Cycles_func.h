@@ -95,6 +95,7 @@ void NextLine (FILE * fid, char *cmdstr);
 int CountLine (FILE * fid, int num_arg, ...);
 void CheckFile (FILE * fid, char *fn);
 void ReadTS (char *cmdstr, int *ftime, double *data, int nvrbl);
+int CountOccurance (FILE *fid, char *token);
 void ReadKeywordDouble (char *buffer, char *keyword, double *value);
 void ReadKeywordInt (char *buffer, char *keyword, int *value);
 void ReadKeywordTime (char *buffer, char *keyword, int *value);

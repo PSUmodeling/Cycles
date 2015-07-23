@@ -39,7 +39,8 @@ SRCS_ =	Cycles.c \
     CropProcess.c \
     CropTranspiration.c \
     Print.c \
-    MiscFunc.c
+    MiscFunc.c \
+    ReadFunc.c
 
 HEADERS_ = Cycles.h \
     Cycles_const.h \

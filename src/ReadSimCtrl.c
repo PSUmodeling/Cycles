@@ -14,14 +14,13 @@ void ReadSimControl (char *project, SimControlStruct *SimControl)
      * filename		    char*	Simulation control file name
      */
     FILE           *simctrl_file;
-    char           *filename;
+    char            filename[MAXSTRING];
+    char            cmdstr[MAXSTRING];
 
     /* Open simulation control file */
-    filename = (char *)malloc ((strlen (project) + 12) * sizeof (char));
     sprintf (filename, "input/%s.ctrl", project);
     simctrl_file = fopen (filename, "r");
     printf ("%-30s %s.\n", "Read simulation control file:", filename);
-    free (filename);
 
     if (simctrl_file == NULL)
     {
@@ -30,28 +29,73 @@ void ReadSimControl (char *project, SimControlStruct *SimControl)
     }
 
     /* Read simulation control file */
-    fscanf (simctrl_file, "%*s %d", &SimControl->simStartYear);
-    fscanf (simctrl_file, "%*s %d", &SimControl->simEndYear);
-    fscanf (simctrl_file, "%*s %d", &SimControl->yearsInRotation);
-    fscanf (simctrl_file, "%*s %d", &SimControl->adjustedYields);
-    fscanf (simctrl_file, "%*s %d", &SimControl->hourlyInfiltration);
-    fscanf (simctrl_file, "%*s %d", &SimControl->automaticNitrogen);
-    fscanf (simctrl_file, "%*s %d", &SimControl->automaticPhosphorus);
-    fscanf (simctrl_file, "%*s %d", &SimControl->automaticSulfur);
-    fscanf (simctrl_file, "%*s %d", &SimControl->weatherDailyOutput);
-    fscanf (simctrl_file, "%*s %d", &SimControl->cropDailyOutput);
-    fscanf (simctrl_file, "%*s %d", &SimControl->residueDailyOutput);
-    fscanf (simctrl_file, "%*s %d", &SimControl->waterDailyOutput);
-    fscanf (simctrl_file, "%*s %d", &SimControl->nitrogenDailyOutput);
-    fscanf (simctrl_file, "%*s %d", &SimControl->soilCarbonDailyOutput);
-    fscanf (simctrl_file, "%*s %d", &SimControl->soilDailyOutput);
-    fscanf (simctrl_file, "%*s %d", &SimControl->annualSoilOutput);
-    fscanf (simctrl_file, "%*s %d", &SimControl->profileOutput);
-    fscanf (simctrl_file, "%*s %d", &SimControl->seasonOutput);
-    fscanf (simctrl_file, "%*s %s", SimControl->crop_filename);
-    fscanf (simctrl_file, "%*s %s", SimControl->operation_filename);
-    fscanf (simctrl_file, "%*s %s", SimControl->soil_filename);
-    fscanf (simctrl_file, "%*s %s", SimControl->weather_filename);
+    FindLine (simctrl_file, "BOF");
+
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "SIMULATION_START_YEAR", &SimControl->simStartYear);
+
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "SIMULATION_END_YEAR", &SimControl->simEndYear);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "ROTATION_SIZE", &SimControl->yearsInRotation);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "ADJUSTED_YIELDS", &SimControl->adjustedYields);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "HOURLY_INFILTRATION", &SimControl->hourlyInfiltration);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "AUTOMATIC_NITROGEN", &SimControl->automaticNitrogen);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "AUTOMATIC_PHOSPHORUS", &SimControl->automaticPhosphorus);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "AUTOMATIC_SULFUR", &SimControl->automaticSulfur);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "DAILY_WEATHER_OUT", &SimControl->weatherDailyOutput);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "DAILY_CROP_OUT", &SimControl->cropDailyOutput);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "DAILY_REDISUE", &SimControl->residueDailyOutput);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "DAILY_WATER_OUT", &SimControl->waterDailyOutput);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "DAILY_NITROGEN_OUT", &SimControl->nitrogenDailyOutput);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "DAILY_SOIL_CARBON", &SimControl->soilCarbonDailyOutput);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "DAILY_SOIL_OUT", &SimControl->soilDailyOutput);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "ANNUAL_SOIL_OUT", &SimControl->annualSoilOutput);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "ANNUAL_PROFILE_OUT", &SimControl->profileOutput);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordInt (cmdstr, "SEASON_OUT", &SimControl->seasonOutput);
+
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordStr (cmdstr, "CROP_FILE", SimControl->crop_filename);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordStr (cmdstr, "OPERATION_FILE", SimControl->operation_filename);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordStr (cmdstr, "SOIL_FILE", SimControl->soil_filename);
+    
+    NextLine (simctrl_file, cmdstr);
+    ReadKeywordStr (cmdstr, "WEATHER_FILE", SimControl->weather_filename);
 
     fclose (simctrl_file);
 

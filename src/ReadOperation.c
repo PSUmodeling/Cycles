@@ -59,52 +59,23 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     free (fullname);
 
     /* Read field operation file and count numbers of operations */
-    fgets (cmdstr, MAXSTRING, operation_file);
+    FindLine (operation_file, "BOF");
+    planting_counter = CountOccurance (operation_file, "PLANTING");
 
-    while (!feof (operation_file))
-    {
-        if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
-        {
-            sscanf (cmdstr, "%s", optstr);
-            if (strcasecmp ("PLANTING", optstr) == 0)
-            {
-                strcpy (optstr, "\0");
-                fgets (cmdstr, MAXSTRING, operation_file);
-                sscanf (cmdstr, "%*s %d", &tempyear);
-                if (tempyear <= yearsInRotation)
-                    planting_counter++;
-            }
-            else if (strcasecmp ("FORCED_HARVEST", optstr) == 0)
-            {
-                strcpy (optstr, "\0");
-                fgets (cmdstr, MAXSTRING, operation_file);
-                sscanf (cmdstr, "%*s %d", &tempyear);
-                if (tempyear <= yearsInRotation)
-                    harvest_counter++;
-            }
-            else if (strcasecmp ("TILLAGE", optstr) == 0)
-            {
-                tillage_counter++;
-                strcpy (optstr, "\0");
-            }
-            else if (strcasecmp ("FIXED_IRRIGATION", optstr) == 0)
-            {
-                irrigation_counter++;
-                strcpy (optstr, "\0");
-            }
-            else if (strcasecmp ("FIXED_FERTILIZATION", optstr) == 0)
-            {
-                fertilization_counter++;
-                strcpy (optstr, "\0");
-            }
-            else if (strcasecmp ("AUTO_IRRIGATION", optstr) == 0)
-            {
-                auto_irrigation_counter++;
-                strcpy (optstr, "\0");
-            }
-        }
-        fgets (cmdstr, MAXSTRING, operation_file);
-    }
+    FindLine (operation_file, "BOF");
+    harvest_counter = CountOccurance (operation_file, "FORCED_HARVEST");
+
+    FindLine (operation_file, "BOF");
+    tillage_counter = CountOccurance (operation_file, "TILLAGE");
+    
+    FindLine (operation_file, "BOF");
+    irrigation_counter = CountOccurance (operation_file, "FIXED_IRRIGATION");
+
+    FindLine (operation_file, "BOF");
+    fertilization_counter = CountOccurance (operation_file, "FIXED_FERTILIZATION");
+
+    FindLine (operation_file, "BOF");
+    auto_irrigation_counter = CountOccurance (operation_file, "AUTO_IRRIGATION");
 
     /* Allocate memories for field operation classes */
     CropManagement->totalCropsPerRotation = planting_counter;
@@ -128,162 +99,156 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     if (planting_counter)
     {
         /* Rewind to the beginning of file and read all planting operations */
-        rewind (operation_file);
-        i = 0;
+        FindLine (operation_file, "BOF");
 
-        fgets (cmdstr, MAXSTRING, operation_file);
-        while (!feof (operation_file))
+        for (i = 0; i < planting_counter; i++)
         {
-            if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
+            q = &(CropManagement->plantingOrder[i]);
+
+            FindLine (operation_file, "PLANTING");
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
+            if (q->opYear > yearsInRotation)
             {
-                sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("PLANTING", optstr) == 0)
+                printf ("ERROR: Operation year is larger than years in rotation!\n");
+                printf ("Please remove this operation and retry.\n");
+            }
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
+            
+            NextLine (operation_file, cmdstr);
+            ReadKeywordStr (cmdstr, "CROP", q->cropName);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "AUTO_IRRIGATION", &q->usesAutoIrrigation);
+            if (CropManagement->plantingOrder[i].usesAutoIrrigation == 0)
+                CropManagement->plantingOrder[i].usesAutoIrrigation = -1;
+            else
+                CropManagement->usingAutoIrr = 1;
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "AUTO_FERTILIZATION", &q->usesAutoFertilization);
+            if (CropManagement->plantingOrder[i].usesAutoFertilization == 0)
+                CropManagement->plantingOrder[i].usesAutoFertilization = -1;
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "FRACTION", &q->plantingDensity);
+
+            q->status = 0;
+
+            /* Link planting order and crop description */
+            for (j = 0; j < Community->NumCrop; j++)
+            {
+                if (strcmp (CropManagement->plantingOrder[i].cropName, Community->Crop[j].cropName) == 0)
                 {
-                    strcpy (optstr, "\0");
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &tempyear);
-                    if (tempyear <= yearsInRotation)
-                    {
-                        CropManagement->plantingOrder[i].opYear = tempyear;
-                        fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].opDay);
-                        fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %s", CropManagement->plantingOrder[i].cropName);
-                        fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].usesAutoIrrigation);
-                        if (CropManagement->plantingOrder[i].usesAutoIrrigation == 0)
-                            CropManagement->plantingOrder[i].usesAutoIrrigation = -1;
-                        else
-                            CropManagement->usingAutoIrr = 1;
-                        fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %d", &CropManagement->plantingOrder[i].usesAutoFertilization);
-                        if (CropManagement->plantingOrder[i].usesAutoFertilization == 0)
-                            CropManagement->plantingOrder[i].usesAutoFertilization = -1;
-                        fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %lf", &CropManagement->plantingOrder[i].plantingDensity);
-
-                        CropManagement->plantingOrder[i].status = 0;
-
-                        /* Link planting order and crop description */
-                        for (j = 0; j < Community->NumCrop; j++)
-                        {
-                            if (strcmp (CropManagement->plantingOrder[i].cropName, Community->Crop[j].cropName) == 0)
-                            {
-                                CropManagement->plantingOrder[i].plantID = j;
-                                break;
-                            }
-                        }
-                        if (j >= Community->NumCrop)
-                        {
-                            printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->plantingOrder[i].cropName);
-                            exit (1);
-                        }
-                        i++;
-                    }
-                    else
-                        printf ("Planting operation in year %d is not read in because years in rotation is %d\n", tempyear, yearsInRotation);
+                    CropManagement->plantingOrder[i].plantID = j;
+                    break;
                 }
             }
-            fgets (cmdstr, MAXSTRING, operation_file);
+            if (j >= Community->NumCrop)
+            {
+                printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->plantingOrder[i].cropName);
+                exit (1);
+            }
         }
     }
 
     if (harvest_counter)
     {
         /* Rewind to the beginning of file and read all forced harvest operations */
-        rewind (operation_file);
-        i = 0;
+        FindLine (operation_file, "BOF");
 
-        fgets (cmdstr, MAXSTRING, operation_file);
-        while (!feof (operation_file))
+        for (i = 0; i < harvest_counter; i++)
         {
-            if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
+            q = &(CropManagement->ForcedHarvest[i]);
+
+            FindLine (operation_file, "FORCED_HARVEST");
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
+            if (q->opYear > yearsInRotation)
             {
-                sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("FORCED_HARVEST", optstr) == 0)
+                printf ("ERROR: Operation year is larger than years in rotation!\n");
+                printf ("Please remove this operation and retry.\n");
+            }
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordStr (cmdstr, "CROP", q->cropName);
+
+            q->status = 0;
+
+            /* Link forced harvest and crop description */
+            for (j = 0; j < Community->NumCrop; j++)
+            {
+                if (strcmp (CropManagement->ForcedHarvest[i].cropName, Community->Crop[j].cropName) == 0)
                 {
-                    strcpy (optstr, "\0");
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &tempyear);
-                    if (tempyear <= yearsInRotation)
-                    {
-                        CropManagement->ForcedHarvest[i].opYear = tempyear;
-                        fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %d", &CropManagement->ForcedHarvest[i].opDay);
-                        fgets (cmdstr, MAXSTRING, operation_file);
-                        sscanf (cmdstr, "%*s %s", CropManagement->ForcedHarvest[i].cropName);
-
-                        CropManagement->ForcedHarvest[i].status = 0;
-
-                        /* Link forced harvest and crop description */
-                        for (j = 0; j < Community->NumCrop; j++)
-                        {
-                            if (strcmp (CropManagement->ForcedHarvest[i].cropName, Community->Crop[j].cropName) == 0)
-                            {
-                                CropManagement->ForcedHarvest[i].plantID = j;
-                                break;
-                            }
-                        }
-                        if (j >= Community->NumCrop)
-                        {
-                            printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->ForcedHarvest[i].cropName);
-                            exit (1);
-                        }
-                        i++;
-                    }
-                    else
-                        printf ("Forced harvest operation in year %d is not read in because years in rotation is %d\n", tempyear, yearsInRotation);
+                    CropManagement->ForcedHarvest[i].plantID = j;
+                    break;
                 }
             }
-            fgets (cmdstr, MAXSTRING, operation_file);
+            if (j >= Community->NumCrop)
+            {
+                printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->ForcedHarvest[i].cropName);
+                exit (1);
+            }
         }
     }
 
     if (tillage_counter)
     {
         /* Rewind to the beginning of file and read all tillage operations */
-        rewind (operation_file);
-        i = 0;
+        FindLine (operation_file, "BOF");
 
-        fgets (cmdstr, MAXSTRING, operation_file);
-        while (!feof (operation_file))
+        for (i = 0; i < tillage_counter; i++)
         {
-            if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
+            q = &(CropManagement->Tillage[i]);
+
+            FindLine (operation_file, "TILLAGE");
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
+            if (q->opYear > yearsInRotation)
             {
-                sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("TILLAGE", optstr) == 0)
-                {
-                    strcpy (optstr, "\0");
-                    q = &(CropManagement->Tillage[i]);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &q->opYear);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &q->opDay);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", q->opToolName);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opDepth);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opSDR);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opMixingEfficiency);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", q->cropNameT);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->fractionThermalTime);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->killEfficiency);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &q->grainHarvest);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->forageHarvest);
-
-                    q->status = 0;
-
-                    i++;
-                }
+                printf ("ERROR: Operation year is larger than years in rotation!\n");
+                printf ("Please remove this operation and retry.\n");
             }
-            fgets (cmdstr, MAXSTRING, operation_file);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordStr (cmdstr, "TOOL", q->opToolName);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "DEPTH", &q->opDepth);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "SOIL_DISTURB_RATIO", &q->opSDR);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "MIXING_EFFICIENCY", &q->opMixingEfficiency);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordStr (cmdstr, "CROP_NAME", q->cropNameT);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "FRAC_THERMAL_TIME", &q->fractionThermalTime);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "KILL_EFFICIENCY", &q->killEfficiency);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "GRAIN_HARVEST", &q->grainHarvest);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "FORAGE_HARVEST", &q->forageHarvest);
+
+            q->status = 0;
         }
     }
 
@@ -291,32 +256,29 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     {
         /* Rewind to the beginning of file and read all irrigation
          * operations */
-        rewind (operation_file);
-        i = 0;
+        FindLine (operation_file, "BOF");
 
-        fgets (cmdstr, MAXSTRING, operation_file);
-        while (!feof (operation_file))
+        for (i = 0; i < irrigation_counter; i++)
         {
-            if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
+            q = &(CropManagement->FixedIrrigation[i]);
+
+            FindLine (operation_file, "FIXED_IRRIGATION");
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
+            if (q->opYear > yearsInRotation)
             {
-                sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("FIXED_IRRIGATION", optstr) == 0)
-                {
-                    strcpy (optstr, "\0");
-                    q = &(CropManagement->FixedIrrigation[i]);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &q->opYear);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &q->opDay);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opVolume);
-
-                    q->status = 0;
-
-                    i++;
-                }
+                printf ("ERROR: Operation year is larger than years in rotation!\n");
+                printf ("Please remove this operation and retry.\n");
             }
-            fgets (cmdstr, MAXSTRING, operation_file);
+            
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "VOLUME", &q->opVolume);
+
+            q->status = 0;
         }
     }
 
@@ -324,103 +286,110 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     {
         /* Rewind to the beginning of file and read all fertilization
          * operations */
-        rewind (operation_file);
-        i = 0;
+        FindLine (operation_file, "BOF");
 
-        fgets (cmdstr, MAXSTRING, operation_file);
-        while (!feof (operation_file))
+        for (i = 0; i < fertilization_counter; i++)
         {
-            if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
+            q = &(CropManagement->FixedFertilization[i]);
+
+            FindLine (operation_file, "FIXED_FERTILIZATION");
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
+            if (q->opYear > yearsInRotation)
             {
-                sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("FIXED_FERTILIZATION", optstr) == 0)
-                {
-                    strcpy (optstr, "\0");
-                    q = &(CropManagement->FixedFertilization[i]);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &q->opYear);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &q->opDay);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", q->opSource);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opMass);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", q->opForm);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", q->opMethod);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &q->opLayer);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opC_Organic);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opC_Charcoal);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opN_Organic);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opN_Charcoal);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opN_NH4);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opN_NO3);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opP_Organic);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opP_Charcoal);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opP_Inorganic);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opK);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &q->opS);
-
-                    q->status = 0;
-
-                    if (q->opC_Organic + q->opC_Charcoal + q->opN_Organic + q->opN_Charcoal + q->opN_NH4 + q->opN_NO3 + q->opP_Organic + q->opP_Charcoal + q->opP_Inorganic + q->opK + q->opS <= 1.0)
-                    {
-                        q->opMass = q->opMass / 1000.0;
-                        i++;
-                    }
-                    else
-                    {
-                        printf ("ERROR: Added fertilization fractions must be <= 1\n");
-                        exit (1);
-                    }
-                }
+                printf ("ERROR: Operation year is larger than years in rotation!\n");
+                printf ("Please remove this operation and retry.\n");
             }
-            fgets (cmdstr, MAXSTRING, operation_file);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordStr (cmdstr, "SOURCE", q->opSource);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "MASS", &q->opMass);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordStr (cmdstr, "FORM", q->opForm);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordStr (cmdstr, "METHOD", q->opMethod);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "LAYER", &q->opLayer);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "C_ORGANIC", &q->opC_Organic);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "C_CHARCOAL", &q->opC_Charcoal);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "N_ORGANIC", &q->opN_Organic);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "N_CHARCOAL", &q->opN_Charcoal);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "N_NH4", &q->opN_NH4);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "N_NO3", &q->opN_NO3);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "P_ORGANIC", &q->opP_Organic);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "P_CHARCOAL", &q->opP_Charcoal);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "P_INORGANIC", &q->opP_Inorganic);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "K", &q->opK);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "S", &q->opS);
+
+            q->status = 0;
+
+            if (q->opC_Organic + q->opC_Charcoal + q->opN_Organic + q->opN_Charcoal + q->opN_NH4 + q->opN_NO3 + q->opP_Organic + q->opP_Charcoal + q->opP_Inorganic + q->opK + q->opS <= 1.0)
+            {
+                q->opMass /= 1000.0;
+            }
+            else
+            {
+                printf ("ERROR: Added fertilization fractions must be <= 1\n");
+                exit (1);
+            }
         }
     }
 
     if (CropManagement->usingAutoIrr)
     {
         /* Rewind to the beginning of file and read all planting operations */
-        rewind (operation_file);
-        i = 0;
+        FindLine (operation_file, "BOF");
 
-        fgets (cmdstr, MAXSTRING, operation_file);
-        while (!feof (operation_file))
+        for (i = 0; i < auto_irrigation_counter; i++)
         {
-            if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
-            {
-                sscanf (cmdstr, "%s", optstr);
-                if (strcasecmp ("AUTO_IRRIGATION", optstr) == 0)
-                {
-                    strcpy (optstr, "\0");
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %s", CropManagement->autoIrrigation[i].cropName);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &CropManagement->autoIrrigation[i].startDay);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &CropManagement->autoIrrigation[i].stopDay);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %lf", &CropManagement->autoIrrigation[i].waterDepletion);
-                    fgets (cmdstr, MAXSTRING, operation_file);
-                    sscanf (cmdstr, "%*s %d", &CropManagement->autoIrrigation[i].lastSoilLayer);
-                    i++;
-                }
-            }
-            fgets (cmdstr, MAXSTRING, operation_file);
+            FindLine (operation_file, "AUTO_IRRIGATION");
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordStr (cmdstr, "CROP", CropManagement->autoIrrigation[i].cropName);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "START_DAY", &CropManagement->autoIrrigation[i].startDay);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "STOP_DAY", &CropManagement->autoIrrigation[i].stopDay);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordDouble (cmdstr, "WATER_DEPLETION", &CropManagement->autoIrrigation[i].waterDepletion);
+
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "LAST_SOIL_LAYER", &CropManagement->autoIrrigation[i].lastSoilLayer);
         }
     }
 

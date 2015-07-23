@@ -71,50 +71,56 @@ void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int to
     sprintf (start_year_str, "%4.4d", start_year);
 
     /* Read weather file */
-    fgets (cmdstr, MAXSTRING, weather_file);
+    FindLine (weather_file, "BOF");
 
     /* Read in site information and count number of weather records */
-    while (!feof (weather_file))
+    NextLine (weather_file, cmdstr);
+    ReadKeywordDouble (cmdstr, "LATITUDE", &Weather->siteLatitude);
+
+    NextLine (weather_file, cmdstr);
+    ReadKeywordDouble (cmdstr, "ALTITUDE", &Weather->siteAltitude);
+
+    NextLine (weather_file, cmdstr);
+    ReadKeywordDouble (cmdstr, "SCREENING_HEIGHT", &Weather->screeningHeight);
+
+    /* Skip header */
+    NextLine (weather_file, cmdstr);
+
+    strcpy (cmdstr, "\0");
+
+    NextLine (weather_file, cmdstr);
+    while (strcasecmp (cmdstr, "EOF") != 0)
     {
-        if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0')
+        sscanf (cmdstr, "%s", optstr);
+        if (strcasecmp (start_year_str, optstr) == 0)
         {
-            sscanf (cmdstr, "%s", optstr);
-            if (strcasecmp ("LATITUDE", optstr) == 0)
-                sscanf (cmdstr, "%*s %lf", &Weather->siteLatitude);
-            else if (strcasecmp ("ALTITUDE", optstr) == 0)
-                sscanf (cmdstr, "%*s %lf", &Weather->siteAltitude);
-            else if (strcasecmp ("SCREENING_HEIGHT", optstr) == 0)
-                sscanf (cmdstr, "%*s %lf", &Weather->screeningHeight);
-            //else if (strcasecmp ("YEAR", optstr) == 0)
-            else if (strcasecmp (start_year_str, optstr) == 0)
+            for (y = 0; y < total_years; y++)
             {
-                for (y = 0; y < total_years; y++)
+                for (doy = 1; doy < 367; doy++)
                 {
-                    for (doy = 1; doy < 367; doy++)
+                    sscanf (cmdstr, "%d %d %*f %*f %*f %*f %*f %*f %*f", &temp_year, &temp_doy);
+                    if (temp_year == y + start_year && temp_doy == doy)
                     {
-                        sscanf (cmdstr, "%d %d %*f %*f %*f %*f %*f %*f %*f", &temp_year, &temp_doy);
-                        if (temp_year == y + start_year && temp_doy == doy)
-                        {
-                            sscanf (cmdstr, "%*d %*d %lf %lf %lf %lf %lf %lf %lf", &Weather->precipitation[y][doy - 1], &Weather->tMax[y][doy - 1], &Weather->tMin[y][doy - 1], &Weather->solarRadiation[y][doy - 1], &Weather->RHmax[y][doy - 1], &Weather->RHmin[y][doy - 1], &Weather->wind[y][doy - 1]);
-                            if (doy == 366)
-                                Weather->lastDoy[y] = 366;
-                            fgets (cmdstr, MAXSTRING, weather_file);
-                        }
-                        else if (doy == 366 && temp_year == y + start_year + 1 && temp_doy == 1)
-                            Weather->lastDoy[y] = 365;
-                        else if (doy == 366 && feof (weather_file))
-                            Weather->lastDoy[y] = 365;
-                        else
-                        {
-                            printf ("ERROR: Please check your weather input file near YEAR: %4.4d, DOY: %-d, expecting %4.4d-%-d, eof status %d\n", temp_year, temp_doy, y, doy, feof (weather_file));
-                            exit (1);
-                        }
+                        sscanf (cmdstr, "%*d %*d %lf %lf %lf %lf %lf %lf %lf", &Weather->precipitation[y][doy - 1], &Weather->tMax[y][doy - 1], &Weather->tMin[y][doy - 1], &Weather->solarRadiation[y][doy - 1], &Weather->RHmax[y][doy - 1], &Weather->RHmin[y][doy - 1], &Weather->wind[y][doy - 1]);
+                        if (doy == 366)
+                            Weather->lastDoy[y] = 366;
+                        NextLine (weather_file, cmdstr);
+                    }
+                    else if (doy == 366 && temp_year == y + start_year + 1 && temp_doy == 1)
+                        Weather->lastDoy[y] = 365;
+                    else if (doy == 366 && feof (weather_file))
+                        Weather->lastDoy[y] = 365;
+                    else
+                    {
+                        printf ("ERROR: Please check your weather input file near YEAR: %4.4d, DOY: %-d, expecting %4.4d-%-d, eof status %d\n", temp_year, temp_doy, y, doy, feof (weather_file));
+                        exit (1);
                     }
                 }
-                break;
             }
+            break;
         }
-        fgets (cmdstr, MAXSTRING, weather_file);
+
+        NextLine (weather_file, cmdstr);
     }
 
     fclose (weather_file);

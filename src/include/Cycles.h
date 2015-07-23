@@ -9,6 +9,7 @@
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <stdarg.h>
 
 #include "Cycles_const.h"
 #include "Cycles_struct.h"

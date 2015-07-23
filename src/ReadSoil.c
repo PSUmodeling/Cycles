@@ -37,13 +37,17 @@ void ReadSoil (char *filename, SoilStruct *Soil)
     free (fullname);
 
     /* Read soil file */
-    fgets (cmdstr, MAXSTRING, soil_file);
-    sscanf (cmdstr, "%*s %lf", &Soil->Curve_Number);
-    fgets (cmdstr, MAXSTRING, soil_file);
-    sscanf (cmdstr, "%*s %lf", &Soil->Percent_Slope);
-    Soil->Percent_Slope = Soil->Percent_Slope / 100.0;
-    fgets (cmdstr, MAXSTRING, soil_file);
-    sscanf (cmdstr, "%*s %d", &Soil->totalLayers);
+    FindLine (soil_file, "BOF");
+
+    NextLine (soil_file, cmdstr);
+    ReadKeywordDouble (cmdstr, "CURVE_NUMBER", &Soil->Curve_Number);
+
+    NextLine (soil_file, cmdstr);
+    ReadKeywordDouble (cmdstr, "SLOPE", &Soil->Percent_Slope);
+    Soil->Percent_Slope /= 100.0;
+
+    NextLine (soil_file, cmdstr);
+    ReadKeywordInt (cmdstr, "TOTAL_LAYERS", &Soil->totalLayers);
 
     /* Allocate memories for soil class */
     Soil->layerThickness = (double *)malloc (Soil->totalLayers * sizeof (double));
@@ -56,10 +60,12 @@ void ReadSoil (char *filename, SoilStruct *Soil)
     Soil->NO3 = (double *)malloc (Soil->totalLayers * sizeof (double));
     Soil->NH4 = (double *)malloc (Soil->totalLayers * sizeof (double));
 
-    fgets (cmdstr, MAXSTRING, soil_file);   /* skip header line */
+    /* Skip header */
+    NextLine (soil_file, cmdstr);
+
     for (i = 0; i < Soil->totalLayers; i++)
     {
-        fgets (cmdstr, MAXSTRING, soil_file);
+        NextLine (soil_file, cmdstr);
         sscanf (cmdstr, "%*d %lg %lf %lf %lf %lf %lf %lf %lf %lf", &Soil->layerThickness[i], &Soil->Clay[i], &Soil->Sand[i], &Soil->IOM[i], &Soil->BD[i], &Soil->FC[i], &Soil->PWP[i], &Soil->NO3[i], &Soil->NH4[i]);
     }
 
