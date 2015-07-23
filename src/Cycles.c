@@ -129,21 +129,6 @@ int main (int argc, char *argv[])
 	printf ("Compute crop thermal time.\n");
     ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->Community, &Cycles->Weather);
 
-    //SelectCropInitialPosition (&Cycles->CropManagement);
-
-    //if (Cycles->CropManagement.totalCropsPerRotation > 0)
-    //{
-    //    nextSeedingYear = Cycles->CropManagement.nextCropSeedingYear;
-    //    nextSeedingDate = Cycles->CropManagement.nextCropSeedingDate;
-    //}
-    //else
-    //{
-    //    nextSeedingYear = 0;
-    //    nextSeedingDate = 0;
-    //}
-    //if (debug_mode)
-    //    printf ("*Next seeding year is %-4d, next seeding date is %3d\n", nextSeedingYear, nextSeedingDate);
-
     rotationYear = 0;
 
     printf ("\nSimulation running ...\n");
@@ -160,10 +145,6 @@ int main (int argc, char *argv[])
             rotationYear = 1;
         if (debug_mode)
             printf ("*%-15s = %-d\n", "Rotation year", rotationYear);
-
-        //SelectOperationYear (rotationYear, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, &Cycles->CropManagement.tillageIndex);
-        //SelectOperationYear (rotationYear, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, &Cycles->CropManagement.irrigationIndex);
-        //SelectOperationYear (rotationYear, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization, &Cycles->CropManagement.fertilizationIndex);
 
 	/* Initialize annual variables */
         for (i = 0; i < Cycles->Soil.totalLayers; i++)

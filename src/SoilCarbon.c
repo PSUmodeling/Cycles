@@ -60,12 +60,14 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int l
         SoilCarbon->factorComposite[i] = factorMoisture * factorAeration * factorTemperature;
 
         if (doy == 1)
-            SoilCarbon->annualDecompositionFactor[i] = SoilCarbon->factorComposite[i];
-        else
-            SoilCarbon->annualDecompositionFactor[i] = SoilCarbon->annualDecompositionFactor[i] + SoilCarbon->factorComposite[i];
+        {
+            SoilCarbon->annualDecompositionFactor[i] = 0.0;
+        }
+
+        SoilCarbon->annualDecompositionFactor[i] += SoilCarbon->factorComposite[i];
 
         if (doy == last_doy)
-            SoilCarbon->annualDecompositionFactor[i] = SoilCarbon->annualDecompositionFactor[i] / ((double)last_doy);
+            SoilCarbon->annualDecompositionFactor[i] /= ((double)last_doy);
     }
 }
 
