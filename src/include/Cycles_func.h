@@ -89,6 +89,7 @@ void            PrintSummary (const SummaryStruct *Summary, int totalYears, cons
 void            ReadCrop (char *project, CommunityStruct *Community);
 
 /* ReadFunc.c */
+char FirstNonWhite (char *cmdstr);
 int Readable (char *cmdstr);
 int FindLine (FILE * fid, char *token);
 void NextLine (FILE * fid, char *cmdstr);
