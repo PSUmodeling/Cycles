@@ -16,7 +16,7 @@ DAILY_SOIL_OUT          1
 ANNUAL_SOIL_OUT         1   
 ANNUAL_PROFILE_OUT      1   
 SEASON_OUT              1   
-CROP_FILE               UEPP.crop
+CROP_FILE               UEPP_MixedPasture.crop
 OPERATION_FILE          UEPP_pasture.operation
 SOIL_FILE               UEPP.soil
 WEATHER_FILE            UEPP.weather

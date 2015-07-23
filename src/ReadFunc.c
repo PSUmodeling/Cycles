@@ -1,11 +1,29 @@
 #include "Cycles.h"
 
+char FirstNonWhite (char *cmdstr)
+{
+    int             i;
+
+    for (i = 0; i < strlen (cmdstr); i++)
+    {
+        if (cmdstr[i] == 32 || cmdstr[i] == '\t')
+            continue;
+        else
+            break;
+    }
+
+    return (cmdstr[i]);
+}
+    
 int Readable (char *cmdstr)
 {
     int             readable;
+    char            ch;
 
-    if (cmdstr[0] != '#' && cmdstr[0] != '\n' && cmdstr[0] != '\0' &&
-        cmdstr[0] != '\t' && cmdstr[0] != '\r')
+    ch = FirstNonWhite (cmdstr);
+
+    if (ch != '#' && ch != '\n' && ch != '\0' &&
+        ch != '\t' && ch != '\r' && ch != ' ')
         readable = 1;
     else
         readable = 0;
