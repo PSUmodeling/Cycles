@@ -244,7 +244,7 @@ void ReadKeywordDouble (char *buffer, char *keyword, double *value)
     match = sscanf (buffer, "%s %lf", optstr, value);
     if (match != 2 || strcasecmp (keyword, optstr) != 0)
     {
-        printf ("ERROR: Expected keyword \"%s\"!\n", keyword);
+        printf ("ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
         exit (1);
     }
 }
@@ -257,7 +257,7 @@ void ReadKeywordInt (char *buffer, char *keyword, int *value)
     match = sscanf (buffer, "%s %d", optstr, value);
     if (match != 2 || strcasecmp (keyword, optstr) != 0)
     {
-        printf ("ERROR: Expected keyword \"%s\"!\n", keyword);
+        printf ("ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
         exit (1);
     }
 }
@@ -276,7 +276,7 @@ void ReadKeywordTime (char *buffer, char *keyword, int *value)
     timeinfo->tm_sec = 0;
     if (match != 6 || strcasecmp (keyword, optstr) != 0)
     {
-        printf ("ERROR: Expected keyword \"%s\"!\n", keyword);
+        printf ("ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
         exit (1);
     }
 
@@ -295,7 +295,7 @@ void ReadKeywordStr (char *buffer, char *keyword, char *value)
     match = sscanf (buffer, "%s %s", optstr, value);
     if (match != 2 || strcasecmp (keyword, optstr) != 0)
     {
-        printf ("ERROR: Expected keyword \"%s\"!\n", keyword);
+        printf ("ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
         exit (1);
     }
 }
