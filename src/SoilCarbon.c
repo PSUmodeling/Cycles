@@ -694,7 +694,11 @@ void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStr
     SoilCarbon->annualAmmoniumLeaching += Soil->NH4Leaching * 1000.0;
 
     if (fabs (NFinal - NInitial) > 0.00001)
-        exit (1);
+    {
+        printf ("ERROR: Soil nitrogen balance error!\n");
+        printf ("NInitial = %lf, NFinal = %lf\n", NInitial, NFinal);
+	exit (1);
+    }
 }
 
 void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor)
@@ -1179,7 +1183,11 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
     NFinal += Residue->stanResidueN + Residue->flatResidueN + Residue->manureSurfaceN;
 
     if (fabs(NFinal - NInitial) > 0.00001)
+    {
+        printf ("ERROR: Soil nitrogen balance error!\n");
+        printf ("NInitial = %lf, NFinal = %lf\n", NInitial, NFinal);
 	exit (1);
+    }
 }
 
 void StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass)
