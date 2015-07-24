@@ -71,6 +71,8 @@ void NextLine (FILE * fid, char *cmdstr)
     /*
      * Read a non-blank line into cmdstr
      */
+
+    int             j;
     strcpy (cmdstr, "\0");
 
     while (!Readable (cmdstr))
@@ -80,7 +82,16 @@ void NextLine (FILE * fid, char *cmdstr)
             strcpy(cmdstr, "EOF");
             break;
         }
-
+        /* This is the special case to ignore the BOM mark */
+        else if (strncasecmp ("\357\273\277", cmdstr, 3) == 0)
+        {
+            /* Copy from the fourth character (skip the first three) to
+             * \000 */
+            for (j = 0; j < strlen (cmdstr) - 3 + 1; j++)
+            {
+                cmdstr[j] = cmdstr[j + 3];
+            }
+        }
     }
 }
 
