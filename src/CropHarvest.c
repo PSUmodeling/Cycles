@@ -190,6 +190,7 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
     Crop->svN_StressCumulative *= (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (clippingFraction, 0.75)) / Crop->calculatedMaturityTT;
     Crop->svTT_Cumulative = Crop->userEmergenceTT + (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (clippingFraction, 0.75));
     Crop->svRadiationInterception = Crop->svRadiationInterception * (1.0 - pow (clippingFraction, 0.75));
+    Crop->svRadiationInterception_nc = Crop->svRadiationInterception_nc * (1.0 - pow (clippingFraction, 0.75));
     Crop->svShootUnstressed = Crop->svShoot;
 
     Residue->stanResidueMass += (forageMassLoss + forageMassRetained) * Crop->userFractionResidueStanding;
