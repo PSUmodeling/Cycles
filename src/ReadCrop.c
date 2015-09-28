@@ -92,7 +92,10 @@ void ReadCrop (char *filename, CommunityStruct *Community)
         ReadKeywordDouble (cmdstr, "RESIDUE_REMOVED", &Crop->userFractionResidueRemoved);
 
         NextLine (crop_file, cmdstr);
-        ReadKeywordDouble (cmdstr, "CLIPPING_BIOMASS_THRESHOLD", &Crop->userClippingBiomassThreshold);
+        ReadKeywordDouble (cmdstr, "CLIPPING_BIOMASS_THRESHOLD_UPPER", &Crop->userClippingBiomassThresholdUpper);
+
+        NextLine (crop_file, cmdstr);
+        ReadKeywordDouble (cmdstr, "CLIPPING_BIOMASS_THRESHOLD_LOWER", &Crop->userClippingBiomassThresholdLower);
 
         NextLine (crop_file, cmdstr);
         ReadKeywordDouble (cmdstr, "HARVEST_TIMING", &Crop->userClippingTiming);

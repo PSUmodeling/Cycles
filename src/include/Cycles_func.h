@@ -31,6 +31,7 @@ void            RadiationInterception (int y, int doy, CommunityStruct *Communit
 void            Phenology (int y, int doy, const WeatherStruct *Weather, CommunityStruct *Community);
 void            ComputeColdDamage (int y, int doy, CropStruct *Crop, const WeatherStruct *Weather, const SnowStruct *Snow, ResidueStruct *Residue);
 double          ColdDamage (const double T, const double Crop_Tn, const double Crop_Tth);
+double TemperatureFunctionGrowth (double tMax, double tOpt, double tMin, double T);
 
 /* CropThermalTime.c */
 void            ComputeThermalTime (int total_years, CommunityStruct *Community, WeatherStruct *Weather);

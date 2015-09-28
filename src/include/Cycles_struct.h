@@ -260,7 +260,8 @@ typedef struct CropStruct
     double          userPercentMoistureInYield;
     double          userFractionResidueStanding;
     double          userFractionResidueRemoved;
-    double          userClippingBiomassThreshold;
+    double          userClippingBiomassThresholdUpper;
+    double          userClippingBiomassThresholdLower;
     double          userClippingTiming;
     int             userClippingDestiny;
     double          userTranspirationMinTemperature;

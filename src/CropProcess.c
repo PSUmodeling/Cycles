@@ -130,6 +130,7 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *
     double          RUE;
     double          PRG;
     double          PTG;
+    double          factorT;
     const double    RRD = 0.6;
 
     daytimeVPD = 0.66 * SatVP (Weather->tMax[y][doy - 1]) * (1.0 - Weather->RHmin[y][doy - 1] / 100.0);
@@ -139,6 +140,12 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *
 
     /* g/MJ solar radiation intercepted, 0.01 converts to Mg/ha */
     RUE = 0.01 * Crop->userRadiationUseEfficiency;
+    if (Weather->tMax[y][doy - 1] > Crop->userTemperatureOptimum)
+    {
+        factorT = TemperatureFunctionGrowth (Crop->userTemperatureMaximum, Crop->userTemperatureOptimum, Crop->userTemperatureBase, 0.75 * Weather->tMax[y][doy - 1] + 0.25 * Weather->tMin[y][doy - 1]);
+        RUE *= pow (factorT, 0.75);
+    }
+
     TUE = 0.01 * Crop->userTranspirationUseEfficiency * pow (daytimeVPD, -0.59);
     ShootPartitioning = ShootBiomassPartitioning (Stage, Crop->userShootPartitionInitial, Crop->userShootPartitionFinal);
 
@@ -839,4 +846,35 @@ double ColdDamage (double T, double Crop_Tn, double Crop_Tth)
         damage = 0.0;
 
     return (damage);
+}
+
+double TemperatureFunctionGrowth (double tMax, double tOpt, double tMin, double T)
+{
+    /* 
+     * -----------------------------------------------------------------------
+     * LOCAL VARIABLES
+     *
+     * Variable             Type        Description
+     * ==========           ==========  ====================
+     * temp		    double
+     * Q		    double
+     */
+    double          temp;
+    double          Q;
+
+    if (T < 0.0 || T > tMax)
+    {
+        temp = 0.0;
+    }
+    else
+    {
+        Q = (tMin - tOpt) / (tOpt - tMax);
+        temp = (pow (T - tMin, Q) * (tMax - T)) / (pow (tOpt - tMin, Q) * (tMax - tOpt));
+        if (temp > 1.0)
+        {
+            temp = 1.0;
+        }
+    }
+
+    return (temp);
 }
