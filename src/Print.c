@@ -650,6 +650,10 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
     fprintf (output_file, "\t%-15.6lf", sumProfile[16]);
     fprintf (output_file, "\t%-15.6lf", sumProfile[17]);
 
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (output_file, "\t%-15.6lf", 1000.0 * Soil->SOC_Mass[i] /
+            Soil->BD[i] / 10000.0 / Soil->layerThickness[i]);
+
     fprintf (output_file, "\n");
     fflush (output_file);
     fclose (output_file);
