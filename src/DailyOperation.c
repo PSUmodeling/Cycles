@@ -115,6 +115,8 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
     int             forcedHarvest = 0;
     int             i;
     int             clippingFlag = 0;
+    double          totalBiomass = 0.0;
+    double          clippingBiomassThresholdUpper = -999.0;
 
     //forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
 
@@ -169,12 +171,20 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
 
     Processes (y, d, SimControl->automaticNitrogen, Community, Residue, Weather, Soil, SoilCarbon);
 
+    /* Calculate total aboveground biomass of all of the community members
+     * and find the smallest clipping threshold */
+    for (i = 0; i < Community->NumCrop; i++)
+    {
+        clippingBiomassThresholdUpper = (clippingBiomassThresholdUpper < Community->Crop[i].userClippingBiomassThresholdUpper) ? clippingBiomassThresholdUpper : Community->Crop[i].userClippingBiomassThresholdUpper;
+        totalBiomass += Community->Crop[i].svShoot;
+    }
+
     for (i = 0; i < Community->NumCrop; i++)
     {
         if (Community->Crop[i].userClippingTiming > 0.0)
         {
             if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT ||
-                Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdUpper)
+                totalBiomass >= clippingBiomassThresholdUpper)
             {
                 if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
                 {
