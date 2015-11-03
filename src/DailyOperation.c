@@ -116,7 +116,7 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
     int             i;
     int             clippingFlag = 0;
     double          totalBiomass = 0.0;
-    double          clippingBiomassThresholdUpper = -999.0;
+    double          clippingBiomassThresholdUpper = 99999999.0;
 
     //forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
 
