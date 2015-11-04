@@ -236,6 +236,15 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
             NextLine (operation_file, cmdstr);
             ReadKeywordStr (cmdstr, "CROP_NAME", q->cropNameT);
 
+            /* Check if the specified crop exists */
+            if (strcasecmp (q->cropNameT, "N/A") != 0 &&
+                strcasecmp (q->cropNameT, "All") != 0 &&
+                !CropExist (q->cropNameT, Community))
+            {
+                printf ("ERROR: Crop name %s not recognized!\n", q->cropNameT);
+                exit (1);
+            }
+
             NextLine (operation_file, cmdstr);
             ReadKeywordDouble (cmdstr, "FRAC_THERMAL_TIME", &q->fractionThermalTime);
 
@@ -417,4 +426,22 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     }
 
     fclose (operation_file);
+}
+
+int CropExist (char *cropName, const CommunityStruct *Community)
+{
+    int             i;
+    int             exist = 0;
+
+
+    for (i = 0; i < Community->NumCrop; i++)
+    {
+        if (strcmp (cropName, Community->Crop[i].cropName) == 0)
+        {
+            exist = 1;
+            break;
+        }
+    }
+
+    return (exist);
 }

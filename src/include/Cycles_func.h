@@ -105,6 +105,7 @@ void ReadKeywordStr (char *buffer, char *keyword, char *value);
 
 /* ReadOperation.c */
 void            ReadOperation (char *project, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation);
+int CropExist (char *cropName, const CommunityStruct *Community);
 
 /* ReadSimControl.c */
 void            ReadSimControl (char *project, SimControlStruct *SimControl);
