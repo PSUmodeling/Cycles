@@ -60,7 +60,9 @@ int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOper
 void UpdateOperationStatus (FieldOperationStruct *FieldOperation, int numOperation);
 
 /* Initialize.c */
+#ifndef _CYCLES_
 void            Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow);
+#endif
 void            FreeCyclesStruct (CyclesStruct Cycles, int total_years);
 
 /* Irrigation.c */
@@ -86,8 +88,10 @@ void            PrintCarbonEvolution (int y, int start_year, int total_layers, c
 void            StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, int totalLayers, int y);
 void            PrintSummary (const SummaryStruct *Summary, int totalYears, const char *project);
 
+#ifndef _CYCLES_
 /* ReadCrop.c */
 void            ReadCrop (char *project, CommunityStruct *Community);
+#endif
 
 /* ReadFunc.c */
 char FirstNonWhite (char *cmdstr);
@@ -103,6 +107,7 @@ void ReadKeywordInt (char *buffer, char *keyword, int *value);
 void ReadKeywordTime (char *buffer, char *keyword, int *value);
 void ReadKeywordStr (char *buffer, char *keyword, char *value);
 
+#ifndef _CYCLES_
 /* ReadOperation.c */
 void            ReadOperation (char *project, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation);
 int CropExist (char *cropName, const CommunityStruct *Community);
@@ -115,6 +120,7 @@ void            ReadSoil (char *project, SoilStruct *Soil);
 
 /* ReadWeather.c */
 void            ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years);
+#endif
 
 /* ReferenceET.c */
 double          CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
@@ -216,5 +222,16 @@ void            PrintSoil (SoilStruct Soil);
 void            PrintCrop (CommunityStruct Community);
 void            PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *ForcedHarvest, int NumHarvest, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization);
 void            PrintWeather (WeatherStruct Weather);
+
+#ifdef _CYCLES_
+/* cycles_func.c */
+void DailyVar (int t, int start_time, pihm_struct pihm);
+
+void CyclesRead (char *simulation, CyclesStruct cycles, pihm_struct pihm);
+void CyclesInit (CyclesStruct cycles, pihm_struct pihm);
+void ReadSimControl (char *simulation, SimControlStruct *SimControl, const pihm_struct pihm);
+void ReadSoilInit (char *simulation, CyclesStruct cycles, int numele);
+void ReadCrop (char *simulation, CyclesStruct cycles, int numele);
+#endif
 
 #endif

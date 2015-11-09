@@ -11,6 +11,10 @@
 #include <sys/stat.h>
 #include <stdarg.h>
 
+#ifdef _CYCLES_
+#include "pihm.h"
+#endif
+
 #include "Cycles_const.h"
 #include "Cycles_struct.h"
 #include "Cycles_func.h"
