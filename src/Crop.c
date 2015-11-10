@@ -80,6 +80,9 @@ void PlantingCrop (CommunityStruct *Community, const CropManagementStruct *CropM
 
     Crop->userPlantingDensity = plantingOrder->plantingDensity;
 
+    Crop->userClippingStart = plantingOrder->clippingStart;
+    Crop->userClippingEnd = plantingOrder->clippingEnd;
+
     Crop->svTT_Daily = 0.0;
     Crop->svTT_Cumulative = 0.0;
     Crop->svRadiationInterception = 0.0;
@@ -204,6 +207,10 @@ void KillCrop (CropStruct *Crop)
     Crop->autoIrrigationLastSoilLayer = 0;
 
     Crop->userPlantingDensity = 0.0;
+
+    Crop->userClippingStart = 0;
+    Crop->userClippingEnd = 0;
+
     //Crop->userSeedingDate = 0;
     //Crop->userFloweringDate = 0;
     //Crop->userMaturityDate = 0;

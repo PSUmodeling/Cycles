@@ -289,6 +289,9 @@ typedef struct CropStruct
 
     double          userPlantingDensity;
 
+    int             userClippingStart;
+    int             userClippingEnd;
+
     double          calculatedFloweringTT;
     double          calculatedMaturityTT;
     double          calculatedSimAvgYield;
