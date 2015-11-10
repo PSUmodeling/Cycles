@@ -370,6 +370,8 @@ typedef struct FieldOperationStruct
     int             usesAutoFertilization;
     int             plantID;
     double          plantingDensity;
+    int             clippingStart;
+    int             clippingEnd;
 
     /* Tillage */
     char            opToolName[MAXSTRING];

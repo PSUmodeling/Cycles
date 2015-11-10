@@ -136,6 +136,22 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
             NextLine (operation_file, cmdstr);
             ReadKeywordDouble (cmdstr, "FRACTION", &q->plantingDensity);
 
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "CLIPPING_START", &q->clippingStart);
+            if (q->clippingStart > 366 || q->clippingStart < 1)
+            {
+                printf ("ERROR: Please specify valid DOY for clipping start date!\n");
+                exit (1);
+            }
+            
+            NextLine (operation_file, cmdstr);
+            ReadKeywordInt (cmdstr, "CLIPPING_END", &q->clippingEnd);
+            if (q->clippingEnd > 366 || q->clippingEnd < 1)
+            {
+                printf ("ERROR: Please specify valid DOY for clipping end date!\n");
+                exit (1);
+            }
+
             q->status = 0;
 
             /* Link planting order and crop description */
