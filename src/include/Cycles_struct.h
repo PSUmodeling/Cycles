@@ -448,6 +448,8 @@ typedef struct CropManagementStruct
     int             numHarvest;
 
     autoIrrigationStruct *autoIrrigation;
+    int             numAutoIrrigation;
+
     int             usingAutoIrr;
     int             usingAutoFert;
 

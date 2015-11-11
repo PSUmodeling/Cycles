@@ -112,7 +112,6 @@ void ReadKeywordStr (char *buffer, char *keyword, char *value);
 #ifndef _CYCLES_
 /* ReadOperation.c */
 void            ReadOperation (char *project, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation);
-int CropExist (char *cropName, const CommunityStruct *Community);
 
 /* ReadSimControl.c */
 void            ReadSimControl (char *project, SimControlStruct *SimControl);
@@ -123,6 +122,8 @@ void            ReadSoil (char *project, SoilStruct *Soil);
 /* ReadWeather.c */
 void            ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years);
 #endif
+
+int CropExist (char *cropName, const CommunityStruct *Community);
 
 /* ReferenceET.c */
 double          CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
@@ -232,8 +233,9 @@ void DailyVar (int t, int start_time, pihm_struct pihm);
 void CyclesRead (char *simulation, CyclesStruct cycles, pihm_struct pihm);
 void CyclesInit (CyclesStruct cycles, pihm_struct pihm);
 void ReadSimControl (char *simulation, SimControlStruct *SimControl, const pihm_struct pihm);
-void ReadSoilInit (char *simulation, CyclesStruct cycles, int numele);
-void ReadCrop (char *simulation, CyclesStruct cycles, int numele);
+void ReadSoilInit (char *simulation, SoilStruct *Soil);
+void ReadCrop (char *simulation, CommunityStruct *community);
+void ReadOperation (char *filename, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation);
 #endif
 
 #endif

@@ -91,6 +91,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     CropManagement->numTillage = tillage_counter;
     CropManagement->Tillage = (FieldOperationStruct *)malloc (tillage_counter * sizeof (FieldOperationStruct));
 
+    CropManagement->numAutoIrrigation = auto_irrigation_counter;
     CropManagement->autoIrrigation = (autoIrrigationStruct *)malloc (auto_irrigation_counter * sizeof (autoIrrigationStruct));
     CropManagement->usingAutoIrr = 0;
 
