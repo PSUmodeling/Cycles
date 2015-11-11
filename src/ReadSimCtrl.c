@@ -100,4 +100,9 @@ void ReadSimControl (char *project, SimControlStruct *SimControl)
     fclose (simctrl_file);
 
     SimControl->totalYears = SimControl->simEndYear - SimControl->simStartYear + 1;
+
+    if (debug_mode)
+    {
+        PrintSimContrl (*SimControl);
+    }
 }

@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow)
+void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow, SummaryStruct *Summary)
 {
     int             i;
     /* Initialize weather variables */
@@ -25,6 +25,74 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
 
     /* Initialize snow structure */
     Snow->Snow = 0.0;
+
+    /* Initialize summary structure */
+    *Summary = (SummaryStruct) {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+}
+
+void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, const SoilStruct *Soil)
+{
+    int             i;
+
+    if (*rotationYear < yearsInRotation)
+    {
+        (*rotationYear)++;
+    }
+    else
+    {
+        *rotationYear = 1;
+    }
+
+    if (debug_mode)
+    {
+        printf ("*%-15s = %-d\n", "Rotation year", *rotationYear);
+    }
+
+    /* Initialize annual variables */
+    for (i = 0; i < totalLayers; i++)
+    {
+        SoilCarbon->carbonMassInitial[i] = Soil->SOC_Mass[i];
+        SoilCarbon->carbonMassFinal[i] = 0.0;
+        SoilCarbon->annualHumifiedCarbonMass[i] = 0.0;
+        SoilCarbon->annualRespiredCarbonMass[i] = 0.0;
+        SoilCarbon->annualRespiredResidueCarbonMass[i] = 0.0;
+        SoilCarbon->annualSoilCarbonDecompositionRate[i] = 0.0;
+        SoilCarbon->abgdBiomassInput[i] = 0.0;
+        SoilCarbon->rootBiomassInput[i] = 0.0;
+        SoilCarbon->rhizBiomassInput[i] = 0.0;
+        SoilCarbon->abgdCarbonInput[i] = 0.0;
+        SoilCarbon->rootCarbonInput[i] = 0.0;
+        SoilCarbon->annualNmineralization[i] = 0.0;
+        SoilCarbon->annualNImmobilization[i] = 0.0;
+        SoilCarbon->annualNNetMineralization[i] = 0.0;
+        SoilCarbon->annualAmmoniumNitrification = 0.0;
+        SoilCarbon->annualNitrousOxidefromNitrification = 0.0;
+        SoilCarbon->annualAmmoniaVolatilization = 0.0;
+        SoilCarbon->annualNO3Denitrification = 0.0;
+        SoilCarbon->annualNitrousOxidefromDenitrification = 0.0;
+        SoilCarbon->annualNitrateLeaching = 0.0;
+        SoilCarbon->annualAmmoniumLeaching = 0.0;
+
+        Residue->yearResidueBiomass = 0.0;
+        Residue->yearRootBiomass = 0.0;
+        Residue->yearRhizodepositionBiomass = 0.0;
+    }
+}
+
+void LastDOY (int y, int simStartYear, int totalLayers, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, SummaryStruct *Summary, char *project)
+{
+    int             i;
+
+    for (i = 0; i < totalLayers; i++)
+    {
+        SoilCarbon->carbonMassFinal[i] = Soil->SOC_Mass[i];
+    }
+
+    PrintAnnualOutput (y, simStartYear, Soil, SoilCarbon, project);
+
+    PrintCarbonEvolution (y, simStartYear, totalLayers, Soil, SoilCarbon, Residue, project);
+
+    StoreSummary (Summary, SoilCarbon, Residue, totalLayers, y);
 }
 
 void FreeCyclesStruct (CyclesStruct Cycles, int total_years)

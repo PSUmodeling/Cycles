@@ -124,4 +124,9 @@ void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int to
     }
 
     fclose (weather_file);
+
+    if (debug_mode)
+    {
+        PrintWeather (*Weather);
+    }
 }

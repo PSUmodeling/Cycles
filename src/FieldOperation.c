@@ -12,7 +12,7 @@ int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOper
      * operation_today	    int		[return value]
      */
     int             operation_today;
-    int             i, j;
+    int             i;
 
     operation_today = 0;
     *operationIndex = -1;

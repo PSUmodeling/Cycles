@@ -61,9 +61,11 @@ void UpdateOperationStatus (FieldOperationStruct *FieldOperation, int numOperati
 
 /* Initialize.c */
 #ifndef _CYCLES_
-void            Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow);
+void            Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow, SummaryStruct *Summary);
 #endif
 void            FreeCyclesStruct (CyclesStruct Cycles, int total_years);
+void            FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, const SoilStruct *Soil);
+void LastDOY (int y, int simStartYear, int totalLayers, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, SummaryStruct *Summary, char *project);
 
 /* Irrigation.c */
 double          FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStruct *Soil);

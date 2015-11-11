@@ -32,6 +32,10 @@ void ComputeThermalTime (int total_years, CommunityStruct *Community, WeatherStr
 
     CropStruct *Crop;
 
+    if (verbose_mode)
+    {
+	printf ("Compute crop thermal time.\n");
+    }
     //SelectCropInitialPosition (CropManagement);
 
     for (c = 0; c < Community->NumCrop; c++)

@@ -13,28 +13,22 @@ int main (int argc, char *argv[])
      * Variable             Type        Description
      * ==========           ==========  ====================
      * rotationYear	    int		Rotation year
-     * nextSeedingDate	    int
-     * nextSeedingYear	    int
      * y		    int
      * doy		    int
-     * i		    int
      * c		    int
      * begin_t		    time_t	Time Cycles simulation begins
      * end_t		    time_t	Time Cycles simulation ends
      * Cycles		    CyclesStruct
      * project		    char*	Name of project
      */
-    int             rotationYear;
-    //int             nextSeedingDate;
-    //int             nextSeedingYear;
+    int             rotationYear = 0;
     int             y;
     int             doy;
-    int             i;
     int             c;
     time_t          begin_t, end_t;
 
     CyclesStruct    Cycles;     /* Model structure */
-    char           *project;    /* Name of simulation */
+    char            project[MAXSTRING];    /* Name of simulation */
 
     time (&begin_t);
 
@@ -88,93 +82,54 @@ int main (int argc, char *argv[])
     }
     else
     {
-        project = (char *)malloc ((strlen (argv[optind]) + 1) * sizeof (char));
         strcpy (project, argv[optind]);
     }
 
     printf ("Now running the %s simulation.\n\n", project);
 
+    /*
+     * Read input files
+     */
     /* Read simulation control input file */
     ReadSimControl (project, &Cycles->SimControl);
-    if (debug_mode)
-        PrintSimContrl (Cycles->SimControl);
 
     /* Read soil description file */
     ReadSoil (Cycles->SimControl.soil_filename, &Cycles->Soil);
-    if (debug_mode)
-        PrintSoil (Cycles->Soil);
 
     /* Read crop description file */
     ReadCrop (Cycles->SimControl.crop_filename, &Cycles->Community);
-    if (debug_mode)
-        PrintCrop (Cycles->Community);
 
     /* Read field operation file */
     ReadOperation (Cycles->SimControl.operation_filename, &Cycles->CropManagement, &Cycles->Community, Cycles->SimControl.yearsInRotation);
-    if (debug_mode)
-        PrintOperation (Cycles->CropManagement.plantingOrder, Cycles->CropManagement.totalCropsPerRotation, Cycles->CropManagement.ForcedHarvest, Cycles->CropManagement.numHarvest, Cycles->CropManagement.Tillage, Cycles->CropManagement.numTillage, Cycles->CropManagement.FixedIrrigation, Cycles->CropManagement.numIrrigation, Cycles->CropManagement.FixedFertilization, Cycles->CropManagement.numFertilization);
 
     /* Read meteorological driver */
     ReadWeather (Cycles->SimControl.weather_filename, &Cycles->Weather, Cycles->SimControl.simStartYear, Cycles->SimControl.totalYears);
-    if (debug_mode)
-        PrintWeather (Cycles->Weather);
 
+    /*
+     * Initialize output files
+     */
     InitializeOutput (project, &Cycles->Community, Cycles->Soil.totalLayers);
 
-    /* Initialize model variables and parameters */
-    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Community, &Cycles->CropManagement, &Cycles->Snow);
+    /* 
+     * Initialize model variables and parameters
+     */
+    Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Community, &Cycles->CropManagement, &Cycles->Snow, &Cycles->Summary);
 
-    /* Compute crop thermal time */
-    if (verbose_mode)
-	printf ("Compute crop thermal time.\n");
+    /* 
+     * Compute crop thermal time
+     */
     ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->Community, &Cycles->Weather);
 
-    rotationYear = 0;
-
+    /*
+     * Daily Cycles simulation
+     */
     printf ("\nSimulation running ...\n");
-
-    Cycles->Summary = (SummaryStruct) {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
     for (y = 0; y < Cycles->SimControl.totalYears; y++)
     {
         printf ("Year %4d (%4d)\n", y + 1, Cycles->SimControl.simStartYear + y);
 
-        if (rotationYear < Cycles->SimControl.yearsInRotation)
-            rotationYear++;
-        else
-            rotationYear = 1;
-        if (debug_mode)
-            printf ("*%-15s = %-d\n", "Rotation year", rotationYear);
-
-	/* Initialize annual variables */
-        for (i = 0; i < Cycles->Soil.totalLayers; i++)
-        {
-            Cycles->SoilCarbon.carbonMassInitial[i] = Cycles->Soil.SOC_Mass[i];
-            Cycles->SoilCarbon.carbonMassFinal[i] = 0.0;
-            Cycles->SoilCarbon.annualHumifiedCarbonMass[i] = 0.0;
-            Cycles->SoilCarbon.annualRespiredCarbonMass[i] = 0.0;
-            Cycles->SoilCarbon.annualRespiredResidueCarbonMass[i] = 0.0;
-            Cycles->SoilCarbon.annualSoilCarbonDecompositionRate[i] = 0.0;
-            Cycles->SoilCarbon.abgdBiomassInput[i] = 0.0;
-            Cycles->SoilCarbon.rootBiomassInput[i] = 0.0;
-            Cycles->SoilCarbon.rhizBiomassInput[i] = 0.0;
-            Cycles->SoilCarbon.abgdCarbonInput[i] = 0.0;
-            Cycles->SoilCarbon.rootCarbonInput[i] = 0.0;
-            Cycles->SoilCarbon.annualNmineralization[i] = 0.0;
-            Cycles->SoilCarbon.annualNImmobilization[i] = 0.0;
-            Cycles->SoilCarbon.annualNNetMineralization[i] = 0.0;
-            Cycles->SoilCarbon.annualAmmoniumNitrification = 0.0;
-            Cycles->SoilCarbon.annualNitrousOxidefromNitrification = 0.0;
-            Cycles->SoilCarbon.annualAmmoniaVolatilization = 0.0;
-            Cycles->SoilCarbon.annualNO3Denitrification = 0.0;
-            Cycles->SoilCarbon.annualNitrousOxidefromDenitrification = 0.0;
-            Cycles->SoilCarbon.annualNitrateLeaching = 0.0;
-            Cycles->SoilCarbon.annualAmmoniumLeaching = 0.0;
-
-            Cycles->Residue.yearResidueBiomass = 0.0;
-            Cycles->Residue.yearRootBiomass = 0.0;
-            Cycles->Residue.yearRhizodepositionBiomass = 0.0;
-        }
+        FirstDOY (&rotationYear, Cycles->SimControl.yearsInRotation, Cycles->Soil.totalLayers, &Cycles->SoilCarbon, &Cycles->Residue, &Cycles->Soil);
 
         /* Daily operations */
         for (doy = 1; doy < Cycles->Weather.lastDoy[y] + 1; doy++)
@@ -185,18 +140,12 @@ int main (int argc, char *argv[])
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Community, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue, project);
         }
 
-        for (i = 0; i < Cycles->Soil.totalLayers; i++)
-            Cycles->SoilCarbon.carbonMassFinal[i] = Cycles->Soil.SOC_Mass[i];
-
-        PrintAnnualOutput (y, Cycles->SimControl.simStartYear, &Cycles->Soil, &Cycles->SoilCarbon, project);
-        PrintCarbonEvolution (y, Cycles->SimControl.simStartYear, Cycles->Soil.totalLayers, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Residue, project);
-        StoreSummary (&Cycles->Summary, &Cycles->SoilCarbon, &Cycles->Residue, Cycles->Soil.totalLayers, y);
+        LastDOY (y, Cycles->SimControl.simStartYear, Cycles->Soil.totalLayers, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Residue, &Cycles->Summary, project);
     }
 
     PrintSummary (&Cycles->Summary, Cycles->SimControl.totalYears, project);
 
     FreeCyclesStruct (Cycles, Cycles->SimControl.totalYears);
-    free (project);
     free (Cycles);
 
     time (&end_t);

@@ -70,4 +70,9 @@ void ReadSoil (char *filename, SoilStruct *Soil)
     }
 
     fclose (soil_file);
+
+    if (debug_mode)
+    {
+        PrintSoil (*Soil);
+    }
 }

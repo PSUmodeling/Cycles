@@ -204,4 +204,7 @@ void ReadCrop (char *filename, CommunityStruct *Community)
     }
 
     fclose (crop_file);
+
+    if (debug_mode)
+        PrintCrop (*Community);
 }

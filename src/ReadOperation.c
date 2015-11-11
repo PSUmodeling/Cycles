@@ -32,14 +32,12 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     FILE           *operation_file;
     char           *fullname;
     char            cmdstr[MAXSTRING];
-    char            optstr[MAXSTRING];
     int             tillage_counter = 0;
     int             planting_counter = 0;
     int             irrigation_counter = 0;
     int             fertilization_counter = 0;
     int             auto_irrigation_counter = 0;
     int             harvest_counter = 0;
-    int             tempyear;
     int             i, j;
     FieldOperationStruct *q;
 
@@ -442,6 +440,16 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     }
 
     fclose (operation_file);
+
+    if (debug_mode)
+    {
+        PrintOperation (CropManagement->plantingOrder,
+            CropManagement->totalCropsPerRotation,
+            CropManagement->ForcedHarvest, CropManagement->numHarvest,
+            CropManagement->Tillage, CropManagement->numTillage,
+            CropManagement->FixedIrrigation, CropManagement->numIrrigation,
+            CropManagement->FixedFertilization, CropManagement->numFertilization);
+    }
 }
 
 int CropExist (char *cropName, const CommunityStruct *Community)
