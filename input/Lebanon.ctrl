@@ -11,7 +11,7 @@ Daily_Crop_Out          1
 Daily_Residue           1
 Daily_Water_Out         1
 Daily_Nitrogen_Out      1
-Daily_Soil_Carbon_Out   1
+Daily_Soil_Carbon       1
 Daily_Soil_Out          1
 Annual_Soil_Out         1
 Annual_Profile_Out      1

@@ -62,7 +62,7 @@ void ReadSimControl (char *project, SimControlStruct *SimControl)
     ReadKeywordInt (cmdstr, "DAILY_CROP_OUT", &SimControl->cropDailyOutput);
     
     NextLine (simctrl_file, cmdstr);
-    ReadKeywordInt (cmdstr, "DAILY_REDISUE", &SimControl->residueDailyOutput);
+    ReadKeywordInt (cmdstr, "DAILY_RESIDUE", &SimControl->residueDailyOutput);
     
     NextLine (simctrl_file, cmdstr);
     ReadKeywordInt (cmdstr, "DAILY_WATER_OUT", &SimControl->waterDailyOutput);
