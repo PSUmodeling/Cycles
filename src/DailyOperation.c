@@ -220,15 +220,16 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
                     clippingFlag = 1;
                     break;
                 }
-            }
-            else if (Community->Crop[i].userClippingTiming > 0.0)
-            {
-                if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT)
+                else if (Community->Crop[i].userClippingTiming > 0.0)
                 {
-                    if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
+                    if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT &&
+                        Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
                     {
-                        clippingFlag = 1;
-                        break;
+                        if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
+                        {
+                            clippingFlag = 1;
+                            break;
+                        }
                     }
                 }
             }
