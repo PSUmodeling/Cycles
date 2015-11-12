@@ -126,7 +126,6 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
     int             i;
     int             clippingFlag = 0;
     int             clippingWindow = 1;
-    int             forcedClipping = 0;
 
     //forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
 
@@ -209,30 +208,28 @@ void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHa
         }
     }
 
-    for (i = 0; i < Community->NumCrop; i++)
+    if (clippingWindow)
     {
-        if (Community->Crop[i].stageGrowth > NO_CROP)
+        for (i = 0; i < Community->NumCrop; i++)
         {
-            if (Community->Crop[i].svShoot / Community->Crop[i].userPlantingDensity >
-                Community->Crop[i].userClippingBiomassThresholdUpper)
+            if (Community->Crop[i].stageGrowth > NO_CROP)
             {
-                forcedClipping = 1;
-                break;
-            }
-        }
-    }
-
-    for (i = 0; i < Community->NumCrop; i++)
-    {
-        if (Community->Crop[i].userClippingTiming > 0.0)
-        {
-            if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT ||
-                forcedClipping)
-            {
-                if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
+                if (Community->Crop[i].svShoot / Community->Crop[i].userPlantingDensity >
+                    Community->Crop[i].userClippingBiomassThresholdUpper)
                 {
                     clippingFlag = 1;
                     break;
+                }
+            }
+            else if (Community->Crop[i].userClippingTiming > 0.0)
+            {
+                if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT)
+                {
+                    if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
+                    {
+                        clippingFlag = 1;
+                        break;
+                    }
                 }
             }
         }
