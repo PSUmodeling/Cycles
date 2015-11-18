@@ -213,7 +213,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
     for (j = 0; j < Soil->totalLayers; j++)
     {
         dzx[j] = Soil->layerThickness[j] * WATER_DENSITY;
-        ksat[j] = K_Sat (sat[j], FC[j], b[j]);
+        ksat[j] = Soil->ksat[j];
     }
 
     if (Win > 0.0)

@@ -151,6 +151,12 @@ typedef struct SoilStruct
     double         *airEntryPotential;
     double         *B_Value;
     double         *M_Value;
+    double         *ksat;
+#ifdef _CYCLES_
+    double         *alpha;
+    double         *beta;
+    double         *theta_r;
+#endif
 
     double         *n2o;
 

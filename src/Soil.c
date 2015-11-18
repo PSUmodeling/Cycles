@@ -117,6 +117,9 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
             rr = 0.63 + 0.59 * exp (0.6 * Soil->Sand[i] * 100.0 - 2.84);
             Soil->FC[i] = (rr * Soil->PWP[i] + Soil->Porosity[i]) / (1.0 + rr);
         }
+
+        Soil->ksat[i] = K_Sat (Soil->Porosity[i], Soil->FC[i], Soil->B_Value[i]);
+
     }
 
     /* Initialize variables depending on previous loop */
