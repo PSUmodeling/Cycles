@@ -43,7 +43,7 @@ void            CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil
 double          TemperatureLimitation (double T, double T_Min, double T_Threshold);
 
 /* DailyOperation.c */
-void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project);
+void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, SummaryStruct *Summary, const char *project);
 void            GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHarvest, int numHarvest, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project);
 //void            PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community);
 double          FinalHarvestDate (int lastDoy, int d);
@@ -63,9 +63,9 @@ void UpdateOperationStatus (FieldOperationStruct *FieldOperation, int numOperati
 #ifndef _CYCLES_
 void            Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow, SummaryStruct *Summary);
 #endif
-void            FreeCyclesStruct (CyclesStruct Cycles, int total_years);
+void FreeCyclesStruct (CropManagementStruct *CropManagement, CommunityStruct *Community, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, int total_years);
 void            FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, const SoilStruct *Soil);
-void LastDOY (int y, int simStartYear, int totalLayers, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, SummaryStruct *Summary, char *project);
+void LastDOY (int y, int simStartYear, int totalLayers, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, SummaryStruct *Summary, const char *project);
 
 /* Irrigation.c */
 double          FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStruct *Soil);
@@ -86,7 +86,7 @@ void            InitializeOutput (char *project, const CommunityStruct *Communit
 void            PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CommunityStruct *Community, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project);
 void            PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project);
 void            PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const char *project);
-void            PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, char *project);
+void            PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, const char *project);
 void            StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, int totalLayers, int y);
 void            PrintSummary (const SummaryStruct *Summary, int totalYears, const char *project);
 

@@ -563,7 +563,7 @@ void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const Soi
     fclose (output_file);
 }
 
-void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, char *project)
+void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, const char *project)
 {
     char            filename[50];
     FILE           *output_file;

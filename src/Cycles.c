@@ -12,7 +12,6 @@ int main (int argc, char *argv[])
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * rotationYear	    int		Rotation year
      * y		    int
      * doy		    int
      * c		    int
@@ -21,7 +20,6 @@ int main (int argc, char *argv[])
      * Cycles		    CyclesStruct
      * project		    char*	Name of project
      */
-    int             rotationYear = 0;
     int             y;
     int             doy;
     int             c;
@@ -129,23 +127,21 @@ int main (int argc, char *argv[])
     {
         printf ("Year %4d (%4d)\n", y + 1, Cycles->SimControl.simStartYear + y);
 
-        FirstDOY (&rotationYear, Cycles->SimControl.yearsInRotation, Cycles->Soil.totalLayers, &Cycles->SoilCarbon, &Cycles->Residue, &Cycles->Soil);
-
         /* Daily operations */
         for (doy = 1; doy < Cycles->Weather.lastDoy[y] + 1; doy++)
         {
             if (debug_mode)
                 printf ("DOY %3.3d\n", doy);
-            DailyOperations (rotationYear, y, doy, &Cycles->CropManagement, &Cycles->Community, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, project);
+
+            DailyOperations (y, doy, &Cycles->CropManagement, &Cycles->Community, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, &Cycles->Summary, project);
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Community, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue, project);
         }
-
-        LastDOY (y, Cycles->SimControl.simStartYear, Cycles->Soil.totalLayers, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Residue, &Cycles->Summary, project);
     }
 
     PrintSummary (&Cycles->Summary, Cycles->SimControl.totalYears, project);
 
-    FreeCyclesStruct (Cycles, Cycles->SimControl.totalYears);
+    FreeCyclesStruct (&Cycles->CropManagement, &Cycles->Community, &Cycles->Soil, &Cycles->Weather, &Cycles->Residue, &Cycles->SoilCarbon, Cycles->SimControl.totalYears);
+
     free (Cycles);
 
     time (&end_t);

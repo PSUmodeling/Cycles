@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project)
+void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, SummaryStruct *Summary, const char *project)
 {
     /*
      * -----------------------------------------------------------------------
@@ -20,11 +20,16 @@ void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *Cr
     int             i;
     int             kill_all = 0;
 
-        /* If any crop in the community is growing, run the growing crop subroutine */
-    if (Community->NumActiveCrop > 0)
-        GrowingCrop (rotationYear, y, doy, CropManagement->ForcedHarvest, CropManagement->numHarvest, Community, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
+    if (doy == 1)
+    { 
+        FirstDOY (&CropManagement->rotationYear, SimControl->yearsInRotation, Soil->totalLayers, SoilCarbon, Residue, Soil);
+    }
 
-    while (IsOperationToday (rotationYear, doy, CropManagement->plantingOrder, CropManagement->totalCropsPerRotation, &operation_index))
+    /* If any crop in the community is growing, run the growing crop subroutine */
+    if (Community->NumActiveCrop > 0)
+        GrowingCrop (CropManagement->rotationYear, y, doy, CropManagement->ForcedHarvest, CropManagement->numHarvest, Community, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
+
+    while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->plantingOrder, CropManagement->totalCropsPerRotation, &operation_index))
     {
         plantingOrder = &CropManagement->plantingOrder[operation_index];
         PlantingCrop (Community, CropManagement, operation_index);
@@ -33,7 +38,7 @@ void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *Cr
     }
     UpdateOperationStatus (CropManagement->plantingOrder, CropManagement->totalCropsPerRotation);
 
-    while (IsOperationToday (rotationYear, doy, CropManagement->FixedFertilization, CropManagement->numFertilization, &operation_index))
+    while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->FixedFertilization, CropManagement->numFertilization, &operation_index))
     {
         FixedFertilization = &CropManagement->FixedFertilization[operation_index];
         if (verbose_mode)
@@ -43,7 +48,7 @@ void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *Cr
     }
     UpdateOperationStatus (CropManagement->FixedFertilization, CropManagement->numFertilization);
 
-    while (IsOperationToday (rotationYear, doy, CropManagement->Tillage, CropManagement->numTillage, &operation_index))
+    while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->Tillage, CropManagement->numTillage, &operation_index))
     {
         Tillage = &(CropManagement->Tillage[operation_index]);
         if (verbose_mode)
@@ -77,7 +82,7 @@ void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *Cr
     UpdateCommunity (Community);
 
     Soil->irrigationVol = 0.0;
-    while (IsOperationToday (rotationYear, doy, CropManagement->FixedIrrigation, CropManagement->numIrrigation, &operation_index))
+    while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->FixedIrrigation, CropManagement->numIrrigation, &operation_index))
     {
         FixedIrrigation = &(CropManagement->FixedIrrigation[operation_index]);
         if (verbose_mode)
@@ -106,6 +111,11 @@ void DailyOperations (int rotationYear, int y, int doy, CropManagementStruct *Cr
     ComputeSoilCarbonBalanceMB (SoilCarbon, y, Residue, Soil, CropManagement->tillageFactor);
 
     NitrogenTransformation (y, doy, Soil, Community, Residue, Weather, SoilCarbon);
+
+    if (doy == Weather->lastDoy[y])
+    {
+        LastDOY (y, SimControl->simStartYear, Soil->totalLayers, Soil, SoilCarbon, Residue, Summary, project);
+    }
 }
 
 void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHarvest, int numHarvest, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
@@ -364,4 +374,71 @@ int ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, i
     }
 
     return (forced_maturity);
+}
+
+void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, const SoilStruct *Soil)
+{
+    int             i;
+
+    if (*rotationYear < yearsInRotation)
+    {
+        (*rotationYear)++;
+    }
+    else
+    {
+        *rotationYear = 1;
+    }
+
+    if (debug_mode)
+    {
+        printf ("*%-15s = %-d\n", "Rotation year", *rotationYear);
+    }
+
+    /* Initialize annual variables */
+    for (i = 0; i < totalLayers; i++)
+    {
+        SoilCarbon->carbonMassInitial[i] = Soil->SOC_Mass[i];
+        SoilCarbon->carbonMassFinal[i] = 0.0;
+        SoilCarbon->annualHumifiedCarbonMass[i] = 0.0;
+        SoilCarbon->annualRespiredCarbonMass[i] = 0.0;
+        SoilCarbon->annualRespiredResidueCarbonMass[i] = 0.0;
+        SoilCarbon->annualSoilCarbonDecompositionRate[i] = 0.0;
+        SoilCarbon->abgdBiomassInput[i] = 0.0;
+        SoilCarbon->rootBiomassInput[i] = 0.0;
+        SoilCarbon->rhizBiomassInput[i] = 0.0;
+        SoilCarbon->abgdCarbonInput[i] = 0.0;
+        SoilCarbon->rootCarbonInput[i] = 0.0;
+        SoilCarbon->annualNmineralization[i] = 0.0;
+        SoilCarbon->annualNImmobilization[i] = 0.0;
+        SoilCarbon->annualNNetMineralization[i] = 0.0;
+        SoilCarbon->annualAmmoniumNitrification = 0.0;
+        SoilCarbon->annualNitrousOxidefromNitrification = 0.0;
+        SoilCarbon->annualAmmoniaVolatilization = 0.0;
+        SoilCarbon->annualNO3Denitrification = 0.0;
+        SoilCarbon->annualNitrousOxidefromDenitrification = 0.0;
+        SoilCarbon->annualNitrateLeaching = 0.0;
+        SoilCarbon->annualAmmoniumLeaching = 0.0;
+
+        Residue->yearResidueBiomass = 0.0;
+        Residue->yearRootBiomass = 0.0;
+        Residue->yearRhizodepositionBiomass = 0.0;
+    }
+}
+
+void LastDOY (int y, int simStartYear, int totalLayers, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, SummaryStruct *Summary, const char *project)
+{
+    int             i;
+
+    for (i = 0; i < totalLayers; i++)
+    {
+        SoilCarbon->carbonMassFinal[i] = Soil->SOC_Mass[i];
+    }
+
+#ifndef _CYCLES_
+    PrintAnnualOutput (y, simStartYear, Soil, SoilCarbon, project);
+
+    PrintCarbonEvolution (y, simStartYear, totalLayers, Soil, SoilCarbon, Residue, project);
+#endif
+
+    StoreSummary (Summary, SoilCarbon, Residue, totalLayers, y);
 }
