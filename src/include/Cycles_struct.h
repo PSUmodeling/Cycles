@@ -437,6 +437,8 @@ typedef struct autoIrrigationStruct
 
 typedef struct CropManagementStruct
 {
+    int             rotationYear;
+
     FieldOperationStruct *FixedFertilization;
     int             numFertilization;
 

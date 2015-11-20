@@ -1,6 +1,10 @@
 #include "Cycles.h"
 
+#ifdef _CYCLES_
+void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl, const soil_struct *soil)
+#else
 void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl)
+#endif
 {
     /*
      * 
@@ -36,6 +40,7 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     Soil->airEntryPotential = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->B_Value = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->M_Value = (double *)malloc ((Soil->totalLayers) * sizeof (double));
+    Soil->ksat = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->SOC_Conc = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->SOC_Mass = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->SON_Mass = (double *)malloc ((Soil->totalLayers) * sizeof (double));
@@ -44,6 +49,11 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     Soil->waterUptake = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->pH = (double *)malloc ((Soil->totalLayers) * sizeof (double));
     Soil->n2o = (double *)malloc ((Soil->totalLayers) * sizeof (double));
+#ifdef _CYCLES_
+    Soil->alpha = (double *)malloc ((Soil->totalLayers) * sizeof (double));
+    Soil->beta = (double *)malloc ((Soil->totalLayers) * sizeof (double));
+    Soil->theta_r = (double *)malloc ((Soil->totalLayers) * sizeof (double));
+#endif
 
     for (i = 0; i < Soil->totalLayers; i++)
         Soil->cumulativeDepth[i] = 0.0;
@@ -85,7 +95,17 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
             Soil->airEntryPotential[i] = sAP;
         }
 
+#ifdef _CYCLES_
+        Soil->alpha[i] = soil->alpha;
+        Soil->beta[i] = soil->beta;
+        Soil->theta_r[i] = soil->thetar;
+#endif
+
+#ifdef _CYCLES_
+        Soil->Porosity[i] = soil->porosity;
+#else
         Soil->Porosity[i] = 1.0 - Soil->BD[i] / 2.65;
+#endif
         Soil->B_Value[i] = sb;
         Soil->M_Value[i] = 2.0 * Soil->B_Value[i] + 3.0;
 
@@ -93,14 +113,31 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
         if ((int)Soil->FC[i] == (int)BADVAL)
         {
             Soil->FC_WaterPotential[i] = -0.35088 * Soil->Clay[i] * 100.0 - 28.947;
+#ifdef _CYCLES_
+            Soil->FC[i] = SoilWaterContent (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], Soil->FC_WaterPotential[i]);
+#else
             Soil->FC[i] = SoilWaterContent (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->FC_WaterPotential[i]);
+#endif
         }
         else
+        {
+#ifdef _CYCLES_
+            Soil->FC_WaterPotential[i] = SoilWaterPotential (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], Soil->FC[i]);
+#else
             Soil->FC_WaterPotential[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->FC[i]);
+#endif
+
+        }
 
 	/* Permanent Wilting Point switch */
         if ((int)Soil->PWP[i] == (int)BADVAL)
+        {
+#ifdef _CYCLES_
+            Soil->PWP[i] = SoilWaterContent (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], -1500.0);
+#else
             Soil->PWP[i] = SoilWaterContent (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], -1500.0);
+#endif
+        }
 
         if (Soil->PWP[i] >= Soil->FC[i])
         {
@@ -118,8 +155,11 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
             Soil->FC[i] = (rr * Soil->PWP[i] + Soil->Porosity[i]) / (1.0 + rr);
         }
 
+#ifdef _CYCLES_
+        Soil->ksat[i] = soil->ksatv * 1000.0 * 9.81;
+#else
         Soil->ksat[i] = K_Sat (Soil->Porosity[i], Soil->FC[i], Soil->B_Value[i]);
-
+#endif
     }
 
     /* Initialize variables depending on previous loop */
@@ -226,6 +266,21 @@ void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct 
     }
 }
 
+#ifdef _CYCLES_
+double SoilWaterPotential (double porosity, double thetar, double alpha, double beta, double water_content)
+{
+    double          satn;
+
+    /* van Genuchten 1980 SSSAJ */
+    satn = (water_content - thetar) / (porosity - thetar);
+
+    satn = (satn > SATMIN) ? satn : SATMIN;
+    satn = (satn < 1.0) ? satn : 1.0;
+
+    return ((0.0 - pow (pow (1.0 / satn, beta / (beta - 1.0)) - 1.0,
+            1.0 / beta) / alpha) * 9.8);
+}
+#else
 double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campbell_b, double WC)
 {
     /*
@@ -243,6 +298,7 @@ double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campb
 
     return (swp);
 }
+#endif
 
 double VolumetricWCAt33Jkg (double Clay, double Sand, double OM)
 {
@@ -294,6 +350,23 @@ double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM)
     return (vwc);
 }
 
+#ifdef _CYCLES_
+double SoilWaterContent (double thetas, double thetar, double alpha, double beta, double psi)
+{
+    double          m;
+    double          satn;
+
+    /* van Genuchten 1980 SSSAJ */
+    m = 1.0 - 1.0 / beta;
+
+    /* Convert unit: kPa to m */
+    psi = psi / 9.8;
+
+    satn = pow (1.0 / (1.0 + pow (alpha * (0.0 - psi), beta)), m);
+
+    return ((thetas - thetar) * satn + thetar);
+}
+#else
 double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential)
 {
     /* 
@@ -310,6 +383,7 @@ double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbel
 
     return (swc);
 }
+#endif
 
 double BulkDensity (double Clay, double Sand, double OM)
 {

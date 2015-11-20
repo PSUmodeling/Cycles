@@ -76,7 +76,9 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
     Crop->rcNitrogenInResidue = (Crop->svN_Shoot + Crop->svN_Root - grainNitrogenYield - forageNitrogenYield) * 1000.0;
     Crop->rcNitrogenForageConc = forageNitrogenConcentration;
 
+#ifndef _CYCLES_
     PrintSeasonOutput (y, doy, startYear, Weather, Crop, project);
+#endif
 
     KillCrop (Crop);
 }
@@ -219,7 +221,9 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
     Crop->rcForageNitrogenYield = forageYieldNitrogen;
     //Crop->rcNitrogenCumulative = NStressCumulative / Crop->userClippingTiming;
 
+#ifndef _CYCLES_
     PrintSeasonOutput (y, doy, startYear, Weather, Crop, project);
+#endif
 }
 
 void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project)
@@ -277,7 +281,9 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
     if (verbose_mode)
         printf ("DOY %3.3d %-20s %s\n", doy, "Harvest", Crop->cropName);
 
+#ifndef _CYCLES_
     PrintSeasonOutput (y, doy, startYear, Weather, Crop, project);
+#endif
 
     KillCrop (Crop);
 }

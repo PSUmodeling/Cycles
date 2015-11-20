@@ -12,7 +12,7 @@ double CalculatePMET (double lat, double pAtm, double screeningHeight, double Tm
      * PMET		    double
      * rc		    double	Surface resistance to vapor flow
      *					  (day/m) (0.00081 for 350-400 ppm)
-     * CP		    double	Specific heat of dry air (J/kg/C)
+     * SCP		    double	Specific heat of dry air (J/kg/C)
      * r_gas		    double	Specific gas constant for dry air
      *					  (kJ/kg/degree C) (recall that Patm
      *					  is in kPa)
@@ -35,7 +35,7 @@ double CalculatePMET (double lat, double pAtm, double screeningHeight, double Tm
      */
     double          PMET;
     const double    rc = 0.00081;
-    const double    CP = 0.001013;
+    const double    SCP = 0.001013;
     const double    r_gas = 0.28704;
     double          esTmax;
     double          esTmin;
@@ -73,13 +73,13 @@ double CalculatePMET (double lat, double pAtm, double screeningHeight, double Tm
     lambda = 2.501 - 0.002361 * Tave;
 
     /* Psychrometric constant (kPaC) */
-    gamma = CP * pAtm / (0.622 * lambda);
+    gamma = SCP * pAtm / (0.622 * lambda);
 
     /* Approximates virtual temperature (K) */
     Tkv = 1.01 * (Tave + 273.15);
 
-    /* CP * AirDensity (J/kg * kg/m3) */
-    volCP = CP * pAtm / (r_gas * Tkv);
+    /* SCP * AirDensity (J/kg * kg/m3) */
+    volCP = SCP * pAtm / (r_gas * Tkv);
 
     /* Aerodynamic term (MJ/m2) */
     aeroTerm = (volCP * vpd / ra) / (delta + gamma * (1.0 + rc / ra));

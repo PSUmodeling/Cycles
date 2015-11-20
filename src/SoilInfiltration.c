@@ -291,7 +291,11 @@ void SubDailyRedistribution (SoilStruct *Soil)
                 t1 = s;
                 t2 = s;
 
+#ifdef _CYCLES_
+                wp[j] = SoilWaterPotential (sat[j], Soil->theta_r[j], Soil->alpha[j], Soil->beta[j], WC[j]);
+#else
                 wp[j] = SoilWaterPotential (sat[j], aep[j], b[j], WC[j]);
+#endif
                 if (wpfc[j] / wp[j] < 1.001)
                     wp[j] = wp[j] * 0.999;
 
@@ -301,7 +305,11 @@ void SubDailyRedistribution (SoilStruct *Soil)
 
                 if (j < Soil->totalLayers - 1)
                 {
+#ifdef _CYCLES_
+                    wp[j + 1] = SoilWaterPotential (sat[j + 1], Soil->theta_r[j + 1], Soil->alpha[j + 1], Soil->beta[j + 1], WC[j + 1]);
+#else
                     wp[j + 1] = SoilWaterPotential (sat[j + 1], aep[j + 1], b[j + 1], WC[j + 1]);
+#endif
                     if (wpfc[j + 1] / wp[j + 1] < 1.001)
                         wp[j + 1] = wp[j + 1] * 0.999;
 

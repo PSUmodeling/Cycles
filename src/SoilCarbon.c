@@ -52,7 +52,11 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int l
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
+#ifdef _CYCLES_
+        waterPotential = SoilWaterPotential (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], Soil->waterContent[i]);
+#else
         waterPotential = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
+#endif
         airContent = Soil->Porosity[i] - Soil->waterContent[i];
         factorMoisture = Moisture (waterPotential);
         factorTemperature = TemperatureFunction (Soil->soilTemperature[i]);

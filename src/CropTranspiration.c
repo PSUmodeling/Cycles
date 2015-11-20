@@ -78,7 +78,11 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
     for (i = 0; i < Soil->totalLayers; i++)
     {
         Soil->waterUptake[i] = 0.0;
+#ifdef _CYCLES_
+        soilWP[i] = SoilWaterPotential (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], Soil->waterContent[i]);
+#else
         soilWP[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
+#endif
     }
 
 

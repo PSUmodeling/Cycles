@@ -27,7 +27,7 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
      * ==========           ==========  ====================
      * m                    int
      * i                    int         Loop counter
-     * CP                   double[]
+     * cp                   double[]
      * k                    double[]
      * CPsfc                double
      * ksfc                 double
@@ -51,7 +51,7 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
 
     int             m;
     int             i;
-    double          CP[Soil->totalLayers];
+    double          cp[Soil->totalLayers];
     double          k[Soil->totalLayers];
     double          CPsfc;
     double          ksfc;
@@ -76,7 +76,7 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
     for (i = 0; i < m; i++)
     {
         /* Calculates heat capacity weighted by solid and water phase only  */
-        CP[i] = HeatCapacity (Soil->BD[i], Soil->waterContent[i]) * Soil->layerThickness[i];
+        cp[i] = HeatCapacity (Soil->BD[i], Soil->waterContent[i]) * Soil->layerThickness[i];
         /* Calculates conductance per layer, equation 4.20 for thermal
          * conductivity */
         k[i] = HeatConductivity (Soil->BD[i], Soil->waterContent[i], Soil->Clay[i]) / (Soil->nodeDepth[i + 1] - Soil->nodeDepth[i]);
@@ -123,14 +123,14 @@ void Temperature (int y, int doy, double snowCover, double cropInterception, Soi
             if (i == 0)
             {
                 /* Changed to seconds per day, quite long time step */
-                b[i] = f * (k[i] + ksfc) + CP[i] / 86400.0;
-                d[i] = g * ksfc * tsfc + (CP[i] / 86400.0 - g * (k[i] + ksfc)) * T[i] + g * k[i] * T[i + 1];
+                b[i] = f * (k[i] + ksfc) + cp[i] / 86400.0;
+                d[i] = g * ksfc * tsfc + (cp[i] / 86400.0 - g * (k[i] + ksfc)) * T[i] + g * k[i] * T[i + 1];
             }
             else
             {
                 /* Changed to seconds per day, quite long time step */
-                b[i] = f * (k[i] + k[i - 1]) + CP[i] / 86400.0;
-                d[i] = g * k[i - 1] * T[i - 1] + (CP[i] / 86400.0 - g * (k[i] + k[i - 1])) * T[i] + g * k[i] * T[i + 1];
+                b[i] = f * (k[i] + k[i - 1]) + cp[i] / 86400.0;
+                d[i] = g * k[i - 1] * T[i - 1] + (cp[i] / 86400.0 - g * (k[i] + k[i - 1])) * T[i] + g * k[i] * T[i + 1];
             }
         }
 

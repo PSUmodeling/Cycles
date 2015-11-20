@@ -659,39 +659,6 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
     fclose (output_file);
 }
 
-void StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, int totalLayers, int y)
-{
-    int             i;
-
-    Summary->final_soc = 0.0;
-
-    for (i = 0; i < totalLayers; i++)
-    {
-        Summary->abgd_c_input += SoilCarbon->abgdCarbonInput[i];
-        Summary->root_c_input += SoilCarbon->rootCarbonInput[i] + SoilCarbon->rhizCarbonInput[i];
-        Summary->residue_resp += SoilCarbon->annualRespiredResidueCarbonMass[i];
-        Summary->hum += SoilCarbon->annualHumifiedCarbonMass[i];
-        Summary->soil_resp += SoilCarbon->annualRespiredCarbonMass[i];
-        
-        Summary->n_mineralization += SoilCarbon->annualNmineralization[i];
-        Summary->n_immobilization += SoilCarbon->annualNImmobilization[i];
-        Summary->n_net_mineralization += SoilCarbon->annualNNetMineralization[i];
-        Summary->final_soc += SoilCarbon->carbonMassFinal[i];
-        if (y == 0)
-            Summary->initial_soc += SoilCarbon->carbonMassInitial[i];
-    }
-    
-    Summary->nh4_nitrification += SoilCarbon->annualAmmoniumNitrification;
-    Summary->n2o_from_nitrification += SoilCarbon->annualNitrousOxidefromNitrification;
-    Summary->nh3_volatilization += SoilCarbon->annualAmmoniaVolatilization;
-    Summary->no3_denirification += SoilCarbon->annualNO3Denitrification;
-    Summary->n2o_from_denitrification += SoilCarbon->annualNitrousOxidefromDenitrification;
-    Summary->no3_leaching += SoilCarbon->annualNitrateLeaching;
-    Summary->nh4_leaching += SoilCarbon->annualAmmoniumLeaching;
-    
-    Summary->residue_biomass += Residue->yearResidueBiomass;
-    Summary->produced_root += Residue->yearRootBiomass + Residue->yearRhizodepositionBiomass;
-}
 
 void PrintSummary (const SummaryStruct *Summary, int totalYears, const char *project)
 {

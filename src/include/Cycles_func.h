@@ -146,11 +146,23 @@ void            CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRe
 double          CalculateSnowCover (SnowStruct *Snow);
 
 /* Soil.c */
+#ifdef _CYCLES_
+void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl, const soil_struct *soil);
+#else
 void            InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl);
+#endif
+#ifdef _CYCLES_
+double SoilWaterPotential (double porosity, double thetar, double alpha, double beta, double water_content);
+#else
 double          SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campbell_b, double WC);
+#endif
 double          VolumetricWCAt33Jkg (double Clay, double Sand, double OM);
 double          VolumetricWCAt1500Jkg (double Clay, double Sand, double OM);
+#ifdef _CYCLES_
+double SoilWaterContent (double thetas, double thetar, double alpha, double beta, double psi);
+#else
 double          SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential);
+#endif
 double          BulkDensity (double Clay, double Sand, double OM);
 
 /* SoilCarbon.c */
