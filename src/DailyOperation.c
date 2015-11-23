@@ -55,7 +55,56 @@ void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, Comm
             printf ("DOY %3.3d %-20s %s\n", doy, "Tillage", Tillage->opToolName);
 
         if (strcasecmp (Tillage->opToolName, "Kill_Crop") != 0)
-            ExecuteTillage (SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
+        {
+            if (Tillage->grainHarvest || Tillage->forageHarvest)
+            {
+                if (Tillage->grainHarvest)
+                {
+                    if (strcasecmp (Tillage->cropNameT, "N/A") == 0 ||
+                        strcasecmp (Tillage->cropNameT, "All") == 0)
+                    {
+                        kill_all = 1;
+                    }
+
+                    for (i = 0; i < Community->NumCrop; i++)
+                    {
+                        if (Community->Crop[i].stageGrowth > NO_CROP)
+                        {
+                            if (kill_all || strcasecmp (Tillage->cropNameT, Community->Crop[i].cropName) == 0)
+                            {
+                                GrainHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                            }
+                        }
+                    }
+                }
+
+                if (Tillage->forageHarvest)
+                {
+                    if (strcasecmp (Tillage->cropNameT, "N/A") == 0 ||
+                        strcasecmp (Tillage->cropNameT, "All") == 0)
+                    {
+                        kill_all = 1;
+                    }
+
+                    for (i = 0; i < Community->NumCrop; i++)
+                    {
+                        if (Community->Crop[i].stageGrowth > NO_CROP)
+                        {
+                            if (kill_all || strcasecmp (Tillage->cropNameT, Community->Crop[i].cropName) == 0)
+                            {
+                                ForageHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                            }
+                        }
+                    }
+                }
+
+                UpdateCommunity (Community);
+            }
+            else
+            {
+                ExecuteTillage (SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
+            }
+        }
         else if (Community->NumActiveCrop > 0)
         {
             if (strcasecmp (Tillage->cropNameT, "N/A") == 0 ||
