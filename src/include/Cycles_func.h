@@ -249,6 +249,7 @@ void ReadSoilInit (char *simulation, SoilStruct *Soil);
 void ReadCrop (char *simulation, CommunityStruct *community);
 void ReadOperation (char *filename, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation);
 void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int total_years);
+void DailyCycles (CyclesStruct cycles, pihm_struct pihm, int t, char *project);
 #endif
 
 #endif

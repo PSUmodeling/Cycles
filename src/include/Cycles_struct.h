@@ -177,6 +177,8 @@ typedef struct SoilStruct
     double         *waterUptake;
     double         *pH;
 
+    double         *latflux;
+
     double          evaporationVol;
     double          residueEvaporationVol;
     double          infiltrationVol;
