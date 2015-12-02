@@ -37,7 +37,6 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     int             irrigation_counter = 0;
     int             fertilization_counter = 0;
     int             auto_irrigation_counter = 0;
-    int             harvest_counter = 0;
     int             i, j;
     FieldOperationStruct *q;
 
@@ -61,9 +60,6 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     planting_counter = CountOccurance (operation_file, "PLANTING");
 
     FindLine (operation_file, "BOF");
-    harvest_counter = CountOccurance (operation_file, "FORCED_HARVEST");
-
-    FindLine (operation_file, "BOF");
     tillage_counter = CountOccurance (operation_file, "TILLAGE");
     
     FindLine (operation_file, "BOF");
@@ -78,9 +74,6 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     /* Allocate memories for field operation classes */
     CropManagement->totalCropsPerRotation = planting_counter;
     CropManagement->plantingOrder = (FieldOperationStruct *)malloc (planting_counter * sizeof (FieldOperationStruct));
-
-    CropManagement->numHarvest = harvest_counter;
-    CropManagement->ForcedHarvest = (FieldOperationStruct *)malloc (harvest_counter * sizeof (FieldOperationStruct));
 
     CropManagement->numFertilization = fertilization_counter;
     CropManagement->FixedFertilization = (FieldOperationStruct *)malloc (fertilization_counter * sizeof (FieldOperationStruct));
@@ -165,50 +158,6 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
             if (j >= Community->NumCrop)
             {
                 printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->plantingOrder[i].cropName);
-                exit (1);
-            }
-        }
-    }
-
-    if (harvest_counter)
-    {
-        /* Rewind to the beginning of file and read all forced harvest operations */
-        FindLine (operation_file, "BOF");
-
-        for (i = 0; i < harvest_counter; i++)
-        {
-            q = &(CropManagement->ForcedHarvest[i]);
-
-            FindLine (operation_file, "FORCED_HARVEST");
-
-            NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
-            if (q->opYear > yearsInRotation)
-            {
-                printf ("ERROR: Operation year is larger than years in rotation!\n");
-                printf ("Please remove this operation and retry.\n");
-            }
-
-            NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
-
-            NextLine (operation_file, cmdstr);
-            ReadKeywordStr (cmdstr, "CROP", q->cropName);
-
-            q->status = 0;
-
-            /* Link forced harvest and crop description */
-            for (j = 0; j < Community->NumCrop; j++)
-            {
-                if (strcmp (CropManagement->ForcedHarvest[i].cropName, Community->Crop[j].cropName) == 0)
-                {
-                    CropManagement->ForcedHarvest[i].plantID = j;
-                    break;
-                }
-            }
-            if (j >= Community->NumCrop)
-            {
-                printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->ForcedHarvest[i].cropName);
                 exit (1);
             }
         }
@@ -446,7 +395,6 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     {
         PrintOperation (CropManagement->plantingOrder,
             CropManagement->totalCropsPerRotation,
-            CropManagement->ForcedHarvest, CropManagement->numHarvest,
             CropManagement->Tillage, CropManagement->numTillage,
             CropManagement->FixedIrrigation, CropManagement->numIrrigation,
             CropManagement->FixedFertilization, CropManagement->numFertilization);

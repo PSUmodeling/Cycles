@@ -203,7 +203,6 @@ typedef struct SoilStruct
 typedef struct CropStruct
 {
     /* Instance of the crop that is being planted */
-    //int             cropUniqueIdentifier;
     char            cropName[128];
 
     /* User Defined Auto Irrigation */
@@ -313,11 +312,6 @@ typedef struct CropStruct
     int             harvestCount;
     enum stage      stageGrowth;
 
-    //int             rcCropNumber;
-    //char            rcName[128];
-    //int             rcActiveStatus;
-    //int             rcYear;
-    //int             rcDoy;
     double          rcForageYield;
     double          rcGrainYield;
     double          rcBiomass;
@@ -335,7 +329,6 @@ typedef struct CropStruct
     double          rcNitrogenInHarvest;
     double          rcNitrogenInResidue;
     double          rcNitrogenForageConc;
-    //double          totalRealizedCrops;
 } CropStruct;
 
 typedef struct CommunityStruct
@@ -349,8 +342,6 @@ typedef struct CommunityStruct
     double          svShootDailyGrowth;
     double          svRootDailyGrowth;
     double          svRizhoDailyDeposition;
-    //double          svUnstressedShootDailyGrowth;
-    //double          svUnstressedRootDailyGrowth;
     double          svRootingDepth; /* maximum */
     double          svTranspiration;
     double          svTranspirationPotential;
@@ -375,7 +366,6 @@ typedef struct FieldOperationStruct
     int             status;
 
     /* Planting Order */
-    /* cropName and plantID are shared with forced harvest structure */
     char            cropName[128];
     int             usesAutoIrrigation;
     int             usesAutoFertilization;
@@ -454,18 +444,11 @@ typedef struct CropManagementStruct
     FieldOperationStruct *plantingOrder;
     int             totalCropsPerRotation;
 
-    FieldOperationStruct *ForcedHarvest;
-    int             numHarvest;
-
     autoIrrigationStruct *autoIrrigation;
     int             numAutoIrrigation;
 
     int             usingAutoIrr;
     int             usingAutoFert;
-
-    //char            nextCropName[128];
-    //int             nextCropSeedingDate;
-    //int             nextCropSeedingYear;
 } CropManagementStruct;
 
 typedef struct SnowStruct

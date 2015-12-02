@@ -27,7 +27,7 @@ void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, Comm
 
     /* If any crop in the community is growing, run the growing crop subroutine */
     if (Community->NumActiveCrop > 0)
-        GrowingCrop (CropManagement->rotationYear, y, doy, CropManagement->ForcedHarvest, CropManagement->numHarvest, Community, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
+        GrowingCrop (CropManagement->rotationYear, y, doy, Community, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
 
     while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->plantingOrder, CropManagement->totalCropsPerRotation, &operation_index))
     {
@@ -167,7 +167,7 @@ void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, Comm
     }
 }
 
-void GrowingCrop (int rotationYear, int y, int d, FieldOperationStruct *ForcedHarvest, int numHarvest, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
+void GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
 {
     /*
      * Processes that only occur while a crop is growing are performed

@@ -86,7 +86,6 @@ void FreeCyclesStruct (CropManagementStruct *CropManagement, CommunityStruct *Co
     free (CropManagement->FixedIrrigation);
     free (CropManagement->Tillage);
     free (CropManagement->autoIrrigation);
-    free (CropManagement->ForcedHarvest);
 
     free (Community->Crop);
 

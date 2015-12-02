@@ -85,7 +85,7 @@ void PrintCrop (CommunityStruct Community)
     printf ("\n");
 }
 
-void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *ForcedHarvest, int NumHarvest, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization)
+void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization)
 {
     int             i;
     FieldOperationStruct *p;
@@ -99,16 +99,6 @@ void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldO
         printf ("*%-18s\t%-3d\n", "AUTO IRRIGATION", plantedCrops[i].usesAutoIrrigation);
         printf ("*%-18s\t%-3d\n", "AUTO FERTILIAZTION", plantedCrops[i].usesAutoFertilization);
         printf ("*%-18s\t%-3d\n\n", "PLANT ID", plantedCrops[i].plantID);
-    }
-    printf ("\n");
-
-    printf ("\n*Forced harvest:\n");
-    for (i = 0; i < NumHarvest; i++)
-    {
-        printf ("*%-18s\t%-3d\n", "YEAR", ForcedHarvest[i].opYear);
-        printf ("*%-18s\t%-3d\n", "DOY", ForcedHarvest[i].opDay);
-        printf ("*%-18s\t%-10s\n", "CROP", ForcedHarvest[i].cropName);
-        printf ("*%-18s\t%-3d\n\n", "PLANT ID", ForcedHarvest[i].plantID);
     }
     printf ("\n");
 
