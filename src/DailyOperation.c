@@ -186,17 +186,6 @@ void GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, Re
     int             clippingFlag = 0;
     int             clippingWindow = 1;
 
-    //forcedHarvest = ForcedMaturity (rotationYear, d, Weather->lastDoy[y], *nextSeedingYear, *nextSeedingDate, SimControl->yearsInRotation);
-
-    //for (i = 0; i < numHarvest; i++)
-    //{
-    //    if (ForcedHarvest[i].opYear == rotationYear && ForcedHarvest[i].opDay == d && ForcedHarvest[i].plantID == Crop->cropUniqueIdentifier)
-    //    {
-    //        forcedHarvest = 1;
-    //        break;
-    //    }
-    //}
-
     for (i = 0; i < Community->NumCrop; i++)
     {
         if (Community->Crop[i].stageGrowth > NO_CROP)
@@ -343,28 +332,6 @@ void GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, Re
 
     UpdateCommunity (Community);
 }
-
-//void PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community)
-//{
-//    /*
-//     * New realized crop is created next crop in the rotation selected status
-//     * set to growing. HarvestDate is reset to an unreachable date.
-//     */
-//
-//    SelectNextCrop (CropManagement);
-//    if (verbose_mode)
-//        printf ("DOY %3.3d %-20s %s\n", doy, "Planting", CropManagement->plantingOrder[CropManagement->plantingIndex].cropName);
-//
-//    NewCrop (Community, CropManagement);
-//
-//    Community->NumActiveCrop++;
-//
-//    //AddCrop (Crop);
-//
-//    *nextSeedingYear = CropManagement->nextCropSeedingYear;
-//    *nextSeedingDate = CropManagement->nextCropSeedingDate;
-//    
-//}
 
 double FinalHarvestDate (int lastDoy, int d)
 {
