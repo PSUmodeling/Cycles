@@ -2,14 +2,15 @@
 
 void InitializeResidue (ResidueStruct *Residue, int totalYears, int totalLayers)
 {
-    Residue->residueAbgd = (double *)malloc (totalLayers * sizeof (double));
-    Residue->residueRt = (double *)malloc (totalLayers * sizeof (double));
-    Residue->residueRz = (double *)malloc (totalLayers * sizeof (double));
-    Residue->residueAbgdN = (double *)malloc (totalLayers * sizeof (double));
-    Residue->residueRtN = (double *)malloc (totalLayers * sizeof (double));
-    Residue->residueRzN = (double *)malloc (totalLayers * sizeof (double));
-    Residue->manureC = (double *)malloc (totalLayers * sizeof (double));
-    Residue->manureN = (double *)malloc (totalLayers * sizeof (double));
+    
+    Residue->residueAbgd = (double *)calloc (totalLayers, sizeof (double));
+    Residue->residueRt = (double *)calloc (totalLayers, sizeof (double));
+    Residue->residueRz = (double *)calloc (totalLayers, sizeof (double));
+    Residue->residueAbgdN = (double *)calloc (totalLayers, sizeof (double));
+    Residue->residueRtN = (double *)calloc (totalLayers, sizeof (double));
+    Residue->residueRzN = (double *)calloc (totalLayers, sizeof (double));
+    Residue->manureC = (double *)calloc (totalLayers, sizeof (double));
+    Residue->manureN = (double *)calloc (totalLayers, sizeof (double));
 
     Residue->residueInterception = 0.0;
     Residue->stanResidueTau = 1.0;
