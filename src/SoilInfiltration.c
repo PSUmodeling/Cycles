@@ -390,7 +390,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
 
     /* Update water content */
     for (j = 0; j < Soil->totalLayers; j++)
-        Soil->waterContent[j] = WC[j];
+        Soil->waterContent[j] = WC[j] > 0.01 ? WC[j] : 0.01;
 }
 
 void CurveNumber (SoilStruct *Soil)

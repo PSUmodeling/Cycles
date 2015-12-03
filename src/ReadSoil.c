@@ -61,6 +61,32 @@ void ReadSoil (char *filename, SoilStruct *Soil)
     {
         fgets (cmdstr, MAXSTRING, soil_file);
         sscanf (cmdstr, "%*d %lg %lf %lf %lf %lf %lf %lf %lf %lf", &Soil->layerThickness[i], &Soil->Clay[i], &Soil->Sand[i], &Soil->IOM[i], &Soil->BD[i], &Soil->FC[i], &Soil->PWP[i], &Soil->NO3[i], &Soil->NH4[i]);
+
+        if (Soil->Clay[i] > 100.0 || Soil->Clay[i] < 0.0)
+        {
+            printf ("ERROR: Clay out of range (0--100) in %s!\n", filename);
+            exit (1);
+        }
+        if (Soil->Sand[i] > 100.0 || Soil->Sand[i] < 0.0)
+        {
+            printf ("ERROR: Sand out of range (0--100) in %s!\n", filename);
+            exit (1);
+        }
+        if (Soil->IOM[i] > 100.0 || Soil->IOM[i] < 0.0)
+        {
+            printf ("ERROR: IOM out of range (0--100) in %s!\n", filename);
+            exit (1);
+        }
+        if (Soil->FC[i] > 1.0 || (Soil->FC[i] < 0.0 && (int)Soil->FC[i] != -999))
+        {
+            printf ("ERROR: Field capacity out of range (0--1.0) in %s!\n", filename);
+            exit (1);
+        }
+        if (Soil->PWP[i] > 1.0 || (Soil->PWP[i] < 0.0 && (int)Soil->PWP[i] != -999))
+        {
+            printf ("ERROR: Permanent wilting point out of range (0--1.0) in %s!\n", filename);
+            exit (1);
+        }
     }
 
     fclose (soil_file);
