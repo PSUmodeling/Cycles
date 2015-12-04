@@ -82,7 +82,10 @@ void FieldOperation (int rotationYear, int y, int doy, CropManagementStruct *Cro
                         {
                             if (kill_all || strcasecmp (Tillage->cropNameT, Community->Crop[i].cropName) == 0)
                             {
-                                ForageHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                                if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
+                                {
+                                    ForageHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                                }
                             }
                         }
                     }
