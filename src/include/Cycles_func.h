@@ -53,6 +53,7 @@ int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSe
 void            ApplyFertilizer (FieldOperationStruct *fixedFertilization, SoilStruct *Soil, ResidueStruct *Residue);
 
 /* FieldOperations.c */
+void FieldOperation (int rotationYear, int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, SoilStruct *Soil, ResidueStruct *Residue, SimControlStruct *SimControl, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project);
 int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int numOperation, int *operationIndex);
 void UpdateOperationStatus (FieldOperationStruct *FieldOperation, int numOperation);
 
