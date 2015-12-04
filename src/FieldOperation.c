@@ -44,61 +44,7 @@ void FieldOperation (int rotationYear, int y, int doy, CropManagementStruct *Cro
         if (verbose_mode)
             printf ("DOY %3.3d %-20s %s\n", doy, "Tillage", Tillage->opToolName);
 
-        if (strcasecmp (Tillage->opToolName, "Kill_Crop") != 0)
-        {
-            if (Tillage->grainHarvest || Tillage->forageHarvest)
-            {
-                if (Tillage->grainHarvest)
-                {
-                    if (strcasecmp (Tillage->cropNameT, "N/A") == 0 ||
-                        strcasecmp (Tillage->cropNameT, "All") == 0)
-                    {
-                        kill_all = 1;
-                    }
-
-                    for (i = 0; i < Community->NumCrop; i++)
-                    {
-                        if (Community->Crop[i].stageGrowth > NO_CROP)
-                        {
-                            if (kill_all || strcasecmp (Tillage->cropNameT, Community->Crop[i].cropName) == 0)
-                            {
-                                GrainHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                            }
-                        }
-                    }
-                }
-
-                if (Tillage->forageHarvest)
-                {
-                    if (strcasecmp (Tillage->cropNameT, "N/A") == 0 ||
-                        strcasecmp (Tillage->cropNameT, "All") == 0)
-                    {
-                        kill_all = 1;
-                    }
-
-                    for (i = 0; i < Community->NumCrop; i++)
-                    {
-                        if (Community->Crop[i].stageGrowth > NO_CROP)
-                        {
-                            if (kill_all || strcasecmp (Tillage->cropNameT, Community->Crop[i].cropName) == 0)
-                            {
-                                if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
-                                {
-                                    ForageHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                UpdateCommunity (Community);
-            }
-            else
-            {
-                ExecuteTillage (SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
-            }
-        }
-        else if (Community->NumActiveCrop > 0)
+        if (strcasecmp (Tillage->opToolName, "Kill_Crop") == 0 || Tillage->grainHarvest || Tillage->forageHarvest)
         {
             if (strcasecmp (Tillage->cropNameT, "N/A") == 0 ||
                 strcasecmp (Tillage->cropNameT, "All") == 0)
@@ -112,11 +58,35 @@ void FieldOperation (int rotationYear, int y, int doy, CropManagementStruct *Cro
                 {
                     if (kill_all || strcasecmp (Tillage->cropNameT, Community->Crop[i].cropName) == 0)
                     {
-                        HarvestCrop (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                        Community->NumActiveCrop--;
+                        if (strcasecmp (Tillage->opToolName, "Kill_Crop") == 0)
+                        {
+                            HarvestCrop (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                            Community->NumActiveCrop--;
+                        }
+                        else
+                        {
+                            if (Tillage->grainHarvest)
+                            {
+                                GrainHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                            }
+
+                            if (Tillage->forageHarvest)
+                            {
+                                if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
+                                {
+                                    ForageHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                                }
+                            }
+                        }
                     }
                 }
+
+                UpdateCommunity (Community);
             }
+        }
+        else
+        {
+            ExecuteTillage (SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
         }
     }
     UpdateOperationStatus (CropManagement->Tillage, CropManagement->numTillage);
