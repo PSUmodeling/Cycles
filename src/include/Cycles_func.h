@@ -45,7 +45,7 @@ double          TemperatureLimitation (double T, double T_Min, double T_Threshol
 /* DailyOperation.c */
 void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, SummaryStruct *Summary, const char *project);
 void            GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project);
-//void            PlantingCrop (int doy, int *nextSeedingYear, int *nextSeedingDate, CropManagementStruct *CropManagement, CommunityStruct *Community);
+void CropStage (int y, int d, CommunityStruct *Community, const WeatherStruct *Weather);
 double          FinalHarvestDate (int lastDoy, int d);
 int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize);
 
@@ -53,9 +53,6 @@ int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSe
 void            ApplyFertilizer (FieldOperationStruct *fixedFertilization, SoilStruct *Soil, ResidueStruct *Residue);
 
 /* FieldOperations.c */
-//void            SelectNextOperation (int NumOperation, int *operationIndex);
-//void            SelectOperationYear (int rotationYear, const FieldOperationStruct *FieldOperation, int NumOperation, int *operationIndex);
-//int             IsOperationToday (int rotationYear, int doy, const FieldOperationStruct *FieldOperation, int operationIndex);
 int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int numOperation, int *operationIndex);
 void UpdateOperationStatus (FieldOperationStruct *FieldOperation, int numOperation);
 

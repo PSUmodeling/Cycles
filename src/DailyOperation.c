@@ -25,9 +25,7 @@ void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, Comm
         FirstDOY (&CropManagement->rotationYear, SimControl->yearsInRotation, Soil->totalLayers, SoilCarbon, Residue, Soil);
     }
 
-    /* If any crop in the community is growing, run the growing crop subroutine */
-    if (Community->NumActiveCrop > 0)
-        GrowingCrop (CropManagement->rotationYear, y, doy, Community, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
+    GrowingCrop (CropManagement->rotationYear, y, doy, Community, Residue, SimControl, Soil, SoilCarbon, Weather, Snow, project);
 
     while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->plantingOrder, CropManagement->totalCropsPerRotation, &operation_index))
     {
@@ -186,6 +184,129 @@ void GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, Re
     int             clippingFlag = 0;
     int             clippingWindow = 1;
 
+    /* If any crop in the community is growing, run the growing crop subroutine */
+    if (Community->NumActiveCrop > 0)
+    {
+        CropStage (y, d, Community, Weather);
+
+        Phenology (y, d, Weather, Community);
+
+        RadiationInterception (y, d, Community);
+
+        WaterUptake (y, d, Community, Soil, Weather);
+
+        Processes (y, d, SimControl->automaticNitrogen, Community, Residue, Weather, Soil, SoilCarbon);
+
+        /* Check if clipping window is open */
+        for (i = 0; i < Community->NumCrop; i++)
+        {
+            if (Community->Crop[i].stageGrowth > NO_CROP)
+            {
+                /* Clipping window in summer */
+                if (Community->Crop[i].userClippingEnd >= Community->Crop[i].userClippingStart)
+                {
+                    if (d < Community->Crop[i].userClippingStart ||
+                        d > Community->Crop[i].userClippingEnd)
+                    {
+                        clippingWindow = 0;
+                        break;
+                    }
+                }
+                /* Clipping window in winter */
+                else
+                {
+                    if (d < Community->Crop[i].userClippingStart &&
+                        d > Community->Crop[i].userClippingEnd)
+                    {
+                        clippingWindow = 0;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (clippingWindow)
+        {
+            for (i = 0; i < Community->NumCrop; i++)
+            {
+                if (Community->Crop[i].stageGrowth > NO_CROP)
+                {
+                    if (Community->Crop[i].svShoot / Community->Crop[i].userPlantingDensity >
+                        Community->Crop[i].userClippingBiomassThresholdUpper)
+                    {
+                        clippingFlag = 1;
+                        break;
+                    }
+                    else if (Community->Crop[i].userClippingTiming > 0.0)
+                    {
+                        if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT &&
+                            Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
+                        {
+                            if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
+                            {
+                                clippingFlag = 1;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (i = 0; i < Community->NumCrop; i++)
+        {
+            if (Community->Crop[i].stageGrowth > NO_CROP)
+            {
+                if (Weather->tMin[y][d - 1] < Community->Crop[i].userColdDamageThresholdTemperature)
+                {
+                    if (Community->Crop[i].userAnnual && Community->Crop[i].svTT_Cumulative > Community->Crop[i].calculatedFloweringTT)
+                    {
+                        GrainHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                        Community->NumActiveCrop--;
+                    }
+                    else
+                        ComputeColdDamage (y, d, &Community->Crop[i], Weather, Snow, Residue);
+                }
+
+                if (d == Community->Crop[i].harvestDateFinal || forcedHarvest)
+                {
+                    if (Community->Crop[i].userAnnual)
+                    {
+                        GrainHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                        Community->NumActiveCrop--;
+                    }
+                    else
+                    {
+                        ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                        HarvestCrop (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                        Community->NumActiveCrop--;
+                    }
+                }
+                else if (clippingFlag == 1)
+                {
+                    if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
+                    {
+                        ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                        AddCrop (&Community->Crop[i]);
+                        Community->Crop[i].stageGrowth = CLIPPING;
+                        Community->Crop[i].harvestCount += 1;
+                    }
+                }
+
+                Community->Crop[i].rcCropTranspirationPotential += Community->Crop[i].svTranspirationPotential;
+                Community->Crop[i].rcCropTranspiration += Community->Crop[i].svTranspiration;
+                Community->Crop[i].rcSoilWaterEvaporation += Soil->evaporationVol;
+            }
+        }
+
+        UpdateCommunity (Community);
+    }
+}
+
+void CropStage (int y, int d, CommunityStruct *Community, const WeatherStruct *Weather)
+{
+    int             i;
+
     for (i = 0; i < Community->NumCrop; i++)
     {
         if (Community->Crop[i].stageGrowth > NO_CROP)
@@ -219,118 +340,6 @@ void GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, Re
             }
         }
     }
-
-    Phenology (y, d, Weather, Community);
-
-    RadiationInterception (y, d, Community);
-
-    WaterUptake (y, d, Community, Soil, Weather);
-
-    Processes (y, d, SimControl->automaticNitrogen, Community, Residue, Weather, Soil, SoilCarbon);
-
-    /* Check if clipping window is open */
-    for (i = 0; i < Community->NumCrop; i++)
-    {
-        if (Community->Crop[i].stageGrowth > NO_CROP)
-        {
-            /* Clipping window in summer */
-            if (Community->Crop[i].userClippingEnd >= Community->Crop[i].userClippingStart)
-            {
-                if (d < Community->Crop[i].userClippingStart ||
-                    d > Community->Crop[i].userClippingEnd)
-                {
-                    clippingWindow = 0;
-                    break;
-                }
-            }
-            /* Clipping window in winter */
-            else
-            {
-                if (d < Community->Crop[i].userClippingStart &&
-                    d > Community->Crop[i].userClippingEnd)
-                {
-                    clippingWindow = 0;
-                    break;
-                }
-            }
-        }
-    }
-
-    if (clippingWindow)
-    {
-        for (i = 0; i < Community->NumCrop; i++)
-        {
-            if (Community->Crop[i].stageGrowth > NO_CROP)
-            {
-                if (Community->Crop[i].svShoot / Community->Crop[i].userPlantingDensity >
-                    Community->Crop[i].userClippingBiomassThresholdUpper)
-                {
-                    clippingFlag = 1;
-                    break;
-                }
-                else if (Community->Crop[i].userClippingTiming > 0.0)
-                {
-                    if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT &&
-                        Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
-                    {
-                        if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
-                        {
-                            clippingFlag = 1;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    for (i = 0; i < Community->NumCrop; i++)
-    {
-        if (Community->Crop[i].stageGrowth > NO_CROP)
-        {
-            if (Weather->tMin[y][d - 1] < Community->Crop[i].userColdDamageThresholdTemperature)
-            {
-                if (Community->Crop[i].userAnnual && Community->Crop[i].svTT_Cumulative > Community->Crop[i].calculatedFloweringTT)
-                {
-                    GrainHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                    Community->NumActiveCrop--;
-                }
-                else
-                    ComputeColdDamage (y, d, &Community->Crop[i], Weather, Snow, Residue);
-            }
-
-            if (d == Community->Crop[i].harvestDateFinal || forcedHarvest)
-            {
-                if (Community->Crop[i].userAnnual)
-                {
-                    GrainHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                    Community->NumActiveCrop--;
-                }
-                else
-                {
-                    ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                    HarvestCrop (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                    Community->NumActiveCrop--;
-                }
-            }
-            else if (clippingFlag == 1)
-            {
-                if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
-                {
-                    ForageHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
-                    AddCrop (&Community->Crop[i]);
-                    Community->Crop[i].stageGrowth = CLIPPING;
-                    Community->Crop[i].harvestCount += 1;
-                }
-            }
-
-            Community->Crop[i].rcCropTranspirationPotential += Community->Crop[i].svTranspirationPotential;
-            Community->Crop[i].rcCropTranspiration += Community->Crop[i].svTranspiration;
-            Community->Crop[i].rcSoilWaterEvaporation += Soil->evaporationVol;
-        }
-    }
-
-    UpdateCommunity (Community);
 }
 
 double FinalHarvestDate (int lastDoy, int d)
