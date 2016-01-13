@@ -64,7 +64,7 @@ void GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, Re
      */
     int             forcedHarvest = 0;
     int             i;
-    int             clippingFlag = 0;
+    int             clippingFlag;
     int             clippingWindow = 1;
 
     /* If any crop in the community is growing, run the growing crop subroutine */
@@ -83,61 +83,7 @@ void GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, Re
 
     Processes (y, d, SimControl->automaticNitrogen, Community, Residue, Weather, Soil, SoilCarbon);
 
-    /* Check if clipping window is open */
-    for (i = 0; i < Community->NumCrop; i++)
-    {
-        if (Community->Crop[i].stageGrowth > NO_CROP)
-        {
-            /* Clipping window in summer */
-            if (Community->Crop[i].userClippingEnd >= Community->Crop[i].userClippingStart)
-            {
-                if (d < Community->Crop[i].userClippingStart ||
-                    d > Community->Crop[i].userClippingEnd)
-                {
-                    clippingWindow = 0;
-                    break;
-                }
-            }
-            /* Clipping window in winter */
-            else
-            {
-                if (d < Community->Crop[i].userClippingStart &&
-                    d > Community->Crop[i].userClippingEnd)
-                {
-                    clippingWindow = 0;
-                    break;
-                }
-            }
-        }
-    }
-
-    if (clippingWindow)
-    {
-        for (i = 0; i < Community->NumCrop; i++)
-        {
-            if (Community->Crop[i].stageGrowth > NO_CROP)
-            {
-                if (Community->Crop[i].svShoot / Community->Crop[i].userPlantingDensity >
-                    Community->Crop[i].userClippingBiomassThresholdUpper)
-                {
-                    clippingFlag = 1;
-                    break;
-                }
-                else if (Community->Crop[i].userClippingTiming > 0.0)
-                {
-                    if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT &&
-                        Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
-                    {
-                        if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
-                        {
-                            clippingFlag = 1;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    clippingFlag = ForcedClipping (d, Community);
 
     for (i = 0; i < Community->NumCrop; i++)
     {
@@ -287,6 +233,72 @@ int ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, i
     }
 
     return (forced_maturity);
+}
+
+int ForcedClipping (int d, CommunityStruct *Community)
+{
+    int             i;
+    int             clippingWindow = 1;
+
+    /* Check if clipping window is open */
+    for (i = 0; i < Community->NumCrop; i++)
+    {
+        if (Community->Crop[i].stageGrowth > NO_CROP)
+        {
+            /* Clipping window in summer */
+            if (Community->Crop[i].userClippingEnd >= Community->Crop[i].userClippingStart)
+            {
+                if (d < Community->Crop[i].userClippingStart ||
+                    d > Community->Crop[i].userClippingEnd)
+                {
+                    clippingWindow = 0;
+                    break;
+                }
+            }
+            /* Clipping window in winter */
+            else
+            {
+                if (d < Community->Crop[i].userClippingStart &&
+                    d > Community->Crop[i].userClippingEnd)
+                {
+                    clippingWindow = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!clippingWindow)
+    {
+        return (0);
+    }
+    else
+    {
+        for (i = 0; i < Community->NumCrop; i++)
+        {
+            if (Community->Crop[i].stageGrowth > NO_CROP)
+            {
+                if (Community->Crop[i].svShoot / Community->Crop[i].userPlantingDensity >
+                    Community->Crop[i].userClippingBiomassThresholdUpper)
+                {
+                    return (1);
+                }
+                else if (Community->Crop[i].userClippingTiming > 0.0)
+                {
+                    if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].calculatedMaturityTT &&
+                        Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
+                    {
+                        if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
+                        {
+                            return (1);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return (0);
+    }
 }
 
 void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, const SoilStruct *Soil)

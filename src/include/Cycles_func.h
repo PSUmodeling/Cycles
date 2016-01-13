@@ -47,6 +47,7 @@ void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, Comm
 void            GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project);
 void CropStage (int y, int d, CommunityStruct *Community, const WeatherStruct *Weather);
 double          FinalHarvestDate (int lastDoy, int d);
+int             ForcedClipping (int d, CommunityStruct *Community);
 int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize);
 
 /* Fertilization.c */
