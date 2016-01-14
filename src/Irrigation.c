@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-double FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStruct *Soil)
+double FindIrrigationVolume (int opLayer, double opWaterDepletion, const soil_struct *Soil)
 {
     /*
      * This sub calculates the volume of an automatic irrigation

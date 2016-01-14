@@ -1,7 +1,7 @@
 #include "Cycles.h"
 
 #ifndef _CYCLES_
-void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow, SummaryStruct *Summary)
+void Initialize (ctrl_struct *SimControl, weather_struct *Weather, soil_struct *Soil, residue_struct *Residue, soilc_struct *SoilCarbon, comm_struct *Community, cropmgmt_struct *CropManagement, snow_struct *Snow, summary_struct *Summary)
 {
     int             i;
     /* Initialize weather variables */
@@ -30,11 +30,11 @@ void Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruc
     Snow->Snow = 0.0;
 
     /* Initialize summary structure */
-    *Summary = (SummaryStruct) {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    *Summary = (summary_struct) {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 }
 #endif
 
-void StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, int totalLayers, int y)
+void StoreSummary (summary_struct *Summary, const soilc_struct *SoilCarbon, const residue_struct *Residue, int totalLayers, int y)
 {
     int             i;
 
@@ -68,7 +68,7 @@ void StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, c
     Summary->produced_root += Residue->yearRootBiomass + Residue->yearRhizodepositionBiomass;
 }
 
-void FreeCyclesStruct (CropManagementStruct *CropManagement, CommunityStruct *Community, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, int total_years)
+void FreeCyclesStruct (cropmgmt_struct *CropManagement, comm_struct *Community, soil_struct *Soil, weather_struct *Weather, residue_struct *Residue, soilc_struct *SoilCarbon, int total_years)
 {
     /*
      * -----------------------------------------------------------------------

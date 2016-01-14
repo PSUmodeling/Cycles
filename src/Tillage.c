@@ -11,16 +11,16 @@
  * Argument             Type        IO  Description
  * ==========           ==========  ==  ====================
  * abgdBiomassInput     double*     O
- * Tillage              FieldOperationStruct*
+ * Tillage              op_struct*
  *                                  I
  * tillageFactor        double*     O   Tillage factor
- * Soil                 SoilStruct* IO
- * Residue              ResidueStruct*
+ * Soil                 soil_struct* IO
+ * Residue              residue_struct*
  *                                  IO
  *
  * RETURN VALUE: void
  ****************************************************************************/
-void ExecuteTillage (double *abgdBiomassInput, const FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, ResidueStruct *Residue)
+void ExecuteTillage (double *abgdBiomassInput, const op_struct *Tillage, double *tillageFactor, soil_struct *Soil, residue_struct *Residue)
 {
     /* LOCAL VARIABLES
      *
@@ -247,16 +247,16 @@ double Fraction (double a, double b, double c, double d, double f)
  *
  * Argument             Type        IO  Description
  * ==========           ==========  ==  ====================
- * Tillage              FieldOperationStruct*
+ * Tillage              op_struct*
  *                                  I
  * tillageFactor        double*     O
- * Soil                 SoilStruct* I
+ * Soil                 soil_struct* I
  * soilLayerBottom      double*     I
  * toolDepth            double
  *
  * RETURN VALUE: void
  ****************************************************************************/
-void ComputeTillageFactor (const FieldOperationStruct *Tillage, double *tillageFactor, const SoilStruct *Soil, const double *soilLayerBottom, double toolDepth)
+void ComputeTillageFactor (const op_struct *Tillage, double *tillageFactor, const soil_struct *Soil, const double *soilLayerBottom, double toolDepth)
 {
     /* LOCAL VARIABLES
      *

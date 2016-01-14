@@ -1,10 +1,10 @@
 #include "Cycles.h"
 
-void PlantingCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement, int plantingIndex)
+void PlantingCrop (comm_struct *Community, const cropmgmt_struct *CropManagement, int plantingIndex)
 {
-    FieldOperationStruct *plantingOrder;
-    autoIrrigationStruct *autoIrrigation;
-    CropStruct           *Crop;
+    op_struct *plantingOrder;
+    autoirr_struct *autoIrrigation;
+    crop_struct           *Crop;
 
     plantingOrder = &(CropManagement->plantingOrder[plantingIndex]);
 
@@ -82,7 +82,7 @@ void PlantingCrop (CommunityStruct *Community, const CropManagementStruct *CropM
     Crop->harvestCount = 0;
 }
 
-void AddCrop (CropStruct *Crop)
+void AddCrop (crop_struct *Crop)
 {
     Crop->rcForageYield = 0.0;
     Crop->rcGrainYield = 0.0;
@@ -103,7 +103,7 @@ void AddCrop (CropStruct *Crop)
     Crop->rcNitrogenForageConc = 0.0;
 }
 
-void KillCrop (CropStruct *Crop)
+void KillCrop (crop_struct *Crop)
 {
     Crop->stageGrowth = NO_CROP;
     Crop->autoIrrigationUsed = -1;
@@ -168,7 +168,7 @@ void KillCrop (CropStruct *Crop)
     Crop->rcNitrogenForageConc = 0.0;
 }
 
-void UpdateCommunity (CommunityStruct *Community)
+void UpdateCommunity (comm_struct *Community)
 {
     int         i;
 

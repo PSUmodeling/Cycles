@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ReadSimControl (char *project, SimControlStruct *SimControl)
+void ReadSimControl (char *project, ctrl_struct *SimControl)
 {
     /*
      * Read simulation control file

@@ -11,15 +11,15 @@
  * doy                  int         I   Simulation day of year
  * snowCover            double      I
  * cropInterception     double      I
- * Soil                 SoilStruct  IO
- * Weather              WeatherStruct
+ * Soil                 soil_struct  IO
+ * Weather              weather_struct
  *                                  I   Weather structure
- * Residue              ResidueStruct
+ * Residue              residue_struct
  *                                  I
  *
  * RETURN VALUE: void
  ****************************************************************************/
-void Temperature (int y, int doy, double snowCover, double cropInterception, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct *Residue)
+void Temperature (int y, int doy, double snowCover, double cropInterception, soil_struct *Soil, weather_struct *Weather, residue_struct *Residue)
 {
     /* LOCAL VARIABLES
      *

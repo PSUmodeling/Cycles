@@ -2,72 +2,72 @@
 #define CYCLES_FUNC_HEADER
 
 /* Crop.c */
-//void            SelectCropInitialPosition (CropManagementStruct *CropManagement);
-//void            SelectNextCrop (CropManagementStruct *CropManagement);
-//void            PeekNextCrop (CropManagementStruct *CropManagement);
-//void            NewCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement);
-void PlantingCrop (CommunityStruct *Community, const CropManagementStruct *CropManagement, int plantingIndex);
-void            AddCrop (CropStruct *Crop);
-void            KillCrop (CropStruct *Crop);
-void            UpdateCommunity (CommunityStruct *Community);
+//void            SelectCropInitialPosition (cropmgmt_struct *CropManagement);
+//void            SelectNextCrop (cropmgmt_struct *CropManagement);
+//void            PeekNextCrop (cropmgmt_struct *CropManagement);
+//void            NewCrop (comm_struct *Community, const cropmgmt_struct *CropManagement);
+void PlantingCrop (comm_struct *Community, const cropmgmt_struct *CropManagement, int plantingIndex);
+void            AddCrop (crop_struct *Crop);
+void            KillCrop (crop_struct *Crop);
+void            UpdateCommunity (comm_struct *Community);
 
 /* CropHarvest.c */
-void            GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project);
-void            ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project);
-void            HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project);
-void            DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, const SoilStruct *Soil, const CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon);
+void            GrainHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const char *project);
+void            ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const char *project);
+void            HarvestCrop (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const char *project);
+void            DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, const soil_struct *Soil, const crop_struct *Crop, residue_struct *Residue, soilc_struct *SoilCarbon);
 double          ComputeHarvestIndex (double HIx, double HIo, double HIk, double cumulativeShoot, double cumulativePostFloweringShootBiomass);
 
 /* CropProcess.c */
-void            Processes (const int y, const int doy, const int autoNitrogen, CommunityStruct *Community, ResidueStruct *Residue, const WeatherStruct *Weather, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon);
-void            CropGrowth (int y, int doy, double *DailyGrowth, const double Stage, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct *Weather);
-void            CropNitrogenDemand (double N_AbgdConcReq, double N_RootConcReq, double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *N_CropDemand, CropStruct *Crop);
-void            CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, double *NaAbgd, double *NxAbgd, double *NcAbgd, double *NnAbgd, double *NxRoot, const double Stage, const CropStruct *Crop);
-void            CropNitrogenStress (const double NaAbgd, const double NcAbgd, const double NnAbgd, CropStruct *Crop);
-void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *NxAbgd, double *NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, CommunityStruct *Community, SoilStruct *Soil);
+void            Processes (const int y, const int doy, const int autoNitrogen, comm_struct *Community, residue_struct *Residue, const weather_struct *Weather, soil_struct *Soil, soilc_struct *SoilCarbon);
+void            CropGrowth (int y, int doy, double *DailyGrowth, const double Stage, crop_struct *Crop, residue_struct *Residue, const weather_struct *Weather);
+void            CropNitrogenDemand (double N_AbgdConcReq, double N_RootConcReq, double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *N_CropDemand, crop_struct *Crop);
+void            CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, double *NaAbgd, double *NxAbgd, double *NcAbgd, double *NnAbgd, double *NxRoot, const double Stage, const crop_struct *Crop);
+void            CropNitrogenStress (const double NaAbgd, const double NcAbgd, const double NnAbgd, crop_struct *Crop);
+void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *NxAbgd, double *NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, comm_struct *Community, soil_struct *Soil);
 void            PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake, double Kd, int totalLayers, const double *BD, const double *dz, const double *WaterUptake, const double *Solute, const double *WC);
 double          ShootBiomassPartitioning (const double Stage, const double Po, const double Pf);
-void            RadiationInterception (int y, int doy, CommunityStruct *Community);
-void            Phenology (int y, int doy, const WeatherStruct *Weather, CommunityStruct *Community);
-void            ComputeColdDamage (int y, int doy, CropStruct *Crop, const WeatherStruct *Weather, const SnowStruct *Snow, ResidueStruct *Residue);
+void            RadiationInterception (int y, int doy, comm_struct *Community);
+void            Phenology (int y, int doy, const weather_struct *Weather, comm_struct *Community);
+void            ComputeColdDamage (int y, int doy, crop_struct *Crop, const weather_struct *Weather, const snow_struct *Snow, residue_struct *Residue);
 double          ColdDamage (const double T, const double Crop_Tn, const double Crop_Tth);
 double TemperatureFunctionGrowth (double tMax, double tOpt, double tMin, double T);
 
 /* CropThermalTime.c */
-void            ComputeThermalTime (int total_years, CommunityStruct *Community, WeatherStruct *Weather);
+void            ComputeThermalTime (int total_years, comm_struct *Community, weather_struct *Weather);
 double          ThermalTime (double T_base, double T_op, double T_Max, double Temperature);
 
 /* CropTranspiration.c */
-void            WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, const WeatherStruct *Weather);
-void            CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil, CropStruct *Crop);
+void            WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, const weather_struct *Weather);
+void            CalcRootFraction (double *fractionRootsByLayer, soil_struct *Soil, crop_struct *Crop);
 double          TemperatureLimitation (double T, double T_Min, double T_Threshold);
 
 /* DailyOperation.c */
-void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, SummaryStruct *Summary, const char *project);
-void            GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project);
-void CropStage (int y, int d, CommunityStruct *Community, const WeatherStruct *Weather);
+void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl, snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon, weather_struct *Weather, summary_struct *Summary, const char *project);
+void            GrowingCrop (int rotationYear, int y, int d, comm_struct *Community, residue_struct *Residue, const ctrl_struct *SimControl, soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const snow_struct *Snow, const char *project);
+void CropStage (int y, int d, comm_struct *Community, const weather_struct *Weather);
 double          FinalHarvestDate (int lastDoy, int d);
-int             ForcedClipping (int d, CommunityStruct *Community);
+int             ForcedClipping (int d, comm_struct *Community);
 int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize);
 
 /* Fertilization.c */
-void            ApplyFertilizer (FieldOperationStruct *fixedFertilization, SoilStruct *Soil, ResidueStruct *Residue);
+void            ApplyFertilizer (op_struct *fixedFertilization, soil_struct *Soil, residue_struct *Residue);
 
 /* FieldOperations.c */
-void FieldOperation (int rotationYear, int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, SoilStruct *Soil, ResidueStruct *Residue, SimControlStruct *SimControl, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project);
-int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int numOperation, int *operationIndex);
-void UpdateOperationStatus (FieldOperationStruct *FieldOperation, int numOperation);
+void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, soil_struct *Soil, residue_struct *Residue, ctrl_struct *SimControl, soilc_struct *SoilCarbon, weather_struct *Weather, const char *project);
+int IsOperationToday (int rotationYear, int doy, op_struct *FieldOperation, int numOperation, int *operationIndex);
+void UpdateOperationStatus (op_struct *FieldOperation, int numOperation);
 
 /* Initialize.c */
 #ifndef _CYCLES_
-void            Initialize (SimControlStruct *SimControl, WeatherStruct *Weather, SoilStruct *Soil, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, CommunityStruct *Community, CropManagementStruct *CropManagement, SnowStruct *Snow, SummaryStruct *Summary);
+void            Initialize (ctrl_struct *SimControl, weather_struct *Weather, soil_struct *Soil, residue_struct *Residue, soilc_struct *SoilCarbon, comm_struct *Community, cropmgmt_struct *CropManagement, snow_struct *Snow, summary_struct *Summary);
 #endif
-void FreeCyclesStruct (CropManagementStruct *CropManagement, CommunityStruct *Community, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon, int total_years);
-void            FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, const SoilStruct *Soil);
-void LastDOY (int y, int simStartYear, int totalLayers, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, SummaryStruct *Summary, const char *project);
+void FreeCyclesStruct (cropmgmt_struct *CropManagement, comm_struct *Community, soil_struct *Soil, weather_struct *Weather, residue_struct *Residue, soilc_struct *SoilCarbon, int total_years);
+void            FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, soilc_struct *SoilCarbon, residue_struct *Residue, const soil_struct *Soil);
+void LastDOY (int y, int simStartYear, int totalLayers, soil_struct *Soil, soilc_struct *SoilCarbon, residue_struct *Residue, summary_struct *Summary, const char *project);
 
 /* Irrigation.c */
-double          FindIrrigationVolume (int opLayer, double opWaterDepletion, const SoilStruct *Soil);
+double          FindIrrigationVolume (int opLayer, double opWaterDepletion, const soil_struct *Soil);
 
 /* MiscFunc.c */
 int             IsLeapYear (int year);
@@ -81,17 +81,17 @@ int             GE (double x, double y);
 int             GT (double x, double y);
 
 /* Print.c */
-void            InitializeOutput (char *project, const CommunityStruct *Community, int layers);
-void            PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CommunityStruct *Community, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project);
-void            PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project);
-void            PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const char *project);
-void            PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, const char *project);
-void            StoreSummary (SummaryStruct *Summary, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, int totalLayers, int y);
-void            PrintSummary (const SummaryStruct *Summary, int totalYears, const char *project);
+void            InitializeOutput (char *project, const comm_struct *Community, int layers);
+void            PrintDailyOutput (int y, int doy, int start_year, const weather_struct *Weather, const comm_struct *Community, const soil_struct *Soil, const snow_struct *Snow, const residue_struct *Residue, const char *project);
+void            PrintSeasonOutput (int y, int doy, int start_year, const weather_struct *Weather, const crop_struct *Crop, const char *project);
+void            PrintAnnualOutput (int y, int start_year, const soil_struct *Soil, const soilc_struct *SoilCarbon, const char *project);
+void            PrintCarbonEvolution (int y, int start_year, int total_layers, const soil_struct *Soil, const soilc_struct *SoilCarbon, const residue_struct *Residue, const char *project);
+void            StoreSummary (summary_struct *Summary, const soilc_struct *SoilCarbon, const residue_struct *Residue, int totalLayers, int y);
+void            PrintSummary (const summary_struct *Summary, int totalYears, const char *project);
 
 #ifndef _CYCLES_
 /* ReadCrop.c */
-void            ReadCrop (char *project, CommunityStruct *Community);
+void            ReadCrop (char *project, comm_struct *Community);
 #endif
 
 /* ReadFunc.c */
@@ -110,19 +110,19 @@ void ReadKeywordStr (char *buffer, char *keyword, char *value);
 
 #ifndef _CYCLES_
 /* ReadOperation.c */
-void            ReadOperation (char *project, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation);
+void            ReadOperation (char *project, cropmgmt_struct *CropManagement, const comm_struct *Community, int yearsInRotation);
 
 /* ReadSimControl.c */
-void            ReadSimControl (char *project, SimControlStruct *SimControl);
+void            ReadSimControl (char *project, ctrl_struct *SimControl);
 
 /* ReadSoil.c */
-void            ReadSoil (char *project, SoilStruct *Soil);
+void            ReadSoil (char *project, soil_struct *Soil);
 
 /* ReadWeather.c */
-void            ReadWeather (char *project, WeatherStruct *Weather, int start_year, int total_years);
+void            ReadWeather (char *project, weather_struct *Weather, int start_year, int total_years);
 #endif
 
-int CropExist (char *cropName, const CommunityStruct *Community);
+int CropExist (char *cropName, const comm_struct *Community);
 
 /* ReferenceET.c */
 double          CalculatePMET (double lat, double pAtm, double screeningHeight, double Tmax, double Tmin, double sRad, double rhMax, double rhMin, double wind, double doy);
@@ -132,23 +132,23 @@ double          NetRadiation (double Pot_Rad, double Solar_Rad, double Actual_VP
 double          Aero_Res (double uz, double z);
 
 /* Residue.c */
-void            InitializeResidue (ResidueStruct *Residue, int totalYears, int totalLayers);
-void            ComputeResidueCover (ResidueStruct *Residue);
-void            ResidueWetting (ResidueStruct *Residue, SoilStruct *Soil);
-void            ResidueEvaporation (ResidueStruct *Residue, SoilStruct *Soil, const CommunityStruct *Community, double ETo, double snowCover);
+void            InitializeResidue (residue_struct *Residue, int totalYears, int totalLayers);
+void            ComputeResidueCover (residue_struct *Residue);
+void            ResidueWetting (residue_struct *Residue, soil_struct *Soil);
+void            ResidueEvaporation (residue_struct *Residue, soil_struct *Soil, const comm_struct *Community, double ETo, double snowCover);
 
 /* Snow.c */
-void            SnowProcesses (SnowStruct *Snow, int y, int doy, WeatherStruct *Weather, double TauStandingRes, double CropInterception);
-void            CalculateSnowFall (SnowStruct *Snow, double Tavg, double PP);
-void            CalculateSnowMelt (SnowStruct *Snow, double Tavg, double Tx, double Tn);
-void            CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRes, double CropInterception, double ETo);
-double          CalculateSnowCover (SnowStruct *Snow);
+void            SnowProcesses (snow_struct *Snow, int y, int doy, weather_struct *Weather, double TauStandingRes, double CropInterception);
+void            CalculateSnowFall (snow_struct *Snow, double Tavg, double PP);
+void            CalculateSnowMelt (snow_struct *Snow, double Tavg, double Tx, double Tn);
+void            CalculateSnowEvaporation (snow_struct *Snow, double TauStandingRes, double CropInterception, double ETo);
+double          CalculateSnowCover (snow_struct *Snow);
 
 /* Soil.c */
 #ifdef _CYCLES_
-void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl, const soil_struct *soil);
+void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *SimControl, const soil_struct *soil);
 #else
-void            InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl);
+void            InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *SimControl);
 #endif
 #ifdef _CYCLES_
 double SoilWaterPotential (double porosity, double thetar, double alpha, double beta, double water_content);
@@ -165,11 +165,11 @@ double          SoilWaterContent (double SaturationWC, double AirEntryPot, doubl
 double          BulkDensity (double Clay, double Sand, double OM);
 
 /* SoilCarbon.c */
-void            InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers);
-void            ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int last_doy, SoilStruct *Soil);
-void            ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor);
-void            ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor);
-void            StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass);
+void            InitializeSoilCarbon (soilc_struct *SoilCarbon, int totalLayers);
+void            ComputeFactorComposite (soilc_struct *SoilCarbon, int doy, int y, int last_doy, soil_struct *Soil);
+void            ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y, residue_struct *Residue, soil_struct *Soil, double *tillageFactor);
+void            ComputeSoilCarbonBalance (soilc_struct *SoilCarbon, int y, residue_struct *Residue, soil_struct *Soil, double *tillageFactor);
+void            StoreOutput (soilc_struct *SoilCarbon, int y, int totalLayers, double *SOCMass);
 double          Aeration (double AC);
 double          Moisture (double wp);
 double          TemperatureFunction (double T);
@@ -183,25 +183,25 @@ double          PoolNitrogenMineralization (double NmineralConc, double CNRatioD
 double          Function_CNnew (double NmineralConc, double CNDecomposingPool);
 
 /* SoilEvaporation.c */
-void            Evaporation (SoilStruct *Soil, const CommunityStruct *Community, ResidueStruct *Residue, double ETo, double SnowCover);
+void            Evaporation (soil_struct *Soil, const comm_struct *Community, residue_struct *Residue, double ETo, double SnowCover);
 double          Depth_Limitation_To_Evaporation (double Depth);
 double          Water_Content_Limitation_To_Evaporation (double FC, double WC_AirDry, double WC);
 
 /* SoilInfiltration.c */
-void            Redistribution (int y, int doy, double precipitation, double snowFall, double snowMelt, int hourlyInfiltration, const CommunityStruct *Community, SoilStruct *Soil, ResidueStruct *Residue);
-void            CascadeRedistribution (SoilStruct *Soil);
-void            SubDailyRedistribution (SoilStruct *Soil);
-void            CurveNumber (SoilStruct *Soil);
+void            Redistribution (int y, int doy, double precipitation, double snowFall, double snowMelt, int hourlyInfiltration, const comm_struct *Community, soil_struct *Soil, residue_struct *Residue);
+void            CascadeRedistribution (soil_struct *Soil);
+void            SubDailyRedistribution (soil_struct *Soil);
+void            CurveNumber (soil_struct *Soil);
 double          K_Sat (double WCATSAT, double WCAT33, double b);
 double          AverageHydraulicConductance (double WCSAT, double WCFC, double aep, double b, double SWP1, double SWP2, double ks);
 double          Numerator (double aep, double b, double SWP);
 double          Denominator (double aep, double b, double SWP);
 
 /* SoilNitrogen.c */
-void            NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CommunityStruct *Community, const ResidueStruct *Residue, const WeatherStruct *Weather, const SoilCarbonStruct *SoilCarbon);
-void            Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon);
-void            Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon);
-void            Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStruct *Soil, const CommunityStruct *Community, const ResidueStruct *Residue, const WeatherStruct *Weather);
+void            NitrogenTransformation (int y, int doy, soil_struct *Soil, const comm_struct *Community, const residue_struct *Residue, const weather_struct *Weather, const soilc_struct *SoilCarbon);
+void            Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, soil_struct *Soil, const soilc_struct *SoilCarbon);
+void            Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitrified, soil_struct *Soil, const soilc_struct *SoilCarbon);
+void            Volatilization (int y, int doy, double *Profile_NH4_Volatilization, soil_struct *Soil, const comm_struct *Community, const residue_struct *Residue, const weather_struct *Weather);
 double          N2OFractionNitrification (double air);
 double          pHFunction (double pH);
 double          VolatilizationDepthFunction (double depth);
@@ -215,27 +215,27 @@ double          LinearEquilibriumConcentration (double Kd, double bulkDensity, d
 double          LinearEquilibriumSoluteMass (double Kd, double bulkDensity, double layerThickness, double waterContent, double concentration);
 
 /* SoilTemperature.c */
-void            Temperature (int y, int doy, double snowCover, double cropInterception, SoilStruct *Soil, WeatherStruct *Weather, ResidueStruct *Residue);
+void            Temperature (int y, int doy, double snowCover, double cropInterception, soil_struct *Soil, weather_struct *Weather, residue_struct *Residue);
 double          HeatCapacity (double bulkDensity, double volumetricWC);
 double          HeatConductivity (double bulkDensity, double volumetricWC, double fractionClay);
 double          EstimatedSoilTemperature (double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth);
 
 /* Tillage.c */
-void            ExecuteTillage (double *abgdBiomassInput, const FieldOperationStruct *Tillage, double *tillageFactor, SoilStruct *Soil, ResidueStruct *Residue);
+void            ExecuteTillage (double *abgdBiomassInput, const op_struct *Tillage, double *tillageFactor, soil_struct *Soil, residue_struct *Residue);
 void            TillageFactorSettling (double *tillageFactor, int totalLayers, const double *waterContent, const double *Porosity);
 double          Fraction (double a, double b, double c, double d, double f);
-void            ComputeTillageFactor (const FieldOperationStruct *Tillage, double *tillageFactor, const SoilStruct *Soil, const double *soilLayerBottom, double toolDepth);
+void            ComputeTillageFactor (const op_struct *Tillage, double *tillageFactor, const soil_struct *Soil, const double *soilLayerBottom, double toolDepth);
 double          ComputeTextureFactor (double Clay);
 
 /* Weather.c */
 double          SatVP (double T);
-void            CalculateDerivedWeather (WeatherStruct *Weather, int total_years);
+void            CalculateDerivedWeather (weather_struct *Weather, int total_years);
 
-void            PrintSimContrl (SimControlStruct SimControl);
-void            PrintSoil (SoilStruct Soil);
-void            PrintCrop (CommunityStruct Community);
-void            PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization);
-void            PrintWeather (WeatherStruct Weather);
+void            PrintSimContrl (ctrl_struct SimControl);
+void            PrintSoil (soil_struct Soil);
+void            PrintCrop (comm_struct Community);
+void            PrintOperation (op_struct *plantedCrops, int NumPlanting, op_struct *Tillage, int NumTillage, op_struct *FixedIrrigation, int NumIrrigation, op_struct *FixedFertilization, int NumFertilization);
+void            PrintWeather (weather_struct Weather);
 
 #ifdef _CYCLES_
 /* cycles_func.c */
@@ -243,11 +243,11 @@ void DailyVar (int t, int start_time, pihm_struct pihm);
 
 void CyclesRead (char *simulation, CyclesStruct cycles, pihm_struct pihm);
 void CyclesInit (CyclesStruct cycles, pihm_struct pihm);
-void ReadSimControl (char *simulation, SimControlStruct *SimControl, const pihm_struct pihm);
-void ReadSoilInit (char *simulation, SoilStruct *Soil);
-void ReadCrop (char *simulation, CommunityStruct *community);
-void ReadOperation (char *filename, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation);
-void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int total_years);
+void ReadSimControl (char *simulation, ctrl_struct *SimControl, const pihm_struct pihm);
+void ReadSoilInit (char *simulation, soil_struct *Soil);
+void ReadCrop (char *simulation, comm_struct *community);
+void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_struct *Community, int yearsInRotation);
+void ReadWeather (char *filename, weather_struct *Weather, int start_year, int total_years);
 void DailyCycles (CyclesStruct cycles, pihm_struct pihm, int t, char *project);
 #endif
 

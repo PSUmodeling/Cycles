@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ReadSoil (char *filename, SoilStruct *Soil)
+void ReadSoil (char *filename, soil_struct *Soil)
 {
     /*
      * Read soil description file

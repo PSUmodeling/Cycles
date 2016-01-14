@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project)
+void GrainHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const char *project)
 {
     /*
      * Update roots and residue biomass at harvest
@@ -83,7 +83,7 @@ void GrainHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruc
     KillCrop (Crop);
 }
 
-void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project)
+void ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const char *project)
 {
     /*
      * 
@@ -226,7 +226,7 @@ void ForageHarvest (int y, int doy, int startYear, CropStruct *Crop, ResidueStru
 #endif
 }
 
-void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct *Residue, const SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const char *project)
+void HarvestCrop (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const char *project)
 {
     /* 
      * Set crop status to Killed
@@ -288,7 +288,7 @@ void HarvestCrop (int y, int doy, int startYear, CropStruct *Crop, ResidueStruct
     KillCrop (Crop);
 }
 
-void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, const SoilStruct *Soil, const CropStruct *Crop, ResidueStruct *Residue, SoilCarbonStruct *SoilCarbon)
+void DistributeRootDetritus (int y, double rootMass, double rhizoMass, double rootN, double rhizoN, const soil_struct *Soil, const crop_struct *Crop, residue_struct *Residue, soilc_struct *SoilCarbon)
 {
     /*
      * This subroutine distributes dead roots and rizhodeposition in soil

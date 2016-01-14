@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ApplyFertilizer (FieldOperationStruct *fixedFertilization, SoilStruct *Soil, ResidueStruct *Residue)
+void ApplyFertilizer (op_struct *fixedFertilization, soil_struct *Soil, residue_struct *Residue)
 {
     /*
      * -----------------------------------------------------------------------

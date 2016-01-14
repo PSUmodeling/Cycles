@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void Evaporation (SoilStruct *Soil, const CommunityStruct *Community, ResidueStruct *Residue, double ETo, double SnowCover)
+void Evaporation (soil_struct *Soil, const comm_struct *Community, residue_struct *Residue, double ETo, double SnowCover)
 {
     /*
      * 

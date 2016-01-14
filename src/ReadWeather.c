@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ReadWeather (char *filename, WeatherStruct *Weather, int start_year, int total_years)
+void ReadWeather (char *filename, weather_struct *Weather, int start_year, int total_years)
 {
     /*
      * Read weather file

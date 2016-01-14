@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers)
+void InitializeSoilCarbon (soilc_struct *SoilCarbon, int totalLayers)
 {
     SoilCarbon->factorComposite = (double *)calloc (totalLayers, sizeof (double));
     SoilCarbon->carbonRespired = (double *)calloc (totalLayers, sizeof (double));
@@ -25,7 +25,7 @@ void InitializeSoilCarbon (SoilCarbonStruct *SoilCarbon, int totalLayers)
     SoilCarbon->annualNNetMineralization = (double *)calloc (totalLayers, sizeof (double));
 }
 
-void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int last_doy, SoilStruct *Soil)
+void ComputeFactorComposite (soilc_struct *SoilCarbon, int doy, int y, int last_doy, soil_struct *Soil)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -75,7 +75,7 @@ void ComputeFactorComposite (SoilCarbonStruct *SoilCarbon, int doy, int y, int l
     }
 }
 
-void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor)
+void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y, residue_struct *Residue, soil_struct *Soil, double *tillageFactor)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -705,7 +705,7 @@ void ComputeSoilCarbonBalanceMB (SoilCarbonStruct *SoilCarbon, int y, ResidueStr
     }
 }
 
-void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruct *Residue, SoilStruct *Soil, double *tillageFactor)
+void ComputeSoilCarbonBalance (soilc_struct *SoilCarbon, int y, residue_struct *Residue, soil_struct *Soil, double *tillageFactor)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -1194,7 +1194,7 @@ void ComputeSoilCarbonBalance (SoilCarbonStruct *SoilCarbon, int y, ResidueStruc
     }
 }
 
-void StoreOutput (SoilCarbonStruct *SoilCarbon, int y, int totalLayers, double *SOCMass)
+void StoreOutput (soilc_struct *SoilCarbon, int y, int totalLayers, double *SOCMass)
 {
     /* 
      * -----------------------------------------------------------------------

@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void PrintSimContrl (SimControlStruct SimControl)
+void PrintSimContrl (ctrl_struct SimControl)
 {
     printf ("\n*Simulation Control:\n");
     printf ("*%-22s\t%-4d\n", "Simulation Start Year", SimControl.simStartYear);
@@ -25,7 +25,7 @@ void PrintSimContrl (SimControlStruct SimControl)
     printf ("\n");
 }
 
-void PrintSoil (SoilStruct Soil)
+void PrintSoil (soil_struct Soil)
 {
     int             i;
 
@@ -39,7 +39,7 @@ void PrintSoil (SoilStruct Soil)
     printf ("\n");
 }
 
-void PrintCrop (CommunityStruct Community)
+void PrintCrop (comm_struct Community)
 {
     int             i;
 
@@ -85,10 +85,10 @@ void PrintCrop (CommunityStruct Community)
     printf ("\n");
 }
 
-void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldOperationStruct *Tillage, int NumTillage, FieldOperationStruct *FixedIrrigation, int NumIrrigation, FieldOperationStruct *FixedFertilization, int NumFertilization)
+void PrintOperation (op_struct *plantedCrops, int NumPlanting, op_struct *Tillage, int NumTillage, op_struct *FixedIrrigation, int NumIrrigation, op_struct *FixedFertilization, int NumFertilization)
 {
     int             i;
-    FieldOperationStruct *p;
+    op_struct *p;
 
     printf ("\n*Planting:\n");
     for (i = 0; i < NumPlanting; i++)
@@ -151,7 +151,7 @@ void PrintOperation (FieldOperationStruct *plantedCrops, int NumPlanting, FieldO
     printf ("\n");
 }
 
-void PrintWeather (WeatherStruct Weather)
+void PrintWeather (weather_struct Weather)
 {
     printf ("\n*Weather:\n");
     printf ("*%-16s\t%-6.2lf\n", "LATITUDE", Weather.siteLatitude);

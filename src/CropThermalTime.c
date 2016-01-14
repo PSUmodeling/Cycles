@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ComputeThermalTime (int total_years, CommunityStruct *Community, WeatherStruct *Weather)
+void ComputeThermalTime (int total_years, comm_struct *Community, weather_struct *Weather)
 {
     /* 
      * Calculate flowering and Maturity thermal time for each crop
@@ -30,7 +30,7 @@ void ComputeThermalTime (int total_years, CommunityStruct *Community, WeatherStr
     int		    y;
     int		    d;
 
-    CropStruct *Crop;
+    crop_struct *Crop;
 
     if (verbose_mode)
     {

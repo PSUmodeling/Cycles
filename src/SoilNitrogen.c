@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CommunityStruct *Community, const ResidueStruct *Residue, const WeatherStruct *Weather, const SoilCarbonStruct *SoilCarbon)
+void NitrogenTransformation (int y, int doy, soil_struct *Soil, const comm_struct *Community, const residue_struct *Residue, const weather_struct *Weather, const soilc_struct *SoilCarbon)
 {
     /*
      * 
@@ -56,7 +56,7 @@ void NitrogenTransformation (int y, int doy, SoilStruct *Soil, const CommunitySt
     Soil->NH4_Volatilization = Profile_NH4_Volatilization;
 }
 
-void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon)
+void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, soil_struct *Soil, const soilc_struct *SoilCarbon)
 {
     /*
      * 
@@ -116,7 +116,7 @@ void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, 
     }
 }
 
-void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitrified, SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon)
+void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitrified, soil_struct *Soil, const soilc_struct *SoilCarbon)
 {
     /*
      * 
@@ -198,7 +198,7 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
     }
 }
 
-void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, SoilStruct *Soil, const CommunityStruct *Community, const ResidueStruct *Residue, const WeatherStruct *Weather)
+void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, soil_struct *Soil, const comm_struct *Community, const residue_struct *Residue, const weather_struct *Weather)
 {
     /*
      * This subroutine uses an empirical approach to estimate the amount of

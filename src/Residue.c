@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void InitializeResidue (ResidueStruct *Residue, int totalYears, int totalLayers)
+void InitializeResidue (residue_struct *Residue, int totalYears, int totalLayers)
 {
     
     Residue->residueAbgd = (double *)calloc (totalLayers, sizeof (double));
@@ -29,7 +29,7 @@ void InitializeResidue (ResidueStruct *Residue, int totalYears, int totalLayers)
     Residue->yearRhizodepositionBiomass = 0.0;
 }
 
-void ComputeResidueCover (ResidueStruct *Residue)
+void ComputeResidueCover (residue_struct *Residue)
 {
     /*
      * Compute residue cover
@@ -55,7 +55,7 @@ void ComputeResidueCover (ResidueStruct *Residue)
     Residue->residueInterception = (1.0 - Residue->stanResidueTau) + Residue->stanResidueTau * (1.0 - Residue->flatResidueTau);
 }
 
-void ResidueWetting (ResidueStruct *Residue, SoilStruct *Soil)
+void ResidueWetting (residue_struct *Residue, soil_struct *Soil)
 {
     /*
      * Compute residue wetting
@@ -119,7 +119,7 @@ void ResidueWetting (ResidueStruct *Residue, SoilStruct *Soil)
     Soil->infiltrationVol -= waterRetainedResidue;
 }
 
-void ResidueEvaporation (ResidueStruct *Residue, SoilStruct *Soil, const CommunityStruct *Community, double ETo, double snowCover)
+void ResidueEvaporation (residue_struct *Residue, soil_struct *Soil, const comm_struct *Community, double ETo, double snowCover)
 {
     /*
      * Compute residue evaporation

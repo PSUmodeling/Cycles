@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, const WeatherStruct *Weather)
+void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, const weather_struct *Weather)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -73,7 +73,7 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
     double          SWP_Average;
     double          soilWP[Soil->totalLayers];
     double          layerSalinityFactor[Soil->totalLayers];
-    CropStruct     *Crop;
+    crop_struct     *Crop;
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
@@ -210,7 +210,7 @@ void WaterUptake (int y, int doy, CommunityStruct *Community, SoilStruct *Soil, 
         Soil->waterContent[i] -= Soil->waterUptake[i] / (Soil->layerThickness[i] * WATER_DENSITY);
 }
 
-void CalcRootFraction (double *fractionRootsByLayer, SoilStruct *Soil, CropStruct *Crop)
+void CalcRootFraction (double *fractionRootsByLayer, soil_struct *Soil, crop_struct *Crop)
 {
     /* 
      * This function computes root fraction in each layer

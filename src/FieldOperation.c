@@ -1,11 +1,11 @@
 #include "Cycles.h"
 
-void FieldOperation (int rotationYear, int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, SoilStruct *Soil, ResidueStruct *Residue, SimControlStruct *SimControl, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, const char *project)
+void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, soil_struct *Soil, residue_struct *Residue, ctrl_struct *SimControl, soilc_struct *SoilCarbon, weather_struct *Weather, const char *project)
 {
-    FieldOperationStruct *plantingOrder;
-    FieldOperationStruct *FixedFertilization;
-    FieldOperationStruct *Tillage;
-    FieldOperationStruct *FixedIrrigation;
+    op_struct *plantingOrder;
+    op_struct *FixedFertilization;
+    op_struct *Tillage;
+    op_struct *FixedIrrigation;
     int             i;
     int             operation_index;
     int             kill_all = 0;
@@ -108,7 +108,7 @@ void FieldOperation (int rotationYear, int y, int doy, CropManagementStruct *Cro
     UpdateOperationStatus (CropManagement->FixedIrrigation, CropManagement->numIrrigation);
 }
     
-int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOperation, int numOperation, int *operationIndex)
+int IsOperationToday (int rotationYear, int doy, op_struct *FieldOperation, int numOperation, int *operationIndex)
 {
     /*
      * Returns a true or false indicating if an operation happens on that day
@@ -155,7 +155,7 @@ int IsOperationToday (int rotationYear, int doy, FieldOperationStruct *FieldOper
     return (operation_today);
 }
 
-void UpdateOperationStatus (FieldOperationStruct *FieldOperation, int numOperation)
+void UpdateOperationStatus (op_struct *FieldOperation, int numOperation)
 {
     int             i;
     int             all_performed = 1;

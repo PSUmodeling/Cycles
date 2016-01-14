@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, ResidueStruct *Residue, const WeatherStruct *Weather, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon)
+void Processes (int y, int doy, int autoNitrogen, comm_struct *Community, residue_struct *Residue, const weather_struct *Weather, soil_struct *Soil, soilc_struct *SoilCarbon)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -34,7 +34,7 @@ void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, Re
     double          NaAbgd = 0.0;
     double          NxRoot[Community->NumCrop];
     int             i;
-    CropStruct     *Crop;
+    crop_struct     *Crop;
     double          N_Uptake[Community->NumCrop];
     double          N_ReqAbgdGrowth[Community->NumCrop];
     double          N_ReqRootGrowth[Community->NumCrop];
@@ -100,7 +100,7 @@ void Processes (int y, int doy, int autoNitrogen, CommunityStruct *Community, Re
     }
 }
 
-void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *Crop, ResidueStruct *Residue, const WeatherStruct *Weather)
+void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, crop_struct *Crop, residue_struct *Residue, const weather_struct *Weather)
 {
     /* 
      * LOCAL VARIABLES
@@ -178,7 +178,7 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, CropStruct *
         Crop->svPostFloweringShootBiomass += Crop->svShootDailyGrowth;
 }
 
-void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, double *NaAbgd, double *NxAbgd, double *NcAbgd, double *NnAbgd, double *NxRoot, double Stage, const CropStruct *Crop)
+void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, double *NaAbgd, double *NxAbgd, double *NcAbgd, double *NnAbgd, double *NxRoot, double Stage, const crop_struct *Crop)
 {
     /*
      * This sub may need to be generic for N, P, S
@@ -279,7 +279,7 @@ void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, do
     *NxRoot = *N_RootConcReq;   /* in this case the two have the same value */
 }
 
-void CropNitrogenStress (double NaAbgd, double NcAbgd, double NnAbgd, CropStruct *Crop)
+void CropNitrogenStress (double NaAbgd, double NcAbgd, double NnAbgd, crop_struct *Crop)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -314,7 +314,7 @@ void CropNitrogenStress (double NaAbgd, double NcAbgd, double NnAbgd, CropStruct
         Crop->svN_StressCumulative += Crop->svN_StressFactor * Crop->svTT_Daily / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
 }
 
-void CropNitrogenDemand (double N_AbgdConcReq, double N_RootConcReq, double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *N_CropDemand, CropStruct *Crop)
+void CropNitrogenDemand (double N_AbgdConcReq, double N_RootConcReq, double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *N_CropDemand, crop_struct *Crop)
 {
     *N_CropDemand = 0.0;
 
@@ -326,7 +326,7 @@ void CropNitrogenDemand (double N_AbgdConcReq, double N_RootConcReq, double *N_R
     *N_CropDemand = *N_ReqAbgdGrowth + *N_ReqRootGrowth + *N_ReqRhizodeposition;
 }
 
-void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *NxAbgd, double *NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, CommunityStruct *Community, SoilStruct *Soil)
+void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *NxAbgd, double *NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, comm_struct *Community, soil_struct *Soil)
 {
     int             i, j;
     double          N_AbgdConc, N_RootConc;
@@ -339,7 +339,7 @@ void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, doubl
     double          Nratio;
     double          NaAbgd;
     double          total_uptake;
-    CropStruct     *Crop;
+    crop_struct     *Crop;
 
     N_Surplus = 0.0;
 
@@ -548,7 +548,7 @@ double ShootBiomassPartitioning (double Stage, double Po, double Pf)
 }
 
 
-void RadiationInterception (int y, int doy, CommunityStruct *Community)
+void RadiationInterception (int y, int doy, comm_struct *Community)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -610,7 +610,7 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
     const double    f = 15.0;
     const double    rde = 0.3;
     int             i;
-    CropStruct     *Crop;
+    crop_struct     *Crop;
 
     double          tau[Community->NumCrop];
     double          dkl;
@@ -744,10 +744,10 @@ void RadiationInterception (int y, int doy, CommunityStruct *Community)
         Community->svRadiationInterception += Community->Crop[i].svRadiationInterception;
 }
 
-void Phenology (int y, int doy, const WeatherStruct *Weather, CommunityStruct *Community)
+void Phenology (int y, int doy, const weather_struct *Weather, comm_struct *Community)
 {
     int             i;
-    CropStruct     *Crop;
+    crop_struct     *Crop;
 
     for (i = 0; i < Community->NumCrop; i++)
     {
@@ -760,7 +760,7 @@ void Phenology (int y, int doy, const WeatherStruct *Weather, CommunityStruct *C
     }
 }
 
-void ComputeColdDamage (int y, int doy, CropStruct *Crop, const WeatherStruct *Weather, const SnowStruct *Snow, ResidueStruct *Residue)
+void ComputeColdDamage (int y, int doy, crop_struct *Crop, const weather_struct *Weather, const snow_struct *Snow, residue_struct *Residue)
 {
     /* 
      * -----------------------------------------------------------------------

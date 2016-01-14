@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ReadCrop (char *filename, CommunityStruct *Community)
+void ReadCrop (char *filename, comm_struct *Community)
 {
     /*
      * Read crop description file
@@ -25,7 +25,7 @@ void ReadCrop (char *filename, CommunityStruct *Community)
     char            temp[MAXSTRING];
     int             crop_counter = 0;
     int             i;
-    CropStruct     *Crop;
+    crop_struct     *Crop;
 
     /* Open simulation control file */
     sprintf (fullname, "input/%s", filename);
@@ -45,7 +45,7 @@ void ReadCrop (char *filename, CommunityStruct *Community)
 
     /* Allocate memories for Crop classes */
     Community->NumCrop = crop_counter;
-    Community->Crop = (CropStruct *)malloc (crop_counter * sizeof (CropStruct));
+    Community->Crop = (crop_struct *)malloc (crop_counter * sizeof (crop_struct));
 
     /* Rewind to the beginning of file */
     FindLine (crop_file, "BOF");

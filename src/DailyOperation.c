@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, CommunityStruct *Community, ResidueStruct *Residue, SimControlStruct *SimControl, SnowStruct *Snow, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, WeatherStruct *Weather, SummaryStruct *Summary, const char *project)
+void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl, snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon, weather_struct *Weather, summary_struct *Summary, const char *project)
 {
     /*
      * -----------------------------------------------------------------------
@@ -8,9 +8,9 @@ void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, Comm
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * FixedFertilization   FieldOperationStruct*
-     * Tillage		    FieldOperationStruct*
-     * FixedIrrigation	    FieldOperationStruct*
+     * FixedFertilization   op_struct*
+     * Tillage		    op_struct*
+     * FixedIrrigation	    op_struct*
      */
 
     if (doy == 1)
@@ -48,7 +48,7 @@ void DailyOperations (int y, int doy, CropManagementStruct *CropManagement, Comm
     }
 }
 
-void GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, ResidueStruct *Residue, const SimControlStruct *SimControl, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, const WeatherStruct *Weather, const SnowStruct *Snow, const char *project)
+void GrowingCrop (int rotationYear, int y, int d, comm_struct *Community, residue_struct *Residue, const ctrl_struct *SimControl, soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const snow_struct *Snow, const char *project)
 {
     /*
      * Processes that only occur while a crop is growing are performed
@@ -137,7 +137,7 @@ void GrowingCrop (int rotationYear, int y, int d, CommunityStruct *Community, Re
     UpdateCommunity (Community);
 }
 
-void CropStage (int y, int d, CommunityStruct *Community, const WeatherStruct *Weather)
+void CropStage (int y, int d, comm_struct *Community, const weather_struct *Weather)
 {
     int             i;
 
@@ -235,7 +235,7 @@ int ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, i
     return (forced_maturity);
 }
 
-int ForcedClipping (int d, CommunityStruct *Community)
+int ForcedClipping (int d, comm_struct *Community)
 {
     int             i;
     int             clippingWindow = 1;
@@ -301,7 +301,7 @@ int ForcedClipping (int d, CommunityStruct *Community)
     }
 }
 
-void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, const SoilStruct *Soil)
+void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, soilc_struct *SoilCarbon, residue_struct *Residue, const soil_struct *Soil)
 {
     int             i;
 
@@ -350,7 +350,7 @@ void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, SoilCarb
     }
 }
 
-void LastDOY (int y, int simStartYear, int totalLayers, SoilStruct *Soil, SoilCarbonStruct *SoilCarbon, ResidueStruct *Residue, SummaryStruct *Summary, const char *project)
+void LastDOY (int y, int simStartYear, int totalLayers, soil_struct *Soil, soilc_struct *SoilCarbon, residue_struct *Residue, summary_struct *Summary, const char *project)
 {
     int             i;
 

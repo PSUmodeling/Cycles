@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void InitializeOutput (char *project, const CommunityStruct *Community, int layers)
+void InitializeOutput (char *project, const comm_struct *Community, int layers)
 {
     char            filename[150];
     char           *output_dir;
@@ -249,7 +249,7 @@ void InitializeOutput (char *project, const CommunityStruct *Community, int laye
 
 }
 
-void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CommunityStruct *Community, const SoilStruct *Soil, const SnowStruct *Snow, const ResidueStruct *Residue, const char *project)
+void PrintDailyOutput (int y, int doy, int start_year, const weather_struct *Weather, const comm_struct *Community, const soil_struct *Soil, const snow_struct *Snow, const residue_struct *Residue, const char *project)
 {
     char            filename[50];
     FILE           *output_file;
@@ -257,7 +257,7 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     int             i;
     double          sum;
     int             leap_year = 0;
-    CropStruct     *Crop;
+    crop_struct     *Crop;
 
     if (Weather->lastDoy[y] == 366)
         leap_year = 1;
@@ -451,7 +451,7 @@ void PrintDailyOutput (int y, int doy, int start_year, const WeatherStruct *Weat
     fclose (output_file);
 }
 
-void PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Weather, const CropStruct *Crop, const char *project)
+void PrintSeasonOutput (int y, int doy, int start_year, const weather_struct *Weather, const crop_struct *Crop, const char *project)
 {
     char            filename[50];
     FILE           *output_file;
@@ -491,7 +491,7 @@ void PrintSeasonOutput (int y, int doy, int start_year, const WeatherStruct *Wea
     fclose (output_file);
 }
 
-void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const char *project)
+void PrintAnnualOutput (int y, int start_year, const soil_struct *Soil, const soilc_struct *SoilCarbon, const char *project)
 {
     char            filename[50];
     FILE           *output_file;
@@ -563,7 +563,7 @@ void PrintAnnualOutput (int y, int start_year, const SoilStruct *Soil, const Soi
     fclose (output_file);
 }
 
-void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilStruct *Soil, const SoilCarbonStruct *SoilCarbon, const ResidueStruct *Residue, const char *project)
+void PrintCarbonEvolution (int y, int start_year, int total_layers, const soil_struct *Soil, const soilc_struct *SoilCarbon, const residue_struct *Residue, const char *project)
 {
     char            filename[50];
     FILE           *output_file;
@@ -660,7 +660,7 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const SoilSt
 }
 
 
-void PrintSummary (const SummaryStruct *Summary, int totalYears, const char *project)
+void PrintSummary (const summary_struct *Summary, int totalYears, const char *project)
 {
     char            filename[50];
     FILE           *output_file;

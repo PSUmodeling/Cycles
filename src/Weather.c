@@ -24,13 +24,13 @@ double SatVP (double T)
  *
  * Argument             Type        IO  Description
  * ==========           ==========  ==  ====================
- * Weather              WeatherStruct
+ * Weather              weather_struct
  *                                  IO
  * total_years          int         I
  *
  * RETURN VALUE: void
  ****************************************************************************/
-void CalculateDerivedWeather (WeatherStruct *Weather, int total_years)
+void CalculateDerivedWeather (weather_struct *Weather, int total_years)
 {
     /* LOCAL VARIABLES
      *

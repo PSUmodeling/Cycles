@@ -8,7 +8,7 @@
  * Variables                Type        Description
  * ==========               ==========  ====================
  * ---------------------------------------------------------------------------
- * SimControlStruct         struct      Simulation control structure
+ * ctrl_struct         struct      Simulation control structure
  *  simStartYear            int         Simulation start year
  *  simEndYear              int         Simulation end year
  *  totalYears              int         Total simulation years
@@ -32,7 +32,7 @@
  *  profileOutput           int         Flag to control profile output
  *  seasonOutput            int         Flag to control seasonal output
  * ---------------------------------------------------------------------------
- * SoilStruct               struct      Soil structure
+ * soil_struct               struct      Soil structure
  *  totalLayers             int         Total soil layers [input]
  *  Curve_Number            double      Curve number [input]
  *  Percent_Slope           double      Slope [input]
@@ -95,7 +95,7 @@
  *
  *
  ***************************************************************************/
-typedef struct SimControlStruct
+typedef struct ctrl_struct
 {
     int             simStartYear;
     int             simEndYear;
@@ -122,9 +122,9 @@ typedef struct SimControlStruct
     char            operation_filename[128];
     char            weather_filename[128];
     char            soil_filename[128];
-} SimControlStruct;
+} ctrl_struct;
 
-typedef struct SoilStruct
+typedef struct soil_struct
 {
     int             totalLayers;
     double          Curve_Number;
@@ -152,11 +152,6 @@ typedef struct SoilStruct
     double         *B_Value;
     double         *M_Value;
     double         *ksat;
-#ifdef _CYCLES_
-    double         *alpha;
-    double         *beta;
-    double         *theta_r;
-#endif
 
     double         *n2o;
 
@@ -198,9 +193,9 @@ typedef struct SoilStruct
     double          NO3_Denitrification;
     double          N2O_Denitrification;
     double          NH4_Volatilization;
-} SoilStruct;
+} soil_struct;
 
-typedef struct CropStruct
+typedef struct crop_struct
 {
     /* Instance of the crop that is being planted */
     char            cropName[128];
@@ -329,9 +324,9 @@ typedef struct CropStruct
     double          rcNitrogenInHarvest;
     double          rcNitrogenInResidue;
     double          rcNitrogenForageConc;
-} CropStruct;
+} crop_struct;
 
-typedef struct CommunityStruct
+typedef struct comm_struct
 {
     /* State Variables */
     double          svRadiationInterception;
@@ -354,12 +349,12 @@ typedef struct CommunityStruct
     double          svWaterStressFactor;
     double          svN_StressFactor;
 
-    CropStruct     *Crop;
+    crop_struct    *Crop;
     int             NumCrop;
     int             NumActiveCrop;
-} CommunityStruct;
+} comm_struct;
 
-typedef struct FieldOperationStruct
+typedef struct op_struct
 {
     int             opYear;
     int             opDay;
@@ -405,16 +400,16 @@ typedef struct FieldOperationStruct
     double          opP_Inorganic;
     double          opK;
     double          opS;
-} FieldOperationStruct;
+} op_struct;
 
-typedef struct autoIrrigationStruct
+typedef struct autoirr_struct
 {
     char            cropName[128];
     int             startDay;
     int             stopDay;
     double          waterDepletion;
     int             lastSoilLayer;
-} autoIrrigationStruct;
+} autoirr_struct;
 //
 //typedef struct autoFertilizationStruct
 //{
@@ -427,40 +422,40 @@ typedef struct autoIrrigationStruct
 //    char            method[MAXSTRING];
 //} autoFertilizationStruct;
 
-typedef struct CropManagementStruct
+typedef struct cropmgmt_struct
 {
     int             rotationYear;
 
-    FieldOperationStruct *FixedFertilization;
+    op_struct *FixedFertilization;
     int             numFertilization;
 
-    FieldOperationStruct *FixedIrrigation;
+    op_struct *FixedIrrigation;
     int             numIrrigation;
 
-    FieldOperationStruct *Tillage;
+    op_struct *Tillage;
     int             numTillage;
     double         *tillageFactor;
 
-    FieldOperationStruct *plantingOrder;
+    op_struct *plantingOrder;
     int             totalCropsPerRotation;
 
-    autoIrrigationStruct *autoIrrigation;
+    autoirr_struct *autoIrrigation;
     int             numAutoIrrigation;
 
     int             usingAutoIrr;
     int             usingAutoFert;
-} CropManagementStruct;
+} cropmgmt_struct;
 
-typedef struct SnowStruct
+typedef struct snow_struct
 {
     double          Snow;
     double          snowFall;
     double          snowMelt;
     double          snowCover;
     double          snowEvaporationVol;
-} SnowStruct;
+} snow_struct;
 
-typedef struct ResidueStruct
+typedef struct residue_struct
 {
     double          residueInterception;
     double          stanResidueTau;
@@ -487,9 +482,9 @@ typedef struct ResidueStruct
     double          yearRhizodepositionBiomass;
     double         *manureC;
     double         *manureN;    /* Mg/ha */
-} ResidueStruct;
+} residue_struct;
 
-typedef struct SoilCarbonStruct
+typedef struct soilc_struct
 {
     double         *factorComposite;
     double         *carbonRespired;
@@ -519,9 +514,9 @@ typedef struct SoilCarbonStruct
     double          annualNitrousOxidefromDenitrification;
     double          annualNitrateLeaching;
     double          annualAmmoniumLeaching;
-} SoilCarbonStruct;
+} soilc_struct;
 
-typedef struct WeatherStruct
+typedef struct weather_struct
 {
     double          siteAltitude;
     double          siteLatitude;
@@ -539,16 +534,16 @@ typedef struct WeatherStruct
     double        **tMax;
     double        **tMin;
     double          atmosphericPressure;
-} WeatherStruct;
+} weather_struct;
 
-typedef struct PrintStruct
+typedef struct print_struct
 {
     char	    var_name[16];
     char	    unit[16];
     double	   *print_var;
-} PrintStruct;
+} print_struct;
 
-typedef struct SummaryStruct
+typedef struct summary_struct
 {
     double          abgd_c_input;
     double          root_c_input;
@@ -569,41 +564,22 @@ typedef struct SummaryStruct
     double          nh4_leaching;
     double          initial_soc;
     double          final_soc;
-} SummaryStruct;
-
-#ifdef _CYCLES_
-typedef struct grid_struct
-{
-    SoilStruct      Soil;
-    CropManagementStruct CropManagement;
-    CommunityStruct Community;
-    ResidueStruct   Residue;
-    SoilCarbonStruct SoilCarbon;
-    WeatherStruct   Weather;
-    SnowStruct      Snow;
-    SummaryStruct   Summary;
-} grid_struct;
-#endif
+} summary_struct;
 
 typedef struct CyclesStruct
 {
-    SimControlStruct SimControl;
+    ctrl_struct     SimControl;
 
-#ifdef _CYCLES_
-    grid_struct    *grid;
-#else
-    SoilStruct      Soil;
-    CropManagementStruct CropManagement;
-    CommunityStruct Community;
-    ResidueStruct   Residue;
-    SoilCarbonStruct SoilCarbon;
-    WeatherStruct   Weather;
-    SnowStruct      Snow;
-    SummaryStruct   Summary;
-#endif
+    soil_struct      Soil;
+    cropmgmt_struct CropManagement;
+    comm_struct     Community;
+    residue_struct  Residue;
+    soilc_struct    SoilCarbon;
+    weather_struct  Weather;
+    snow_struct     Snow;
+    summary_struct  Summary;
 
-    PrintStruct    *daily_output;
-    PrintStruct    *annual_output;
+    print_struct   *daily_output;
+    print_struct   *annual_output;
 } *CyclesStruct;
-
 #endif

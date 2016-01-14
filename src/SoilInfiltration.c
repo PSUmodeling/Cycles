@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void Redistribution (int y, int doy, double precipitation, double snowFall, double snowMelt, int hourlyInfiltration, const CommunityStruct *Community, SoilStruct *Soil, ResidueStruct *Residue)
+void Redistribution (int y, int doy, double precipitation, double snowFall, double snowMelt, int hourlyInfiltration, const comm_struct *Community, soil_struct *Soil, residue_struct *Residue)
 {
     /*
      * This sub controls surface hydrology, infiltration, and redistribution
@@ -16,7 +16,7 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
      */
 
     double          irrigation_vol;
-    CropStruct     *Crop;
+    crop_struct     *Crop;
     int             i;
 
     Soil->infiltrationVol = 0.0;
@@ -75,7 +75,7 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
         CascadeRedistribution (Soil);
 }
 
-void CascadeRedistribution (SoilStruct *Soil)
+void CascadeRedistribution (soil_struct *Soil)
 {
     /*
      * Cascade approach, excess from FC is drainage
@@ -131,7 +131,7 @@ void CascadeRedistribution (SoilStruct *Soil)
     SoluteTransport (Soil->totalLayers, 5.6, 0, &(Soil->NH4Leaching), WFlux, Soil->NH4, Soil->BD, Soil->layerThickness, Soil->Porosity, WCi);
 }
 
-void SubDailyRedistribution (SoilStruct *Soil)
+void SubDailyRedistribution (soil_struct *Soil)
 {
     /*
      * -----------------------------------------------------------------------
@@ -407,7 +407,7 @@ void SubDailyRedistribution (SoilStruct *Soil)
         Soil->waterContent[j] = WC[j] > 0.01 ? WC[j] : 0.01;
 }
 
-void CurveNumber (SoilStruct *Soil)
+void CurveNumber (soil_struct *Soil)
 {
     /*
      * -----------------------------------------------------------------------

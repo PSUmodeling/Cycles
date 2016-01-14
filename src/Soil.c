@@ -1,9 +1,9 @@
 #include "Cycles.h"
 
 #ifdef _CYCLES_
-void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl, const soil_struct *soil)
+void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *SimControl, const soil_struct *soil)
 #else
-void InitializeSoil (SoilStruct *Soil, WeatherStruct *Weather, SimControlStruct *SimControl)
+void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *SimControl)
 #endif
 {
     /*

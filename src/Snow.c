@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void SnowProcesses (SnowStruct *Snow, int y, int doy, WeatherStruct *Weather, double TauStandingRes, double CropInterception)
+void SnowProcesses (snow_struct *Snow, int y, int doy, weather_struct *Weather, double TauStandingRes, double CropInterception)
 {
     /*
      * 
@@ -40,7 +40,7 @@ void SnowProcesses (SnowStruct *Snow, int y, int doy, WeatherStruct *Weather, do
     }
 }
 
-void CalculateSnowFall (SnowStruct *Snow, double Tavg, double PP)
+void CalculateSnowFall (snow_struct *Snow, double Tavg, double PP)
 {
     if (PP > 0.0 && Tavg < THRESHOLD_TEMPERATURE_SNOWFALL)
     {
@@ -49,7 +49,7 @@ void CalculateSnowFall (SnowStruct *Snow, double Tavg, double PP)
     }
 }
 
-void CalculateSnowMelt (SnowStruct *Snow, double Tavg, double Tx, double Tn)
+void CalculateSnowMelt (snow_struct *Snow, double Tavg, double Tx, double Tn)
 {
     /*
      * 
@@ -75,7 +75,7 @@ void CalculateSnowMelt (SnowStruct *Snow, double Tavg, double Tx, double Tn)
     Snow->Snow = Snow->Snow - Snow->snowMelt;
 }
 
-void CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRes, double CropInterception, double ETo)
+void CalculateSnowEvaporation (snow_struct *Snow, double TauStandingRes, double CropInterception, double ETo)
 {
     /*
      * 
@@ -98,7 +98,7 @@ void CalculateSnowEvaporation (SnowStruct *Snow, double TauStandingRes, double C
     Snow->Snow = Snow->Snow - Snow->snowEvaporationVol;
 }
 
-double CalculateSnowCover (SnowStruct *Snow)
+double CalculateSnowCover (snow_struct *Snow)
 {
     /*
      * 

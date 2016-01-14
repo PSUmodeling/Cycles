@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ReadOperation (char *filename, CropManagementStruct *CropManagement, const CommunityStruct *Community, int yearsInRotation)
+void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_struct *Community, int yearsInRotation)
 {
     /*
      * Read field operation description file
@@ -27,7 +27,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
      * tempyear		    int
      * i		    int		Loop counter
      * j		    int		Loop counter
-     * q		    FieldOperationStruct*
+     * q		    op_struct*
      */
     FILE           *operation_file;
     char           *fullname;
@@ -38,7 +38,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     int             fertilization_counter = 0;
     int             auto_irrigation_counter = 0;
     int             i, j;
-    FieldOperationStruct *q;
+    op_struct *q;
 
     /* Open field operation file */
     fullname = (char *)malloc ((strlen (filename) + 7) * sizeof (char));
@@ -73,19 +73,19 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
 
     /* Allocate memories for field operation classes */
     CropManagement->totalCropsPerRotation = planting_counter;
-    CropManagement->plantingOrder = (FieldOperationStruct *)malloc (planting_counter * sizeof (FieldOperationStruct));
+    CropManagement->plantingOrder = (op_struct *)malloc (planting_counter * sizeof (op_struct));
 
     CropManagement->numFertilization = fertilization_counter;
-    CropManagement->FixedFertilization = (FieldOperationStruct *)malloc (fertilization_counter * sizeof (FieldOperationStruct));
+    CropManagement->FixedFertilization = (op_struct *)malloc (fertilization_counter * sizeof (op_struct));
 
     CropManagement->numIrrigation = irrigation_counter;
-    CropManagement->FixedIrrigation = (FieldOperationStruct *)malloc (irrigation_counter * sizeof (FieldOperationStruct));
+    CropManagement->FixedIrrigation = (op_struct *)malloc (irrigation_counter * sizeof (op_struct));
 
     CropManagement->numTillage = tillage_counter;
-    CropManagement->Tillage = (FieldOperationStruct *)malloc (tillage_counter * sizeof (FieldOperationStruct));
+    CropManagement->Tillage = (op_struct *)malloc (tillage_counter * sizeof (op_struct));
 
     CropManagement->numAutoIrrigation = auto_irrigation_counter;
-    CropManagement->autoIrrigation = (autoIrrigationStruct *)malloc (auto_irrigation_counter * sizeof (autoIrrigationStruct));
+    CropManagement->autoIrrigation = (autoirr_struct *)malloc (auto_irrigation_counter * sizeof (autoirr_struct));
     CropManagement->usingAutoIrr = 0;
 
     if (planting_counter)
@@ -401,7 +401,7 @@ void ReadOperation (char *filename, CropManagementStruct *CropManagement, const 
     }
 }
 
-int CropExist (char *cropName, const CommunityStruct *Community)
+int CropExist (char *cropName, const comm_struct *Community)
 {
     int             i;
     int             exist = 0;
