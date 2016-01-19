@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ReadSimControl (char *project, ctrl_struct *SimControl)
+void ReadSimControl (char *filename, ctrl_struct *SimControl)
 {
     /*
      * Read simulation control file
@@ -14,11 +14,9 @@ void ReadSimControl (char *project, ctrl_struct *SimControl)
      * filename		    char*	Simulation control file name
      */
     FILE           *simctrl_file;
-    char            filename[MAXSTRING];
     char            cmdstr[MAXSTRING];
 
     /* Open simulation control file */
-    sprintf (filename, "input/%s.ctrl", project);
     simctrl_file = fopen (filename, "r");
     printf ("%-30s %s.\n", "Read simulation control file:", filename);
 

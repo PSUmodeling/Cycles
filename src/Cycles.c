@@ -27,6 +27,7 @@ int main (int argc, char *argv[])
 
     CyclesStruct    Cycles;     /* Model structure */
     char            project[MAXSTRING];    /* Name of simulation */
+    char            filename[MAXSTRING];
 
     time (&begin_t);
 
@@ -89,7 +90,8 @@ int main (int argc, char *argv[])
      * Read input files
      */
     /* Read simulation control input file */
-    ReadSimControl (project, &Cycles->SimControl);
+    sprintf (filename, "input/%s.ctrl", project);
+    ReadSimControl (filename, &Cycles->SimControl);
 
     /* Read soil description file */
     ReadSoil (Cycles->SimControl.soil_filename, &Cycles->Soil);
