@@ -1,9 +1,7 @@
 #ifndef CYCLES_CONST_HEADER
 #define CYCLES_CONST_HEADER
 
-#ifndef _CYCLES_
 #define PI              3.14159265358979
-#endif
 #define MAXSTRING       1024
 #define BADVAL          -999
 

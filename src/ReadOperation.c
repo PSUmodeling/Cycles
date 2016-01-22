@@ -114,14 +114,14 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             ReadKeywordStr (cmdstr, "CROP", q->cropName);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "AUTO_IRRIGATION", &q->usesAutoIrrigation);
+            ReadKeywordInt (cmdstr, "USE_AUTO_IRR", &q->usesAutoIrrigation);
             if (CropManagement->plantingOrder[i].usesAutoIrrigation == 0)
                 CropManagement->plantingOrder[i].usesAutoIrrigation = -1;
             else
                 CropManagement->usingAutoIrr = 1;
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "AUTO_FERTILIZATION", &q->usesAutoFertilization);
+            ReadKeywordInt (cmdstr, "USE_AUTO_FERT", &q->usesAutoFertilization);
             if (CropManagement->plantingOrder[i].usesAutoFertilization == 0)
                 CropManagement->plantingOrder[i].usesAutoFertilization = -1;
 

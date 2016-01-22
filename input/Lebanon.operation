@@ -16,8 +16,8 @@ PLANTING
 YEAR                1
 DOY                 110
 CROP                Maize
-AUTO_IRRIGATION     0
-AUTO_FERTILIZATION  0
+USE_AUTO_IRR        0
+USE_AUTO_FERT       0
 FRACTION            1.0
 CLIPPING_START      1
 CLIPPING_END        366
