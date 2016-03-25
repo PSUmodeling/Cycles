@@ -131,6 +131,9 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, crop_struct 
     double          PRG;
     double          PTG;
     double          factorT;
+    double			Sn;
+    double			Sx;
+    double			SF;
     const double    RRD = 0.6;
 
     daytimeVPD = 0.66 * SatVP (Weather->tMax[y][doy - 1]) * (1.0 - Weather->RHmin[y][doy - 1] / 100.0);
@@ -140,12 +143,6 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, crop_struct 
 
     /* g/MJ solar radiation intercepted, 0.01 converts to Mg/ha */
     RUE = 0.01 * Crop->userRadiationUseEfficiency;
-    if (Weather->tMax[y][doy - 1] > Crop->userTemperatureOptimum)
-    {
-        factorT = TemperatureFunctionGrowth (Crop->userTemperatureMaximum, Crop->userTemperatureOptimum, Crop->userTemperatureBase, 0.75 * Weather->tMax[y][doy - 1] + 0.25 * Weather->tMin[y][doy - 1]);
-        RUE *= pow (factorT, 0.75);
-    }
-
     TUE = 0.01 * Crop->userTranspirationUseEfficiency * pow (daytimeVPD, -0.59);
     ShootPartitioning = ShootBiomassPartitioning (Stage, Crop->userShootPartitionInitial, Crop->userShootPartitionFinal);
 
@@ -158,8 +155,32 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, crop_struct 
     Crop->svUnstressedRootDailyGrowth = UnstressedGrowth * (1.0 - ShootPartitioning) * RRD;
     Crop->svShootUnstressed += Crop->svUnstressedShootDailyGrowth;
 
+    if (Weather->tMax[y][doy - 1] > Crop->userTemperatureOptimum)
+    {
+        factorT = TemperatureFunctionGrowth (Crop->userTemperatureMaximum, Crop->userTemperatureOptimum, Crop->userTemperatureBase, 0.75 * Weather->tMax[y][doy - 1] + 0.25 * Weather->tMin[y][doy - 1]);
+    }
+    else
+    {
+    	factorT = 1.0;
+    }
+
+    /* Select max and min stress */
+    if (pow (factorT, 0.75) > Crop->svN_StressFactor)
+    {
+        Sx = pow (factorT, 0.75);
+        Sn = Crop->svN_StressFactor;
+    }
+    else
+    {
+         Sx = Crop->svN_StressFactor;
+         Sn = pow (factorT, 0.75) ;
+    }
+	
+	SF = 1.0 - pow (1.0 - Sn, Sx);
+
+
     /* Actual growth rate */
-    RadiationGrowth = Crop->svRadiationInterception * Weather->solarRadiation[y][doy - 1] * RUE * (1.0 - pow (Crop->svN_StressFactor, 1.0));
+    RadiationGrowth = Crop->svRadiationInterception * Weather->solarRadiation[y][doy - 1] * RUE * (1.0 - pow (SF, 1.0));
     /* This coefficient is higher to represent drop in WUE with N stress
      * (radiation limits more) */
     TranspirationGrowth = Crop->svTranspiration * TUE * (1.0 - pow (Crop->svN_StressFactor, 1.25));
