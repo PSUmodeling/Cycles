@@ -132,7 +132,7 @@ double          NetRadiation (double Pot_Rad, double Solar_Rad, double Actual_VP
 double          Aero_Res (double uz, double z);
 
 /* Residue.c */
-void            InitializeResidue (residue_struct *Residue, int totalYears, int totalLayers);
+void            InitializeResidue (residue_struct *Residue, int totalLayers);
 void            ComputeResidueCover (residue_struct *Residue);
 void            ResidueWetting (residue_struct *Residue, soil_struct *Soil);
 void            ResidueEvaporation (residue_struct *Residue, soil_struct *Soil, const comm_struct *Community, double ETo, double snowCover);
@@ -148,7 +148,7 @@ double          CalculateSnowCover (snow_struct *Snow);
 #ifdef _CYCLES_
 void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *SimControl, const soil_struct *soil);
 #else
-void            InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *SimControl);
+void            InitializeSoil (soil_struct *Soil, weather_struct *Weather);
 #endif
 #ifdef _CYCLES_
 double SoilWaterPotential (double porosity, double thetar, double alpha, double beta, double water_content);

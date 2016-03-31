@@ -1,7 +1,39 @@
+#ifdef _CYCLES_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
 void InitializeSoilCarbon (soilc_struct *SoilCarbon, int totalLayers)
 {
+#ifdef _CYCLES_
+    int             k;
+
+    for (k = 0; k < totalLayers; k++)
+    {
+        SoilCarbon->factorComposite[k] = 0.0;
+        SoilCarbon->carbonRespired[k] = 0.0;
+        SoilCarbon->rootBiomassInput[k] = 0.0;
+        SoilCarbon->rhizBiomassInput[k] = 0.0;
+        SoilCarbon->abgdBiomassInput[k] = 0.0;
+        SoilCarbon->rootCarbonInput[k] = 0.0;
+        SoilCarbon->rhizCarbonInput[k] = 0.0;
+        SoilCarbon->manuCarbonInput[k] = 0.0;
+        SoilCarbon->abgdCarbonInput[k] = 0.0;
+        SoilCarbon->carbonMassInitial[k] = 0.0;
+        SoilCarbon->carbonMassFinal[k] = 0.0;
+        SoilCarbon->annualDecompositionFactor[k] = 0.0;
+        SoilCarbon->annualSoilCarbonDecompositionRate[k] = 0.0;
+        SoilCarbon->annualCarbonInputByLayer[k] = 0.0;
+        SoilCarbon->annualHumifiedCarbonMass[k] = 0.0;
+        SoilCarbon->annualRespiredCarbonMass[k] = 0.0;
+        SoilCarbon->annualRespiredResidueCarbonMass[k] = 0.0;
+        SoilCarbon->annualHumificationCoefficient[k] = 0.0;
+        SoilCarbon->annualNmineralization[k] = 0.0;
+        SoilCarbon->annualNImmobilization[k] = 0.0;
+        SoilCarbon->annualNNetMineralization[k] = 0.0;
+    }
+#else
     SoilCarbon->factorComposite = (double *)calloc (totalLayers, sizeof (double));
     SoilCarbon->carbonRespired = (double *)calloc (totalLayers, sizeof (double));
     SoilCarbon->rootBiomassInput = (double *)calloc (totalLayers, sizeof (double));
@@ -23,6 +55,7 @@ void InitializeSoilCarbon (soilc_struct *SoilCarbon, int totalLayers)
     SoilCarbon->annualNmineralization = (double *)calloc (totalLayers, sizeof (double));
     SoilCarbon->annualNImmobilization = (double *)calloc (totalLayers, sizeof (double));
     SoilCarbon->annualNNetMineralization = (double *)calloc (totalLayers, sizeof (double));
+#endif
 }
 
 void ComputeFactorComposite (soilc_struct *SoilCarbon, int doy, int y, int last_doy, soil_struct *Soil)
@@ -53,7 +86,7 @@ void ComputeFactorComposite (soilc_struct *SoilCarbon, int doy, int y, int last_
     for (i = 0; i < Soil->totalLayers; i++)
     {
 #ifdef _CYCLES_
-        waterPotential = SoilWaterPotential (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], Soil->waterContent[i]);
+        waterPotential = Psi ((Soil->waterContent[i] - Soil->smcmin) / (Soil->Porosity[i] - Soil->smcmin), Soil->alpha, Soil->beta) * GRAV;
 #else
         waterPotential = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
 #endif

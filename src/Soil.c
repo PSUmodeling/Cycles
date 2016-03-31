@@ -1,9 +1,13 @@
+#ifdef _CYCLES_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
 #ifdef _CYCLES_
-void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *SimControl, const soil_struct *soil)
+void InitializeSoil (soil_struct *Soil, const soiltbl_struct *soiltbl, const ps_struct *ps)
 #else
-void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *SimControl)
+void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
 #endif
 {
     /*
@@ -21,53 +25,100 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *Si
      * rr		    double
      * i		    int		Loop counter
      */
+#ifndef _CYCLES_
     double          sb;
     double          sAP;
     double          sBD;
     double          s33;
     double          s1500;
     double          rr;
-
-    int             i;
-
-    /* Initialize soil vairables */
-    Soil->nodeDepth = (double *)malloc ((Soil->totalLayers + 1) * sizeof (double));
-    Soil->cumulativeDepth = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->waterContent = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->Porosity = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->PAW = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->FC_WaterPotential = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->airEntryPotential = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->B_Value = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->M_Value = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->ksat = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->SOC_Conc = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->SOC_Mass = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->SON_Mass = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->MBC_Mass = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->MBN_Mass = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->waterUptake = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->pH = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->n2o = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-#ifdef _CYCLES_
-    Soil->alpha = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->beta = (double *)malloc ((Soil->totalLayers) * sizeof (double));
-    Soil->theta_r = (double *)malloc ((Soil->totalLayers) * sizeof (double));
+#else
+    int             ind;
 #endif
 
-    for (i = 0; i < Soil->totalLayers; i++)
+    int             i;
+    int             n;
+
+#ifdef _CYCLES_
+    n = ps->nsoil;
+    ind = Soil->type - 1;
+
+    for (i = 0; i < n; i++)
+    {
+        Soil->layerThickness[i] = ps->sldpth[i];
+        Soil->FC[i] = Soil->smcref;
+        Soil->PWP[i] = Soil->smcwlt;
+
+        if (i < soiltbl->totalLayers[ind])
+        {
+            Soil->Clay[i] = soiltbl->clay_lyr[ind][i];
+            Soil->Sand[i] = soiltbl->sand_lyr[ind][i];
+            Soil->IOM[i] = soiltbl->iom_lyr[ind][i];
+            if ((int)soiltbl->bd_lyr[ind][i] != BADVAL)
+            {
+                Soil->BD[i] = soiltbl->bd_lyr[ind][i];
+            }
+            else
+            {
+                Soil->BD[i] = BulkDensity (Soil->Clay[i] / 100.0, Soil->Sand[i] / 100.0, Soil->IOM[i]);
+            }
+            Soil->NO3[i] = soiltbl->NO3_lyr[ind][i];
+            Soil->NH4[i] = soiltbl->NH4_lyr[ind][i];
+        }
+        else
+        {
+            Soil->Clay[i] = Soil->Clay[soiltbl->totalLayers[ind] - 1];
+            Soil->Sand[i] = Soil->Sand[soiltbl->totalLayers[ind] - 1];
+            Soil->IOM[i] = Soil->IOM[soiltbl->totalLayers[ind] - 1];
+            Soil->BD[i] = Soil->BD[soiltbl->totalLayers[ind] - 1];
+            Soil->NO3[i] = Soil->NO3[soiltbl->totalLayers[ind] - 1];
+            Soil->NH4[i] = Soil->NH4[soiltbl->totalLayers[ind] - 1];
+        }
+    }
+
+    Soil->totalLayers = n;
+#else
+    n = Soil->totalLayers;
+#endif
+
+    /* Initialize soil vairables */
+#ifndef _CYCLES_
+    Soil->nodeDepth = (double *)malloc ((n + 1) * sizeof (double));
+    Soil->cumulativeDepth = (double *)malloc (n * sizeof (double));
+    Soil->waterContent = (double *)malloc (n * sizeof (double));
+    Soil->Porosity = (double *)malloc (n * sizeof (double));
+    Soil->PAW = (double *)malloc (n * sizeof (double));
+    Soil->FC_WaterPotential = (double *)malloc (n * sizeof (double));
+    Soil->airEntryPotential = (double *)malloc (n * sizeof (double));
+    Soil->B_Value = (double *)malloc (n * sizeof (double));
+    Soil->M_Value = (double *)malloc (n * sizeof (double));
+    Soil->ksat = (double *)malloc (n * sizeof (double));
+    Soil->SOC_Conc = (double *)malloc (n * sizeof (double));
+    Soil->SOC_Mass = (double *)malloc (n * sizeof (double));
+    Soil->SON_Mass = (double *)malloc (n * sizeof (double));
+    Soil->MBC_Mass = (double *)malloc (n * sizeof (double));
+    Soil->MBN_Mass = (double *)malloc (n * sizeof (double));
+    Soil->waterUptake = (double *)malloc (n * sizeof (double));
+    Soil->pH = (double *)malloc (n * sizeof (double));
+    Soil->n2o = (double *)malloc (n * sizeof (double));
+    Soil->soilTemperature = (double *)malloc ((n + 1) * sizeof (double));
+#endif
+
+    for (i = 0; i < n; i++)
+    {
         Soil->cumulativeDepth[i] = 0.0;
+    }
 
     Soil->cumulativeDepth[0] = Soil->layerThickness[0];
     Soil->nodeDepth[0] = 0.5 * Soil->layerThickness[0];
 
-    for (i = 0; i < Soil->totalLayers; i++)
+    for (i = 0; i < n; i++)
     {
-        Soil->Clay[i] = Soil->Clay[i] / 100.0;
-        Soil->Sand[i] = Soil->Sand[i] / 100.0;
+        Soil->Clay[i] /= 100.0;
+        Soil->Sand[i] /= 100.0;
         Soil->IOM[i] = Soil->IOM[i];
-        Soil->NO3[i] = Soil->NO3[i] / 1000.0;
-        Soil->NH4[i] = Soil->NH4[i] / 1000.0;
+        Soil->NO3[i] /= 1000.0;
+        Soil->NH4[i] /= 1000.0;
         if (i > 0)
         {
             Soil->cumulativeDepth[i] = Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i];
@@ -75,11 +126,16 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *Si
         }
     }
 
-    Soil->nodeDepth[Soil->totalLayers] = Soil->cumulativeDepth[Soil->totalLayers - 1] + Soil->layerThickness[Soil->totalLayers - 1] / 2.0;
+    Soil->nodeDepth[n] = Soil->cumulativeDepth[n - 1] + Soil->layerThickness[n - 1] / 2.0;
 
-    /* Compute hydraulic properties */
-    for (i = 0; i < Soil->totalLayers; i++)
+    /* 
+     * Compute hydraulic properties
+     */
+    for (i = 0; i < n; i++)
     {
+#ifdef _CYCLES_
+        Soil->Porosity[i] = Soil->smcmax;
+#else
         sBD = BulkDensity (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
         s33 = VolumetricWCAt33Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
         s1500 = VolumetricWCAt1500Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
@@ -95,17 +151,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *Si
             Soil->airEntryPotential[i] = sAP;
         }
 
-#ifdef _CYCLES_
-        Soil->alpha[i] = soil->alpha;
-        Soil->beta[i] = soil->beta;
-        Soil->theta_r[i] = soil->thetar;
-#endif
-
-#ifdef _CYCLES_
-        Soil->Porosity[i] = soil->porosity;
-#else
         Soil->Porosity[i] = 1.0 - Soil->BD[i] / 2.65;
-#endif
         Soil->B_Value[i] = sb;
         Soil->M_Value[i] = 2.0 * Soil->B_Value[i] + 3.0;
 
@@ -113,30 +159,17 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *Si
         if ((int)Soil->FC[i] == (int)BADVAL)
         {
             Soil->FC_WaterPotential[i] = -0.35088 * Soil->Clay[i] * 100.0 - 28.947;
-#ifdef _CYCLES_
-            Soil->FC[i] = SoilWaterContent (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], Soil->FC_WaterPotential[i]);
-#else
             Soil->FC[i] = SoilWaterContent (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->FC_WaterPotential[i]);
-#endif
         }
         else
         {
-#ifdef _CYCLES_
-            Soil->FC_WaterPotential[i] = SoilWaterPotential (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], Soil->FC[i]);
-#else
             Soil->FC_WaterPotential[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->FC[i]);
-#endif
-
         }
 
 	/* Permanent Wilting Point switch */
         if ((int)Soil->PWP[i] == (int)BADVAL)
         {
-#ifdef _CYCLES_
-            Soil->PWP[i] = SoilWaterContent (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], -1500.0);
-#else
             Soil->PWP[i] = SoilWaterContent (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], -1500.0);
-#endif
         }
 
         if (Soil->PWP[i] >= Soil->FC[i])
@@ -155,15 +188,12 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *Si
             Soil->FC[i] = (rr * Soil->PWP[i] + Soil->Porosity[i]) / (1.0 + rr);
         }
 
-#ifdef _CYCLES_
-        Soil->ksat[i] = soil->ksatv * 1000.0 * 9.81;
-#else
         Soil->ksat[i] = K_Sat (Soil->Porosity[i], Soil->FC[i], Soil->B_Value[i]);
 #endif
     }
 
     /* Initialize variables depending on previous loop */
-    for (i = 0; i < Soil->totalLayers; i++)
+    for (i = 0; i < n; i++)
     {
         Soil->SOC_Conc[i] = Soil->IOM[i] * 10.0 * 0.58;
         Soil->SOC_Mass[i] = Soil->IOM[i] / 100.0 * 0.58 * Soil->layerThickness[i] * Soil->BD[i] * 10000.0;
@@ -177,6 +207,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *Si
         Soil->waterContent[i] = (Soil->FC[i] + Soil->PWP[i]) / 2.0;
     }
 
+#ifndef _CYCLES_
     /* Initializes soil temperature in first day of simulation */
     Soil->dampingDepth = 2.0;
 
@@ -185,102 +216,86 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather, ctrl_struct *Si
     else
         Soil->annualTemperaturePhase = 280.0;
 
-    Soil->soilTemperature = (double *)malloc ((Soil->totalLayers + 1) * sizeof (double));
-
-    for (i = 0; i < Soil->totalLayers + 1; i++)
+    for (i = 0; i < n + 1; i++)
         Soil->soilTemperature[i] = EstimatedSoilTemperature (Soil->nodeDepth[i], 1, Weather->annualAverageTemperature[0], Weather->yearlyAmplitude[0], Soil->annualTemperaturePhase, Soil->dampingDepth);
 
     if (debug_mode)
     {
         printf ("\n*Soil properties after initialization:\n");
         printf ("\n*%-30s\t", "Clay");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->Clay[i]);
         printf ("\n*%-30s\t", "Sand");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->Sand[i]);
         printf ("\n*%-30s\t", "IOM");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->IOM[i]);
         printf ("\n*%-30s\t", "NO3");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->NO3[i]);
         printf ("\n*%-30s\t", "NH4");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->NH4[i]);
         printf ("\n*%-30s\t", "Node Depth");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->nodeDepth[i]);
         printf ("\n*%-30s\t", "Cumulative Depth");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->cumulativeDepth[i]);
         printf ("\n*%-30s\t", "Bulk density");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->BD[i]);
         printf ("\n*%-30s\t", "Porosity");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->Porosity[i]);
         printf ("\n*%-30s\t", "B");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->B_Value[i]);
         printf ("\n*%-30s\t", "Air Entry Potential");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->airEntryPotential[i]);
         printf ("\n*%-30s\t", "M");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->M_Value[i]);
         printf ("\n*%-30s\t", "Field capacity potential");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->FC_WaterPotential[i]);
         printf ("\n*%-30s\t", "Field capacity");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->FC[i]);
         printf ("\n*%-30s\t", "Wilting Point");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->PWP[i]);
         printf ("\n*%-30s\t", "SOC concentration");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->SOC_Conc[i]);
         printf ("\n*%-30s\t", "SOC mass");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->SOC_Mass[i]);
         printf ("\n*%-30s\t", "SON mass");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->SON_Mass[i]);
         printf ("\n*%-30s\t", "MBC mass");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->MBC_Mass[i]);
         printf ("\n*%-30s\t", "MBN mass");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->MBN_Mass[i]);
         printf ("\n*%-30s\t", "PAW");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->PAW[i]);
         printf ("\n*%-30s\t", "Water content");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->waterContent[i]);
         printf ("\n*%-30s\t", "Initial soil temp");
-        for (i = 0; i < Soil->totalLayers; i++)
+        for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->soilTemperature[i]);
 	printf ("\n");
     }
+#endif
 }
 
-#ifdef _CYCLES_
-double SoilWaterPotential (double porosity, double thetar, double alpha, double beta, double water_content)
-{
-    double          satn;
-
-    /* van Genuchten 1980 SSSAJ */
-    satn = (water_content - thetar) / (porosity - thetar);
-
-    satn = (satn > SATMIN) ? satn : SATMIN;
-    satn = (satn < 1.0) ? satn : 1.0;
-
-    return ((0.0 - pow (pow (1.0 / satn, beta / (beta - 1.0)) - 1.0,
-            1.0 / beta) / alpha) * 9.8);
-}
-#else
 double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campbell_b, double WC)
 {
     /*
@@ -298,7 +313,6 @@ double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campb
 
     return (swp);
 }
-#endif
 
 double VolumetricWCAt33Jkg (double Clay, double Sand, double OM)
 {
@@ -350,23 +364,6 @@ double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM)
     return (vwc);
 }
 
-#ifdef _CYCLES_
-double SoilWaterContent (double thetas, double thetar, double alpha, double beta, double psi)
-{
-    double          m;
-    double          satn;
-
-    /* van Genuchten 1980 SSSAJ */
-    m = 1.0 - 1.0 / beta;
-
-    /* Convert unit: kPa to m */
-    psi = psi / 9.8;
-
-    satn = pow (1.0 / (1.0 + pow (alpha * (0.0 - psi), beta)), m);
-
-    return ((thetas - thetar) * satn + thetar);
-}
-#else
 double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential)
 {
     /* 
@@ -383,7 +380,6 @@ double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbel
 
     return (swc);
 }
-#endif
 
 double BulkDensity (double Clay, double Sand, double OM)
 {

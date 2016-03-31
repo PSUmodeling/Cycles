@@ -65,7 +65,6 @@ void GrowingCrop (int rotationYear, int y, int d, comm_struct *Community, residu
     int             forcedHarvest = 0;
     int             i;
     int             clippingFlag;
-    int             clippingWindow = 1;
 
     /* If any crop in the community is growing, run the growing crop subroutine */
     if (Community->NumActiveCrop <= 0)

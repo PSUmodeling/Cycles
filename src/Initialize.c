@@ -8,10 +8,10 @@ void Initialize (ctrl_struct *SimControl, weather_struct *Weather, soil_struct *
     CalculateDerivedWeather (Weather, SimControl->totalYears);
 
     /* Initialize soil variables */
-    InitializeSoil (Soil, Weather, SimControl);
+    InitializeSoil (Soil, Weather);
 
     /* Initialize residue */
-    InitializeResidue (Residue, SimControl->totalYears, Soil->totalLayers);
+    InitializeResidue (Residue, Soil->totalLayers);
 
     /* Initialize soil carbon */
     InitializeSoilCarbon (SoilCarbon, Soil->totalLayers);

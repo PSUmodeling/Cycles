@@ -1,8 +1,26 @@
+#ifdef _CYCLES_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
-void InitializeResidue (residue_struct *Residue, int totalYears, int totalLayers)
+void InitializeResidue (residue_struct *Residue, int totalLayers)
 {
-    
+#ifdef _CYCLES_
+    int             k;
+
+    for (k = 0; k < totalLayers; k++)
+    {
+        Residue->residueAbgd[k] = 0.0; 
+        Residue->residueRt[k] = 0.0;
+        Residue->residueRz[k] = 0.0;
+        Residue->residueAbgdN[k] = 0.0;
+        Residue->residueRtN[k] = 0.0;
+        Residue->residueRzN[k] = 0.0;
+        Residue->manureC[k] = 0.0;
+        Residue->manureN[k] = 0.0;
+    }
+#else
     Residue->residueAbgd = (double *)calloc (totalLayers, sizeof (double));
     Residue->residueRt = (double *)calloc (totalLayers, sizeof (double));
     Residue->residueRz = (double *)calloc (totalLayers, sizeof (double));
@@ -11,6 +29,7 @@ void InitializeResidue (residue_struct *Residue, int totalYears, int totalLayers
     Residue->residueRzN = (double *)calloc (totalLayers, sizeof (double));
     Residue->manureC = (double *)calloc (totalLayers, sizeof (double));
     Residue->manureN = (double *)calloc (totalLayers, sizeof (double));
+#endif
 
     Residue->residueInterception = 0.0;
     Residue->stanResidueTau = 1.0;
