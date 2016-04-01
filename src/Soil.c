@@ -1,10 +1,10 @@
-#ifdef _CYCLES_
+#ifdef _PIHM_
 #include "pihm.h"
 #else
 #include "Cycles.h"
 #endif
 
-#ifdef _CYCLES_
+#ifdef _PIHM_
 void InitializeSoil (soil_struct *Soil, const soiltbl_struct *soiltbl, const ps_struct *ps)
 #else
 void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
@@ -25,7 +25,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
      * rr		    double
      * i		    int		Loop counter
      */
-#ifndef _CYCLES_
+#ifndef _PIHM_
     double          sb;
     double          sAP;
     double          sBD;
@@ -39,7 +39,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
     int             i;
     int             n;
 
-#ifdef _CYCLES_
+#ifdef _PIHM_
     n = ps->nsoil;
     ind = Soil->type - 1;
 
@@ -82,7 +82,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
 #endif
 
     /* Initialize soil vairables */
-#ifndef _CYCLES_
+#ifndef _PIHM_
     Soil->nodeDepth = (double *)malloc ((n + 1) * sizeof (double));
     Soil->cumulativeDepth = (double *)malloc (n * sizeof (double));
     Soil->waterContent = (double *)malloc (n * sizeof (double));
@@ -133,7 +133,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
      */
     for (i = 0; i < n; i++)
     {
-#ifdef _CYCLES_
+#ifdef _PIHM_
         Soil->Porosity[i] = Soil->smcmax;
 #else
         sBD = BulkDensity (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
@@ -207,7 +207,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
         Soil->waterContent[i] = (Soil->FC[i] + Soil->PWP[i]) / 2.0;
     }
 
-#ifndef _CYCLES_
+#ifndef _PIHM_
     /* Initializes soil temperature in first day of simulation */
     Soil->dampingDepth = 2.0;
 

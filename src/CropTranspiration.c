@@ -1,6 +1,14 @@
+#ifdef _PIHM_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
+#ifdef _PIHM_
+void WaterUptake (comm_struct *Community, soil_struct *Soil, double sfctmp, wf_struct *wf)
+#else
 void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, const weather_struct *Weather)
+#endif
 {
     /* 
      * -----------------------------------------------------------------------
@@ -51,7 +59,6 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, con
     double          TA;
 
     double          transpirationRatio;
-    double          temperatureAvg;
     double          factorTemperature;
 
     double          plantHC;
@@ -74,17 +81,29 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, con
     double          soilWP[Soil->totalLayers];
     double          layerSalinityFactor[Soil->totalLayers];
     crop_struct     *Crop;
+#ifdef _PIHM_
+    double          etp;
+#else
+    double          temperatureAvg;
+#endif
+
+#ifdef _PIHM_
+    /* Convert from K to C */
+    sfctmp -= TFREEZ;
+
+    /* Convert from m s-1 to mm d-1 */
+    etp = wf->etp * 1000.0 * 24.0 * 3600.0;
+#endif
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
         Soil->waterUptake[i] = 0.0;
-#ifdef _CYCLES_
-        soilWP[i] = SoilWaterPotential (Soil->Porosity[i], Soil->theta_r[i], Soil->alpha[i], Soil->beta[i], Soil->waterContent[i]);
+#ifdef _PIHM_
+        soilWP[i] = Psi ((Soil->waterContent[i] - Soil->smcmin) / (Soil->Porosity[i] - Soil->smcmin), Soil->alpha, Soil->beta) * GRAV;
 #else
         soilWP[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
 #endif
     }
-
 
     for (j = 0; j < Community->NumCrop; j++)
     {
@@ -108,11 +127,19 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, con
 
             if (Crop->svTT_Cumulative > Crop->userEmergenceTT)
             {
+#ifdef _PIHM_
+                factorTemperature = TemperatureLimitation (sfctmp, Crop->userTranspirationMinTemperature, Crop->userTranspirationThresholdTemperature);
+#else
                 temperatureAvg = 0.5 * (Weather->tMax[y][doy - 1] + Weather->tMin[y][doy - 1]);
                 factorTemperature = TemperatureLimitation (temperatureAvg, Crop->userTranspirationMinTemperature, Crop->userTranspirationThresholdTemperature);
+#endif
 
                 /* Calculate potential transpiration rate (kg/m2/d = mm/d) */
+#ifdef _PIHM_
+                PT = (1.0 + (Crop->userKc - 1.0) * Community->svRadiationInterception) * factorTemperature * Crop->svRadiationInterception * etp;
+#else
                 PT = (1.0 + (Crop->userKc - 1.0) * Community->svRadiationInterception) * factorTemperature * Crop->svRadiationInterception * Weather->ETref[y][doy - 1];
+#endif
 
                 /* Calculate crop maximum water uptake rate (kg/m2/d = mm/d) */
                 //PTx = PTx * factorTemperature * Crop->svRadiationInterception;
@@ -207,7 +234,13 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, con
     }
 
     for (i = 0; i < Soil->totalLayers; i++)
+    {
+#ifdef _PIHM_
+        wf->et[i] = Soil->waterUptake[i] / 1000.0 / 24.0 / 3600.0;
+#else
         Soil->waterContent[i] -= Soil->waterUptake[i] / (Soil->layerThickness[i] * WATER_DENSITY);
+#endif
+    }
 }
 
 void CalcRootFraction (double *fractionRootsByLayer, soil_struct *Soil, crop_struct *Crop)

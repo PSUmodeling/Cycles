@@ -1,4 +1,4 @@
-#ifdef _CYCLES_
+#ifdef _PIHM_
 #include "pihm.h"
 #else
 #include "Cycles.h"
@@ -6,7 +6,7 @@
 
 void InitializeResidue (residue_struct *Residue, int totalLayers)
 {
-#ifdef _CYCLES_
+#ifdef _PIHM_
     int             k;
 
     for (k = 0; k < totalLayers; k++)

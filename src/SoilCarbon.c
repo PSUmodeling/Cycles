@@ -1,4 +1,4 @@
-#ifdef _CYCLES_
+#ifdef _PIHM_
 #include "pihm.h"
 #else
 #include "Cycles.h"
@@ -6,7 +6,7 @@
 
 void InitializeSoilCarbon (soilc_struct *SoilCarbon, int totalLayers)
 {
-#ifdef _CYCLES_
+#ifdef _PIHM_
     int             k;
 
     for (k = 0; k < totalLayers; k++)
@@ -85,7 +85,7 @@ void ComputeFactorComposite (soilc_struct *SoilCarbon, int doy, int y, int last_
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
-#ifdef _CYCLES_
+#ifdef _PIHM_
         waterPotential = Psi ((Soil->waterContent[i] - Soil->smcmin) / (Soil->Porosity[i] - Soil->smcmin), Soil->alpha, Soil->beta) * GRAV;
 #else
         waterPotential = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->waterContent[i]);
