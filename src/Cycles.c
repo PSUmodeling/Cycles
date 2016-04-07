@@ -118,7 +118,7 @@ int main (int argc, char *argv[])
     /* 
      * Compute crop thermal time
      */
-    ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->Community, &Cycles->Weather);
+    //ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->Community, &Cycles->Weather);
 
     /*
      * Daily Cycles simulation

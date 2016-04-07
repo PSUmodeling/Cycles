@@ -1,4 +1,8 @@
+#ifdef _PIHM_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
 void Processes (int y, int doy, int autoNitrogen, comm_struct *Community, residue_struct *Residue, const weather_struct *Weather, soil_struct *Soil, soilc_struct *SoilCarbon)
 {
@@ -65,7 +69,7 @@ void Processes (int y, int doy, int autoNitrogen, comm_struct *Community, residu
         {
             if (Crop->svRadiationInterception > 0.0)
             {
-                stage = (Crop->svTT_Cumulative - Crop->userEmergenceTT) / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
+                stage = (Crop->svTT_Cumulative - Crop->userEmergenceTT) / (Crop->userMaturityTT - Crop->userEmergenceTT);
 
                 /* Compute reference N concentration of biomass and required
                  * concentration of new growth (Eulerian) */
@@ -96,7 +100,7 @@ void Processes (int y, int doy, int autoNitrogen, comm_struct *Community, residu
 
         /* Distribute rizhodeposition in soil layers */
         if (Crop->stageGrowth > NO_CROP && dailyGrowth[i] > 0.0)
-            DistributeRootDetritus (y, 0.0, Crop->svRizhoDailyDeposition, 0.0, Crop->svN_RizhoDailyDeposition, Soil, Crop, Residue, SoilCarbon);
+            DistributeRootDetritus (0.0, Crop->svRizhoDailyDeposition, 0.0, Crop->svN_RizhoDailyDeposition, Soil, Crop, Residue, SoilCarbon);
     }
 }
 
@@ -136,7 +140,11 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, crop_struct 
     double			SF;
     const double    RRD = 0.6;
 
+#ifdef _PIHM_
+    daytimeVPD = Weather->vpd[y][doy - 1];
+#else
     daytimeVPD = 0.66 * SatVP (Weather->tMax[y][doy - 1]) * (1.0 - Weather->RHmin[y][doy - 1] / 100.0);
+#endif
 
     if (daytimeVPD < 0.2)
         daytimeVPD = 0.2;
@@ -195,7 +203,7 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, crop_struct 
     Crop->svRoot += Crop->svRootDailyGrowth;
     Crop->svRizho += Crop->svRizhoDailyDeposition;
 
-    if (Crop->svTT_Cumulative > Crop->calculatedFloweringTT)
+    if (Crop->svTT_Cumulative > Crop->userFloweringTT)
         Crop->svPostFloweringShootBiomass += Crop->svShootDailyGrowth;
 }
 
@@ -331,10 +339,10 @@ void CropNitrogenStress (double NaAbgd, double NcAbgd, double NnAbgd, crop_struc
     Crop->svN_StressFactor = factor * tempStress + (1.0 - factor) * Crop->svN_StressFactor;
 
     /* calculating cumulative nitrogen stress */
-    if (Crop->svTT_Cumulative < Crop->calculatedMaturityTT)
-        Crop->svN_StressCumulative += Crop->svN_StressFactor * Crop->svTT_Daily / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
+    if (Crop->svTT_Cumulative < Crop->userMaturityTT)
+        Crop->svN_StressCumulative += Crop->svN_StressFactor * Crop->svTT_Daily / (Crop->userMaturityTT - Crop->userEmergenceTT);
 }
-
+//
 void CropNitrogenDemand (double N_AbgdConcReq, double N_RootConcReq, double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *N_CropDemand, crop_struct *Crop)
 {
     *N_CropDemand = 0.0;
@@ -568,7 +576,6 @@ double ShootBiomassPartitioning (double Stage, double Po, double Pf)
     return (partitioning);
 }
 
-
 void RadiationInterception (int y, int doy, comm_struct *Community)
 {
     /* 
@@ -645,10 +652,10 @@ void RadiationInterception (int y, int doy, comm_struct *Community)
 
         if (Crop->stageGrowth > NO_CROP)
         {
-            Fractional_TT = (Crop->svTT_Cumulative - 1.0 * Crop->svTT_Daily) / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
-            Delta_Fractional_TT = Crop->svTT_Daily / (Crop->calculatedMaturityTT - Crop->userEmergenceTT);
+            Fractional_TT = (Crop->svTT_Cumulative - 1.0 * Crop->svTT_Daily) / (Crop->userMaturityTT - Crop->userEmergenceTT);
+            Delta_Fractional_TT = Crop->svTT_Daily / (Crop->userMaturityTT - Crop->userEmergenceTT);
 
-            if (Crop->svTT_Cumulative < Crop->calculatedMaturityTT)
+            if (Crop->svTT_Cumulative < Crop->userMaturityTT)
             {
                 if (Crop->svTT_Cumulative < Crop->userEmergenceTT)
                 {
@@ -716,7 +723,7 @@ void RadiationInterception (int y, int doy, comm_struct *Community)
                     if (Crop->svRootingDepth > Crop->userMaximumRootingDepth)
                         Crop->svRootingDepth = Crop->userMaximumRootingDepth;
                 } /* end if Crop->svTT_Cumulative >= Crop->userEmergenceTT */
-            }	/* end if Crop->svTT_Cumulative < Crop->calculatedMaturityTT */
+            }	/* end if Crop->svTT_Cumulative < Crop->userMaturityTT */
         }
     }
 
@@ -816,7 +823,7 @@ void ComputeColdDamage (int y, int doy, crop_struct *Crop, const weather_struct 
     Cold_Damage = ColdDamage (Min_Temperature, Crop_Tn, Crop_Tth) * (1.0 - Snow->snowCover);
 
     if (Crop->userAnnual)
-        Phenology_Delay_Factor = 1.0 / (1.0 + pow ((Crop->svTT_Cumulative / Crop->calculatedFloweringTT) / 0.15, 4.0));
+        Phenology_Delay_Factor = 1.0 / (1.0 + pow ((Crop->svTT_Cumulative / Crop->userFloweringTT) / 0.15, 4.0));
     else
         Phenology_Delay_Factor = 1.0;
 

@@ -251,9 +251,6 @@ typedef struct crop_struct
 
     double          svRadiationInterception_nc;
     
-    int             userSeedingDate;
-    int             userFloweringDate;
-    int             userMaturityDate;
     double          userMaximumSoilCoverage;
     double          userMaximumRootingDepth;
     double          userExpectedYieldAvg;
@@ -294,8 +291,8 @@ typedef struct crop_struct
     int             userClippingStart;
     int             userClippingEnd;
 
-    double          calculatedFloweringTT;
-    double          calculatedMaturityTT;
+    double          userFloweringTT;
+    double          userMaturityTT;
     double          calculatedSimAvgYield;
     double          calculatedSimMaxYield;
     double          calculatedSimMinYield;

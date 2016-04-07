@@ -59,13 +59,10 @@ void ReadCrop (char *filename, comm_struct *Community)
         ReadKeywordStr (cmdstr, "NAME", Crop->cropName);
 
         NextLine (crop_file, cmdstr);
-        ReadKeywordInt (cmdstr, "AVERAGE_SEEDING_DATE", &Crop->userSeedingDate);
+        ReadKeywordDouble (cmdstr, "FLOWERING_TT", &Crop->userFloweringTT);
 
         NextLine (crop_file, cmdstr);
-        ReadKeywordInt (cmdstr, "AVERAGE_50%_FLOWERING_DATE", &Crop->userFloweringDate);
-
-        NextLine (crop_file, cmdstr);
-        ReadKeywordInt (cmdstr, "AVERAGE_MATURITY_DATE", &Crop->userMaturityDate);
+        ReadKeywordDouble (cmdstr, "MATURITY_TT", &Crop->userMaturityTT);
 
         NextLine (crop_file, cmdstr);
         ReadKeywordDouble (cmdstr, "MAXIMUM_SOIL_COVERAGE", &Crop->userMaximumSoilCoverage);
@@ -196,8 +193,6 @@ void ReadCrop (char *filename, comm_struct *Community)
         else
             Crop->userClippingTiming = 0.0;
 
-        Crop->calculatedFloweringTT = 0.0;
-        Crop->calculatedMaturityTT = 0.0;
         Crop->calculatedSimAvgYield = 0.0;
         Crop->calculatedSimMaxYield = 0.0;
         Crop->calculatedSimMinYield = 0.0;

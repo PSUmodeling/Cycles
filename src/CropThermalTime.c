@@ -1,97 +1,101 @@
+#ifdef _PIHM_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
-void ComputeThermalTime (int total_years, comm_struct *Community, weather_struct *Weather)
-{
-    /* 
-     * Calculate flowering and Maturity thermal time for each crop
-     * in the rotation
-     * -----------------------------------------------------------------------
-     * LOCAL VARIABLES
-     *
-     * Variable             Type        Description
-     * ==========           ==========  ====================
-     * sumTT		    double
-     * sumMTTbyYear	    double
-     * sumFTTbyYear	    double
-     * cropEvents	    int
-     * cropON		    int
-     * c		    int
-     * y		    int
-     * d		    int
-     */
-
-    double          sumTT = 0.0;
-    double          sumMTTbyYear = 0.0;
-    double          sumFTTbyYear = 0.0;
-
-    int             cropEvents;
-    int             cropON;
-    int             c;
-    int		    y;
-    int		    d;
-
-    crop_struct *Crop;
-
-    if (verbose_mode)
-    {
-	printf ("Compute crop thermal time.\n");
-    }
-    //SelectCropInitialPosition (CropManagement);
-
-    for (c = 0; c < Community->NumCrop; c++)
-    {
-        Crop = &(Community->Crop[c]);
-
-        if (Crop->calculatedMaturityTT == 0.0)
-        {
-            /* Computes thermal time for 1st instance of crop in each
-             * rotation */
-            cropEvents = 0;
-            cropON = 0;
-
-            for (y = 0; y < total_years; y++)
-            {
-                for (d = 1; d <= Weather->lastDoy[y]; d++)
-                {
-                    if (d == Crop->userSeedingDate)
-                        cropON = 1;
-
-                    if (cropON)
-                    {
-                        sumTT = sumTT + 0.5 * (ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMax[y][d - 1]) + ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMin[y][d - 1]));
-
-                        if (d == Crop->userFloweringDate)
-                            sumFTTbyYear = sumFTTbyYear + sumTT;
-
-                        if (d == Crop->userMaturityDate)
-                        {
-                            cropEvents = cropEvents + 1;
-                            sumMTTbyYear = sumMTTbyYear + sumTT;
-                            sumTT = 0.0;
-                            cropON = 0;
-                        }
-                    }
-                }
-            }
-
-            /* Load flow and mat TT as crop info for the crops in the rotation
-             * Order of crops in array are assigned according to order in the
-             * rotation */
-            if (cropEvents > 0)
-            {
-                Crop->calculatedFloweringTT = sumFTTbyYear / cropEvents;
-                Crop->calculatedMaturityTT = sumMTTbyYear / cropEvents;
-            }
-            else
-            {
-                Crop->calculatedFloweringTT = 0.0;
-                Crop->calculatedMaturityTT = 0.0;
-            }
-        }
-        sumFTTbyYear = 0.0;
-        sumMTTbyYear = 0.0;
-    }
-}
+//void ComputeThermalTime (int total_years, comm_struct *Community, weather_struct *Weather)
+//{
+//    /* 
+//     * Calculate flowering and Maturity thermal time for each crop
+//     * in the rotation
+//     * -----------------------------------------------------------------------
+//     * LOCAL VARIABLES
+//     *
+//     * Variable             Type        Description
+//     * ==========           ==========  ====================
+//     * sumTT		    double
+//     * sumMTTbyYear	    double
+//     * sumFTTbyYear	    double
+//     * cropEvents	    int
+//     * cropON		    int
+//     * c		    int
+//     * y		    int
+//     * d		    int
+//     */
+//
+//    double          sumTT = 0.0;
+//    double          sumMTTbyYear = 0.0;
+//    double          sumFTTbyYear = 0.0;
+//
+//    int             cropEvents;
+//    int             cropON;
+//    int             c;
+//    int		    y;
+//    int		    d;
+//
+//    crop_struct *Crop;
+//
+//    if (verbose_mode)
+//    {
+//	printf ("Compute crop thermal time.\n");
+//    }
+//    //SelectCropInitialPosition (CropManagement);
+//
+//    for (c = 0; c < Community->NumCrop; c++)
+//    {
+//        Crop = &(Community->Crop[c]);
+//
+//        if (Crop->calculatedMaturityTT == 0.0)
+//        {
+//            /* Computes thermal time for 1st instance of crop in each
+//             * rotation */
+//            cropEvents = 0;
+//            cropON = 0;
+//
+//            for (y = 0; y < total_years; y++)
+//            {
+//                for (d = 1; d <= Weather->lastDoy[y]; d++)
+//                {
+//                    if (d == Crop->userSeedingDate)
+//                        cropON = 1;
+//
+//                    if (cropON)
+//                    {
+//                        sumTT = sumTT + 0.5 * (ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMax[y][d - 1]) + ThermalTime (Crop->userTemperatureBase, Crop->userTemperatureOptimum, Crop->userTemperatureMaximum, Weather->tMin[y][d - 1]));
+//
+//                        if (d == Crop->userFloweringDate)
+//                            sumFTTbyYear = sumFTTbyYear + sumTT;
+//
+//                        if (d == Crop->userMaturityDate)
+//                        {
+//                            cropEvents = cropEvents + 1;
+//                            sumMTTbyYear = sumMTTbyYear + sumTT;
+//                            sumTT = 0.0;
+//                            cropON = 0;
+//                        }
+//                    }
+//                }
+//            }
+//
+//            /* Load flow and mat TT as crop info for the crops in the rotation
+//             * Order of crops in array are assigned according to order in the
+//             * rotation */
+//            if (cropEvents > 0)
+//            {
+//                Crop->calculatedFloweringTT = sumFTTbyYear / cropEvents;
+//                Crop->calculatedMaturityTT = sumMTTbyYear / cropEvents;
+//            }
+//            else
+//            {
+//                Crop->calculatedFloweringTT = 0.0;
+//                Crop->calculatedMaturityTT = 0.0;
+//            }
+//        }
+//        sumFTTbyYear = 0.0;
+//        sumMTTbyYear = 0.0;
+//    }
+//}
 
 double ThermalTime (double T_base, double T_op, double T_Max, double Temperature)
 {

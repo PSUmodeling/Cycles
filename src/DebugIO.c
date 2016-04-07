@@ -48,9 +48,8 @@ void PrintCrop (comm_struct Community)
     for (i = 0; i < Community.NumCrop; i++)
     {
         printf ("*%-38s\t%-10s\n", "NAME", Community.Crop[i].cropName);
-        printf ("*%-38s\t%-3d\n", "AVERAGE SEEDING DATE", Community.Crop[i].userSeedingDate);
-        printf ("*%-38s\t%-3d\n", "AVERAGE 50% FLOWERING DATE", Community.Crop[i].userFloweringDate);
-        printf ("*%-38s\t%-3d\n", "AVERAGE MATURITY DATE", Community.Crop[i].userMaturityDate);
+        printf ("*%-38s\t%-7.2lf\n", "FLOWERING_TT", Community.Crop[i].userFloweringTT);
+        printf ("*%-38s\t%-7.2lf\n", "MATURITY TT", Community.Crop[i].userMaturityTT);
         printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_SOIL_COVERAGE", Community.Crop[i].userMaximumSoilCoverage);
         printf ("*%-38s\t%-9.2lf\n", "MAXIMUM_ROOTING_DEPTH", Community.Crop[i].userMaximumRootingDepth);
         printf ("*%-38s\t%-9.2lf\n", "AVERAGE_EXPECTED_YIELD", Community.Crop[i].userExpectedYieldAvg);
