@@ -1,4 +1,8 @@
+#ifdef _PIHM_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
 /*****************************************************************************
  * FUNCTION NAME:   ExecuteTillage

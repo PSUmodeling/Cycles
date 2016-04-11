@@ -5,7 +5,7 @@
 #endif
 
 #ifdef _PIHM_
-void GrainHarvest (int y, int doy, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon)
+void GrainHarvest (int y, int doy, crop_struct *Crop, residue_struct *Residue, soil_struct *Soil, soilc_struct *SoilCarbon)
 #else
 void GrainHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather)
 #endif
@@ -91,7 +91,11 @@ void GrainHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_str
     KillCrop (Crop);
 }
 
+#ifdef _PIHM_
+void ForageHarvest (int y, int doy, crop_struct *Crop, residue_struct *Residue, soil_struct *Soil, soilc_struct *SoilCarbon)
+#else
 void ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather)
+#endif
 {
     /*
      * 
@@ -234,7 +238,11 @@ void ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_st
 #endif
 }
 
+#ifdef _PIHM_
+void HarvestCrop (int y, int doy, crop_struct *Crop, residue_struct *Residue, soil_struct *Soil, soilc_struct *SoilCarbon)
+#else
 void HarvestCrop (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather)
+#endif
 {
     /* 
      * Set crop status to Killed
@@ -408,7 +416,7 @@ double ComputeHarvestIndex (double HIx, double HIo, double HIk, double cumulativ
     double          fg;
     double          harvest_index;
 
-    if (GT (cumulativePostFloweringShootBiomass, 0.0) && GT (cumulativeShoot, 0.0))
+    if (cumulativePostFloweringShootBiomass > 0.0 && cumulativeShoot > 0.0)
     {
         fg = cumulativePostFloweringShootBiomass / cumulativeShoot;
         harvest_index = HIx - (HIx - HIo) * exp (-HIk * fg);

@@ -1,4 +1,8 @@
+#ifdef _PIHM_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
 void NitrogenTransformation (int y, int doy, soil_struct *Soil, const comm_struct *Community, const residue_struct *Residue, const weather_struct *Weather, const soilc_struct *SoilCarbon)
 {

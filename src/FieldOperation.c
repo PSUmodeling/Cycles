@@ -1,4 +1,8 @@
+#ifdef _PIHM_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
 void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, soil_struct *Soil, residue_struct *Residue, ctrl_struct *SimControl, soilc_struct *SoilCarbon, weather_struct *Weather)
 {
@@ -60,21 +64,33 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
                     {
                         if (strcasecmp (Tillage->opToolName, "Kill_Crop") == 0)
                         {
+#ifdef _PIHM_
+                            HarvestCrop (y, doy, &Community->Crop[i], Residue, Soil, SoilCarbon);
+#else
                             HarvestCrop (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+#endif
                             Community->NumActiveCrop--;
                         }
                         else
                         {
                             if (Tillage->grainHarvest)
                             {
+#ifdef _PIHM_
+                                GrainHarvest (y, doy, &Community->Crop[i], Residue, Soil, SoilCarbon);
+#else
                                 GrainHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+#endif
                             }
 
                             if (Tillage->forageHarvest)
                             {
                                 if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
                                 {
+#ifdef _PIHM_
+                                    ForageHarvest (y, doy, &Community->Crop[i], Residue, Soil, SoilCarbon);
+#else
                                     ForageHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+#endif
                                 }
                             }
                         }

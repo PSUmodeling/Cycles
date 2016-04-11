@@ -1,4 +1,8 @@
+#ifdef _PIHM_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
 void PlantingCrop (comm_struct *Community, const cropmgmt_struct *CropManagement, int plantingIndex)
 {
