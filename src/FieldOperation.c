@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, soil_struct *Soil, residue_struct *Residue, ctrl_struct *SimControl, soilc_struct *SoilCarbon, weather_struct *Weather, const char *project)
+void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, soil_struct *Soil, residue_struct *Residue, ctrl_struct *SimControl, soilc_struct *SoilCarbon, weather_struct *Weather)
 {
     op_struct *plantingOrder;
     op_struct *FixedFertilization;
@@ -60,21 +60,21 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
                     {
                         if (strcasecmp (Tillage->opToolName, "Kill_Crop") == 0)
                         {
-                            HarvestCrop (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                            HarvestCrop (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
                             Community->NumActiveCrop--;
                         }
                         else
                         {
                             if (Tillage->grainHarvest)
                             {
-                                GrainHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                                GrainHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
                             }
 
                             if (Tillage->forageHarvest)
                             {
                                 if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
                                 {
-                                    ForageHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather, project);
+                                    ForageHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
                                 }
                             }
                         }

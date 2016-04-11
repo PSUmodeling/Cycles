@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-#ifndef _CYCLES_
+#ifndef _PIHM_
 void Initialize (ctrl_struct *SimControl, weather_struct *Weather, soil_struct *Soil, residue_struct *Residue, soilc_struct *SoilCarbon, comm_struct *Community, cropmgmt_struct *CropManagement, snow_struct *Snow, summary_struct *Summary)
 {
     int             i;

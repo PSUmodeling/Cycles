@@ -46,4 +46,5 @@ enum stage
 
 extern int      verbose_mode;
 extern int      debug_mode;
+extern char     project[MAXSTRING];
 #endif

@@ -2,6 +2,7 @@
 
 int             verbose_mode;
 int             debug_mode;
+char            project[MAXSTRING];
 
 int main (int argc, char *argv[])
 {
@@ -18,7 +19,6 @@ int main (int argc, char *argv[])
      * begin_t		    time_t	Time Cycles simulation begins
      * end_t		    time_t	Time Cycles simulation ends
      * Cycles		    CyclesStruct
-     * project		    char*	Name of project
      */
     int             y;
     int             doy;
@@ -26,7 +26,6 @@ int main (int argc, char *argv[])
     time_t          begin_t, end_t;
 
     CyclesStruct    Cycles;     /* Model structure */
-    char            project[MAXSTRING];    /* Name of simulation */
     char            filename[MAXSTRING];
 
     time (&begin_t);
@@ -108,7 +107,7 @@ int main (int argc, char *argv[])
     /*
      * Initialize output files
      */
-    InitializeOutput (project, &Cycles->Community, Cycles->Soil.totalLayers);
+    InitializeOutput (&Cycles->Community, Cycles->Soil.totalLayers);
 
     /* 
      * Initialize model variables and parameters
@@ -135,12 +134,12 @@ int main (int argc, char *argv[])
             if (debug_mode)
                 printf ("DOY %3.3d\n", doy);
 
-            DailyOperations (y, doy, &Cycles->CropManagement, &Cycles->Community, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, &Cycles->Summary, project);
-            PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Community, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue, project);
+            DailyOperations (y, doy, &Cycles->CropManagement, &Cycles->Community, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, &Cycles->Summary);
+            PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Community, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue);
         }
     }
 
-    PrintSummary (&Cycles->Summary, Cycles->SimControl.totalYears, project);
+    PrintSummary (&Cycles->Summary, Cycles->SimControl.totalYears);
 
     FreeCyclesStruct (&Cycles->CropManagement, &Cycles->Community, &Cycles->Soil, &Cycles->Weather, &Cycles->Residue, &Cycles->SoilCarbon, Cycles->SimControl.totalYears);
 

@@ -7,7 +7,7 @@
 #ifdef _PIHM_
 void GrainHarvest (int y, int doy, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon)
 #else
-void GrainHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const char *project)
+void GrainHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather)
 #endif
 {
     /*
@@ -84,14 +84,14 @@ void GrainHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_str
     Crop->rcNitrogenInResidue = (Crop->svN_Shoot + Crop->svN_Root - grainNitrogenYield - forageNitrogenYield) * 1000.0;
     Crop->rcNitrogenForageConc = forageNitrogenConcentration;
 
-#ifdef _PIHM_
-    PrintSeasonOutput (y, doy, startYear, Weather, Crop, project);
+#ifndef _PIHM_
+    PrintSeasonOutput (y, doy, startYear, Weather, Crop);
 #endif
 
     KillCrop (Crop);
 }
 
-void ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const char *project)
+void ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather)
 {
     /*
      * 
@@ -229,12 +229,12 @@ void ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_st
     Crop->rcForageNitrogenYield = forageYieldNitrogen;
     //Crop->rcNitrogenCumulative = NStressCumulative / Crop->userClippingTiming;
 
-#ifndef _CYCLES_
-    PrintSeasonOutput (y, doy, startYear, Weather, Crop, project);
+#ifndef _PIHM_
+    PrintSeasonOutput (y, doy, startYear, Weather, Crop);
 #endif
 }
 
-void HarvestCrop (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const char *project)
+void HarvestCrop (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather)
 {
     /* 
      * Set crop status to Killed
@@ -289,8 +289,8 @@ void HarvestCrop (int y, int doy, int startYear, crop_struct *Crop, residue_stru
     if (verbose_mode)
         printf ("DOY %3.3d %-20s %s\n", doy, "Harvest", Crop->cropName);
 
-#ifndef _CYCLES_
-    PrintSeasonOutput (y, doy, startYear, Weather, Crop, project);
+#ifndef _PIHM_
+    PrintSeasonOutput (y, doy, startYear, Weather, Crop);
 #endif
 
     KillCrop (Crop);
