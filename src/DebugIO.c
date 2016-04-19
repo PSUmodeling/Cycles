@@ -6,12 +6,7 @@ void PrintSimContrl (ctrl_struct SimControl)
     printf ("*%-22s\t%-4d\n", "Simulation Start Year", SimControl.simStartYear);
     printf ("*%-22s\t%-4d\n", "Simulation End Year", SimControl.simEndYear);
     printf ("*%-22s\t%-4d\n", "Simulation Total Years", SimControl.totalYears);
-    printf ("*%-22s\t%-4d\n", "Rotation Size", SimControl.yearsInRotation);
-    printf ("*%-22s\t%-4d\n", "Adjusted Yields", SimControl.adjustedYields);
     printf ("*%-22s\t%-4d\n", "Hourly Infiltration", SimControl.hourlyInfiltration);
-    printf ("*%-22s\t%-4d\n", "Automatic Nitrogen", SimControl.automaticNitrogen);
-    printf ("*%-22s\t%-4d\n", "Automatic Phosphorus", SimControl.automaticPhosphorus);
-    printf ("*%-22s\t%-4d\n", "Automatic Sulfur", SimControl.automaticSulfur);
     printf ("*%-22s\t%-4d\n", "Daily Weather Out", SimControl.weatherDailyOutput);
     printf ("*%-22s\t%-4d\n", "Daily Crop Out", SimControl.cropDailyOutput);
     printf ("*%-22s\t%-4d\n", "Daily Residue", SimControl.residueDailyOutput);

@@ -51,6 +51,10 @@ void PlantingCrop (comm_struct *Community, const cropmgmt_struct *CropManagement
     Crop->svRootingDepth = 0.0;
     Crop->svTranspiration = 0.0;
     Crop->svTranspirationPotential = 0.0;
+#ifdef _PIHM_
+    Crop->dailyTranspiration = 0.0;
+    Crop->dailyTranspirationPotential = 0.0;
+#endif
     Crop->svN_Shoot = 0.0;
     Crop->svN_Root = 0.0;
     Crop->svN_Rhizo = 0.0;
@@ -141,6 +145,10 @@ void KillCrop (crop_struct *Crop)
     Crop->svRootingDepth = 0.0;
     Crop->svTranspiration = 0.0;
     Crop->svTranspirationPotential = 0.0;
+#ifdef _PIHM_
+    Crop->dailyTranspiration = 0.0;
+    Crop->dailyTranspirationPotential = 0.0;
+#endif
     Crop->svN_Shoot = 0.0;
     Crop->svN_Root = 0.0;
     Crop->svN_Rhizo = 0.0;

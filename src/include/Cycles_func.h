@@ -13,7 +13,7 @@ void            UpdateCommunity (comm_struct *Community);
 
 /* CropHarvest.c */
 void            GrainHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather);
-void            ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather);
+void            ForageAndSeedHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather);
 void            HarvestCrop (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather);
 void            DistributeRootDetritus (double rootMass, double rhizoMass, double rootN, double rhizoN, const soil_struct *Soil, const crop_struct *Crop, residue_struct *Residue, soilc_struct *SoilCarbon);
 double          ComputeHarvestIndex (double HIx, double HIo, double HIk, double cumulativeShoot, double cumulativePostFloweringShootBiomass);
@@ -44,7 +44,7 @@ double          TemperatureLimitation (double T, double T_Min, double T_Threshol
 
 /* DailyOperation.c */
 void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl, snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon, weather_struct *Weather, summary_struct *Summary);
-void            GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue, const ctrl_struct *SimControl, soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather, const snow_struct *Snow);
+void            GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue, const ctrl_struct *SimControl, soil_struct *Soil, soilc_struct *SoilCarbon, cropmgmt_struct *, const weather_struct *Weather, const snow_struct *Snow);
 void CropStage (int d, comm_struct *Community, int last_doy);
 double          FinalHarvestDate (int lastDoy, int d);
 int             ForcedClipping (int d, comm_struct *Community);
@@ -108,7 +108,7 @@ void ReadKeywordStr (char *buffer, char *keyword, char *value);
 void            ReadOperation (char *, cropmgmt_struct *CropManagement, const comm_struct *Community, int yearsInRotation);
 
 /* ReadSimControl.c */
-void            ReadSimControl (char *, ctrl_struct *SimControl);
+void            ReadSimControl (char *, ctrl_struct *SimControl, cropmgmt_struct *);
 
 /* ReadSoil.c */
 void            ReadSoil (char *, soil_struct *Soil);

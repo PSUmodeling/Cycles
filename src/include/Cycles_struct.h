@@ -100,13 +100,8 @@ typedef struct ctrl_struct
     int             simStartYear;
     int             simEndYear;
     int             totalYears;
-    int             yearsInRotation;
 
-    int             adjustedYields;
     int             hourlyInfiltration;
-    int             automaticNitrogen;
-    int             automaticPhosphorus;
-    int             automaticSulfur;
     int             cropDailyOutput;
     int             soilDailyOutput;
     int             nitrogenDailyOutput;
@@ -421,6 +416,12 @@ typedef struct autoirr_struct
 
 typedef struct cropmgmt_struct
 {
+    int             yearsInRotation;
+    int             adjustedYields;
+    int             automaticNitrogen;
+    int             automaticPhosphorus;
+    int             automaticSulfur;
+
     int             rotationYear;
 
     op_struct *FixedFertilization;

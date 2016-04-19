@@ -90,7 +90,7 @@ int main (int argc, char *argv[])
      */
     /* Read simulation control input file */
     sprintf (filename, "input/%s.ctrl", project);
-    ReadSimControl (filename, &Cycles->SimControl);
+    ReadSimControl (filename, &Cycles->SimControl, &Cycles->CropManagement);
 
     /* Read soil description file */
     ReadSoil (Cycles->SimControl.soil_filename, &Cycles->Soil);
@@ -99,7 +99,7 @@ int main (int argc, char *argv[])
     ReadCrop (Cycles->SimControl.crop_filename, &Cycles->Community);
 
     /* Read field operation file */
-    ReadOperation (Cycles->SimControl.operation_filename, &Cycles->CropManagement, &Cycles->Community, Cycles->SimControl.yearsInRotation);
+    ReadOperation (Cycles->SimControl.operation_filename, &Cycles->CropManagement, &Cycles->Community, Cycles->CropManagement.yearsInRotation);
 
     /* Read meteorological driver */
     ReadWeather (Cycles->SimControl.weather_filename, &Cycles->Weather, Cycles->SimControl.simStartYear, Cycles->SimControl.totalYears);

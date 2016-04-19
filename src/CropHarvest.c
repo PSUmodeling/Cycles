@@ -92,9 +92,9 @@ void GrainHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_str
 }
 
 #ifdef _PIHM_
-void ForageHarvest (int y, int doy, crop_struct *Crop, residue_struct *Residue, soil_struct *Soil, soilc_struct *SoilCarbon)
+void ForageAndSeedHarvest (int y, int doy, crop_struct *Crop, residue_struct *Residue, soil_struct *Soil, soilc_struct *SoilCarbon)
 #else
-void ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather)
+void ForageAndSeedHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_struct *Residue, const soil_struct *Soil, soilc_struct *SoilCarbon, const weather_struct *Weather)
 #endif
 {
     /*
@@ -133,7 +133,8 @@ void ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_st
     double          NStressCumulative;
     const double    fractionalHarvestLoss = 0.05;
     double          fractionalNitrogenRemoval;
-    double          clippingFraction;
+    double          clippingFraction = 0.0;
+    int             seedHarvest = 0;
 
     if (verbose_mode)
         printf ("DOY %3.3d %-20s %s\n", doy, "Forage Harvest", Crop->cropName);
@@ -152,90 +153,109 @@ void ForageHarvest (int y, int doy, int startYear, crop_struct *Crop, residue_st
 
     NStressCumulative = Crop->svN_StressCumulative;
 
-    clippingFraction = (Crop->svShoot - Crop->userClippingBiomassThresholdLower * (1.0 - exp (-Crop->userPlantingDensity))) / Crop->svShoot / (1.0 - fractionalHarvestLoss);
-    clippingFraction = (clippingFraction < Crop->userFractionResidueRemoved) ? clippingFraction : Crop->userFractionResidueRemoved;
-
-    forageYield = Crop->svShoot * clippingFraction * (1.0 - fractionalHarvestLoss);
-    fractionalNitrogenRemoval = 1.0 - pow (1.0 - clippingFraction, 0.7);
-    forageYieldNitrogen = Crop->svN_Shoot * fractionalNitrogenRemoval * (1.0 - fractionalHarvestLoss);
-    forageMassLoss = Crop->svShoot * clippingFraction * fractionalHarvestLoss;
-    forageNitrogenLoss = Crop->svN_Shoot * clippingFraction * fractionalHarvestLoss;
-    rootMassDead = Crop->svRoot * clippingFraction;
-    rootNitrogenDead = Crop->svN_Root * clippingFraction;
-
-    switch (Crop->userClippingDestiny)
+    if (doy == Crop->harvestDateFinal && !Crop->userAnnual)
     {
-        case REMOVE_CLIPPING:
-            forageMassRemoved = forageYield;
-            forageMassRetained = 0.0;
-            forageNitrogenRemoved = forageYieldNitrogen;
-            forageNitrogenRetained = 0.0;
-            break;
-        case RETURN_CLIPPING:
-            forageMassRemoved = 0.0;
-            forageMassRetained = forageYield;
-            forageNitrogenRemoved = 0.0;
-            forageNitrogenRetained = forageYieldNitrogen;
-            break;
-        case GRAZING_CLIPPING:
-            forageMassRemoved = 0.0;
-            forageMassRetained = 0.0;
-            forageNitrogenRemoved = 0.0;
-            forageNitrogenRetained = 0.0;
-            NH4Mass = 0.5 * forageYieldNitrogen;
-            manureNitrogenMass = 0.5 * forageYieldNitrogen;
-            manureCarbonMass = 0.5 * forageYield * FRACTION_CARBON_PLANT;
-            /* Carbon balance alert:
-             * Undocumented carbon respiration losses by animals */
-            break;
-        default:
-            break;
+        Crop->stageGrowth = PERENNIAL;
+
+        seedHarvest = 1;
     }
 
-    /* Add roots of clipped crop to a root residue pool in each layer */
-    DistributeRootDetritus (rootMassDead, 0.0, rootNitrogenDead, 0.0, Soil, Crop, Residue, SoilCarbon);
+    if (Crop->svShoot >= Crop->userClippingBiomassThresholdLower * (1.0 - exp (-Crop->userPlantingDensity)))
+    {
+        clippingFraction = (Crop->svShoot - Crop->userClippingBiomassThresholdLower * (1.0 - exp (-Crop->userPlantingDensity))) / Crop->svShoot / (1.0 - fractionalHarvestLoss);
+        clippingFraction = (clippingFraction < Crop->userFractionResidueRemoved) ? clippingFraction : Crop->userFractionResidueRemoved;
 
-    Crop->svShoot -= forageYield + forageMassLoss;
-    Crop->svRoot -= rootMassDead;
-    Crop->svBiomass = Crop->svShoot + Crop->svRoot;
-    Crop->svN_Shoot -= (forageYieldNitrogen + forageNitrogenLoss);
-    Crop->svN_Root -= rootNitrogenDead;
-    /* Resetting of cumulative nitrogen stress after haverst */
-    Crop->svN_StressCumulative *= (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (clippingFraction, 0.75)) / Crop->userMaturityTT;
-    Crop->svTT_Cumulative = Crop->userEmergenceTT + (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (clippingFraction, 0.75));
-    Crop->svRadiationInterception = Crop->svRadiationInterception * (1.0 - pow (clippingFraction, 0.75));
-    Crop->svRadiationInterception_nc = Crop->svRadiationInterception_nc * (1.0 - pow (clippingFraction, 0.75));
-    Crop->svShootUnstressed = Crop->svShoot;
+        forageYield = Crop->svShoot * clippingFraction * (1.0 - fractionalHarvestLoss);
+        fractionalNitrogenRemoval = 1.0 - pow (1.0 - clippingFraction, 0.7);
+        forageYieldNitrogen = Crop->svN_Shoot * fractionalNitrogenRemoval * (1.0 - fractionalHarvestLoss);
+        forageMassLoss = Crop->svShoot * clippingFraction * fractionalHarvestLoss;
+        forageNitrogenLoss = Crop->svN_Shoot * clippingFraction * fractionalHarvestLoss;
+        rootMassDead = Crop->svRoot * clippingFraction;
+        rootNitrogenDead = Crop->svN_Root * clippingFraction;
 
-    Residue->stanResidueMass += (forageMassLoss + forageMassRetained) * Crop->userFractionResidueStanding;
-    Residue->flatResidueMass += (forageMassLoss + forageMassRetained) * (1.0 - Crop->userFractionResidueStanding);
-    Residue->stanResidueN += (forageNitrogenLoss + forageNitrogenRetained) * Crop->userFractionResidueStanding;
-    Residue->flatResidueN += (forageNitrogenLoss + forageNitrogenRetained) * (1.0 - Crop->userFractionResidueStanding);
-    /* Assume 33% residue moisture at harvest */
-    Residue->stanResidueWater += (forageMassLoss + forageMassRetained) * Crop->userFractionResidueStanding / 10.0 * 0.5;
-    Residue->flatResidueWater += (forageMassLoss + forageMassRetained) * (1.0 - Crop->userFractionResidueStanding) / 10.0 * 0.5;
+        switch (Crop->userClippingDestiny)
+        {
+            case REMOVE_CLIPPING:
+                forageMassRemoved = forageYield;
+                forageMassRetained = 0.0;
+                forageNitrogenRemoved = forageYieldNitrogen;
+                forageNitrogenRetained = 0.0;
+                break;
+            case RETURN_CLIPPING:
+                forageMassRemoved = 0.0;
+                forageMassRetained = forageYield;
+                forageNitrogenRemoved = 0.0;
+                forageNitrogenRetained = forageYieldNitrogen;
+                break;
+            case GRAZING_CLIPPING:
+                forageMassRemoved = 0.0;
+                forageMassRetained = 0.0;
+                forageNitrogenRemoved = 0.0;
+                forageNitrogenRetained = 0.0;
+                NH4Mass = 0.5 * forageYieldNitrogen;
+                manureNitrogenMass = 0.5 * forageYieldNitrogen;
+                manureCarbonMass = 0.5 * forageYield * FRACTION_CARBON_PLANT;
+                /* Carbon balance alert:
+                 * Undocumented carbon respiration losses by animals */
+                break;
+            default:
+                break;
+        }
 
-    Residue->manureSurfaceC += manureCarbonMass;
-    Residue->manureSurfaceN += manureNitrogenMass;
-    Soil->NH4[0] += NH4Mass;
+        /* Add roots of clipped crop to a root residue pool in each layer */
+        DistributeRootDetritus (rootMassDead, 0.0, rootNitrogenDead, 0.0, Soil, Crop, Residue, SoilCarbon);
 
-    /* Yearly output variables */
-    Residue->yearResidueBiomass += forageMassLoss + forageMassRetained;
-    Residue->yearRootBiomass += rootMassDead;
+        Crop->svShoot -= forageYield + forageMassLoss;
+        Crop->svRoot -= rootMassDead;
+        Crop->svBiomass = Crop->svShoot + Crop->svRoot;
+        Crop->svN_Shoot -= (forageYieldNitrogen + forageNitrogenLoss);
+        Crop->svN_Root -= rootNitrogenDead;
+        Crop->svRadiationInterception = Crop->svRadiationInterception * (1.0 - pow (clippingFraction, 0.75));
+        Crop->svRadiationInterception_nc = Crop->svRadiationInterception_nc * (1.0 - pow (clippingFraction, 0.75));
+        Crop->svShootUnstressed = Crop->svShoot;
 
-    /* Season outputs */
-    Crop->rcBiomass += forageYield + forageMassLoss + rootMassDead;
-    Crop->rcRoot += rootMassDead;
-    Crop->rcForageYield += forageYield;
-    Crop->rcResidueBiomass += forageMassLoss + forageMassRetained;
-    Crop->rcTotalNitrogen = forageYieldNitrogen + forageNitrogenLoss + rootNitrogenDead;
-    Crop->rcRootNitrogen = rootNitrogenDead;
-    Crop->rcForageNitrogenYield = forageYieldNitrogen;
-    //Crop->rcNitrogenCumulative = NStressCumulative / Crop->userClippingTiming;
+        Residue->stanResidueMass += (forageMassLoss + forageMassRetained) * Crop->userFractionResidueStanding;
+        Residue->flatResidueMass += (forageMassLoss + forageMassRetained) * (1.0 - Crop->userFractionResidueStanding);
+        Residue->stanResidueN += (forageNitrogenLoss + forageNitrogenRetained) * Crop->userFractionResidueStanding;
+        Residue->flatResidueN += (forageNitrogenLoss + forageNitrogenRetained) * (1.0 - Crop->userFractionResidueStanding);
+        /* Assume 33% residue moisture at harvest */
+        Residue->stanResidueWater += (forageMassLoss + forageMassRetained) * Crop->userFractionResidueStanding / 10.0 * 0.5;
+        Residue->flatResidueWater += (forageMassLoss + forageMassRetained) * (1.0 - Crop->userFractionResidueStanding) / 10.0 * 0.5;
+
+        Residue->manureSurfaceC += manureCarbonMass;
+        Residue->manureSurfaceN += manureNitrogenMass;
+        Soil->NH4[0] += NH4Mass;
+
+        /* Yearly output variables */
+        Residue->yearResidueBiomass += forageMassLoss + forageMassRetained;
+        Residue->yearRootBiomass += rootMassDead;
+
+        /* Season outputs */
+        Crop->rcBiomass += forageYield + forageMassLoss + rootMassDead;
+        Crop->rcRoot += rootMassDead;
+        Crop->rcForageYield += forageYield;
+        Crop->rcResidueBiomass += forageMassLoss + forageMassRetained;
+        Crop->rcTotalNitrogen = forageYieldNitrogen + forageNitrogenLoss + rootNitrogenDead;
+        Crop->rcRootNitrogen = rootNitrogenDead;
+        Crop->rcForageNitrogenYield = forageYieldNitrogen;
+        //Crop->rcNitrogenCumulative = NStressCumulative / Crop->userClippingTiming;
 
 #ifndef _PIHM_
-    PrintSeasonOutput (y, doy, startYear, Weather, Crop);
+        PrintSeasonOutput (y, doy, startYear, Weather, Crop);
 #endif
+    }
+
+    if (clippingFraction == 0.0)
+    {
+        clippingFraction = Crop->userClippingTiming;
+
+        Crop->harvestDateFinal = -1;
+    }
+
+    Crop->svTT_Cumulative = Crop->userEmergenceTT + (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (clippingFraction, 0.75));
+
+    /* Resetting of cumulative nitrogen stress after haverst */
+    Crop->svN_StressFactor *= (Crop->svTT_Cumulative - Crop->userEmergenceTT) * (1.0 - pow (clippingFraction, 0.75)) / Crop->userMaturityTT;
 }
 
 #ifdef _PIHM_

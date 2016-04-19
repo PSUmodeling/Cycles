@@ -4,7 +4,8 @@
 #include "Cycles.h"
 #endif
 
-void Evaporation (soil_struct *Soil, const comm_struct *Community, residue_struct *Residue, double ETo, double SnowCover)
+void Evaporation (soil_struct *Soil, const comm_struct *Community,
+    residue_struct *Residue, double ETo, double SnowCover)
 {
     /*
      * 
@@ -58,7 +59,11 @@ void Evaporation (soil_struct *Soil, const comm_struct *Community, residue_struc
     else
         EvaporativeDemand = Residue->stanResidueTau * (1.0 - SnowCover) * (1.0 - Community->svRadiationInterception) * ETo;
 
+#ifdef _PIHM_
+    for (i = 0; i < 1; i++)
+#else
     for (i = 0; i < Soil->totalLayers; i++)
+#endif
     {
         if (i > 0)
         {
@@ -86,10 +91,10 @@ void Evaporation (soil_struct *Soil, const comm_struct *Community, residue_struc
 
         EvaporativeDemand -= Evaporation;
         Soil->evaporationVol += Evaporation;
+        EvapFlux[i] = Evaporation;
 #ifndef _PIHM_
         Soil->waterContent[i] -= Evaporation / (Soil->layerThickness[i] * WATER_DENSITY);
 #endif
-        EvapFlux[i] = Evaporation;
 
         if (EvaporativeDemand == 0.0)
             break;

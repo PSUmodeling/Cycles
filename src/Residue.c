@@ -74,7 +74,11 @@ void ComputeResidueCover (residue_struct *Residue)
     Residue->residueInterception = (1.0 - Residue->stanResidueTau) + Residue->stanResidueTau * (1.0 - Residue->flatResidueTau);
 }
 
+#ifdef _PIHM_
+void ResidueWetting (residue_struct *Residue, double *infil_vol)
+#else
 void ResidueWetting (residue_struct *Residue, soil_struct *Soil)
+#endif
 {
     /*
      * Compute residue wetting
@@ -104,7 +108,11 @@ void ResidueWetting (residue_struct *Residue, soil_struct *Soil)
     flatResidueWaterDeficit = residueMaxWaterConcentration * Residue->flatResidueMass / 10.0 - Residue->flatResidueWater;
     standingResidueWaterDeficit = residueMaxWaterConcentration * Residue->stanResidueMass / 10.0 - Residue->stanResidueWater;
 
+#ifdef _PIHM_
+    waterWettingResidue = *infil_vol * Residue->residueInterception;
+#else
     waterWettingResidue = Soil->infiltrationVol * Residue->residueInterception;
+#endif
 
     waterRetainedResidue = 0.0;
 
@@ -135,7 +143,11 @@ void ResidueWetting (residue_struct *Residue, soil_struct *Soil)
         waterWettingResidue -= waterWettingResidue;
     }
 
+#ifdef _PIHM_
+    *infil_vol -= waterRetainedResidue;
+#else
     Soil->infiltrationVol -= waterRetainedResidue;
+#endif
 }
 
 void ResidueEvaporation (residue_struct *Residue, soil_struct *Soil, const comm_struct *Community, double ETo, double snowCover)

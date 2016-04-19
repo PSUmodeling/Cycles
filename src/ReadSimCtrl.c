@@ -1,6 +1,6 @@
 #include "Cycles.h"
 
-void ReadSimControl (char *filename, ctrl_struct *SimControl)
+void ReadSimControl (char *filename, ctrl_struct *SimControl, cropmgmt_struct *CropManagement)
 {
     /*
      * Read simulation control file
@@ -36,22 +36,22 @@ void ReadSimControl (char *filename, ctrl_struct *SimControl)
     ReadKeywordInt (cmdstr, "SIMULATION_END_YEAR", &SimControl->simEndYear);
     
     NextLine (simctrl_file, cmdstr);
-    ReadKeywordInt (cmdstr, "ROTATION_SIZE", &SimControl->yearsInRotation);
+    ReadKeywordInt (cmdstr, "ROTATION_SIZE", &CropManagement->yearsInRotation);
     
     NextLine (simctrl_file, cmdstr);
-    ReadKeywordInt (cmdstr, "ADJUSTED_YIELDS", &SimControl->adjustedYields);
+    ReadKeywordInt (cmdstr, "ADJUSTED_YIELDS", &CropManagement->adjustedYields);
     
     NextLine (simctrl_file, cmdstr);
     ReadKeywordInt (cmdstr, "HOURLY_INFILTRATION", &SimControl->hourlyInfiltration);
     
     NextLine (simctrl_file, cmdstr);
-    ReadKeywordInt (cmdstr, "AUTOMATIC_NITROGEN", &SimControl->automaticNitrogen);
+    ReadKeywordInt (cmdstr, "AUTOMATIC_NITROGEN", &CropManagement->automaticNitrogen);
     
     NextLine (simctrl_file, cmdstr);
-    ReadKeywordInt (cmdstr, "AUTOMATIC_PHOSPHORUS", &SimControl->automaticPhosphorus);
+    ReadKeywordInt (cmdstr, "AUTOMATIC_PHOSPHORUS", &CropManagement->automaticPhosphorus);
     
     NextLine (simctrl_file, cmdstr);
-    ReadKeywordInt (cmdstr, "AUTOMATIC_SULFUR", &SimControl->automaticSulfur);
+    ReadKeywordInt (cmdstr, "AUTOMATIC_SULFUR", &CropManagement->automaticSulfur);
     
     NextLine (simctrl_file, cmdstr);
     ReadKeywordInt (cmdstr, "DAILY_WEATHER_OUT", &SimControl->weatherDailyOutput);

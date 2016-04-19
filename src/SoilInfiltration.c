@@ -15,7 +15,6 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
      * irrigation_vol       double
      */
 
-    double          irrigation_vol;
     crop_struct     *Crop;
     int             i;
 
@@ -24,40 +23,6 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
     Soil->drainageVol = 0.0;
     Soil->NO3Leaching = 0.0;
     Soil->NH4Leaching = 0.0;
-
-    for (i = 0; i < Community->NumCrop; i++)
-    {
-        Crop = &Community->Crop[i];
-        if (Crop->autoIrrigationUsed)
-        {
-            if (Crop->autoIrrigationStartDay < Crop->autoIrrigationStopDay)
-            {
-                if (doy >= Crop->autoIrrigationStartDay && doy <= Crop->autoIrrigationStopDay)
-                {
-                    irrigation_vol = FindIrrigationVolume (Crop->autoIrrigationLastSoilLayer, Crop->autoIrrigationWaterDepletion, Soil);
-                    if (irrigation_vol > 0.0)
-                    {
-                        if (verbose_mode)
-                            printf ("DOY %3.3d %-20s %lf\n", doy, "Auto Irrigation", irrigation_vol);
-                    }
-                    Soil->irrigationVol += irrigation_vol;
-                }
-            }
-            else
-            {
-                if (doy >= Crop->autoIrrigationStartDay || doy <= Crop->autoIrrigationStopDay)
-                {
-                    irrigation_vol = FindIrrigationVolume (Crop->autoIrrigationLastSoilLayer, Crop->autoIrrigationWaterDepletion, Soil);
-                    if (irrigation_vol > 0.0)
-                    {
-                        if (verbose_mode)
-                            printf ("DOY %3.3d %-20s %lf\n", doy, "Auto Irrigation", irrigation_vol);
-                    }
-                    Soil->irrigationVol += irrigation_vol;
-                }
-            }
-        }
-    }
 
     Soil->infiltrationVol = (precipitation - snowFall) + Soil->irrigationVol + snowMelt;
 

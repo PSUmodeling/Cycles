@@ -5,7 +5,7 @@
 #endif
 
 #ifdef _PIHM_
-void WaterUptake (comm_struct *Community, soil_struct *Soil, double sfctmp, wf_struct *wf)
+void WaterUptake (comm_struct *Community, soil_struct *Soil, double sfctmp, wf_struct *wf, double dt)
 #else
 void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, const weather_struct *Weather)
 #endif
@@ -91,8 +91,8 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, con
     /* Convert from K to C */
     sfctmp -= TFREEZ;
 
-    /* Convert from m s-1 to mm d-1 */
-    etp = wf->etp * 1000.0 * 24.0 * 3600.0;
+    /* Convert from m s-1 rate to mm volume */
+    etp = wf->etp * 1000.0 * dt;
 #endif
 
     for (i = 0; i < Soil->totalLayers; i++)
@@ -110,7 +110,9 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, con
         Crop = &Community->Crop[j];
 
         for (i = 0; i < Soil->totalLayers; i++)
+        {
             waterUptake[i] = 0.0;
+        }
 
         if (Crop->stageGrowth > NO_CROP)
         {
@@ -228,15 +230,23 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, con
                     Crop->svTranspiration += waterUptake[i];
                 }
                 Crop->svTranspirationPotential = TE;
+
+#ifdef _PIHM_
+                Crop->dailyTranspirationPotential += Crop->svTranspirationPotential;
+                Crop->dailyTranspiration += Crop->svTranspiration;
+#else
                 Crop->svWaterStressFactor = 1.0 - Crop->svTranspiration / TE;
+#endif
+
             }	/* end plant growing */
+
         }
     }
 
     for (i = 0; i < Soil->totalLayers; i++)
     {
 #ifdef _PIHM_
-        wf->et[i] = Soil->waterUptake[i] / 1000.0 / 24.0 / 3600.0;
+        wf->et[i] = Soil->waterUptake[i] / 1000.0 / dt;
 #else
         Soil->waterContent[i] -= Soil->waterUptake[i] / (Soil->layerThickness[i] * WATER_DENSITY);
 #endif

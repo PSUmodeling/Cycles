@@ -157,7 +157,11 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, crop_struct 
     /* Unstressed growth of aboveground biomass
      * might be used to calculate N demand */
     PRG = Crop->svRadiationInterception * Weather->solarRadiation[y][doy - 1] * RUE;
+#ifdef _PIHM_
+    PTG = Crop->dailyTranspirationPotential * TUE;
+#else
     PTG = Crop->svTranspirationPotential * TUE;
+#endif
     UnstressedGrowth = PRG < PTG ? PRG : PTG;
     Crop->svUnstressedShootDailyGrowth = UnstressedGrowth * ShootPartitioning;
     Crop->svUnstressedRootDailyGrowth = UnstressedGrowth * (1.0 - ShootPartitioning) * RRD;
@@ -191,7 +195,12 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, crop_struct 
     RadiationGrowth = Crop->svRadiationInterception * Weather->solarRadiation[y][doy - 1] * RUE * (1.0 - pow (SF, 1.0));
     /* This coefficient is higher to represent drop in WUE with N stress
      * (radiation limits more) */
+#ifdef _PIHM_
+    TranspirationGrowth = Crop->dailyTranspiration * TUE * (1.0 - pow (Crop->svN_StressFactor, 1.25));
+#else
     TranspirationGrowth = Crop->svTranspiration * TUE * (1.0 - pow (Crop->svN_StressFactor, 1.25));
+#endif
+
     *DailyGrowth = RadiationGrowth < TranspirationGrowth ? RadiationGrowth : TranspirationGrowth;
 
     /* Update biomass pools */
@@ -668,6 +677,9 @@ void RadiationInterception (int y, int doy, comm_struct *Community)
                     Rate_Root_Depth = f * exp (e - f * Fractional_TT) / pow (1.0 + exp (e - f * Fractional_TT), 2.0);
 
                     /* Compute stress effect on canopy expansion or senescence */
+#ifdef _PIHM_
+                    Crop->svWaterStressFactor = (Crop->dailyTranspirationPotential <= 0.0) ? 0.0 : Crop->dailyTranspiration / Crop->dailyTranspirationPotential;
+#endif
                     WSF = 1.0 - Crop->svWaterStressFactor;
                     NSF = pow (1.0 - Crop->svN_StressFactor, 3.0);
 

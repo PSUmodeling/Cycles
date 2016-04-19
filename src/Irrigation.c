@@ -1,4 +1,8 @@
+#ifdef _PIHM_
+#include "pihm.h"
+#else
 #include "Cycles.h"
+#endif
 
 double FindIrrigationVolume (int opLayer, double opWaterDepletion, const soil_struct *Soil)
 {
