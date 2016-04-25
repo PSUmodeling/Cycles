@@ -147,7 +147,7 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, con
                 //PTx = PTx * factorTemperature * Crop->svRadiationInterception;
                 PTx = Crop->transpirationMax * factorTemperature * Crop->svRadiationInterception;
 #ifdef _PIHM_
-                PTx *= 0.18;
+                PTx *= 0.18 * dt / 3600.0;
 #endif
 
                 /* Calculate maximum crop transpiration rate (kg/m2/d = mm/d) */

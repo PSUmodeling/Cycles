@@ -214,6 +214,12 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage, crop_struct 
 
     if (Crop->svTT_Cumulative > Crop->userFloweringTT)
         Crop->svPostFloweringShootBiomass += Crop->svShootDailyGrowth;
+
+#ifdef _PIHM_
+    /* Reset daily transpiration */
+    Crop->dailyTranspirationPotential = 0.0;
+    Crop->dailyTranspiration = 0.0;
+#endif
 }
 
 void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq, double *NaAbgd, double *NxAbgd, double *NcAbgd, double *NnAbgd, double *NxRoot, double Stage, const crop_struct *Crop)
@@ -678,7 +684,7 @@ void RadiationInterception (int y, int doy, comm_struct *Community)
 
                     /* Compute stress effect on canopy expansion or senescence */
 #ifdef _PIHM_
-                    Crop->svWaterStressFactor = (Crop->dailyTranspirationPotential <= 0.0) ? 0.0 : Crop->dailyTranspiration / Crop->dailyTranspirationPotential;
+                    Crop->svWaterStressFactor = (Crop->dailyTranspirationPotential <= 0.0) ? 1.0 : 1.0 - Crop->dailyTranspiration / Crop->dailyTranspirationPotential;
 #endif
                     WSF = 1.0 - Crop->svWaterStressFactor;
                     NSF = pow (1.0 - Crop->svN_StressFactor, 3.0);
@@ -706,7 +712,7 @@ void RadiationInterception (int y, int doy, comm_struct *Community)
                      * allowance */
                     if (Rate_Crop_Interception > 0.0)
                     {
-                        Compensatory_Expansion = sqrt ((Crop->userMaximumSoilCoverage / (1.0 + exp (a - b * Fractional_TT) + exp (-c + d * Fractional_TT))) / Crop->svRadiationInterception_nc);
+                        Compensatory_Expansion = (Crop->svRadiationInterception_nc <= 0.0) ? 1.0 : sqrt ((Crop->userMaximumSoilCoverage / (1.0 + exp (a - b * Fractional_TT) + exp (-c + d * Fractional_TT))) / Crop->svRadiationInterception_nc);
                         Reserves_Use_Allowance = 1.0 + 3.0 / (1.0 + pow (Crop->svRadiationInterception_nc / 0.15, 4.0));
                     }
                     else

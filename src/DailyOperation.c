@@ -5,6 +5,9 @@
 #endif
 
 #ifdef _PIHM_
+
+static int      first_day = 1;
+
 void DailyCycles (int t, pihm_struct pihm)
 {
     int             i, k;
@@ -47,7 +50,7 @@ void DailyCycles (int t, pihm_struct pihm)
             elem->soil.soilTemperature[k] = elem->daily.stc[k] - TFREEZ;
             elem->soil.waterContent[k] = elem->daily.sh2o[k];
             elem->soil.waterContent[k] = elem->soil.waterContent[k] > elem->soil.Porosity[k] ? elem->soil.Porosity[k] : elem->soil.waterContent[k];
-            elem->soil.waterContent[k] = elem->soil.waterContent[k] < elem->soil.smcmin + 0.05 ? elem->soil.smcmin + 0.05 : elem->soil.waterContent[k];
+            elem->soil.waterContent[k] = elem->soil.waterContent[k] < elem->soil.smcmin + 0.02 ? elem->soil.smcmin + 0.02 : elem->soil.waterContent[k];
             elem->soil.waterUptake[k] = elem->daily.et[k] * 24.0 * 3600.0 / 1000.0;
         }
     }
@@ -59,6 +62,8 @@ void DailyCycles (int t, pihm_struct pihm)
         DailyOperations (y, d, &elem->cropmgmt, &elem->comm, &elem->residue,
             &pihm->ctrl, &elem->snow, &elem->soil, &elem->soilc, &elem->weather);
     }
+
+    first_day = 0;
 }
 #endif
 
@@ -68,6 +73,7 @@ void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_stru
 void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl, snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon, weather_struct *Weather, summary_struct *Summary)
 #endif
 {
+
     /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
@@ -79,7 +85,11 @@ void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_stru
      * FixedIrrigation	    op_struct*
      */
 
+#ifdef _PIHM_
+    if (doy == 1 || first_day)
+#else
     if (doy == 1)
+#endif
     { 
         FirstDOY (&CropManagement->rotationYear, CropManagement->yearsInRotation, Soil->totalLayers, SoilCarbon, Residue, Soil);
     }
