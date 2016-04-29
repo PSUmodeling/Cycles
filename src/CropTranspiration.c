@@ -5,7 +5,7 @@
 #endif
 
 #ifdef _PIHM_
-void WaterUptake (comm_struct *Community, soil_struct *Soil, double sfctmp, wf_struct *wf, double dt)
+void WaterUptake (comm_struct *Community, soil_struct *Soil, double sfctmp, wf_struct *wf, double pc, double dt)
 #else
 void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, const weather_struct *Weather)
 #endif
@@ -92,7 +92,7 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil, con
     sfctmp -= TFREEZ;
 
     /* Convert from m s-1 rate to mm volume */
-    etp = wf->etp * 1000.0 * dt;
+    etp = wf->etp * 1000.0 * dt * pc;
 #endif
 
     for (i = 0; i < Soil->totalLayers; i++)
