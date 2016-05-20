@@ -4,6 +4,63 @@
 #include "Cycles.h"
 #endif
 
+void InitCropSV (crop_struct *Crop)
+{
+    Crop->svTT_Daily = 0.0;
+    Crop->svTT_Cumulative = 0.0;
+    Crop->svRadiationInterception = 0.0;
+    Crop->svRadiationInterception_nc = 0.0;
+    Crop->svBiomass = 0.0;
+    Crop->svShoot = 0.0;
+    Crop->svRoot = 0.0;
+    Crop->svRizho = 0.0;
+    Crop->svShootDailyGrowth = 0.0;
+    Crop->svRootDailyGrowth = 0.0;
+    Crop->svRizhoDailyDeposition = 0.0;
+    Crop->svUnstressedShootDailyGrowth = 0.0;
+    Crop->svUnstressedRootDailyGrowth = 0.0;
+    Crop->svPostFloweringShootBiomass = 0.0;
+    Crop->svRootingDepth = 0.0;
+    Crop->svTranspiration = 0.0;
+    Crop->svTranspirationPotential = 0.0;
+#ifdef _PIHM_
+    Crop->dailyTranspiration = 0.0;
+    Crop->dailyTranspirationPotential = 0.0;
+#endif
+    Crop->svN_Shoot = 0.0;
+    Crop->svN_Root = 0.0;
+    Crop->svN_Rhizo = 0.0;
+    Crop->svN_RizhoDailyDeposition = 0.0;
+    Crop->svN_AutoAdded = 0.0;
+    Crop->svN_Fixation = 0.0;
+    Crop->svWaterStressFactor = 0.0;
+    Crop->svN_StressFactor = 0.0;
+
+    Crop->svShootUnstressed = 0.0;
+    Crop->svN_StressCumulative = 0.0;
+
+    Crop->rcForageYield = 0.0;
+    Crop->rcGrainYield = 0.0;
+    Crop->rcBiomass = 0.0;
+    Crop->rcRoot = 0.0;
+    Crop->rcResidueBiomass = 0.0;
+    Crop->rcCropTranspiration = 0.0;
+    Crop->rcCropTranspirationPotential = 0.0;
+    Crop->rcSoilWaterEvaporation = 0.0;
+    Crop->rcHarvestIndex = 0;
+    Crop->rcTotalNitrogen = 0.0;
+    Crop->rcRootNitrogen = 0.0;
+    Crop->rcGrainNitrogenYield = 0.0;
+    Crop->rcForageNitrogenYield = 0.0;
+    Crop->rcNitrogenCumulative = 0.0;
+    Crop->rcNitrogenInHarvest = 0.0;
+    Crop->rcNitrogenInResidue = 0.0;
+    Crop->rcNitrogenForageConc = 0.0;
+
+    Crop->harvestDateFinal = -1;
+    Crop->harvestCount = 0;
+}
+
 void PlantingCrop (comm_struct *Community, const cropmgmt_struct *CropManagement, int plantingIndex)
 {
     op_struct *plantingOrder;
@@ -35,59 +92,7 @@ void PlantingCrop (comm_struct *Community, const cropmgmt_struct *CropManagement
     Crop->userClippingStart = plantingOrder->clippingStart;
     Crop->userClippingEnd = plantingOrder->clippingEnd;
 
-    Crop->svTT_Daily = 0.0;
-    Crop->svTT_Cumulative = 0.0;
-    Crop->svRadiationInterception = 0.0;
-    Crop->svBiomass = 0.0;
-    Crop->svShoot = 0.0;
-    Crop->svRoot = 0.0;
-    Crop->svRizho = 0.0;
-    Crop->svShootDailyGrowth = 0.0;
-    Crop->svRootDailyGrowth = 0.0;
-    Crop->svRizhoDailyDeposition = 0.0;
-    Crop->svUnstressedShootDailyGrowth = 0.0;
-    Crop->svUnstressedRootDailyGrowth = 0.0;
-    Crop->svPostFloweringShootBiomass = 0.0;
-    Crop->svRootingDepth = 0.0;
-    Crop->svTranspiration = 0.0;
-    Crop->svTranspirationPotential = 0.0;
-#ifdef _PIHM_
-    Crop->dailyTranspiration = 0.0;
-    Crop->dailyTranspirationPotential = 0.0;
-#endif
-    Crop->svN_Shoot = 0.0;
-    Crop->svN_Root = 0.0;
-    Crop->svN_Rhizo = 0.0;
-    Crop->svN_RizhoDailyDeposition = 0.0;
-    Crop->svN_AutoAdded = 0.0;
-    Crop->svN_Fixation = 0.0;
-    Crop->svWaterStressFactor = 0.0;
-    Crop->svN_StressFactor = 0.0;
-    Crop->svShootUnstressed = 0.0;
-    Crop->svN_StressCumulative = 0.0;
-
-    Crop->svRadiationInterception_nc = 0.0;
-
-    Crop->rcForageYield = 0.0;
-    Crop->rcGrainYield = 0.0;
-    Crop->rcBiomass = 0.0;
-    Crop->rcRoot = 0.0;
-    Crop->rcResidueBiomass = 0.0;
-    Crop->rcCropTranspiration = 0.0;
-    Crop->rcCropTranspirationPotential = 0.0;
-    Crop->rcSoilWaterEvaporation = 0.0;
-    Crop->rcHarvestIndex = 0;
-    Crop->rcTotalNitrogen = 0.0;
-    Crop->rcRootNitrogen = 0.0;
-    Crop->rcGrainNitrogenYield = 0.0;
-    Crop->rcForageNitrogenYield = 0.0;
-    Crop->rcNitrogenCumulative = 0.0;
-    Crop->rcNitrogenInHarvest = 0.0;
-    Crop->rcNitrogenInResidue = 0.0;
-    Crop->rcNitrogenForageConc = 0.0;
-
-    Crop->harvestDateFinal = -1;
-    Crop->harvestCount = 0;
+    InitCropSV (Crop);
 }
 
 void AddCrop (crop_struct *Crop)
@@ -125,59 +130,7 @@ void KillCrop (crop_struct *Crop)
     Crop->userClippingStart = 0;
     Crop->userClippingEnd = 0;
 
-    Crop->harvestDateFinal = -1;
-    Crop->harvestCount = -1;
-
-    Crop->svTT_Daily = 0.0;
-    Crop->svTT_Cumulative = 0.0;
-    Crop->svRadiationInterception = 0.0;
-    Crop->svRadiationInterception_nc = 0.0;
-    Crop->svBiomass = 0.0;
-    Crop->svShoot = 0.0;
-    Crop->svRoot = 0.0;
-    Crop->svRizho = 0.0;
-    Crop->svShootDailyGrowth = 0.0;
-    Crop->svRootDailyGrowth = 0.0;
-    Crop->svRizhoDailyDeposition = 0.0;
-    Crop->svUnstressedShootDailyGrowth = 0.0;
-    Crop->svUnstressedRootDailyGrowth = 0.0;
-    Crop->svPostFloweringShootBiomass = 0.0;
-    Crop->svRootingDepth = 0.0;
-    Crop->svTranspiration = 0.0;
-    Crop->svTranspirationPotential = 0.0;
-#ifdef _PIHM_
-    Crop->dailyTranspiration = 0.0;
-    Crop->dailyTranspirationPotential = 0.0;
-#endif
-    Crop->svN_Shoot = 0.0;
-    Crop->svN_Root = 0.0;
-    Crop->svN_Rhizo = 0.0;
-    Crop->svN_RizhoDailyDeposition = 0.0;
-    Crop->svN_AutoAdded = 0.0;
-    Crop->svN_Fixation = 0.0;
-    Crop->svWaterStressFactor = 0.0;
-    Crop->svN_StressFactor = 0.0;
-
-    Crop->svShootUnstressed = 0.0;
-    Crop->svN_StressCumulative = 0.0;
-
-    Crop->rcForageYield = 0.0;
-    Crop->rcGrainYield = 0.0;
-    Crop->rcBiomass = 0.0;
-    Crop->rcRoot = 0.0;
-    Crop->rcResidueBiomass = 0.0;
-    Crop->rcCropTranspiration = 0.0;
-    Crop->rcCropTranspirationPotential = 0.0;
-    Crop->rcSoilWaterEvaporation = 0.0;
-    Crop->rcHarvestIndex = 0.0;
-    Crop->rcTotalNitrogen = 0.0;
-    Crop->rcRootNitrogen = 0.0;
-    Crop->rcGrainNitrogenYield = 0.0;
-    Crop->rcForageNitrogenYield = 0.0;
-    Crop->rcNitrogenCumulative = 0.0;
-    Crop->rcNitrogenInHarvest = 0.0;
-    Crop->rcNitrogenInResidue = 0.0;
-    Crop->rcNitrogenForageConc = 0.0;
+    InitCropSV (Crop);
 }
 
 void UpdateCommunity (comm_struct *Community)

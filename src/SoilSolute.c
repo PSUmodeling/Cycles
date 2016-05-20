@@ -36,16 +36,13 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv, int numr
     for (i = 0; i < numele; i++)
     {
         Adsorption (elem[i].ps.sldpth, elem[i].ws.smc, elem[i].soil.BD, elem[i].ps.nsoil, 0.0, &elem[i].NO3sol);
-
         Adsorption (elem[i].ps.sldpth, elem[i].ws.smc, elem[i].soil.BD, elem[i].ps.nsoil, 5.6, &elem[i].NH4sol);
     }
 
     for (i = 0; i < numriv; i++)
     {
         river_sldpth = ((riv[i].ws.stage > 0.0) ? riv[i].ws.stage : 0.0) + riv[i].topo.zbed - riv[i].topo.zmin;
-
         river_smc = (((riv[i].ws.stage > 0.0) ? riv[i].ws.stage : 0.0) + riv[i].matl.porosity * (riv[i].topo.zbed - riv[i].topo.zmin)) / river_sldpth;
-
         river_bd = 0.0;      // Ignore river bed adsorption
 
         Adsorption (&river_sldpth, &river_smc, &river_bd, 1, 0.0, &riv[i].NO3sol);
@@ -74,11 +71,12 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv, int numr
                     }
 
                     Elem2ElemSolTrnsp (elem + i, snk, elem[i].wf.smflxh[k], elem[i].NO3sol.soluteConc, dt, elem[i].NO3sol.soluteFluxLat[k], snk->NO3sol.soluteFluxLat[k_snk]);
+                    Elem2ElemSolTrnsp (elem + i, snk, elem[i].wf.smflxh[k], elem[i].NH4sol.soluteConc, dt, elem[i].NH4sol.soluteFluxLat[k], snk->NH4sol.soluteFluxLat[k_snk]);
                 }
             }
             else
             {
-                river = &(riv[- elem->nabr[k] - 1]);
+                river = &(riv[- elem[i].nabr[k] - 1]);
                 if (river->leftele == i + 1)
                 {
                     k_river = 2;
@@ -89,6 +87,7 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv, int numr
                 }
 
                 Elem2RiverSolTrnsp (elem + i, river, elem[i].wf.fluxsub[k], elem[i].wf.smflxh[k], elem[i].NO3sol.soluteConc, river->NO3sol.soluteConc, dt, elem[i].NO3sol.soluteFluxLat[k], river->NO3sol.soluteFluxLat[k_river]);
+                Elem2RiverSolTrnsp (elem + i, river, elem[i].wf.fluxsub[k], elem[i].wf.smflxh[k], elem[i].NH4sol.soluteConc, river->NH4sol.soluteConc, dt, elem[i].NH4sol.soluteFluxLat[k], river->NH4sol.soluteFluxLat[k_river]);
             }
         }
     }
@@ -100,16 +99,21 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv, int numr
             down = &riv[riv[i].down - 1];
 
             River2RiverSolTrnsp (riv + i, down, riv[i].wf.fluxriv, riv[i].NO3sol.soluteConc, down->NO3sol.soluteConc, dt, riv[i].NO3sol.soluteFluxLat[1], down->NO3sol.soluteFluxLat[0]);
+            River2RiverSolTrnsp (riv + i, down, riv[i].wf.fluxriv, riv[i].NH4sol.soluteConc, down->NH4sol.soluteConc, dt, riv[i].NH4sol.soluteFluxLat[1], down->NH4sol.soluteFluxLat[0]);
         }
         else
         {
-            riv[i].NO3sol.soluteFluxLat[1][0] = riv[i].wf.fluxriv[1] * riv[i].NO3sol.soluteConc[0] * dt * WATER_DENSITY / riv->topo.area;
+            riv[i].NO3sol.soluteFluxLat[1][0] = riv[i].wf.fluxriv[1] * riv[i].NO3sol.soluteConc[0] * dt * WATER_DENSITY / riv[i].topo.area;
+            riv[i].NH4sol.soluteFluxLat[1][0] = riv[i].wf.fluxriv[1] * riv[i].NH4sol.soluteConc[0] * dt * WATER_DENSITY / riv[i].topo.area;
         }
     }
 
     for (i = 0; i < numele; i++)
     {
-        for (j = 0; j < elem->ps.nsoil; j++)
+        elem[i].soil.NO3Profile = 0.0;
+        elem[i].soil.NH4Profile = 0.0;
+
+        for (j = 0; j < elem[i].ps.nsoil; j++)
         {
             waterInitial = elem[i].ps.sldpth[j] * WATER_DENSITY * elem[i].ws.smc[j];
 
@@ -148,7 +152,57 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv, int numr
             }
 
             elem[i].NO3sol.soluteMass[j] = elem[i].NO3sol.soluteMassAdsorbed[j] + soluteMassSolution;
+
+            elem[i].NO3sol.soluteMass[j] = (elem[i].NO3sol.soluteMass[j] > 0.0) ? elem[i].NO3sol.soluteMass[j] : 0.0;
+
             elem[i].soil.NO3[j] = elem[i].NO3sol.soluteMass[j];
+
+            elem[i].soil.NO3Profile += elem[i].soil.NO3[j];
+
+            /*
+             * NH4
+             */
+            soluteMassSolution = waterInitial * elem[i].NH4sol.soluteConc[j];
+
+            /* Vertical transport from layer bottom */
+            if (j < MAXLYR - 1)
+            {
+                if (elem[i].wf.smflxv[j] > 0.0)
+                {
+                    soluteMassSolution -= elem[i].wf.smflxv[j] * elem[i].NH4sol.soluteConc[j] * dt * WATER_DENSITY;
+                }
+                else
+                {
+                    soluteMassSolution -= elem[i].wf. smflxv[j] * elem[i].NH4sol.soluteConc[j + 1] * dt * WATER_DENSITY;
+                }
+            }
+
+            /* Vertical transport from layer top */
+            if (j > 0)
+            {
+                if (elem[i].wf.smflxv[j - 1] > 0.0)
+                {
+                    soluteMassSolution += elem[i].wf.smflxv[j - 1] * elem[i].NH4sol.soluteConc[j - 1] * dt * WATER_DENSITY;
+                }
+                else
+                {
+                    soluteMassSolution += elem[i].wf.smflxv[j - 1] * elem[i].NH4sol.soluteConc[j] * dt * WATER_DENSITY;
+                }
+            }
+
+            /* Lateral transport */
+            for (k = 0; k < 3; k++)
+            {
+                soluteMassSolution -= elem[i].NH4sol.soluteFluxLat[k][j];
+            }
+
+            elem[i].NH4sol.soluteMass[j] = elem[i].NH4sol.soluteMassAdsorbed[j] + soluteMassSolution;
+
+            elem[i].NH4sol.soluteMass[j] = (elem[i].NH4sol.soluteMass[j] > 0.0) ? elem[i].NH4sol.soluteMass[j] : 0.0;
+
+            elem[i].soil.NH4[j] = elem[i].NH4sol.soluteMass[j];
+
+            elem[i].soil.NH4Profile += elem[i].soil.NH4[j];
         }
     }
 
@@ -156,7 +210,7 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv, int numr
     {
         waterInitial = (((riv[i].ws.stage > 0.0) ? riv[i].ws.stage : 0.0) + riv[i].matl.porosity * (riv[i].topo.zbed - riv[i].topo.zmin)) * WATER_DENSITY;
 
-        soluteMassSolution = waterInitial * riv[i].NO3sol.soluteConc[j];
+        soluteMassSolution = waterInitial * riv[i].NO3sol.soluteConc[0];
 
         for (k = 0; k < 4; k++)
         {
@@ -164,6 +218,19 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv, int numr
         }
 
         riv[i].NO3sol.soluteMass[0] = riv[i].NO3sol.soluteMassAdsorbed[0] + soluteMassSolution;
+
+        riv[i].NO3sol.soluteMass[0] = (riv[i].NO3sol.soluteMass[0] > 0.0) ? riv[i].NO3sol.soluteMass[0] : 0.0;
+
+        soluteMassSolution = waterInitial * riv[i].NH4sol.soluteConc[0];
+
+        for (k = 0; k < 4; k++)
+        {
+            soluteMassSolution -= riv[i].NH4sol.soluteFluxLat[k][0];
+        }
+
+        riv[i].NH4sol.soluteMass[0] = riv[i].NH4sol.soluteMassAdsorbed[0] + soluteMassSolution;
+
+        riv[i].NH4sol.soluteMass[0] = (riv[i].NH4sol.soluteMass[0] > 0.0) ? riv[i].NH4sol.soluteMass[0] : 0.0;
     }
 }
 
@@ -188,6 +255,7 @@ void Adsorption (const double *sldpth, const double *sh2o, const double *bd, int
         }
 
         solute->soluteMassAdsorbed[j] = solute->soluteMass[j] - waterInitial * solute->soluteConc[j];
+        solute->soluteMassAdsorbed[j] = (solute->soluteMassAdsorbed[j] < 0.0) ? 0.0 : solute->soluteMassAdsorbed[j];
     }
 }
 
