@@ -4,7 +4,8 @@
 #include "Cycles.h"
 #endif
 
-double FindIrrigationVolume (int opLayer, double opWaterDepletion, const soil_struct *Soil)
+double FindIrrigationVolume (int opLayer, double opWaterDepletion,
+    const soil_struct *Soil)
 {
     /*
      * This sub calculates the volume of an automatic irrigation
@@ -13,11 +14,11 @@ double FindIrrigationVolume (int opLayer, double opWaterDepletion, const soil_st
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * i		    int		Loop counter
-     * depletionZonePAW	    double
+     * i                    int         Loop counter
+     * depletionZonePAW     double
      * depletionZoneWater   double
-     * irrigation_vol	    double	Volume of an automatic irrigation
-     *					  [return value]
+     * irrigation_vol       double      Volume of an automatic irrigation
+     *                                    [return value]
      */
     int             i;
     double          depletionZonePAW = 0.0;
@@ -32,19 +33,26 @@ double FindIrrigationVolume (int opLayer, double opWaterDepletion, const soil_st
         if (Soil->waterContent[i] >= Soil->PWP[i])
         {
             depletionZonePAW += Soil->PAW[i] * Soil->layerThickness[i];
-            depletionZoneWater += (Soil->waterContent[i] - Soil->PWP[i]) * Soil->layerThickness[i];
+            depletionZoneWater +=
+                (Soil->waterContent[i] -
+                Soil->PWP[i]) * Soil->layerThickness[i];
         }
         else
-	{
-	    /* This adds deficit below PWP */
-            depletionZonePAW += (Soil->FC[i] - Soil->waterContent[i]) * Soil->layerThickness[i];
-	}
+        {
+            /* This adds deficit below PWP */
+            depletionZonePAW +=
+                (Soil->FC[i] -
+                Soil->waterContent[i]) * Soil->layerThickness[i];
+        }
     }
 
-    if (depletionZoneWater + Soil->irrigationVol < depletionZonePAW * (1.0 - opWaterDepletion))
+    if (depletionZoneWater + Soil->irrigationVol <
+        depletionZonePAW * (1.0 - opWaterDepletion))
     {
         /* Convert m to mm */
-        irrigation_vol = (depletionZonePAW - depletionZoneWater) * 1000.0 - Soil->irrigationVol;
+        irrigation_vol =
+            (depletionZonePAW - depletionZoneWater) * 1000.0 -
+            Soil->irrigationVol;
     }
 
     return (irrigation_vol);

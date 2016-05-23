@@ -11,7 +11,7 @@ void InitializeResidue (residue_struct *Residue, int totalLayers)
 
     for (k = 0; k < totalLayers; k++)
     {
-        Residue->residueAbgd[k] = 0.0; 
+        Residue->residueAbgd[k] = 0.0;
         Residue->residueRt[k] = 0.0;
         Residue->residueRz[k] = 0.0;
         Residue->residueAbgdN[k] = 0.0;
@@ -57,10 +57,10 @@ void ComputeResidueCover (residue_struct *Residue)
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * stanResidueAI	    double	Standing residue area index
-     *					  (m2 residue / m2 ground)
-     * flatResidueAI	    double	Flat residue area index
-     *					  (m2 residue / m2 ground)
+     * stanResidueAI        double      Standing residue area index
+     *                                    (m2 residue / m2 ground)
+     * flatResidueAI        double      Flat residue area index
+     *                                    (m2 residue / m2 ground)
      */
     double          stanResidueAI;
     double          flatResidueAI;
@@ -71,7 +71,9 @@ void ComputeResidueCover (residue_struct *Residue)
 
     Residue->stanResidueTau = exp (-STAN_RESIDUE_K * stanResidueAI);
     Residue->flatResidueTau = exp (-FLAT_RESIDUE_K * flatResidueAI);
-    Residue->residueInterception = (1.0 - Residue->stanResidueTau) + Residue->stanResidueTau * (1.0 - Residue->flatResidueTau);
+    Residue->residueInterception =
+        (1.0 - Residue->stanResidueTau) + Residue->stanResidueTau * (1.0 -
+        Residue->flatResidueTau);
 }
 
 #ifdef _PIHM_
@@ -88,15 +90,15 @@ void ResidueWetting (residue_struct *Residue, soil_struct *Soil)
      * Variable             Type        Description
      * ==========           ==========  ====================
      * residueMaxWaterConcentration
-     *			    double	(kg/kg)
+     *                      double      (kg/kg)
      * flatResidueWaterDeficit
-     *			    double	Water need to saturate residue (mm)
+     *                      double      Water need to saturate residue (mm)
      * standingResidueWaterDeficit
-     *			    double	Water need to saturate residue (mm)
-     * waterWettingResidue  double	Amount of water interceptable by
-     *					  residue (mm)
-     * waterRetainedResidue double	Water retained in residue and
-     *					  discounted for infiltration (mm)
+     *                      double      Water need to saturate residue (mm)
+     * waterWettingResidue  double      Amount of water interceptable by
+     *                                    residue (mm)
+     * waterRetainedResidue double      Water retained in residue and
+     *                                    discounted for infiltration (mm)
      */
     const double    residueMaxWaterConcentration = 3.3;
     double          flatResidueWaterDeficit;
@@ -105,13 +107,18 @@ void ResidueWetting (residue_struct *Residue, soil_struct *Soil)
     double          waterRetainedResidue;
 
     /* 10 converts residue from Mg/ha to kg/m2 */
-    flatResidueWaterDeficit = residueMaxWaterConcentration * Residue->flatResidueMass / 10.0 - Residue->flatResidueWater;
-    standingResidueWaterDeficit = residueMaxWaterConcentration * Residue->stanResidueMass / 10.0 - Residue->stanResidueWater;
+    flatResidueWaterDeficit =
+        residueMaxWaterConcentration * Residue->flatResidueMass / 10.0 -
+        Residue->flatResidueWater;
+    standingResidueWaterDeficit =
+        residueMaxWaterConcentration * Residue->stanResidueMass / 10.0 -
+        Residue->stanResidueWater;
 
 #ifdef _PIHM_
     waterWettingResidue = *infil_vol * Residue->residueInterception;
 #else
-    waterWettingResidue = Soil->infiltrationVol * Residue->residueInterception;
+    waterWettingResidue =
+        Soil->infiltrationVol * Residue->residueInterception;
 #endif
 
     waterRetainedResidue = 0.0;
@@ -150,7 +157,8 @@ void ResidueWetting (residue_struct *Residue, soil_struct *Soil)
 #endif
 }
 
-void ResidueEvaporation (residue_struct *Residue, soil_struct *Soil, const comm_struct *Community, double ETo, double snowCover)
+void ResidueEvaporation (residue_struct *Residue, soil_struct *Soil,
+    const comm_struct *Community, double ETo, double snowCover)
 {
     /*
      * Compute residue evaporation
@@ -160,13 +168,13 @@ void ResidueEvaporation (residue_struct *Residue, soil_struct *Soil, const comm_
      * Variable             Type        Description
      * ==========           ==========  ====================
      * residueMaxWaterConcentration
-     *			    double	(kg water/kg residue)
-     * flatEvapFactor	    double
+     *                      double      (kg water/kg residue)
+     * flatEvapFactor       double
      * standingEvapFactor   double
-     * flatEvap		    double
-     * standingEvap	    double
+     * flatEvap             double
+     * standingEvap         double
      * residueEvapDemand    double
-     * xx		    double
+     * xx                   double
      */
     const double    residueMaxWaterConcentration = 3.3;
     double          flatEvapFactor;
@@ -180,10 +188,16 @@ void ResidueEvaporation (residue_struct *Residue, soil_struct *Soil, const comm_
     if (Residue->stanResidueWater > 0.0 || Residue->flatResidueWater > 0.0)
     {
         Soil->residueEvaporationVol = 0.0;
-        residueEvapDemand = Residue->residueInterception * (1.0 - snowCover) * (1.0 - Community->svRadiationInterception) * ETo;
-	/* 10 converts residue from Mg/ha to kg/m2 */
-        standingEvapFactor = pow (Residue->stanResidueWater / (residueMaxWaterConcentration * Residue->stanResidueMass / 10.0), 2.0);
-        flatEvapFactor = pow (Residue->flatResidueWater / (residueMaxWaterConcentration * Residue->flatResidueMass / 10.0), 2.0);
+        residueEvapDemand =
+            Residue->residueInterception * (1.0 - snowCover) * (1.0 -
+            Community->svRadiationInterception) * ETo;
+        /* 10 converts residue from Mg/ha to kg/m2 */
+        standingEvapFactor =
+            pow (Residue->stanResidueWater / (residueMaxWaterConcentration *
+                Residue->stanResidueMass / 10.0), 2.0);
+        flatEvapFactor =
+            pow (Residue->flatResidueWater / (residueMaxWaterConcentration *
+                Residue->flatResidueMass / 10.0), 2.0);
 
         /* Dry standing residue first */
         xx = residueEvapDemand * standingEvapFactor;

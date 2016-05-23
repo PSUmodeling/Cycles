@@ -4,7 +4,10 @@
 #include "Cycles.h"
 #endif
 
-void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, soil_struct *Soil, residue_struct *Residue, ctrl_struct *SimControl, soilc_struct *SoilCarbon, weather_struct *Weather)
+void FieldOperation (int rotationYear, int y, int doy,
+    cropmgmt_struct *CropManagement, comm_struct *Community,
+    soil_struct *Soil, residue_struct *Residue, ctrl_struct *SimControl,
+    soilc_struct *SoilCarbon, weather_struct *Weather)
 {
     op_struct      *plantingOrder;
     op_struct      *FixedFertilization;
@@ -19,38 +22,51 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
     /*
      * Perform planting if necessary
      */
-    while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->plantingOrder, CropManagement->totalCropsPerRotation, &operation_index))
+    while (IsOperationToday (CropManagement->rotationYear, doy,
+            CropManagement->plantingOrder,
+            CropManagement->totalCropsPerRotation, &operation_index))
     {
         plantingOrder = &CropManagement->plantingOrder[operation_index];
         PlantingCrop (Community, CropManagement, operation_index);
         if (verbose_mode)
-            printf ("DOY %3.3d %-20s %s\n", doy, "Planting", plantingOrder->cropName);
+            printf ("DOY %3.3d %-20s %s\n", doy, "Planting",
+                plantingOrder->cropName);
     }
-    UpdateOperationStatus (CropManagement->plantingOrder, CropManagement->totalCropsPerRotation);
+    UpdateOperationStatus (CropManagement->plantingOrder,
+        CropManagement->totalCropsPerRotation);
 
     /*
      * Perform fertilization if necessary
      */
-    while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->FixedFertilization, CropManagement->numFertilization, &operation_index))
+    while (IsOperationToday (CropManagement->rotationYear, doy,
+            CropManagement->FixedFertilization,
+            CropManagement->numFertilization, &operation_index))
     {
-        FixedFertilization = &CropManagement->FixedFertilization[operation_index];
+        FixedFertilization =
+            &CropManagement->FixedFertilization[operation_index];
         if (verbose_mode)
-            printf ("DOY %3.3d %-20s %s\n", doy, "Fixed Fertilization", FixedFertilization->opSource);
+            printf ("DOY %3.3d %-20s %s\n", doy, "Fixed Fertilization",
+                FixedFertilization->opSource);
 
         ApplyFertilizer (FixedFertilization, Soil, Residue);
     }
-    UpdateOperationStatus (CropManagement->FixedFertilization, CropManagement->numFertilization);
+    UpdateOperationStatus (CropManagement->FixedFertilization,
+        CropManagement->numFertilization);
 
     /*
      * Perform tillage/harvest if necessary
      */
-    while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->Tillage, CropManagement->numTillage, &operation_index))
+    while (IsOperationToday (CropManagement->rotationYear, doy,
+            CropManagement->Tillage, CropManagement->numTillage,
+            &operation_index))
     {
         Tillage = &(CropManagement->Tillage[operation_index]);
         if (verbose_mode)
-            printf ("DOY %3.3d %-20s %s\n", doy, "Tillage", Tillage->opToolName);
+            printf ("DOY %3.3d %-20s %s\n", doy, "Tillage",
+                Tillage->opToolName);
 
-        if (strcasecmp (Tillage->opToolName, "Kill_Crop") == 0 || Tillage->grainHarvest || Tillage->forageHarvest)
+        if (strcasecmp (Tillage->opToolName, "Kill_Crop") == 0 ||
+            Tillage->grainHarvest || Tillage->forageHarvest)
         {
             if (strcasecmp (Tillage->cropNameT, "N/A") == 0 ||
                 strcasecmp (Tillage->cropNameT, "All") == 0)
@@ -62,14 +78,20 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
             {
                 if (Community->Crop[i].stageGrowth > NO_CROP)
                 {
-                    if (kill_all || strcasecmp (Tillage->cropNameT, Community->Crop[i].cropName) == 0)
+                    if (kill_all ||
+                        strcasecmp (Tillage->cropNameT,
+                            Community->Crop[i].cropName) == 0)
                     {
-                        if (strcasecmp (Tillage->opToolName, "Kill_Crop") == 0)
+                        if (strcasecmp (Tillage->opToolName,
+                                "Kill_Crop") == 0)
                         {
 #ifdef _PIHM_
-                            HarvestCrop (y, doy, &Community->Crop[i], Residue, Soil, SoilCarbon);
+                            HarvestCrop (y, doy, &Community->Crop[i], Residue,
+                                Soil, SoilCarbon);
 #else
-                            HarvestCrop (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+                            HarvestCrop (y, doy, SimControl->simStartYear,
+                                &Community->Crop[i], Residue, Soil,
+                                SoilCarbon, Weather);
 #endif
                             Community->NumActiveCrop--;
                         }
@@ -78,9 +100,13 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
                             if (Tillage->grainHarvest)
                             {
 #ifdef _PIHM_
-                                GrainHarvest (y, doy, &Community->Crop[i], Residue, Soil, SoilCarbon);
+                                GrainHarvest (y, doy, &Community->Crop[i],
+                                    Residue, Soil, SoilCarbon);
 #else
-                                GrainHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+                                GrainHarvest (y, doy,
+                                    SimControl->simStartYear,
+                                    &Community->Crop[i], Residue, Soil,
+                                    SoilCarbon, Weather);
 #endif
                             }
 
@@ -89,9 +115,14 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
                                 //if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
                                 {
 #ifdef _PIHM_
-                                    ForageAndSeedHarvest (y, doy, &Community->Crop[i], Residue, Soil, SoilCarbon);
+                                    ForageAndSeedHarvest (y, doy,
+                                        &Community->Crop[i], Residue, Soil,
+                                        SoilCarbon);
 #else
-                                    ForageAndSeedHarvest (y, doy, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+                                    ForageAndSeedHarvest (y, doy,
+                                        SimControl->simStartYear,
+                                        &Community->Crop[i], Residue, Soil,
+                                        SoilCarbon, Weather);
 #endif
                                 }
                             }
@@ -104,10 +135,12 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
         }
         else
         {
-            ExecuteTillage (SoilCarbon->abgdBiomassInput, Tillage, CropManagement->tillageFactor, Soil, Residue);
+            ExecuteTillage (SoilCarbon->abgdBiomassInput, Tillage,
+                CropManagement->tillageFactor, Soil, Residue);
         }
     }
-    UpdateOperationStatus (CropManagement->Tillage, CropManagement->numTillage);
+    UpdateOperationStatus (CropManagement->Tillage,
+        CropManagement->numTillage);
 
     UpdateCommunity (Community);
 
@@ -115,15 +148,19 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
      * Perform irrigation if neccesary
      */
     Soil->irrigationVol = 0.0;
-    while (IsOperationToday (CropManagement->rotationYear, doy, CropManagement->FixedIrrigation, CropManagement->numIrrigation, &operation_index))
+    while (IsOperationToday (CropManagement->rotationYear, doy,
+            CropManagement->FixedIrrigation, CropManagement->numIrrigation,
+            &operation_index))
     {
         FixedIrrigation = &(CropManagement->FixedIrrigation[operation_index]);
         if (verbose_mode)
-            printf ("DOY %3.3d %-20s %lf\n", doy, "Irrigation", FixedIrrigation->opVolume);
+            printf ("DOY %3.3d %-20s %lf\n", doy, "Irrigation",
+                FixedIrrigation->opVolume);
 
         Soil->irrigationVol += FixedIrrigation->opVolume;
     }
-    UpdateOperationStatus (CropManagement->FixedIrrigation, CropManagement->numIrrigation);
+    UpdateOperationStatus (CropManagement->FixedIrrigation,
+        CropManagement->numIrrigation);
 
 
     /*
@@ -136,26 +173,36 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
         {
             if (Crop->autoIrrigationStartDay < Crop->autoIrrigationStopDay)
             {
-                if (doy >= Crop->autoIrrigationStartDay && doy <= Crop->autoIrrigationStopDay)
+                if (doy >= Crop->autoIrrigationStartDay &&
+                    doy <= Crop->autoIrrigationStopDay)
                 {
-                    irrigation_vol = FindIrrigationVolume (Crop->autoIrrigationLastSoilLayer, Crop->autoIrrigationWaterDepletion, Soil);
+                    irrigation_vol =
+                        FindIrrigationVolume (Crop->
+                        autoIrrigationLastSoilLayer,
+                        Crop->autoIrrigationWaterDepletion, Soil);
                     if (irrigation_vol > 0.0)
                     {
                         if (verbose_mode)
-                            printf ("DOY %3.3d %-20s %lf\n", doy, "Auto Irrigation", irrigation_vol);
+                            printf ("DOY %3.3d %-20s %lf\n", doy,
+                                "Auto Irrigation", irrigation_vol);
                     }
                     Soil->irrigationVol += irrigation_vol;
                 }
             }
             else
             {
-                if (doy >= Crop->autoIrrigationStartDay || doy <= Crop->autoIrrigationStopDay)
+                if (doy >= Crop->autoIrrigationStartDay ||
+                    doy <= Crop->autoIrrigationStopDay)
                 {
-                    irrigation_vol = FindIrrigationVolume (Crop->autoIrrigationLastSoilLayer, Crop->autoIrrigationWaterDepletion, Soil);
+                    irrigation_vol =
+                        FindIrrigationVolume (Crop->
+                        autoIrrigationLastSoilLayer,
+                        Crop->autoIrrigationWaterDepletion, Soil);
                     if (irrigation_vol > 0.0)
                     {
                         if (verbose_mode)
-                            printf ("DOY %3.3d %-20s %lf\n", doy, "Auto Irrigation", irrigation_vol);
+                            printf ("DOY %3.3d %-20s %lf\n", doy,
+                                "Auto Irrigation", irrigation_vol);
                     }
                     Soil->irrigationVol += irrigation_vol;
                 }
@@ -163,8 +210,9 @@ void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropMana
         }
     }
 }
-    
-int IsOperationToday (int rotationYear, int doy, op_struct *FieldOperation, int numOperation, int *operationIndex)
+
+int IsOperationToday (int rotationYear, int doy, op_struct *FieldOperation,
+    int numOperation, int *operationIndex)
 {
     /*
      * Returns a true or false indicating if an operation happens on that day
@@ -173,7 +221,7 @@ int IsOperationToday (int rotationYear, int doy, op_struct *FieldOperation, int 
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * operation_today	    int		[return value]
+     * operation_today      int         [return value]
      */
     int             operation_today;
     int             i;
@@ -181,7 +229,7 @@ int IsOperationToday (int rotationYear, int doy, op_struct *FieldOperation, int 
     operation_today = 0;
     *operationIndex = -1;
 
-    if  (numOperation <= 0)
+    if (numOperation <= 0)
     {
         operation_today = 0;
         *operationIndex = -1;
@@ -194,7 +242,8 @@ int IsOperationToday (int rotationYear, int doy, op_struct *FieldOperation, int 
                 continue;
             else
             {
-                if (rotationYear == FieldOperation[i].opYear && doy == FieldOperation[i].opDay)
+                if (rotationYear == FieldOperation[i].opYear &&
+                    doy == FieldOperation[i].opDay)
                 {
                     operation_today = 1;
                     FieldOperation[i].status = 1;
@@ -233,7 +282,7 @@ void UpdateOperationStatus (op_struct *FieldOperation, int numOperation)
 
         if (all_performed)
         {
-            for (i = 0 ; i < numOperation; i++)
+            for (i = 0; i < numOperation; i++)
                 FieldOperation[i].status = 0;
         }
     }

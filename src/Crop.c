@@ -61,11 +61,12 @@ void InitCropSV (crop_struct *Crop)
     Crop->harvestCount = 0;
 }
 
-void PlantingCrop (comm_struct *Community, const cropmgmt_struct *CropManagement, int plantingIndex)
+void PlantingCrop (comm_struct *Community,
+    const cropmgmt_struct *CropManagement, int plantingIndex)
 {
-    op_struct *plantingOrder;
+    op_struct      *plantingOrder;
     autoirr_struct *autoIrrigation;
-    crop_struct           *Crop;
+    crop_struct    *Crop;
 
     plantingOrder = &(CropManagement->plantingOrder[plantingIndex]);
 
@@ -77,7 +78,9 @@ void PlantingCrop (comm_struct *Community, const cropmgmt_struct *CropManagement
 
     if (plantingOrder->usesAutoIrrigation > 0)
     {
-        autoIrrigation = &(CropManagement->autoIrrigation[plantingOrder->usesAutoIrrigation]);
+        autoIrrigation =
+            &(CropManagement->autoIrrigation[plantingOrder->
+                usesAutoIrrigation]);
         Crop->autoIrrigationUsed = 1;
         Crop->autoIrrigationStartDay = autoIrrigation->startDay;
         Crop->autoIrrigationStopDay = autoIrrigation->stopDay;
@@ -135,7 +138,7 @@ void KillCrop (crop_struct *Crop)
 
 void UpdateCommunity (comm_struct *Community)
 {
-    int         i;
+    int             i;
 
     Community->svRadiationInterception = 0.0;
     Community->svBiomass = 0.0;
@@ -156,30 +159,41 @@ void UpdateCommunity (comm_struct *Community)
     Community->svN_Fixation = 0.0;
     Community->svWaterStressFactor = 0.0;
     Community->svN_StressFactor = 0.0;
-    
+
     for (i = 0; i < Community->NumCrop; i++)
     {
         if (Community->Crop[i].stageGrowth > NO_CROP)
         {
-            Community->svRadiationInterception += Community->Crop[i].svRadiationInterception;
+            Community->svRadiationInterception +=
+                Community->Crop[i].svRadiationInterception;
             Community->svBiomass += Community->Crop[i].svBiomass;
             Community->svShoot += Community->Crop[i].svShoot;
             Community->svRoot += Community->Crop[i].svRoot;
             Community->svRizho += Community->Crop[i].svRizho;
-            Community->svShootDailyGrowth += Community->Crop[i].svShootDailyGrowth;
-            Community->svRootDailyGrowth += Community->Crop[i].svRootDailyGrowth;
-            Community->svRizhoDailyDeposition += Community->Crop[i].svRizhoDailyDeposition;
-            Community->svRootingDepth = Community->Crop[i].svRootingDepth > Community->svRootingDepth ? Community->Crop[i].svRootingDepth : Community->svRootingDepth;
+            Community->svShootDailyGrowth +=
+                Community->Crop[i].svShootDailyGrowth;
+            Community->svRootDailyGrowth +=
+                Community->Crop[i].svRootDailyGrowth;
+            Community->svRizhoDailyDeposition +=
+                Community->Crop[i].svRizhoDailyDeposition;
+            Community->svRootingDepth =
+                Community->Crop[i].svRootingDepth >
+                Community->svRootingDepth ? Community->Crop[i].
+                svRootingDepth : Community->svRootingDepth;
             Community->svTranspiration += Community->Crop[i].svTranspiration;
-            Community->svTranspirationPotential += Community->Crop[i].svTranspirationPotential;
+            Community->svTranspirationPotential +=
+                Community->Crop[i].svTranspirationPotential;
             Community->svN_Shoot += Community->Crop[i].svN_Shoot;
             Community->svN_Root += Community->Crop[i].svN_Root;
             Community->svN_Rhizo += Community->Crop[i].svN_Rhizo;
-            Community->svN_RizhoDailyDeposition += Community->Crop[i].svN_RizhoDailyDeposition;
+            Community->svN_RizhoDailyDeposition +=
+                Community->Crop[i].svN_RizhoDailyDeposition;
             Community->svN_AutoAdded += Community->Crop[i].svN_AutoAdded;
             Community->svN_Fixation += Community->Crop[i].svN_Fixation;
-            Community->svWaterStressFactor += Community->Crop[i].svWaterStressFactor;
-            Community->svN_StressFactor += Community->Crop[i].svN_StressFactor;
+            Community->svWaterStressFactor +=
+                Community->Crop[i].svWaterStressFactor;
+            Community->svN_StressFactor +=
+                Community->Crop[i].svN_StressFactor;
         }
     }
-} 
+}
