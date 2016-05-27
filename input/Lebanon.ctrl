@@ -19,4 +19,4 @@ SEASON_OUT              1
 CROP_FILE               Lebanon.crop
 OPERATION_FILE          Lebanon.operation
 SOIL_FILE               Lebanon.soil
-WEATHER_FILE            LebanonPA_CYCLESWeather.weather
+WEATHER_FILE            Lebanon.weather
