@@ -14,14 +14,14 @@
 //     *
 //     * Variable             Type        Description
 //     * ==========           ==========  ====================
-//     * sumTT		    double
-//     * sumMTTbyYear	    double
-//     * sumFTTbyYear	    double
-//     * cropEvents	    int
-//     * cropON		    int
-//     * c		    int
-//     * y		    int
-//     * d		    int
+//     * sumTT              double
+//     * sumMTTbyYear       double
+//     * sumFTTbyYear       double
+//     * cropEvents         int
+//     * cropON             int
+//     * c                  int
+//     * y                  int
+//     * d                  int
 //     */
 //
 //    double          sumTT = 0.0;
@@ -31,14 +31,14 @@
 //    int             cropEvents;
 //    int             cropON;
 //    int             c;
-//    int		    y;
-//    int		    d;
+//    int                   y;
+//    int                   d;
 //
 //    crop_struct *Crop;
 //
 //    if (verbose_mode)
 //    {
-//	printf ("Compute crop thermal time.\n");
+//      printf ("Compute crop thermal time.\n");
 //    }
 //    //SelectCropInitialPosition (CropManagement);
 //
@@ -97,7 +97,8 @@
 //    }
 //}
 
-double ThermalTime (double T_base, double T_op, double T_Max, double Temperature)
+double ThermalTime (double T_base, double T_op, double T_Max,
+    double Temperature)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -105,7 +106,7 @@ double ThermalTime (double T_base, double T_op, double T_Max, double Temperature
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * thermal_time	    double	[return value]
+     * thermal_time         double      [return value]
      */
     double          thermal_time;
 
@@ -114,7 +115,8 @@ double ThermalTime (double T_base, double T_op, double T_Max, double Temperature
     else if (Temperature < T_op)
         thermal_time = Temperature - T_base;
     else
-        thermal_time = (T_Max - Temperature) / (T_Max - T_op) * (T_op - T_base);
+        thermal_time =
+            (T_Max - Temperature) / (T_Max - T_op) * (T_op - T_base);
 
     return (thermal_time);
 }

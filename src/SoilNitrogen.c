@@ -4,7 +4,9 @@
 #include "Cycles.h"
 #endif
 
-void NitrogenTransformation (int y, int doy, soil_struct *Soil, const comm_struct *Community, const residue_struct *Residue, const weather_struct *Weather, const soilc_struct *SoilCarbon)
+void NitrogenTransformation (int y, int doy, soil_struct *Soil,
+    const comm_struct *Community, const residue_struct *Residue,
+    const weather_struct *Weather, const soilc_struct *SoilCarbon)
 {
     /*
      * 
@@ -41,9 +43,12 @@ void NitrogenTransformation (int y, int doy, soil_struct *Soil, const comm_struc
     Soil->N2O_Denitrification = 0.0;
     Soil->NH4_Volatilization = 0.0;
 
-    Denitrification (&Profile_N_Denitrified, &Profile_N2O_Denit, Soil, SoilCarbon);
-    Nitrification (&Profile_N_Nitrified, &Profile_N2O_Nitri, Soil, SoilCarbon);
-    Volatilization (y, doy, &Profile_NH4_Volatilization, Soil, Community, Residue, Weather);
+    Denitrification (&Profile_N_Denitrified, &Profile_N2O_Denit, Soil,
+        SoilCarbon);
+    Nitrification (&Profile_N_Nitrified, &Profile_N2O_Nitri, Soil,
+        SoilCarbon);
+    Volatilization (y, doy, &Profile_NH4_Volatilization, Soil, Community,
+        Residue, Weather);
 
     Soil->NO3Profile = 0.0;
     Soil->NH4Profile = 0.0;
@@ -60,7 +65,9 @@ void NitrogenTransformation (int y, int doy, soil_struct *Soil, const comm_struc
     Soil->NH4_Volatilization = Profile_NH4_Volatilization;
 }
 
-void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, soil_struct *Soil, const soilc_struct *SoilCarbon)
+void Nitrification (double *Profile_N_Nitrified,
+    double *Profile_N2O_Nitrified, soil_struct *Soil,
+    const soilc_struct *SoilCarbon)
 {
     /*
      * 
@@ -103,14 +110,15 @@ void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, 
             AirFactor = 1.0 - 1.0 / (1.0 + pow (AirContent / 0.1, 3));
             N2O_Fraction = N2OFractionNitrification (AirContent);
             TempFactor = TemperatureFunction (Soil->soilTemperature[i]);
-            NH4_Nitrified = Soil->NH4[i] * NITRIFICATION_CONSTANT * ratioFactor * pH_Factor * AirFactor * TempFactor;
+            NH4_Nitrified =
+                Soil->NH4[i] * NITRIFICATION_CONSTANT * ratioFactor *
+                pH_Factor * AirFactor * TempFactor;
             N2O_Nitrified = N2O_Fraction * NH4_Nitrified;
             Soil->NH4[i] -= (NH4_Nitrified + N2O_Nitrified);
             Soil->NO3[i] += NH4_Nitrified;
+            Soil->n2o[i] = N2O_Nitrified;
             *Profile_N_Nitrified = *Profile_N_Nitrified + NH4_Nitrified;
             *Profile_N2O_Nitrified = *Profile_N2O_Nitrified + N2O_Nitrified;
-
-            Soil->n2o[i] = N2O_Nitrified;
         }
         else
         {
@@ -120,7 +128,9 @@ void Nitrification (double *Profile_N_Nitrified, double *Profile_N2O_Nitrified, 
     }
 }
 
-void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitrified, soil_struct *Soil, const soilc_struct *SoilCarbon)
+void Denitrification (double *Profile_N_Denitrified,
+    double *Profile_N2O_Denitrified, soil_struct *Soil,
+    const soilc_struct *SoilCarbon)
 {
     /*
      * 
@@ -179,7 +189,7 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
             cc1 = 0.9 + 0.1 * Soil->Clay[i];
             Oxy_Factor = 1.0 / (1.0 + pow ((1.0 - AirVol) / cc1, -cc2));
 
-            Soil_Mass = Soil->BD[i] * Soil->layerThickness[i] * 10000.0;    /* converted to Mg soil/ha */
+            Soil_Mass = Soil->BD[i] * Soil->layerThickness[i] * 10000.0;        /* converted to Mg soil/ha */
             rr1 = SoilCarbon->carbonRespired[i] / Soil_Mass;
             Res_Factor = rr1 / 0.00005 < 1.0 ? rr1 / 0.00005 : 1.0;
 
@@ -187,9 +197,13 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
             NO3_Factor = NO3_Conc / (NO3_Conc + DENITRIFICATION_HALF_RATE);
 
             //N_Denit = POTENTIAL_DENITRIFICATION * Soil_Mass * Oxy_Factor * Res_Factor * NO3_Factor
-            N_Denit = POTENTIAL_DENITRIFICATION * Soil_Mass * pow (Oxy_Factor, 0.5) * Res_Factor * NO3_Factor;
+            N_Denit =
+                POTENTIAL_DENITRIFICATION * Soil_Mass * pow (Oxy_Factor,
+                0.5) * Res_Factor * NO3_Factor;
             N_Denit = N_Denit < Soil->NO3[i] ? N_Denit : Soil->NO3[i];
-            N2O_Fraction = NO3_Factor * (1.0 - pow (Oxy_Factor, 0.5)) * (1.0 - pow (Res_Factor, 0.33));
+            N2O_Fraction =
+                NO3_Factor * (1.0 - pow (Oxy_Factor,
+                    0.5)) * (1.0 - pow (Res_Factor, 0.33));
             N2O_Emission = N_Denit * N2O_Fraction;
 
             Soil->NO3[i] -= N_Denit;
@@ -202,7 +216,9 @@ void Denitrification (double *Profile_N_Denitrified, double *Profile_N2O_Denitri
     }
 }
 
-void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, soil_struct *Soil, const comm_struct *Community, const residue_struct *Residue, const weather_struct *Weather)
+void Volatilization (int y, int doy, double *Profile_NH4_Volatilization,
+    soil_struct *Soil, const comm_struct *Community,
+    const residue_struct *Residue, const weather_struct *Weather)
 {
     /*
      * This subroutine uses an empirical approach to estimate the amount of
@@ -287,10 +303,14 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, soil_st
 
     profile_volatilization = *Profile_NH4_Volatilization;
 
-    Tavg = 273.15 + 0.67 * Weather->tMax[y][doy - 1] + 0.33 * Weather->tMin[y][doy - 1];
+    Tavg =
+        273.15 + 0.67 * Weather->tMax[y][doy - 1] +
+        0.33 * Weather->tMin[y][doy - 1];
     pAtm = Weather->atmosphericPressure * 1000.0;
     AMD = AirMolarDensity (Tavg, pAtm);
-    GBL = BoundaryLayerConductance (Community->svRadiationInterception, Residue->stanResidueMass, Weather->wind[y][doy - 1], AMD);
+    GBL =
+        BoundaryLayerConductance (Community->svRadiationInterception,
+        Residue->stanResidueMass, Weather->wind[y][doy - 1], AMD);
     GG1 = 1.0 - 0.85 * pow (Community->svRadiationInterception, 3.0);
     GG2 = 0.95 * pow (Residue->flatResidueTau, 2.0);
     GG3 = GBL * GG1 * GG2;
@@ -314,21 +334,32 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization, soil_st
         }
 
         CEC = 0.7 * Soil->Clay[i] * 100.0;
-        CEC = CEC < 13.0 * Soil->SOC_Conc[i] * 100.0 ? CEC : 13.0 * Soil->SOC_Conc[i] * 100.0;
+        CEC =
+            CEC <
+            13.0 * Soil->SOC_Conc[i] * 100.0 ? CEC : 13.0 *
+            Soil->SOC_Conc[i] * 100.0;
         CECFactor = 0.2 + 0.8 * exp (-0.08 * CEC);
 
         layerMidpoint = 0.5 * (layerTop[i] + layerBottom[i]);
-        DepthFactor = 1.0 / 3.0 * (VolatilizationDepthFunction (layerTop[i]) + VolatilizationDepthFunction (layerMidpoint) + VolatilizationDepthFunction (layerBottom[i]));
+        DepthFactor =
+            1.0 / 3.0 * (VolatilizationDepthFunction (layerTop[i]) +
+            VolatilizationDepthFunction (layerMidpoint) +
+            VolatilizationDepthFunction (layerBottom[i]));
 
         fVol = CECFactor * DepthFactor;
         NH4Volatilizable = fVol * Soil->NH4[i];
 
-        waterVolume = Soil->waterContent[i] * Soil->layerThickness[i] * WATER_DENSITY * 10000.0;    /* m3/ha */
-        NH4Conc = NH4Volatilizable * (18.0 / 14.0) / waterVolume;   /* Mg/m3; 18/14 converts mass of N to mass of NH4 */
-        NH3Conc = NH4Conc / (1.0 + pow (10.0, pK - pH));    /* Mg/m3 */
+        waterVolume = Soil->waterContent[i] * Soil->layerThickness[i] * WATER_DENSITY * 10000.0;        /* m3/ha */
+        NH4Conc = NH4Volatilizable * (18.0 / 14.0) / waterVolume;       /* Mg/m3; 18/14 converts mass of N to mass of NH4 */
+        NH3Conc = NH4Conc / (1.0 + pow (10.0, pK - pH));        /* Mg/m3 */
         NH3MolarFraction = henrysConst * (NH3Conc / 0.000017) / pAtm;   /* 0.000017 = Mg/mol of NH3 */
 
         NH4Volatilized = GG3 * NH3MolarFraction * 86400.0 * 0.000017 * 10000.0 * (14.0 / 17.0); /* Mg NH3 / ha / day; 14/17 converts mass of N to mass of NH4 */
+
+        if (NH4Volatilized > Soil->NH4[i])
+        {
+            NH4Volatilized = 0.5 * Soil->NH4[i];
+        }
 
         Soil->NH4[i] -= NH4Volatilized;
         profile_volatilization += NH4Volatilized;
@@ -367,7 +398,10 @@ double N2OFractionNitrification (double air)
     else
     {
         Q = (a_Min - a_Opt) / (a_Opt - a_Max);
-        N2OFraction_Function = f_Base + f_Max * (pow (air - a_Min, Q) * (a_Max - air)) / (pow (a_Opt - a_Min, Q) * (a_Max - a_Opt));
+        N2OFraction_Function =
+            f_Base + f_Max * (pow (air - a_Min,
+                Q) * (a_Max - air)) / (pow (a_Opt - a_Min,
+                Q) * (a_Max - a_Opt));
         if (N2OFraction_Function > 1.0)
             N2OFraction_Function = 1.0;
     }
@@ -436,9 +470,9 @@ double BoundaryLayerConductance (double RI, double RM, double WS, double AMD)
     double          Zm;         /* momentum roughness length */
     double          Zs;         /* scalar roughness length */
 
-    CropHeight = RI / (RI + 0.5);   /* temporary, until a function for crop height is incorporated; assumed max = 1 m */
+    CropHeight = RI / (RI + 0.5);       /* temporary, until a function for crop height is incorporated; assumed max = 1 m */
     SoilHeight = 0.05;          /* temporary, until something better is available */
-    ResidueHeight = 0.3 * RM / (RM + 2.0);  /* 2 in Mg/ha or residue, assumed max = 0.3 m */
+    ResidueHeight = 0.3 * RM / (RM + 2.0);      /* 2 in Mg/ha or residue, assumed max = 0.3 m */
 
     h = CropHeight > SoilHeight ? CropHeight : SoilHeight;
     h = h > ResidueHeight ? h : ResidueHeight;
@@ -446,5 +480,6 @@ double BoundaryLayerConductance (double RI, double RM, double WS, double AMD)
     Zm = 0.1 * h;
     Zs = 0.2 * Zm;
 
-    return pow (0.41, 2.0) * AMD * WS / (log ((2.0 - d) / Zm) * log ((2.0 - d) / Zs));
+    return pow (0.41,
+        2.0) * AMD * WS / (log ((2.0 - d) / Zm) * log ((2.0 - d) / Zs));
 }

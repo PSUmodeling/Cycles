@@ -5,7 +5,8 @@
 #endif
 
 #ifdef _PIHM_
-void InitializeSoil (soil_struct *Soil, const soiltbl_struct *soiltbl, const ps_struct *ps)
+void InitializeSoil (soil_struct *Soil, const soiltbl_struct *soiltbl,
+    const pstate_struct *ps, int soil_type)
 #else
 void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
 #endif
@@ -17,13 +18,13 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * sb		    double	Saxton's b coefficient
-     * sAP		    double	Saxton's air entry potential
-     * sBD		    double	Saxton's bulk density
-     * s33		    double	Saxton's volumetric WC at 33 J/kg
-     * s1500		    double	Saxton's volumetric WC at 1500 J/kg
-     * rr		    double
-     * i		    int		Loop counter
+     * sb                   double      Saxton's b coefficient
+     * sAP                  double      Saxton's air entry potential
+     * sBD                  double      Saxton's bulk density
+     * s33                  double      Saxton's volumetric WC at 33 J/kg
+     * s1500                double      Saxton's volumetric WC at 1500 J/kg
+     * rr                   double
+     * i                    int         Loop counter
      */
 #ifndef _PIHM_
     double          sb;
@@ -41,7 +42,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
 
 #ifdef _PIHM_
     n = ps->nsoil;
-    ind = Soil->type - 1;
+    ind = soil_type - 1;
 
     for (i = 0; i < n; i++)
     {
@@ -60,7 +61,9 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
             }
             else
             {
-                Soil->BD[i] = BulkDensity (Soil->Clay[i] / 100.0, Soil->Sand[i] / 100.0, Soil->IOM[i]);
+                Soil->BD[i] =
+                    BulkDensity (Soil->Clay[i] / 100.0, Soil->Sand[i] / 100.0,
+                    Soil->IOM[i]);
             }
             Soil->NO3[i] = soiltbl->NO3_lyr[ind][i];
             Soil->NH4[i] = soiltbl->NH4_lyr[ind][i];
@@ -121,12 +124,15 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
         Soil->NH4[i] /= 1000.0;
         if (i > 0)
         {
-            Soil->cumulativeDepth[i] = Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i];
-            Soil->nodeDepth[i] = Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i] / 2.0;
+            Soil->cumulativeDepth[i] =
+                Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i];
+            Soil->nodeDepth[i] =
+                Soil->cumulativeDepth[i - 1] + Soil->layerThickness[i] / 2.0;
         }
     }
 
-    Soil->nodeDepth[n] = Soil->cumulativeDepth[n - 1] + Soil->layerThickness[n - 1] / 2.0;
+    Soil->nodeDepth[n] =
+        Soil->cumulativeDepth[n - 1] + Soil->layerThickness[n - 1] / 2.0;
 
     /* 
      * Compute hydraulic properties
@@ -137,14 +143,18 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
         Soil->Porosity[i] = Soil->smcmax;
 #else
         sBD = BulkDensity (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
-        s33 = VolumetricWCAt33Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
-        s1500 = VolumetricWCAt1500Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
+        s33 =
+            VolumetricWCAt33Jkg (Soil->Clay[i], Soil->Sand[i], Soil->IOM[i]);
+        s1500 =
+            VolumetricWCAt1500Jkg (Soil->Clay[i], Soil->Sand[i],
+            Soil->IOM[i]);
         sb = (log (1500.0) - log (33.0)) / (log (s33) - log (s1500));
         sAP = -33.0 * pow (s33 / (1.0 - sBD / 2.65), sb);
 
-	/* Buld Density switch */
-        if ((int)Soil->BD[i] != (int)BADVAL)  
-            Soil->airEntryPotential[i] = sAP * pow (Soil->BD[i] / sBD, 0.67 * sb);
+        /* Buld Density switch */
+        if ((int)Soil->BD[i] != (int)BADVAL)
+            Soil->airEntryPotential[i] =
+                sAP * pow (Soil->BD[i] / sBD, 0.67 * sb);
         else
         {
             Soil->BD[i] = sBD;
@@ -155,26 +165,36 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
         Soil->B_Value[i] = sb;
         Soil->M_Value[i] = 2.0 * Soil->B_Value[i] + 3.0;
 
-	/* Field Capacity switch */
+        /* Field Capacity switch */
         if ((int)Soil->FC[i] == (int)BADVAL)
         {
-            Soil->FC_WaterPotential[i] = -0.35088 * Soil->Clay[i] * 100.0 - 28.947;
-            Soil->FC[i] = SoilWaterContent (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->FC_WaterPotential[i]);
+            Soil->FC_WaterPotential[i] =
+                -0.35088 * Soil->Clay[i] * 100.0 - 28.947;
+            Soil->FC[i] =
+                SoilWaterContent (Soil->Porosity[i],
+                Soil->airEntryPotential[i], Soil->B_Value[i],
+                Soil->FC_WaterPotential[i]);
         }
         else
         {
-            Soil->FC_WaterPotential[i] = SoilWaterPotential (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Soil->FC[i]);
+            Soil->FC_WaterPotential[i] =
+                SoilWaterPotential (Soil->Porosity[i],
+                Soil->airEntryPotential[i], Soil->B_Value[i], Soil->FC[i]);
         }
 
-	/* Permanent Wilting Point switch */
+        /* Permanent Wilting Point switch */
         if ((int)Soil->PWP[i] == (int)BADVAL)
         {
-            Soil->PWP[i] = SoilWaterContent (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], -1500.0);
+            Soil->PWP[i] =
+                SoilWaterContent (Soil->Porosity[i],
+                Soil->airEntryPotential[i], Soil->B_Value[i], -1500.0);
         }
 
         if (Soil->PWP[i] >= Soil->FC[i])
         {
-            printf ("ERROR: Permanent Wilting Point must be less than Field Capacity in Layer %d\n", i + 1);
+            printf
+                ("ERROR: Permanent Wilting Point must be less than Field Capacity in Layer %d\n",
+                i + 1);
             exit (1);
         }
 
@@ -185,10 +205,12 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
              * (sat - fc) / (fc - pwp) used to recalculate FC if bulk density
              * is too high (source: guess based on Saxton and Rawls data */
             rr = 0.63 + 0.59 * exp (0.6 * Soil->Sand[i] * 100.0 - 2.84);
-            Soil->FC[i] = (rr * Soil->PWP[i] + Soil->Porosity[i]) / (1.0 + rr);
+            Soil->FC[i] =
+                (rr * Soil->PWP[i] + Soil->Porosity[i]) / (1.0 + rr);
         }
 
-        Soil->ksat[i] = K_Sat (Soil->Porosity[i], Soil->FC[i], Soil->B_Value[i]);
+        Soil->ksat[i] =
+            K_Sat (Soil->Porosity[i], Soil->FC[i], Soil->B_Value[i]);
 #endif
     }
 
@@ -196,12 +218,14 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
     for (i = 0; i < n; i++)
     {
         Soil->SOC_Conc[i] = Soil->IOM[i] * 10.0 * 0.58;
-        Soil->SOC_Mass[i] = Soil->IOM[i] / 100.0 * 0.58 * Soil->layerThickness[i] * Soil->BD[i] * 10000.0;
-	/* Initializes with CN ratio = 10 */
+        Soil->SOC_Mass[i] =
+            Soil->IOM[i] / 100.0 * 0.58 * Soil->layerThickness[i] *
+            Soil->BD[i] * 10000.0;
+        /* Initializes with CN ratio = 10 */
         Soil->SON_Mass[i] = Soil->SOC_Mass[i] / 10.0;
-	/* Initializes as 3% of SOC_Mass but "added" C */
+        /* Initializes as 3% of SOC_Mass but "added" C */
         Soil->MBC_Mass[i] = 0.03 * Soil->SOC_Mass[i];
-	/* Initializes with CN ratio = 10 */
+        /* Initializes with CN ratio = 10 */
         Soil->MBN_Mass[i] = Soil->MBC_Mass[i] / 10.0;
         Soil->PAW[i] = Soil->FC[i] - Soil->PWP[i];
         Soil->waterContent[i] = (Soil->FC[i] + Soil->PWP[i]) / 2.0;
@@ -217,7 +241,10 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
         Soil->annualTemperaturePhase = 280.0;
 
     for (i = 0; i < n + 1; i++)
-        Soil->soilTemperature[i] = EstimatedSoilTemperature (Soil->nodeDepth[i], 1, Weather->annualAverageTemperature[0], Weather->yearlyAmplitude[0], Soil->annualTemperaturePhase, Soil->dampingDepth);
+        Soil->soilTemperature[i] =
+            EstimatedSoilTemperature (Soil->nodeDepth[i], 1,
+            Weather->annualAverageTemperature[0], Weather->yearlyAmplitude[0],
+            Soil->annualTemperaturePhase, Soil->dampingDepth);
 
     if (debug_mode)
     {
@@ -291,12 +318,13 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
         printf ("\n*%-30s\t", "Initial soil temp");
         for (i = 0; i < n; i++)
             printf ("%-10.3lf\t", Soil->soilTemperature[i]);
-	printf ("\n");
+        printf ("\n");
     }
 #endif
 }
 
-double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campbell_b, double WC)
+double SoilWaterPotential (double SaturationWC, double AirEntryPot,
+    double Campbell_b, double WC)
 {
     /*
      * 
@@ -305,7 +333,7 @@ double SoilWaterPotential (double SaturationWC, double AirEntryPot, double Campb
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * swp		    double	Soil water potential [return value]
+     * swp                  double      Soil water potential [return value]
      */
     double          swp;
 
@@ -326,14 +354,15 @@ double VolumetricWCAt33Jkg (double Clay, double Sand, double OM)
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * x1		    double
-     * vwc		    double	Volumetric soil water content [return
-     *					  value]
+     * x1                   double
+     * vwc                  double      Volumetric soil water content [return
+     *                                    value]
      */
     double          x1;
     double          vwc;
 
-    x1 = 0.299 - 0.251 * Sand + 0.195 * Clay + 0.011 * OM + 0.006 * Sand * OM - 0.027 * Clay * OM + 0.452 * Sand * Clay;
+    x1 = 0.299 - 0.251 * Sand + 0.195 * Clay + 0.011 * OM +
+        0.006 * Sand * OM - 0.027 * Clay * OM + 0.452 * Sand * Clay;
     vwc = -0.015 + 0.636 * x1 + 1.283 * pow (x1, 2.0);
 
     return (vwc);
@@ -351,20 +380,22 @@ double VolumetricWCAt1500Jkg (double Clay, double Sand, double OM)
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * x1		    double
-     * vwc		    double	Volumetric soil water content [return
-     *					  value]
+     * x1                   double
+     * vwc                  double      Volumetric soil water content [return
+     *                                    value]
      */
     double          x1;
     double          vwc;
 
-    x1 = 0.031 - 0.024 * Sand + 0.487 * Clay + 0.006 * OM + 0.005 * Sand * OM - 0.013 * Clay * OM + 0.068 * Sand * Clay;
+    x1 = 0.031 - 0.024 * Sand + 0.487 * Clay + 0.006 * OM +
+        0.005 * Sand * OM - 0.013 * Clay * OM + 0.068 * Sand * Clay;
     vwc = -0.02 + 1.14 * x1;
 
     return (vwc);
 }
 
-double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbell_b, double Water_Potential)
+double SoilWaterContent (double SaturationWC, double AirEntryPot,
+    double Campbell_b, double Water_Potential)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -372,11 +403,12 @@ double SoilWaterContent (double SaturationWC, double AirEntryPot, double Campbel
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * swc		    double	Soil water content [return value]
+     * swc                  double      Soil water content [return value]
      */
     double          swc;
 
-    swc = SaturationWC * pow (Water_Potential / AirEntryPot, -1.0 / Campbell_b);
+    swc =
+        SaturationWC * pow (Water_Potential / AirEntryPot, -1.0 / Campbell_b);
 
     return (swc);
 }
@@ -396,11 +428,11 @@ double BulkDensity (double Clay, double Sand, double OM)
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * x1		    double
-     * x2		    double
-     * FC		    double
-     * Porosity		    double
-     * bd		    double	Bulk density [return value]
+     * x1                   double
+     * x2                   double
+     * FC                   double
+     * Porosity             double
+     * bd                   double      Bulk density [return value]
      */
     double          x1;
     double          x2;
@@ -408,7 +440,8 @@ double BulkDensity (double Clay, double Sand, double OM)
     double          Porosity;
     double          bd;
 
-    x1 = 0.078 + 0.278 * Sand + 0.034 * Clay + 0.022 * OM - 0.018 * Sand * OM - 0.027 * Clay * OM - 0.584 * Sand * Clay;
+    x1 = 0.078 + 0.278 * Sand + 0.034 * Clay + 0.022 * OM -
+        0.018 * Sand * OM - 0.027 * Clay * OM - 0.584 * Sand * Clay;
     x2 = -0.107 + 1.636 * x1;
     FC = VolumetricWCAt33Jkg (Clay, Sand, OM);
     Porosity = 0.043 + FC + x2 - 0.097 * Sand;

@@ -18,11 +18,11 @@ void DailyCycles (int t, pihm_struct pihm)
     int             y, d;
     int             last_doy;
 
-    rawtime = (time_t)pihm->ctrl.starttime;
+    rawtime = (time_t) pihm->ctrl.starttime;
     timestamp = gmtime (&rawtime);
     start_year = timestamp->tm_year + 1900;
 
-    rawtime = (time_t)t;
+    rawtime = (time_t) t;
     timestamp = gmtime (&rawtime);
     y = timestamp->tm_year + 1900 - start_year;
     d = DOY (t);
@@ -33,25 +33,34 @@ void DailyCycles (int t, pihm_struct pihm)
     {
         elem = &pihm->elem[i];
 
-        elem->weather.atmosphericPressure = elem->daily.sfcprs / 1000.0;
-        elem->weather.wind[y][d - 1] = elem->daily.sfcspd;
+        elem->weather.atmosphericPressure = elem->daily.avg_sfcprs / 1000.0;
+        elem->weather.wind[y][d - 1] = elem->daily.avg_sfcspd;
         elem->weather.tMin[y][d - 1] = elem->daily.tmin - TFREEZ;
         elem->weather.tMax[y][d - 1] = elem->daily.tmax - TFREEZ;
         /* Calculate vpd in kPa from q2d */
-        elem->weather.vpd[y][d - 1] = elem->daily.q2d / 0.622 * elem->daily.sfcprs / 1000.0;
+        elem->weather.vpd[y][d - 1] =
+            elem->daily.avg_q2d / 0.622 * elem->daily.avg_sfcprs / 1000.0;
         /* Convert to MJ */
-        elem->weather.solarRadiation[y][d - 1] = elem->daily.solar_total / 1.0E6;
+        elem->weather.solarRadiation[y][d - 1] =
+            elem->daily.solar_total / 1.0E6;
         elem->weather.lastDoy[y] = last_doy;
 
-        elem->snow.snowCover = elem->daily.sncovr;
+        elem->snow.snowCover = elem->daily.avg_sncovr;
 
         for (k = 0; k < elem->ps.nsoil; k++)
         {
-            elem->soil.soilTemperature[k] = elem->daily.stc[k] - TFREEZ;
-            elem->soil.waterContent[k] = elem->daily.sh2o[k];
-            elem->soil.waterContent[k] = elem->soil.waterContent[k] > elem->soil.Porosity[k] ? elem->soil.Porosity[k] : elem->soil.waterContent[k];
-            elem->soil.waterContent[k] = elem->soil.waterContent[k] < elem->soil.smcmin + 0.02 ? elem->soil.smcmin + 0.02 : elem->soil.waterContent[k];
-            elem->soil.waterUptake[k] = elem->daily.et[k] * 24.0 * 3600.0 / 1000.0;
+            elem->soil.soilTemperature[k] = elem->daily.avg_stc[k] - TFREEZ;
+            elem->soil.waterContent[k] = elem->daily.avg_sh2o[k];
+            elem->soil.waterContent[k] =
+                elem->soil.waterContent[k] >
+                elem->soil.Porosity[k] ? elem->soil.Porosity[k] : elem->soil.
+                waterContent[k];
+            elem->soil.waterContent[k] =
+                elem->soil.waterContent[k] <
+                elem->soil.smcmin + 0.02 ? elem->soil.smcmin +
+                0.02 : elem->soil.waterContent[k];
+            elem->soil.waterUptake[k] =
+                elem->daily.avg_et[k] * 24.0 * 3600.0 * 1000.0;
         }
     }
 
@@ -60,7 +69,8 @@ void DailyCycles (int t, pihm_struct pihm)
         elem = &pihm->elem[i];
 
         DailyOperations (y, d, &elem->cropmgmt, &elem->comm, &elem->residue,
-            &pihm->ctrl, &elem->snow, &elem->soil, &elem->soilc, &elem->weather);
+            &pihm->ctrl, &elem->snow, &elem->soil, &elem->soilc,
+            &elem->weather);
     }
 
     first_day = 0;
@@ -68,9 +78,15 @@ void DailyCycles (int t, pihm_struct pihm)
 #endif
 
 #ifdef _PIHM_
-void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl, snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon, weather_struct *Weather)
+void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement,
+    comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl,
+    snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon,
+    weather_struct *Weather)
 #else
-void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl, snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon, weather_struct *Weather, summary_struct *Summary)
+void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement,
+    comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl,
+    snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon,
+    weather_struct *Weather, summary_struct * Summary)
 #endif
 {
 
@@ -81,8 +97,8 @@ void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_stru
      * Variable             Type        Description
      * ==========           ==========  ====================
      * FixedFertilization   op_struct*
-     * Tillage		    op_struct*
-     * FixedIrrigation	    op_struct*
+     * Tillage              op_struct*
+     * FixedIrrigation      op_struct*
      */
 
 #ifdef _PIHM_
@@ -90,47 +106,64 @@ void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_stru
 #else
     if (doy == 1)
 #endif
-    { 
-        FirstDOY (&CropManagement->rotationYear, CropManagement->yearsInRotation, Soil->totalLayers, SoilCarbon, Residue, Soil);
+    {
+        FirstDOY (&CropManagement->rotationYear,
+            CropManagement->yearsInRotation, Soil->totalLayers, SoilCarbon,
+            Residue, Soil);
     }
 
-    GrowingCrop (y, doy, Community, Residue, SimControl, Soil, SoilCarbon, CropManagement, Weather, Snow);
+    GrowingCrop (y, doy, Community, Residue, SimControl, Soil, SoilCarbon,
+        CropManagement, Weather, Snow);
 
-    FieldOperation (CropManagement->rotationYear, y, doy, CropManagement, Community, Soil, Residue, SimControl, SoilCarbon, Weather);
+    FieldOperation (CropManagement->rotationYear, y, doy, CropManagement,
+        Community, Soil, Residue, SimControl, SoilCarbon, Weather);
 
     ComputeResidueCover (Residue);
 
-    TillageFactorSettling (CropManagement->tillageFactor, Soil->totalLayers, Soil->waterContent, Soil->Porosity);
+    TillageFactorSettling (CropManagement->tillageFactor, Soil->totalLayers,
+        Soil->waterContent, Soil->Porosity);
 
 #ifndef _PIHM_
-    SnowProcesses (Snow, y, doy, Weather, Residue->stanResidueTau, Community->svRadiationInterception);
+    SnowProcesses (Snow, y, doy, Weather, Residue->stanResidueTau,
+        Community->svRadiationInterception);
 
-    Redistribution (y, doy, Weather->precipitation[y][doy - 1], Snow->snowFall, Snow->snowMelt, SimControl->hourlyInfiltration, Community, Soil, Residue);
+    Redistribution (y, doy, Weather->precipitation[y][doy - 1],
+        Snow->snowFall, Snow->snowMelt, SimControl->hourlyInfiltration,
+        Community, Soil, Residue);
 
-    ResidueEvaporation (Residue, Soil, Community, Weather->ETref[y][doy - 1], Snow->snowCover);
+    ResidueEvaporation (Residue, Soil, Community, Weather->ETref[y][doy - 1],
+        Snow->snowCover);
 
-    Evaporation (Soil, Community, Residue, Weather->ETref[y][doy - 1], Snow->snowCover);
+    Evaporation (Soil, Community, Residue, Weather->ETref[y][doy - 1],
+        Snow->snowCover);
 
-    Temperature (y, doy, Snow->snowCover, Community->svRadiationInterception, Soil, Weather, Residue);
+    Temperature (y, doy, Snow->snowCover, Community->svRadiationInterception,
+        Soil, Weather, Residue);
 #endif
 
     ComputeFactorComposite (SoilCarbon, doy, y, Weather->lastDoy[y], Soil);
 
-    ComputeSoilCarbonBalanceMB (SoilCarbon, y, Residue, Soil, CropManagement->tillageFactor);
+    ComputeSoilCarbonBalanceMB (SoilCarbon, y, Residue, Soil,
+        CropManagement->tillageFactor);
 
-    NitrogenTransformation (y, doy, Soil, Community, Residue, Weather, SoilCarbon);
+    NitrogenTransformation (y, doy, Soil, Community, Residue, Weather,
+        SoilCarbon);
 
     if (doy == Weather->lastDoy[y])
     {
 #ifdef _PIHM_
         LastDOY (y, Soil->totalLayers, Soil, SoilCarbon, Residue);
 #else
-        LastDOY (y, SimControl->simStartYear, Soil->totalLayers, Soil, SoilCarbon, Residue, Summary);
+        LastDOY (y, SimControl->simStartYear, Soil->totalLayers, Soil,
+            SoilCarbon, Residue, Summary);
 #endif
     }
 }
 
-void GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue, const ctrl_struct *SimControl, soil_struct *Soil, soilc_struct *SoilCarbon, cropmgmt_struct *CropManagement, const weather_struct *Weather, const snow_struct *Snow)
+void GrowingCrop (int y, int d, comm_struct *Community,
+    residue_struct *Residue, const ctrl_struct *SimControl, soil_struct *Soil,
+    soilc_struct *SoilCarbon, cropmgmt_struct *CropManagement,
+    const weather_struct *Weather, const snow_struct *Snow)
 {
     /*
      * Processes that only occur while a crop is growing are performed
@@ -141,8 +174,8 @@ void GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue,
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * forcedHarvest	    int
-     * i		    int
+     * forcedHarvest        int
+     * i                    int
      */
     int             forcedHarvest = 0;
     int             i;
@@ -164,7 +197,8 @@ void GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue,
     WaterUptake (y, d, Community, Soil, Weather);
 #endif
 
-    Processes (y, d, CropManagement->automaticNitrogen, Community, Residue, Weather, Soil, SoilCarbon);
+    Processes (y, d, CropManagement->automaticNitrogen, Community, Residue,
+        Weather, Soil, SoilCarbon);
 
     clippingFlag = ForcedClipping (d, Community);
 
@@ -172,19 +206,26 @@ void GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue,
     {
         if (Community->Crop[i].stageGrowth > NO_CROP)
         {
-            if (Weather->tMin[y][d - 1] < Community->Crop[i].userColdDamageThresholdTemperature)
+            if (Weather->tMin[y][d - 1] <
+                Community->Crop[i].userColdDamageThresholdTemperature)
             {
-                if (Community->Crop[i].userAnnual && Community->Crop[i].svTT_Cumulative > Community->Crop[i].userFloweringTT)
+                if (Community->Crop[i].userAnnual &&
+                    Community->Crop[i].svTT_Cumulative >
+                    Community->Crop[i].userFloweringTT)
                 {
 #ifdef _PIHM_
-                    GrainHarvest (y, d, &Community->Crop[i], Residue, Soil, SoilCarbon);
+                    GrainHarvest (y, d, &Community->Crop[i], Residue, Soil,
+                        SoilCarbon);
 #else
-                    GrainHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+                    GrainHarvest (y, d, SimControl->simStartYear,
+                        &Community->Crop[i], Residue, Soil, SoilCarbon,
+                        Weather);
 #endif
                     Community->NumActiveCrop--;
                 }
                 else
-                    ComputeColdDamage (y, d, &Community->Crop[i], Weather, Snow, Residue);
+                    ComputeColdDamage (y, d, &Community->Crop[i], Weather,
+                        Snow, Residue);
             }
 
             if (d == Community->Crop[i].harvestDateFinal || forcedHarvest)
@@ -192,9 +233,12 @@ void GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue,
                 if (Community->Crop[i].userAnnual)
                 {
 #ifdef _PIHM_
-                    GrainHarvest (y, d, &Community->Crop[i], Residue, Soil, SoilCarbon);
+                    GrainHarvest (y, d, &Community->Crop[i], Residue, Soil,
+                        SoilCarbon);
 #else
-                    GrainHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+                    GrainHarvest (y, d, SimControl->simStartYear,
+                        &Community->Crop[i], Residue, Soil, SoilCarbon,
+                        Weather);
 #endif
                     Community->NumActiveCrop--;
                 }
@@ -203,9 +247,12 @@ void GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue,
                     //if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
                     //{
 #ifdef _PIHM_
-                        ForageAndSeedHarvest (y, d, &Community->Crop[i], Residue, Soil, SoilCarbon);
+                    ForageAndSeedHarvest (y, d, &Community->Crop[i], Residue,
+                        Soil, SoilCarbon);
 #else
-                        ForageAndSeedHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+                    ForageAndSeedHarvest (y, d, SimControl->simStartYear,
+                        &Community->Crop[i], Residue, Soil, SoilCarbon,
+                        Weather);
 #endif
                     //}
 
@@ -219,12 +266,17 @@ void GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue,
             }
             else if (clippingFlag == 1)
             {
-                if (Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
+                if (Community->Crop[i].svShoot >=
+                    Community->Crop[i].userClippingBiomassThresholdLower *
+                    (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
                 {
 #ifdef _PIHM_
-                    ForageAndSeedHarvest (y, d, &Community->Crop[i], Residue, Soil, SoilCarbon);
+                    ForageAndSeedHarvest (y, d, &Community->Crop[i], Residue,
+                        Soil, SoilCarbon);
 #else
-                    ForageAndSeedHarvest (y, d, SimControl->simStartYear, &Community->Crop[i], Residue, Soil, SoilCarbon, Weather);
+                    ForageAndSeedHarvest (y, d, SimControl->simStartYear,
+                        &Community->Crop[i], Residue, Soil, SoilCarbon,
+                        Weather);
 #endif
                     AddCrop (&Community->Crop[i]);
                     Community->Crop[i].stageGrowth = CLIPPING;
@@ -232,8 +284,10 @@ void GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue,
                 }
             }
 
-            Community->Crop[i].rcCropTranspirationPotential += Community->Crop[i].svTranspirationPotential;
-            Community->Crop[i].rcCropTranspiration += Community->Crop[i].svTranspiration;
+            Community->Crop[i].rcCropTranspirationPotential +=
+                Community->Crop[i].svTranspirationPotential;
+            Community->Crop[i].rcCropTranspiration +=
+                Community->Crop[i].svTranspiration;
             Community->Crop[i].rcSoilWaterEvaporation += Soil->evaporationVol;
         }
     }
@@ -249,11 +303,13 @@ void CropStage (int d, comm_struct *Community, int last_doy)
     {
         if (Community->Crop[i].stageGrowth > NO_CROP)
         {
-            if (Community->Crop[i].svTT_Cumulative < Community->Crop[i].userEmergenceTT)
+            if (Community->Crop[i].svTT_Cumulative <
+                Community->Crop[i].userEmergenceTT)
             {
                 Community->Crop[i].stageGrowth = PRE_EMERGENCE;
             }
-            else if (Community->Crop[i].svTT_Cumulative < Community->Crop[i].userFloweringTT)
+            else if (Community->Crop[i].svTT_Cumulative <
+                Community->Crop[i].userFloweringTT)
             {
                 if (Community->Crop[i].userAnnual)
                 {
@@ -264,7 +320,8 @@ void CropStage (int d, comm_struct *Community, int last_doy)
                     Community->Crop[i].stageGrowth = PERENNIAL;
                 }
             }
-            else if (Community->Crop[i].svTT_Cumulative < Community->Crop[i].userMaturityTT)
+            else if (Community->Crop[i].svTT_Cumulative <
+                Community->Crop[i].userMaturityTT)
             {
                 if (Community->Crop[i].userAnnual)
                 {
@@ -275,7 +332,8 @@ void CropStage (int d, comm_struct *Community, int last_doy)
                     Community->Crop[i].stageGrowth = PERENNIAL;
                 }
             }
-            else if (Community->Crop[i].svTT_Cumulative >= Community->Crop[i].userMaturityTT)
+            else if (Community->Crop[i].svTT_Cumulative >=
+                Community->Crop[i].userMaturityTT)
             {
                 Community->Crop[i].stageGrowth = MATURITY;
 
@@ -283,7 +341,8 @@ void CropStage (int d, comm_struct *Community, int last_doy)
                 {
                     /* SetCropStatusToMature */
                     Community->Crop[i].cropMature = 1;
-                    Community->Crop[i].harvestDateFinal = FinalHarvestDate (last_doy, d);
+                    Community->Crop[i].harvestDateFinal =
+                        FinalHarvestDate (last_doy, d);
                 }
             }
         }
@@ -298,7 +357,7 @@ double FinalHarvestDate (int lastDoy, int d)
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * harvestDate	    int		[return value]
+     * harvestDate          int         [return value]
      */
     int             harvestDate;
 
@@ -310,7 +369,8 @@ double FinalHarvestDate (int lastDoy, int d)
     return (harvestDate);
 }
 
-int ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize)
+int ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear,
+    int nextSeedingDate, int rotationSize)
 {
     /*
      * Returns true if planted crop is within saftey margin of days of the
@@ -320,9 +380,9 @@ int ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, i
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * forced_maturity	    int
-     * margin		    int
-     * nextRotationYear	    int
+     * forced_maturity      int
+     * margin               int
+     * nextRotationYear     int
      */
     int             forced_maturity = 0;
     int             margin = 9;
@@ -360,7 +420,8 @@ int ForcedClipping (int d, comm_struct *Community)
         if (Community->Crop[i].stageGrowth > NO_CROP)
         {
             /* Clipping window in summer */
-            if (Community->Crop[i].userClippingEnd >= Community->Crop[i].userClippingStart)
+            if (Community->Crop[i].userClippingEnd >=
+                Community->Crop[i].userClippingStart)
             {
                 if (d < Community->Crop[i].userClippingStart ||
                     d > Community->Crop[i].userClippingEnd)
@@ -392,17 +453,24 @@ int ForcedClipping (int d, comm_struct *Community)
         {
             if (Community->Crop[i].stageGrowth > NO_CROP)
             {
-                if (Community->Crop[i].svShoot / Community->Crop[i].userPlantingDensity >
+                if (Community->Crop[i].svShoot /
+                    Community->Crop[i].userPlantingDensity >
                     Community->Crop[i].userClippingBiomassThresholdUpper)
                 {
                     return (1);
                 }
                 else if (Community->Crop[i].userClippingTiming > 0.0)
                 {
-                    if (Community->Crop[i].userClippingTiming <= Community->Crop[i].svTT_Cumulative / Community->Crop[i].userMaturityTT &&
-                        Community->Crop[i].svShoot >= Community->Crop[i].userClippingBiomassThresholdLower * (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
+                    if (Community->Crop[i].userClippingTiming <=
+                        Community->Crop[i].svTT_Cumulative /
+                        Community->Crop[i].userMaturityTT &&
+                        Community->Crop[i].svShoot >=
+                        Community->Crop[i].userClippingBiomassThresholdLower *
+                        (1.0 - exp (-Community->Crop[i].userPlantingDensity)))
                     {
-                        if ((Community->Crop[i].harvestCount < 3 && Community->Crop[i].userAnnual) || (!Community->Crop[i].userAnnual))
+                        if ((Community->Crop[i].harvestCount < 3 &&
+                                Community->Crop[i].userAnnual) ||
+                            (!Community->Crop[i].userAnnual))
                         {
                             return (1);
                         }
@@ -410,12 +478,14 @@ int ForcedClipping (int d, comm_struct *Community)
                 }
             }
         }
-        
+
         return (0);
     }
 }
 
-void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, soilc_struct *SoilCarbon, residue_struct *Residue, const soil_struct *Soil)
+void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers,
+    soilc_struct *SoilCarbon, residue_struct *Residue,
+    const soil_struct *Soil)
 {
     int             i;
 
@@ -465,9 +535,12 @@ void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers, soilc_st
 }
 
 #ifdef _PIHM_
-void LastDOY (int y, int totalLayers, soil_struct *Soil, soilc_struct *SoilCarbon, residue_struct *Residue)
+void LastDOY (int y, int totalLayers, soil_struct *Soil,
+    soilc_struct *SoilCarbon, residue_struct *Residue)
 #else
-void LastDOY (int y, int simStartYear, int totalLayers, soil_struct *Soil, soilc_struct *SoilCarbon, residue_struct *Residue, summary_struct *Summary)
+void LastDOY (int y, int simStartYear, int totalLayers, soil_struct *Soil,
+    soilc_struct *SoilCarbon, residue_struct *Residue,
+    summary_struct * Summary)
 #endif
 {
     int             i;
@@ -480,7 +553,8 @@ void LastDOY (int y, int simStartYear, int totalLayers, soil_struct *Soil, soilc
 #ifndef _PIHM_
     PrintAnnualOutput (y, simStartYear, Soil, SoilCarbon);
 
-    PrintCarbonEvolution (y, simStartYear, totalLayers, Soil, SoilCarbon, Residue);
+    PrintCarbonEvolution (y, simStartYear, totalLayers, Soil, SoilCarbon,
+        Residue);
 
     StoreSummary (Summary, SoilCarbon, Residue, totalLayers, y);
 #endif

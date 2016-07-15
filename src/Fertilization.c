@@ -4,7 +4,8 @@
 #include "Cycles.h"
 #endif
 
-void ApplyFertilizer (op_struct *fixedFertilization, soil_struct *Soil, residue_struct *Residue)
+void ApplyFertilizer (op_struct *fixedFertilization, soil_struct *Soil,
+    residue_struct *Residue)
 {
     /*
      * -----------------------------------------------------------------------
@@ -12,7 +13,7 @@ void ApplyFertilizer (op_struct *fixedFertilization, soil_struct *Soil, residue_
      *
      * Variable             Type        Description
      * ==========           ==========  ====================
-     * layer		    int
+     * layer                int
      */
     int             layer;
 
@@ -21,18 +22,26 @@ void ApplyFertilizer (op_struct *fixedFertilization, soil_struct *Soil, residue_
     if (fixedFertilization->opLayer > 0)
     {
         layer = fixedFertilization->opLayer - 1;
-        Residue->manureC[layer] += fixedFertilization->opMass * fixedFertilization->opC_Organic;
-        Residue->manureN[layer] += fixedFertilization->opMass * fixedFertilization->opN_Organic;
-        Soil->NO3[layer] += fixedFertilization->opMass * fixedFertilization->opN_NO3;
-        Soil->NH4[layer] += fixedFertilization->opMass * fixedFertilization->opN_NH4;
+        Residue->manureC[layer] +=
+            fixedFertilization->opMass * fixedFertilization->opC_Organic;
+        Residue->manureN[layer] +=
+            fixedFertilization->opMass * fixedFertilization->opN_Organic;
+        Soil->NO3[layer] +=
+            fixedFertilization->opMass * fixedFertilization->opN_NO3;
+        Soil->NH4[layer] +=
+            fixedFertilization->opMass * fixedFertilization->opN_NH4;
     }
     else
     {
-        Residue->manureSurfaceC += fixedFertilization->opMass * fixedFertilization->opC_Organic;
-        Residue->manureSurfaceN += fixedFertilization->opMass * fixedFertilization->opN_Organic;
+        Residue->manureSurfaceC +=
+            fixedFertilization->opMass * fixedFertilization->opC_Organic;
+        Residue->manureSurfaceN +=
+            fixedFertilization->opMass * fixedFertilization->opN_Organic;
 
         layer = 0;
-        Soil->NO3[layer] += fixedFertilization->opMass * fixedFertilization->opN_NO3;
-        Soil->NH4[layer] += fixedFertilization->opMass * fixedFertilization->opN_NH4;
+        Soil->NO3[layer] +=
+            fixedFertilization->opMass * fixedFertilization->opN_NO3;
+        Soil->NH4[layer] +=
+            fixedFertilization->opMass * fixedFertilization->opN_NH4;
     }
 }

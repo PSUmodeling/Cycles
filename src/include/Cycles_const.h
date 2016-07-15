@@ -41,10 +41,14 @@
 #define DENITRIFICATION_HALF_RATE           0.00006 /* kg N / kg Soil */
 #define NITRIFICATION_NO3_NH4_RATIO         8   /* NO3-N / NH4-N */
 
+#define C_SAT       0
+#define DPTH_CSTR   1
+#define NO_CSTR     2
 enum stage
 { NO_CROP, PRE_EMERGENCE, VEGETATIVE_GROWTH, PERENNIAL, REPRODUCTIVE_GROWTH, MATURITY, CLIPPING, PLANTING };
 
 extern int      verbose_mode;
 extern int      debug_mode;
+extern int      ncs_mode;
 extern char     project[MAXSTRING];
 #endif
