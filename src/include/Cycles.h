@@ -10,6 +10,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <stdarg.h>
+#include <getopt.h>
 
 #ifdef _CYCLES_
 #include "pihm.h"

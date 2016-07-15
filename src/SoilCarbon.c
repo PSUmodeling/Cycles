@@ -403,12 +403,19 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
 
         /* Humification */
         /* Humification reduction when C conc approaches saturation */
-        humificationAdjustmentBySOC =
-            1.0 - pow (Soil->SOC_Conc[i] / satSOCConc,
-            SOC_HUMIFICATION_POWER);
-        humificationAdjustmentBySOC =
-            humificationAdjustmentBySOC >
-            0.0 ? humificationAdjustmentBySOC : 0.0;
+        if (ncs_mode == C_SAT)
+        {
+            humificationAdjustmentBySOC =
+                1.0 - pow (Soil->SOC_Conc[i] / satSOCConc,
+                SOC_HUMIFICATION_POWER);
+            humificationAdjustmentBySOC =
+                humificationAdjustmentBySOC >
+                0.0 ? humificationAdjustmentBySOC : 0.0;
+        }
+        else
+        {
+            humificationAdjustmentBySOC = 1.0;
+        }
 
         abgdHumificationFactor =
             sqrt (MaximumAbgdHumificationFactor (Soil->Clay[i]) *
@@ -628,12 +635,26 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
                 manuHumificationFactor * (xx6 + xx7));
 
         /* SOC decomposition and SON mineralization */
-        decompositionAdjustmentBySOC =
-            1.0 - 1.0 / (1.0 + pow ((Soil->SOC_Conc[i] / satSOCConc) / 0.22,
-                3.0));
+        if (ncs_mode == C_SAT)
+        {
+            decompositionAdjustmentBySOC =
+                1.0 - 1.0 / (1.0 + pow ((Soil->SOC_Conc[i] / satSOCConc) / 0.22,
+                    3.0));
+        }
+        else if (ncs_mode == DPTH_CSTR)
+        {
+            decompositionAdjustmentBySOC =
+                1.0 / (1.0 + pow (Soil->cumulativeDepth[i] / 0.4, 4));
+        }
+        else if (ncs_mode == NO_CSTR)
+        {
+            decompositionAdjustmentBySOC = 1.0;
+        }
+
         decompositionAdjustmentBySOC =
             decompositionAdjustmentBySOC <
             1.0 ? decompositionAdjustmentBySOC : 1.0;
+
         socDecompositionRate =
             SoilCarbon->factorComposite[i] * (1.0 +
             tillageFactor[i]) * MAXIMUM_UNDISTURBED_SOC_DECOMPOSITION_RATE *

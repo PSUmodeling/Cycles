@@ -2,6 +2,7 @@
 
 int             verbose_mode;
 int             debug_mode;
+int             ncs_mode;
 char            project[MAXSTRING];
 
 int main (int argc, char *argv[])
@@ -42,16 +43,26 @@ int main (int argc, char *argv[])
     printf ("\t\t ######     ##     ######  ######## ########  ######\n\n\n");
 
     verbose_mode = 0;
+    ncs_mode = C_SAT;
 
-    while ((c = getopt (argc, argv, "vd")) != -1)
+    while (1)
     {
-        if (optind >= argc)
-        {
-            printf ("\nUsage: ./Cycles [-v] [-d] <project name>\n");
-            printf ("\t-v Verbose mode\n");
-            printf ("\t-d Debug mode\n");
-            exit (1);
-        }
+        static struct option long_options[] = {
+            {"v",	no_argument, 0, 'v'},
+            {"d",	no_argument, 0, 'd'},
+            {"ncs",	no_argument, 0, 'n'},
+            {"ncs1",	no_argument, 0, 'o'},
+            {0, 0, 0, 0}
+        };
+        /* getopt_long stores the option index here. */
+        int             option_index = 0;
+
+        c = getopt_long_only (argc, argv, "vdno", long_options, &option_index);
+
+        /* Detect the end of the options. */
+        if (c == -1)
+            break;
+
         switch (c)
         {
             case 'v':
@@ -62,11 +73,21 @@ int main (int argc, char *argv[])
                 debug_mode = 1;
                 printf ("Debug mode turned on.\n");
                 break;
+            case 'n':
+                ncs_mode = DPTH_CSTR;
+                printf ("Running Cycles without carbon saturation.\n");
+                printf ("Decomposition is constrained by depth.\n");
+                break;
+            case 'o':
+                ncs_mode = NO_CSTR;
+                printf ("Running Cycles without carbon saturation.\n");
+                printf ("Decomposition is not constrained by depth.\n");
+                break;
             case '?':
-                printf ("Option not recognisable %s\n", argv[optind]);
+                /* getopt_long already printed an error message. */
                 break;
             default:
-                break;
+                abort ();
         }
     }
 
@@ -83,7 +104,7 @@ int main (int argc, char *argv[])
         strcpy (project, argv[optind]);
     }
 
-    printf ("Now running the %s simulation.\n\n", project);
+    printf ("\nNow running the %s simulation.\n\n", project);
 
     /*
      * Read input files
