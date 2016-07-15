@@ -60,7 +60,7 @@ void DailyCycles (int t, pihm_struct pihm)
                 elem->soil.smcmin + 0.02 ? elem->soil.smcmin +
                 0.02 : elem->soil.waterContent[k];
             elem->soil.waterUptake[k] =
-                elem->daily.et[k] * 24.0 * 3600.0 / 1000.0;
+                elem->daily.et[k] * 24.0 * 3600.0 * 1000.0;
         }
     }
 
