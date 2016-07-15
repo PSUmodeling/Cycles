@@ -69,37 +69,45 @@ void Evaporation (soil_struct *Soil, const comm_struct *Community,
     for (i = 0; i < Soil->totalLayers; i++)
 #endif
     {
-        if (i > 0)
+        WC_AirDry = Soil->PWP[i] / 3.0; /* An approximation to air dry */
+
+        if (Soil->waterContent[i] > WC_AirDry)
         {
-            layerBottom[i] = layerBottom[i - 1] + Soil->layerThickness[i];
-            layerTop[i] = layerBottom[i - 1];
+            if (i > 0)
+            {
+                layerBottom[i] = layerBottom[i - 1] + Soil->layerThickness[i];
+                layerTop[i] = layerBottom[i - 1];
+            }
+            else
+            {
+                layerBottom[i] = Soil->layerThickness[i];
+                layerTop[i] = 0.0;
+            }
+            layerMidpoint = 0.5 * (layerTop[i] + layerBottom[i]);
+
+            WaterAvailable =
+                (Soil->waterContent[i] -
+                 WC_AirDry) * Soil->layerThickness[i] * WATER_DENSITY;
+
+            WaterContentLimitation =
+                Water_Content_Limitation_To_Evaporation (Soil->FC[i], WC_AirDry,
+                        Soil->waterContent[i]);
+
+            DepthLimitation =
+                1.0 / 3.0 * (Depth_Limitation_To_Evaporation (layerTop[i]) +
+                        Depth_Limitation_To_Evaporation (layerMidpoint) +
+                        Depth_Limitation_To_Evaporation (layerBottom[i]));
+
+            WaterSupply =
+                WaterAvailable * DepthLimitation * WaterContentLimitation;
+#ifdef _PIHM_
+            EvaporativeDemand *= WaterContentLimitation;
+#endif
         }
         else
         {
-            layerBottom[i] = Soil->layerThickness[i];
-            layerTop[i] = 0.0;
+            WaterSupply = 0.0;
         }
-
-        layerMidpoint = 0.5 * (layerTop[i] + layerBottom[i]);
-
-        WC_AirDry = Soil->PWP[i] / 3.0; /* An approximation to air dry */
-
-        WaterAvailable =
-            (Soil->waterContent[i] -
-            WC_AirDry) * Soil->layerThickness[i] * WATER_DENSITY;
-
-        DepthLimitation =
-            1.0 / 3.0 * (Depth_Limitation_To_Evaporation (layerTop[i]) +
-            Depth_Limitation_To_Evaporation (layerMidpoint) +
-            Depth_Limitation_To_Evaporation (layerBottom[i]));
-        WaterContentLimitation =
-            Water_Content_Limitation_To_Evaporation (Soil->FC[i], WC_AirDry,
-            Soil->waterContent[i]);
-        WaterSupply =
-            WaterAvailable * DepthLimitation * WaterContentLimitation;
-#ifdef _PIHM_
-        EvaporativeDemand *= WaterContentLimitation;
-#endif
 
         if (WaterSupply > EvaporativeDemand)
             Evaporation = EvaporativeDemand;
@@ -137,5 +145,12 @@ double Depth_Limitation_To_Evaporation (double Depth)
 double Water_Content_Limitation_To_Evaporation (double FC, double WC_AirDry,
     double WC)
 {
-    return (pow ((WC - WC_AirDry) / (FC - WC_AirDry), 3.0));
+    if (WC < FC)
+    {
+        return (pow ((WC - WC_AirDry) / (FC - WC_AirDry), 3.0));
+    }
+    else
+    {
+        return (1.0);
+    }
 }
