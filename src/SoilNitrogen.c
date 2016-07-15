@@ -116,10 +116,9 @@ void Nitrification (double *Profile_N_Nitrified,
             N2O_Nitrified = N2O_Fraction * NH4_Nitrified;
             Soil->NH4[i] -= (NH4_Nitrified + N2O_Nitrified);
             Soil->NO3[i] += NH4_Nitrified;
+            Soil->n2o[i] = N2O_Nitrified;
             *Profile_N_Nitrified = *Profile_N_Nitrified + NH4_Nitrified;
             *Profile_N2O_Nitrified = *Profile_N2O_Nitrified + N2O_Nitrified;
-
-            Soil->n2o[i] = N2O_Nitrified;
         }
         else
         {
@@ -356,6 +355,11 @@ void Volatilization (int y, int doy, double *Profile_NH4_Volatilization,
         NH3MolarFraction = henrysConst * (NH3Conc / 0.000017) / pAtm;   /* 0.000017 = Mg/mol of NH3 */
 
         NH4Volatilized = GG3 * NH3MolarFraction * 86400.0 * 0.000017 * 10000.0 * (14.0 / 17.0); /* Mg NH3 / ha / day; 14/17 converts mass of N to mass of NH4 */
+
+        if (NH4Volatilized > Soil->NH4[i])
+        {
+            NH4Volatilized = 0.5 * Soil->NH4[i];
+        }
 
         Soil->NH4[i] -= NH4Volatilized;
         profile_volatilization += NH4Volatilized;
