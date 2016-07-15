@@ -15,9 +15,6 @@ void Redistribution (int y, int doy, double precipitation, double snowFall, doub
      * irrigation_vol       double
      */
 
-    crop_struct     *Crop;
-    int             i;
-
     Soil->infiltrationVol = 0.0;
     Soil->runoffVol = 0.0;
     Soil->drainageVol = 0.0;
