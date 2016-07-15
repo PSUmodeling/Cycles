@@ -70,7 +70,7 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv,
         {
             if (elem[i].nabr[k] > 0)
             {
-                if (elem[i].wf.fluxsub[k] > 0.0)
+                if (elem[i].wf.subsurf[k] > 0.0)
                 {
                     snk = elem + elem[i].nabr[k] - 1;
                     for (kk = 0; kk < 3; kk++)
@@ -104,12 +104,12 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv,
                     k_river = 3;
                 }
 
-                Elem2RiverSolTrnsp (elem + i, river, elem[i].wf.fluxsub[k],
+                Elem2RiverSolTrnsp (elem + i, river, elem[i].wf.subsurf[k],
                     elem[i].wf.smflxh[k], elem[i].NO3sol.soluteConc,
                     river->NO3sol.soluteConc, dt,
                     elem[i].NO3sol.soluteFluxLat[k],
                     river->NO3sol.soluteFluxLat[k_river]);
-                Elem2RiverSolTrnsp (elem + i, river, elem[i].wf.fluxsub[k],
+                Elem2RiverSolTrnsp (elem + i, river, elem[i].wf.subsurf[k],
                     elem[i].wf.smflxh[k], elem[i].NH4sol.soluteConc,
                     river->NH4sol.soluteConc, dt,
                     elem[i].NH4sol.soluteFluxLat[k],
@@ -124,11 +124,11 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv,
         {
             down = &riv[riv[i].down - 1];
 
-            River2RiverSolTrnsp (riv + i, down, riv[i].wf.fluxriv,
+            River2RiverSolTrnsp (riv + i, down, riv[i].wf.rivflow,
                 riv[i].NO3sol.soluteConc, down->NO3sol.soluteConc, dt,
                 riv[i].NO3sol.soluteFluxLat[1],
                 down->NO3sol.soluteFluxLat[0]);
-            River2RiverSolTrnsp (riv + i, down, riv[i].wf.fluxriv,
+            River2RiverSolTrnsp (riv + i, down, riv[i].wf.rivflow,
                 riv[i].NH4sol.soluteConc, down->NH4sol.soluteConc, dt,
                 riv[i].NH4sol.soluteFluxLat[1],
                 down->NH4sol.soluteFluxLat[0]);
@@ -136,10 +136,10 @@ void SoluteTransport (elem_struct *elem, int numele, river_struct *riv,
         else
         {
             riv[i].NO3sol.soluteFluxLat[1][0] =
-                riv[i].wf.fluxriv[1] * riv[i].NO3sol.soluteConc[0] * dt *
+                riv[i].wf.rivflow[1] * riv[i].NO3sol.soluteConc[0] * dt *
                 WATER_DENSITY / riv[i].topo.area;
             riv[i].NH4sol.soluteFluxLat[1][0] =
-                riv[i].wf.fluxriv[1] * riv[i].NH4sol.soluteConc[0] * dt *
+                riv[i].wf.rivflow[1] * riv[i].NH4sol.soluteConc[0] * dt *
                 WATER_DENSITY / riv[i].topo.area;
         }
     }
@@ -443,7 +443,7 @@ void River2RiverSolTrnsp (river_struct *riv, const river_struct *down,
     double dt, double *flux_sol_riv, double *flux_sol_down)
 {
     double          flux_total;
-    flux_total = riv->wf.fluxriv[1] + riv->wf.fluxriv[9];
+    flux_total = riv->wf.rivflow[1] + riv->wf.rivflow[9];
 
     if (flux_total > 0.0)
     {

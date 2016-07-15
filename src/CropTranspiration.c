@@ -6,7 +6,7 @@
 
 #ifdef _PIHM_
 void WaterUptake (comm_struct *Community, soil_struct *Soil, double sfctmp,
-    wf_struct *wf, double pc, double dt)
+    wflux_struct *wf, double pc, double dt)
 #else
 void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil,
     const weather_struct *Weather)

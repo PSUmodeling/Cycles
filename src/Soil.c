@@ -6,7 +6,7 @@
 
 #ifdef _PIHM_
 void InitializeSoil (soil_struct *Soil, const soiltbl_struct *soiltbl,
-    const ps_struct *ps)
+    const pstate_struct *ps, int soil_type)
 #else
 void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
 #endif
@@ -42,7 +42,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
 
 #ifdef _PIHM_
     n = ps->nsoil;
-    ind = Soil->type - 1;
+    ind = soil_type - 1;
 
     for (i = 0; i < n; i++)
     {

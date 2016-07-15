@@ -33,24 +33,24 @@ void DailyCycles (int t, pihm_struct pihm)
     {
         elem = &pihm->elem[i];
 
-        elem->weather.atmosphericPressure = elem->daily.sfcprs / 1000.0;
-        elem->weather.wind[y][d - 1] = elem->daily.sfcspd;
+        elem->weather.atmosphericPressure = elem->daily.avg_sfcprs / 1000.0;
+        elem->weather.wind[y][d - 1] = elem->daily.avg_sfcspd;
         elem->weather.tMin[y][d - 1] = elem->daily.tmin - TFREEZ;
         elem->weather.tMax[y][d - 1] = elem->daily.tmax - TFREEZ;
         /* Calculate vpd in kPa from q2d */
         elem->weather.vpd[y][d - 1] =
-            elem->daily.q2d / 0.622 * elem->daily.sfcprs / 1000.0;
+            elem->daily.avg_q2d / 0.622 * elem->daily.avg_sfcprs / 1000.0;
         /* Convert to MJ */
         elem->weather.solarRadiation[y][d - 1] =
             elem->daily.solar_total / 1.0E6;
         elem->weather.lastDoy[y] = last_doy;
 
-        elem->snow.snowCover = elem->daily.sncovr;
+        elem->snow.snowCover = elem->daily.avg_sncovr;
 
         for (k = 0; k < elem->ps.nsoil; k++)
         {
-            elem->soil.soilTemperature[k] = elem->daily.stc[k] - TFREEZ;
-            elem->soil.waterContent[k] = elem->daily.sh2o[k];
+            elem->soil.soilTemperature[k] = elem->daily.avg_stc[k] - TFREEZ;
+            elem->soil.waterContent[k] = elem->daily.avg_sh2o[k];
             elem->soil.waterContent[k] =
                 elem->soil.waterContent[k] >
                 elem->soil.Porosity[k] ? elem->soil.Porosity[k] : elem->soil.
@@ -60,7 +60,7 @@ void DailyCycles (int t, pihm_struct pihm)
                 elem->soil.smcmin + 0.02 ? elem->soil.smcmin +
                 0.02 : elem->soil.waterContent[k];
             elem->soil.waterUptake[k] =
-                elem->daily.et[k] * 24.0 * 3600.0 * 1000.0;
+                elem->daily.avg_et[k] * 24.0 * 3600.0 * 1000.0;
         }
     }
 
