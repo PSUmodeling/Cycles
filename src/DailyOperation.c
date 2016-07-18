@@ -342,14 +342,14 @@ void CropStage (int d, comm_struct *Community, int last_doy)
                     /* SetCropStatusToMature */
                     Community->Crop[i].cropMature = 1;
                     Community->Crop[i].harvestDateFinal =
-                        FinalHarvestDate (last_doy, d);
+                        FinalHarvestDate (last_doy, d, Community->Crop[i].svTT_Cumulative, Community->Crop[i].userMaturityTT, Community->Crop[i].userClippingTiming);
                 }
             }
         }
     }
 }
 
-double FinalHarvestDate (int lastDoy, int d)
+double FinalHarvestDate (int lastDoy, int d, double CumulativeTT, double MaturityTT, double clippingTiming)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -361,10 +361,17 @@ double FinalHarvestDate (int lastDoy, int d)
      */
     int             harvestDate;
 
-    harvestDate = d + 10;
+    if (CumulativeTT / MaturityTT > clippingTiming / 100.0)
+    {
+        harvestDate = d;
+    }
+    else
+    {
+        harvestDate = -999;
+    }
 
-    if (harvestDate > lastDoy)
-        harvestDate -= lastDoy;
+    //if (harvestDate > lastDoy)
+    //    harvestDate -= lastDoy;
 
     return (harvestDate);
 }

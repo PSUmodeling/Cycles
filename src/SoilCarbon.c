@@ -403,6 +403,14 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
 
         /* Humification */
         /* Humification reduction when C conc approaches saturation */
+#ifdef _PIHM_
+        humificationAdjustmentBySOC =
+            1.0 - pow (Soil->SOC_Conc[i] / satSOCConc,
+            SOC_HUMIFICATION_POWER);
+        humificationAdjustmentBySOC =
+            humificationAdjustmentBySOC >
+            0.0 ? humificationAdjustmentBySOC : 0.0;
+#else
         if (ncs_mode == C_SAT)
         {
             humificationAdjustmentBySOC =
@@ -416,6 +424,7 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
         {
             humificationAdjustmentBySOC = 1.0;
         }
+#endif
 
         abgdHumificationFactor =
             sqrt (MaximumAbgdHumificationFactor (Soil->Clay[i]) *
@@ -635,6 +644,11 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
                 manuHumificationFactor * (xx6 + xx7));
 
         /* SOC decomposition and SON mineralization */
+#ifdef _PIHM_
+        decompositionAdjustmentBySOC =
+            1.0 - 1.0 / (1.0 + pow ((Soil->SOC_Conc[i] / satSOCConc) / 0.22,
+                3.0));
+#else
         if (ncs_mode == C_SAT)
         {
             decompositionAdjustmentBySOC =
@@ -650,6 +664,7 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
         {
             decompositionAdjustmentBySOC = 1.0;
         }
+#endif
 
         decompositionAdjustmentBySOC =
             decompositionAdjustmentBySOC <

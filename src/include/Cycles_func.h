@@ -46,7 +46,7 @@ double          TemperatureLimitation (double T, double T_Min, double T_Threshol
 void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl, snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon, weather_struct *Weather, summary_struct *Summary);
 void            GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue, const ctrl_struct *SimControl, soil_struct *Soil, soilc_struct *SoilCarbon, cropmgmt_struct *, const weather_struct *Weather, const snow_struct *Snow);
 void CropStage (int d, comm_struct *Community, int last_doy);
-double          FinalHarvestDate (int lastDoy, int d);
+double          FinalHarvestDate (int lastDoy, int d, double, double, double);
 int             ForcedClipping (int d, comm_struct *Community);
 int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize);
 
