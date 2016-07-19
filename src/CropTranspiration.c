@@ -80,8 +80,11 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil,
     //double          LWP_WiltingPoint = -2000.0;
     double          SWP_FC = -33.0;
     double          SWP_Average;
+    double          SWC_WiltingPoint;
     double          soilWP[Soil->totalLayers];
     double          layerSalinityFactor[Soil->totalLayers];
+    double          wu1;    /* Water uptake based on water potential with no attention to capacitance */
+    double          wu2;    /* Water uptake based on water potential but limited by capacitance up to wp at wilting point */
     crop_struct    *Crop;
 #ifdef _PIHM_
     double          etp;
@@ -262,7 +265,21 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil,
                     for (i = 0; i < Soil->totalLayers; i++)
                     {
                         //Soil->waterUptake[i] += layerPlantHC[i] * (soilWP[i] - LWP) * transpirationRatio;
-                        waterUptake[i] = layerPlantHC[i] * (soilWP[i] - LWP);
+                        wu1 = layerPlantHC[i] * (soilWP[i] - LWP);
+
+                        SWC_WiltingPoint = SoilWaterContent (Soil->Porosity[i], Soil->airEntryPotential[i], Soil->B_Value[i], Crop->LWP_WiltingPoint);
+
+                        if (Soil->waterContent[i] > SWC_WiltingPoint)
+                        {
+                            wu2 = (Soil->waterContent[i] - SWC_WiltingPoint) * (Soil->layerThickness[i] * WATER_DENSITY);
+                        }
+                        else
+                        {
+                            wu2 = 0.0;
+                        }
+
+                        waterUptake[i] = (wu1 < wu2) ? wu1 : wu2;
+
                         Soil->waterUptake[i] += waterUptake[i];
                     }
                 }
@@ -294,6 +311,12 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil,
 #else
         Soil->waterContent[i] -=
             Soil->waterUptake[i] / (Soil->layerThickness[i] * WATER_DENSITY);
+
+        if (Soil->waterContent[i] < 0.0)
+        {
+            fprintf (stderr, "Error: Soil water content at Layer is lower than 0.\n");
+            exit (1);
+        }
 #endif
     }
 }
