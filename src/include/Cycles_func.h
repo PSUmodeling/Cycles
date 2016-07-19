@@ -26,7 +26,7 @@ void            CropNitrogenConcentration (double *N_AbgdConcReq, double *N_Root
 void            CropNitrogenStress (const double NaAbgd, const double NcAbgd, const double NnAbgd, crop_struct *Crop);
 void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *NxAbgd, double *NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, comm_struct *Community, soil_struct *Soil);
 void            PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake, double Kd, int totalLayers, const double *BD, const double *dz, const double *WaterUptake, const double *Solute, const double *WC);
-double          ShootBiomassPartitioning (const double Stage, const double Po, const double Pf);
+double          ShootBiomassPartitioning (const double Stage, const double Po, const double Pf, int Annual);
 void            RadiationInterception (int y, int doy, comm_struct *Community);
 void            Phenology (int y, int doy, const weather_struct *Weather, comm_struct *Community);
 void            ComputeColdDamage (int y, int doy, crop_struct *Crop, const weather_struct *Weather, const snow_struct *Snow, residue_struct *Residue);

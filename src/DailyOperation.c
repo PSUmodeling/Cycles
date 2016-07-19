@@ -206,26 +206,29 @@ void GrowingCrop (int y, int d, comm_struct *Community,
     {
         if (Community->Crop[i].stageGrowth > NO_CROP)
         {
-            if (Weather->tMin[y][d - 1] <
-                Community->Crop[i].userColdDamageThresholdTemperature)
+            if (Community->Crop[i].stageGrowth != MATURITY)
             {
-                if (Community->Crop[i].userAnnual &&
-                    Community->Crop[i].svTT_Cumulative >
-                    Community->Crop[i].userFloweringTT)
+                if (Weather->tMin[y][d - 1] <
+                    Community->Crop[i].userColdDamageThresholdTemperature)
                 {
+                    if (Community->Crop[i].userAnnual &&
+                        Community->Crop[i].svTT_Cumulative >
+                        Community->Crop[i].userFloweringTT)
+                    {
 #ifdef _PIHM_
-                    GrainHarvest (y, d, &Community->Crop[i], Residue, Soil,
-                        SoilCarbon);
+                        GrainHarvest (y, d, &Community->Crop[i], Residue, Soil,
+                                SoilCarbon);
 #else
-                    GrainHarvest (y, d, SimControl->simStartYear,
-                        &Community->Crop[i], Residue, Soil, SoilCarbon,
-                        Weather);
+                        GrainHarvest (y, d, SimControl->simStartYear,
+                                &Community->Crop[i], Residue, Soil, SoilCarbon,
+                                Weather);
 #endif
-                    Community->NumActiveCrop--;
+                        Community->NumActiveCrop--;
+                    }
+                    else
+                        ComputeColdDamage (y, d, &Community->Crop[i], Weather,
+                                Snow, Residue);
                 }
-                else
-                    ComputeColdDamage (y, d, &Community->Crop[i], Weather,
-                        Snow, Residue);
             }
 
             if (d == Community->Crop[i].harvestDateFinal || forcedHarvest)
@@ -361,7 +364,7 @@ double FinalHarvestDate (int lastDoy, int d, double CumulativeTT, double Maturit
      */
     int             harvestDate;
 
-    if (CumulativeTT / MaturityTT > clippingTiming / 100.0)
+    if (CumulativeTT / MaturityTT > clippingTiming)
     {
         harvestDate = d;
     }

@@ -191,7 +191,7 @@ void ReadCrop (char *filename, comm_struct *Community)
         if (Crop->userClippingTiming != BADVAL)
             Crop->userClippingTiming = Crop->userClippingTiming / 100.0;
         else
-            Crop->userClippingTiming = 0.0;
+            Crop->userClippingTiming = 1.01;
 
         Crop->calculatedSimAvgYield = 0.0;
         Crop->calculatedSimMaxYield = 0.0;
