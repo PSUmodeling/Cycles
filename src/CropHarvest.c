@@ -480,9 +480,10 @@ void DistributeRootDetritus (double rootMass, double rhizoMass, double rootN,
     /* Compute input of biomass from roots to each layer */
     for (i = 0; i < j; i++)
     {                           /* exits loop on the same layer as the previous loop */
+        fractionRootsByLayer[i] = rootDistribution[i] / rootSum;
+
         if (rootMass > 0.0)
         {
-            fractionRootsByLayer[i] = rootDistribution[i] / rootSum;
             Residue->residueRt[i] += fractionRootsByLayer[i] * rootMass;
             Residue->residueRtN[i] += fractionRootsByLayer[i] * rootN;
             SoilCarbon->rootBiomassInput[i] +=
