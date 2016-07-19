@@ -330,7 +330,7 @@ void CalcRootFraction (double *fractionRootsByLayer, soil_struct *Soil,
      * j                    int
      */
     const double    a = 1.0;
-    const double    b = 4.0;
+    const double    b = 3.0;
     double          rootIntegral;
     double          rootSum;
     double          rootDistribution[Soil->totalLayers];

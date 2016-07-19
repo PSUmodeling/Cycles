@@ -433,7 +433,7 @@ void DistributeRootDetritus (double rootMass, double rhizoMass, double rootN,
      * where z1 and z2 are the top and bottom of layer */
 
     const double    a = 1.0;
-    const double    b = 4.0;
+    const double    b = 3.0;
     double          rootIntegral;
     double          rootSum;
     double          cumulativeRootingDepth = 0.0;

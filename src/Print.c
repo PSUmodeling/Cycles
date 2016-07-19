@@ -245,6 +245,38 @@ void InitializeOutput (const comm_struct *Community, int layers)
 
     fflush (output_file);
     fclose (output_file);
+
+    sprintf (filename, "output/%s/annualSOM.dat", project);
+    output_file = fopen (filename, "w");
+    fprintf (output_file, "%-7s", "YEAR");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\t%-15s", "THICKNESS");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\t%-15s", "BULK DENSITY");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\t%-15s", "SOIL C");
+    fprintf (output_file, "\n");
+
+    fprintf (output_file, "%-7s", "-");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
+    fprintf (output_file, "\n");
+
+    fprintf (output_file, "%-7s", "YYYY");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\t%-15s", "m");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\t%-15s", "Mg/m3");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\t%-15s", "%");
+    fprintf (output_file, "\n");
+
+    fflush (output_file);
+    fclose (output_file);
     free (output_dir);
 
 }
@@ -496,6 +528,21 @@ void PrintAnnualOutput (int y, int start_year, const soil_struct *Soil, const so
     char            filename[50];
     FILE           *output_file;
     int             i;
+
+    sprintf (filename, "output/%s/annualSOM.dat", project);
+    output_file = fopen (filename, "a");
+
+    fprintf (output_file, "%4.4d", y + start_year);
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (output_file, "\t%-15.6lf", Soil->layerThickness[i]);
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (output_file, "\t%-15.6lf", Soil->BD[i]);
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (output_file, "\t%-15.6lf", Soil->SOC_Mass[i] / Soil->layerThickness[i] / Soil->BD[i] / 100.0);
+
+    fprintf (output_file, "\n");
+    fflush (output_file);
+    fclose (output_file);
 
     sprintf (filename, "output/%s/annualSoilC.dat", project);
     output_file = fopen (filename, "a");
