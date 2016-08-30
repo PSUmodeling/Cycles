@@ -194,8 +194,9 @@ void ForageAndSeedHarvest (int y, int doy, int startYear, crop_struct *Crop,
             fractionalHarvestLoss);
         clippingFraction =
             (clippingFraction <
-            Crop->userFractionResidueRemoved) ? clippingFraction : Crop->
-            userFractionResidueRemoved;
+            Crop->
+            userFractionResidueRemoved) ? clippingFraction :
+            Crop->userFractionResidueRemoved;
 
         forageYield =
             Crop->svShoot * clippingFraction * (1.0 - fractionalHarvestLoss);

@@ -87,16 +87,16 @@ void Evaporation (soil_struct *Soil, const comm_struct *Community,
 
             WaterAvailable =
                 (Soil->waterContent[i] -
-                 WC_AirDry) * Soil->layerThickness[i] * WATER_DENSITY;
+                WC_AirDry) * Soil->layerThickness[i] * WATER_DENSITY;
 
             WaterContentLimitation =
-                Water_Content_Limitation_To_Evaporation (Soil->FC[i], WC_AirDry,
-                        Soil->waterContent[i]);
+                Water_Content_Limitation_To_Evaporation (Soil->FC[i],
+                WC_AirDry, Soil->waterContent[i]);
 
             DepthLimitation =
                 1.0 / 3.0 * (Depth_Limitation_To_Evaporation (layerTop[i]) +
-                        Depth_Limitation_To_Evaporation (layerMidpoint) +
-                        Depth_Limitation_To_Evaporation (layerBottom[i]));
+                Depth_Limitation_To_Evaporation (layerMidpoint) +
+                Depth_Limitation_To_Evaporation (layerBottom[i]));
 
             WaterSupply =
                 WaterAvailable * DepthLimitation * WaterContentLimitation;

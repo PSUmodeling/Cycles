@@ -44,6 +44,12 @@
 #define C_SAT       0
 #define DPTH_CSTR   1
 #define NO_CSTR     2
+
+#define PLANT_OP    0
+#define TILLAGE_OP  1
+#define FIXIRR_OP   2
+#define FIXFERT_OP  3
+
 enum stage
 { NO_CROP, PRE_EMERGENCE, VEGETATIVE_GROWTH, PERENNIAL, REPRODUCTIVE_GROWTH, MATURITY, CLIPPING, PLANTING };
 

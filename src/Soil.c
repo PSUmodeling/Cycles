@@ -54,7 +54,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
         {
             Soil->Clay[i] = soiltbl->clay_lyr[ind][i];
             Soil->Sand[i] = soiltbl->sand_lyr[ind][i];
-            Soil->IOM[i] = soiltbl->iom_lyr[ind][i];
+            //Soil->IOM[i] = soiltbl->iom_lyr[ind][i];
             if ((int)soiltbl->bd_lyr[ind][i] != BADVAL)
             {
                 Soil->BD[i] = soiltbl->bd_lyr[ind][i];
@@ -72,6 +72,7 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
         {
             Soil->Clay[i] = Soil->Clay[soiltbl->totalLayers[ind] - 1];
             Soil->Sand[i] = Soil->Sand[soiltbl->totalLayers[ind] - 1];
+            //Soil->IOM[i] = Soil->IOM[soiltbl->totalLayers[ind] - 1];
             Soil->IOM[i] = Soil->IOM[soiltbl->totalLayers[ind] - 1];
             Soil->BD[i] = Soil->BD[soiltbl->totalLayers[ind] - 1];
             Soil->NO3[i] = Soil->NO3[soiltbl->totalLayers[ind] - 1];

@@ -675,7 +675,8 @@ void PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake,
     *SoluteSupply = totalPotentialUptake;
 }
 
-double ShootBiomassPartitioning (double Stage, double Po, double Pf, int Annual)
+double ShootBiomassPartitioning (double Stage, double Po, double Pf,
+    int Annual)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -689,8 +690,8 @@ double ShootBiomassPartitioning (double Stage, double Po, double Pf, int Annual)
      *                                    be available to user)
      * partitioning         double      [return value]
      */
-    const double    P2 = 4.0;    
-    double P1;
+    const double    P2 = 4.0;
+    double          P1;
     double          partitioning;
 
     P1 = Annual ? 0.4 : 0.5;
@@ -839,9 +840,9 @@ void RadiationInterception (int y, int doy, comm_struct *Community)
                     {
                         Compensatory_Expansion =
                             (Crop->svRadiationInterception_nc <=
-                            0.0) ? 1.0 : sqrt ((Crop->
-                                userMaximumSoilCoverage / (1.0 + exp (a -
-                                        b * Fractional_TT) + exp (-c +
+                            0.0) ? 1.0 : sqrt ((Crop->userMaximumSoilCoverage
+                                / (1.0 + exp (a - b * Fractional_TT) +
+                                    exp (-c +
                                         d * Fractional_TT))) /
                             Crop->svRadiationInterception_nc);
                         Reserves_Use_Allowance =

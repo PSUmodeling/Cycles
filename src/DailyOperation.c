@@ -53,8 +53,8 @@ void DailyCycles (int t, pihm_struct pihm)
             elem->soil.waterContent[k] = elem->daily.avg_sh2o[k];
             elem->soil.waterContent[k] =
                 elem->soil.waterContent[k] >
-                elem->soil.Porosity[k] ? elem->soil.Porosity[k] : elem->soil.
-                waterContent[k];
+                elem->soil.Porosity[k] ? elem->soil.Porosity[k] : elem->
+                soil.waterContent[k];
             elem->soil.waterContent[k] =
                 elem->soil.waterContent[k] <
                 elem->soil.smcmin + 0.02 ? elem->soil.smcmin +
@@ -86,7 +86,7 @@ void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement,
 void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement,
     comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl,
     snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon,
-    weather_struct *Weather, summary_struct * Summary)
+    weather_struct *Weather, summary_struct *Summary)
 #endif
 {
 
@@ -216,18 +216,18 @@ void GrowingCrop (int y, int d, comm_struct *Community,
                         Community->Crop[i].userFloweringTT)
                     {
 #ifdef _PIHM_
-                        GrainHarvest (y, d, &Community->Crop[i], Residue, Soil,
-                                SoilCarbon);
+                        GrainHarvest (y, d, &Community->Crop[i], Residue,
+                            Soil, SoilCarbon);
 #else
                         GrainHarvest (y, d, SimControl->simStartYear,
-                                &Community->Crop[i], Residue, Soil, SoilCarbon,
-                                Weather);
+                            &Community->Crop[i], Residue, Soil, SoilCarbon,
+                            Weather);
 #endif
                         Community->NumActiveCrop--;
                     }
                     else
                         ComputeColdDamage (y, d, &Community->Crop[i], Weather,
-                                Snow, Residue);
+                            Snow, Residue);
                 }
             }
 
@@ -345,14 +345,18 @@ void CropStage (int d, comm_struct *Community, int last_doy)
                     /* SetCropStatusToMature */
                     Community->Crop[i].cropMature = 1;
                     Community->Crop[i].harvestDateFinal =
-                        FinalHarvestDate (last_doy, d, Community->Crop[i].svTT_Cumulative, Community->Crop[i].userMaturityTT, Community->Crop[i].userClippingTiming);
+                        FinalHarvestDate (last_doy, d,
+                        Community->Crop[i].svTT_Cumulative,
+                        Community->Crop[i].userMaturityTT,
+                        Community->Crop[i].userClippingTiming);
                 }
             }
         }
     }
 }
 
-double FinalHarvestDate (int lastDoy, int d, double CumulativeTT, double MaturityTT, double clippingTiming)
+double FinalHarvestDate (int lastDoy, int d, double CumulativeTT,
+    double MaturityTT, double clippingTiming)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -550,7 +554,7 @@ void LastDOY (int y, int totalLayers, soil_struct *Soil,
 #else
 void LastDOY (int y, int simStartYear, int totalLayers, soil_struct *Soil,
     soilc_struct *SoilCarbon, residue_struct *Residue,
-    summary_struct * Summary)
+    summary_struct *Summary)
 #endif
 {
     int             i;

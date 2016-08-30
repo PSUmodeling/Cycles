@@ -4,7 +4,7 @@
 #include "Cycles.h"
 #endif
 
-void ApplyFertilizer (op_struct *fixedFertilization, soil_struct *Soil,
+void ApplyFertilizer (fixfert_struct *fixedFertilization, soil_struct *Soil,
     residue_struct *Residue)
 {
     /*

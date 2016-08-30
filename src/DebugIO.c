@@ -79,10 +79,12 @@ void PrintCrop (comm_struct Community)
     printf ("\n");
 }
 
-void PrintOperation (op_struct *plantedCrops, int NumPlanting, op_struct *Tillage, int NumTillage, op_struct *FixedIrrigation, int NumIrrigation, op_struct *FixedFertilization, int NumFertilization)
+void PrintOperation (plant_struct *plantedCrops, int NumPlanting, tillage_struct *Tillage, int NumTillage, fixirr_struct *FixedIrrigation, int NumIrrigation, fixfert_struct *FixedFertilization, int NumFertilization)
 {
     int             i;
-    op_struct *p;
+    tillage_struct *tillage;
+    fixirr_struct  *fixirr;
+    fixfert_struct *fixfert;
 
     printf ("\n*Planting:\n");
     for (i = 0; i < NumPlanting; i++)
@@ -99,48 +101,48 @@ void PrintOperation (op_struct *plantedCrops, int NumPlanting, op_struct *Tillag
     printf ("*Tillage:\n");
     for (i = 0; i < NumTillage; i++)
     {
-        p = &Tillage[i];
-        printf ("*%-18s\t%-3d\n", "YEAR", p->opYear);
-        printf ("*%-18s\t%-3d\n", "DOY", p->opDay);
-        printf ("*%-18s\t%-128s\n", "TOOL", p->opToolName);
-        printf ("*%-18s\t%-4.2lf\n", "DEPTH", p->opDepth);
-        printf ("*%-18s\t%-4.2lf\n", "SOIL DISTURB RATIO", p->opSDR);
-        printf ("*%-18s\t%-4.2lf\n\n", "MIXING EFFICIENCY", p->opMixingEfficiency);
+        tillage = &Tillage[i];
+        printf ("*%-18s\t%-3d\n", "YEAR", tillage->opYear);
+        printf ("*%-18s\t%-3d\n", "DOY", tillage->opDay);
+        printf ("*%-18s\t%-128s\n", "TOOL", tillage->opToolName);
+        printf ("*%-18s\t%-4.2lf\n", "DEPTH", tillage->opDepth);
+        printf ("*%-18s\t%-4.2lf\n", "SOIL DISTURB RATIO", tillage->opSDR);
+        printf ("*%-18s\t%-4.2lf\n\n", "MIXING EFFICIENCY", tillage->opMixingEfficiency);
     }
     printf ("\n");
 
     printf ("*Fixed Irrigation:\n");
     for (i = 0; i < NumIrrigation; i++)
     {
-        p = &FixedIrrigation[i];
-        printf ("*%-18s\t%-3d\n", "YEAR", p->opYear);
-        printf ("*%-18s\t%-3d\n", "DOY", p->opDay);
-        printf ("*%-18s\t%-4.2lf\n\n", "VOLUME", p->opVolume);
+        fixirr = &FixedIrrigation[i];
+        printf ("*%-18s\t%-3d\n", "YEAR", fixirr->opYear);
+        printf ("*%-18s\t%-3d\n", "DOY", fixirr->opDay);
+        printf ("*%-18s\t%-4.2lf\n\n", "VOLUME", fixirr->opVolume);
     }
     printf ("\n");
 
     printf ("*Fixed Fertilization:\n");
     for (i = 0; i < NumFertilization; i++)
     {
-        p = &FixedFertilization[i];
-        printf ("*%-18s\t%-3d\n", "YEAR", p->opYear);
-        printf ("*%-18s\t%-3d\n", "DOY", p->opDay);
-        printf ("*%-18s\t%-128s\n", "SOURCE", p->opSource);
-        printf ("*%-18s\t%-6.2lf\n", "MASS", p->opMass);
-        printf ("*%-18s\t%-128s\n", "FORM", p->opForm);
-        printf ("*%-18s\t%-128s\n", "METHOD", p->opMethod);
-        printf ("*%-18s\t%-3d\n", "DEPTH", p->opLayer);
-        printf ("*%-18s\t%-6.2lf\n", "C_ORGANIC", p->opC_Organic);
-        printf ("*%-18s\t%-6.2lf\n", "C_CHARCOAL", p->opC_Charcoal);
-        printf ("*%-18s\t%-6.2lf\n", "N_ORGANIC", p->opN_Organic);
-        printf ("*%-18s\t%-6.2lf\n", "N_CHARCOAL", p->opN_Charcoal);
-        printf ("*%-18s\t%-6.2lf\n", "N_NH4", p->opN_NH4);
-        printf ("*%-18s\t%-6.2lf\n", "N_NO3", p->opN_NO3);
-        printf ("*%-18s\t%-6.2lf\n", "P_ORGANIC", p->opP_Organic);
-        printf ("*%-18s\t%-6.2lf\n", "P_CHARCOOAL", p->opP_Charcoal);
-        printf ("*%-18s\t%-6.2lf\n", "P_INORGANIC", p->opP_Inorganic);
-        printf ("*%-18s\t%-6.2lf\n", "K", p->opK);
-        printf ("*%-18s\t%-6.2lf\n\n", "S", p->opS);
+        fixfert = &FixedFertilization[i];
+        printf ("*%-18s\t%-3d\n", "YEAR", fixfert->opYear);
+        printf ("*%-18s\t%-3d\n", "DOY", fixfert->opDay);
+        printf ("*%-18s\t%-128s\n", "SOURCE", fixfert->opSource);
+        printf ("*%-18s\t%-6.2lf\n", "MASS", fixfert->opMass);
+        printf ("*%-18s\t%-128s\n", "FORM", fixfert->opForm);
+        printf ("*%-18s\t%-128s\n", "METHOD", fixfert->opMethod);
+        printf ("*%-18s\t%-3d\n", "DEPTH", fixfert->opLayer);
+        printf ("*%-18s\t%-6.2lf\n", "C_ORGANIC", fixfert->opC_Organic);
+        printf ("*%-18s\t%-6.2lf\n", "C_CHARCOAL", fixfert->opC_Charcoal);
+        printf ("*%-18s\t%-6.2lf\n", "N_ORGANIC", fixfert->opN_Organic);
+        printf ("*%-18s\t%-6.2lf\n", "N_CHARCOAL", fixfert->opN_Charcoal);
+        printf ("*%-18s\t%-6.2lf\n", "N_NH4", fixfert->opN_NH4);
+        printf ("*%-18s\t%-6.2lf\n", "N_NO3", fixfert->opN_NO3);
+        printf ("*%-18s\t%-6.2lf\n", "P_ORGANIC", fixfert->opP_Organic);
+        printf ("*%-18s\t%-6.2lf\n", "P_CHARCOOAL", fixfert->opP_Charcoal);
+        printf ("*%-18s\t%-6.2lf\n", "P_INORGANIC", fixfert->opP_Inorganic);
+        printf ("*%-18s\t%-6.2lf\n", "K", fixfert->opK);
+        printf ("*%-18s\t%-6.2lf\n\n", "S", fixfert->opS);
     }
     printf ("\n");
 }

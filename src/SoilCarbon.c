@@ -652,8 +652,8 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
         if (ncs_mode == C_SAT)
         {
             decompositionAdjustmentBySOC =
-                1.0 - 1.0 / (1.0 + pow ((Soil->SOC_Conc[i] / satSOCConc) / 0.22,
-                    3.0));
+                1.0 - 1.0 / (1.0 +
+                pow ((Soil->SOC_Conc[i] / satSOCConc) / 0.22, 3.0));
         }
         else if (ncs_mode == DPTH_CSTR)
         {
@@ -926,8 +926,10 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
         Soil->NO3_Denitrification * 1000.0;
     SoilCarbon->annualNitrousOxidefromDenitrification +=
         Soil->N2O_Denitrification * 1000.0;
+#ifndef _PIHM_
     SoilCarbon->annualNitrateLeaching += Soil->NO3Leaching * 1000.0;
     SoilCarbon->annualAmmoniumLeaching += Soil->NH4Leaching * 1000.0;
+#endif
 
     if (fabs (NFinal - NInitial) > 0.00001)
     {
