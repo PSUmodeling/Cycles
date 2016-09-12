@@ -38,8 +38,8 @@ void GrainHarvest (int y, int doy, int startYear, crop_struct *Crop,
     double          forageNitrogenYield;
     double          forageNitrogenConcentration;
 
-    if (verbose_mode)
-        printf ("DOY %3.3d %-20s %s\n", doy, "Grain Harvest", Crop->cropName);
+    Cycles_printf (VL_VERBOSE,
+        "DOY %3.3d %-20s %s\n", doy, "Grain Harvest", Crop->cropName);
 
     HI = ComputeHarvestIndex (Crop->userHIx, Crop->userHIo, Crop->userHIk,
         Crop->svShoot, Crop->svPostFloweringShootBiomass);
@@ -159,9 +159,8 @@ void ForageAndSeedHarvest (int y, int doy, int startYear, crop_struct *Crop,
     double          clippingFraction = 0.0;
     int             seedHarvest = 0;
 
-    if (verbose_mode)
-        printf ("DOY %3.3d %-20s %s\n", doy, "Forage Harvest",
-            Crop->cropName);
+    Cycles_printf (VL_VERBOSE,
+        "DOY %3.3d %-20s %s\n", doy, "Forage Harvest", Crop->cropName);
 
     /* With this method, forage yield is accumulated over the life of the crop
      * for season harvest (not per year) unless a new variable is created ...
@@ -194,8 +193,9 @@ void ForageAndSeedHarvest (int y, int doy, int startYear, crop_struct *Crop,
             fractionalHarvestLoss);
         clippingFraction =
             (clippingFraction <
-            Crop->userFractionResidueRemoved) ? clippingFraction : Crop->
-            userFractionResidueRemoved;
+            Crop->
+            userFractionResidueRemoved) ? clippingFraction :
+            Crop->userFractionResidueRemoved;
 
         forageYield =
             Crop->svShoot * clippingFraction * (1.0 - fractionalHarvestLoss);
@@ -385,8 +385,8 @@ void HarvestCrop (int y, int doy, int startYear, crop_struct *Crop,
     Crop->rcNitrogenCumulative = Crop->svN_StressCumulative;
     Crop->rcNitrogenInResidue = (Crop->svN_Shoot + Crop->svN_Root) * 1000.0;
 
-    if (verbose_mode)
-        printf ("DOY %3.3d %-20s %s\n", doy, "Harvest", Crop->cropName);
+    Cycles_printf (VL_VERBOSE,
+        "DOY %3.3d %-20s %s\n", doy, "Harvest", Crop->cropName);
 
 #ifndef _PIHM_
     PrintSeasonOutput (y, doy, startYear, Weather, Crop);
@@ -433,7 +433,7 @@ void DistributeRootDetritus (double rootMass, double rhizoMass, double rootN,
      * where z1 and z2 are the top and bottom of layer */
 
     const double    a = 1.0;
-    const double    b = 4.0;
+    const double    b = 3.0;
     double          rootIntegral;
     double          rootSum;
     double          cumulativeRootingDepth = 0.0;

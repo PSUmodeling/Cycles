@@ -176,7 +176,7 @@ void CropGrowth (int y, int doy, double *DailyGrowth, double Stage,
         0.01 * Crop->userTranspirationUseEfficiency * pow (daytimeVPD, -0.59);
     ShootPartitioning =
         ShootBiomassPartitioning (Stage, Crop->userShootPartitionInitial,
-        Crop->userShootPartitionFinal);
+        Crop->userShootPartitionFinal, Crop->userAnnual);
 
     /* Unstressed growth of aboveground biomass
      * might be used to calculate N demand */
@@ -675,7 +675,8 @@ void PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake,
     *SoluteSupply = totalPotentialUptake;
 }
 
-double ShootBiomassPartitioning (double Stage, double Po, double Pf)
+double ShootBiomassPartitioning (double Stage, double Po, double Pf,
+    int Annual)
 {
     /* 
      * -----------------------------------------------------------------------
@@ -689,9 +690,11 @@ double ShootBiomassPartitioning (double Stage, double Po, double Pf)
      *                                    be available to user)
      * partitioning         double      [return value]
      */
-    const double    P1 = 0.4;
     const double    P2 = 4.0;
+    double          P1;
     double          partitioning;
+
+    P1 = Annual ? 0.4 : 0.5;
 
     partitioning = Po + (Pf - Po) / (1.0 + pow ((Stage + 0.0001) / P1, -P2));
 
@@ -837,9 +840,9 @@ void RadiationInterception (int y, int doy, comm_struct *Community)
                     {
                         Compensatory_Expansion =
                             (Crop->svRadiationInterception_nc <=
-                            0.0) ? 1.0 : sqrt ((Crop->
-                                userMaximumSoilCoverage / (1.0 + exp (a -
-                                        b * Fractional_TT) + exp (-c +
+                            0.0) ? 1.0 : sqrt ((Crop->userMaximumSoilCoverage
+                                / (1.0 + exp (a - b * Fractional_TT) +
+                                    exp (-c +
                                         d * Fractional_TT))) /
                             Crop->svRadiationInterception_nc);
                         Reserves_Use_Allowance =

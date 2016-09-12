@@ -24,7 +24,7 @@
  *
  * RETURN VALUE: void
  ****************************************************************************/
-void ExecuteTillage (double *abgdBiomassInput, const op_struct *Tillage,
+void ExecuteTillage (double *abgdBiomassInput, const tillage_struct *Tillage,
     double *tillageFactor, soil_struct *Soil, residue_struct *Residue)
 {
     /* LOCAL VARIABLES
@@ -312,7 +312,7 @@ double Fraction (double a, double b, double c, double d, double f)
  *
  * RETURN VALUE: void
  ****************************************************************************/
-void ComputeTillageFactor (const op_struct *Tillage, double *tillageFactor,
+void ComputeTillageFactor (const tillage_struct *Tillage, double *tillageFactor,
     const soil_struct *Soil, const double *soilLayerBottom, double toolDepth)
 {
     /* LOCAL VARIABLES

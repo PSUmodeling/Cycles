@@ -64,7 +64,7 @@ void InitCropSV (crop_struct *Crop)
 void PlantingCrop (comm_struct *Community,
     const cropmgmt_struct *CropManagement, int plantingIndex)
 {
-    op_struct      *plantingOrder;
+    plant_struct   *plantingOrder;
     autoirr_struct *autoIrrigation;
     crop_struct    *Crop;
 
@@ -79,8 +79,8 @@ void PlantingCrop (comm_struct *Community,
     if (plantingOrder->usesAutoIrrigation > 0)
     {
         autoIrrigation =
-            &(CropManagement->autoIrrigation[plantingOrder->
-                usesAutoIrrigation]);
+            &(CropManagement->
+            autoIrrigation[plantingOrder->usesAutoIrrigation]);
         Crop->autoIrrigationUsed = 1;
         Crop->autoIrrigationStartDay = autoIrrigation->startDay;
         Crop->autoIrrigationStopDay = autoIrrigation->stopDay;
@@ -178,8 +178,8 @@ void UpdateCommunity (comm_struct *Community)
                 Community->Crop[i].svRizhoDailyDeposition;
             Community->svRootingDepth =
                 Community->Crop[i].svRootingDepth >
-                Community->svRootingDepth ? Community->Crop[i].
-                svRootingDepth : Community->svRootingDepth;
+                Community->svRootingDepth ? Community->
+                Crop[i].svRootingDepth : Community->svRootingDepth;
             Community->svTranspiration += Community->Crop[i].svTranspiration;
             Community->svTranspirationPotential +=
                 Community->Crop[i].svTranspirationPotential;

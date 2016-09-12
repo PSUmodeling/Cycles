@@ -180,7 +180,7 @@ int CountOccurance (FILE *fid, char *token)
 //    if (fid == NULL)
 //    {
 //        printf ("\n ERROR: %s is in use or does not exist!\n", fn);
-//        exit (1);
+//        Cycles_exit (EXIT_FAILURE);
 //    }
 //    else
 //    {
@@ -209,7 +209,7 @@ int CountOccurance (FILE *fid, char *token)
 //        if (match != nvrbl + 5)
 //        {
 //            printf ("ERROR: Forcing format error!\n");
-//            exit (1);
+//            Cycles_exit (EXIT_FAILURE);
 //        }
 //
 //        timeinfo->tm_year = timeinfo->tm_year - 1900;
@@ -244,8 +244,8 @@ void ReadKeywordDouble (char *buffer, char *keyword, double *value)
     match = sscanf (buffer, "%s %lf", optstr, value);
     if (match != 2 || strcasecmp (keyword, optstr) != 0)
     {
-        printf ("ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
-        exit (1);
+        Cycles_printf (VL_ERROR, "ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
+        Cycles_exit (EXIT_FAILURE);
     }
 }
 
@@ -257,8 +257,8 @@ void ReadKeywordInt (char *buffer, char *keyword, int *value)
     match = sscanf (buffer, "%s %d", optstr, value);
     if (match != 2 || strcasecmp (keyword, optstr) != 0)
     {
-        printf ("ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
-        exit (1);
+        Cycles_printf (VL_ERROR, "ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
+        Cycles_exit (EXIT_FAILURE);
     }
 }
 
@@ -277,7 +277,7 @@ void ReadKeywordInt (char *buffer, char *keyword, int *value)
 //    if (match != 6 || strcasecmp (keyword, optstr) != 0)
 //    {
 //        printf ("ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
-//        exit (1);
+//        Cycles_exit (EXIT_FAILURE);
 //    }
 //
 //    timeinfo->tm_year = timeinfo->tm_year - 1900;
@@ -295,7 +295,7 @@ void ReadKeywordStr (char *buffer, char *keyword, char *value)
     match = sscanf (buffer, "%s %s", optstr, value);
     if (match != 2 || strcasecmp (keyword, optstr) != 0)
     {
-        printf ("ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
-        exit (1);
+        Cycles_printf (VL_ERROR, "ERROR: Expected keyword \"%s\", detected keyword \"%s\"!\n", keyword, optstr);
+        Cycles_exit (EXIT_FAILURE);
     }
 }

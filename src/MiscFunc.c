@@ -1,5 +1,18 @@
 #include "Cycles.h"
 
+void _Cycles_exit (const char *fn, int lineno, const char *func, int error)
+{
+    Cycles_printf (VL_ERROR, "\n");
+    Cycles_printf (VL_ERROR, "Exiting from %s", func);
+    if (debug_mode)
+    {
+        Cycles_printf (VL_ERROR, " (%s, Line %d)", fn, lineno);
+    }
+    Cycles_printf (VL_ERROR, "...\n\n");
+
+    exit (error);
+}
+
 int IsLeapYear (int year)
 {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);

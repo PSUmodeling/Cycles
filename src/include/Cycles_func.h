@@ -26,7 +26,7 @@ void            CropNitrogenConcentration (double *N_AbgdConcReq, double *N_Root
 void            CropNitrogenStress (const double NaAbgd, const double NcAbgd, const double NnAbgd, crop_struct *Crop);
 void CropNitrogenUptake (double *N_ReqAbgdGrowth, double *N_ReqRootGrowth, double *N_ReqRhizodeposition, double *NxAbgd, double *NxRoot, int autoNitrogen, double NO3supply, double NH4supply, double *NO3Uptake, double *NH4Uptake, double *N_CropDemand, comm_struct *Community, soil_struct *Soil);
 void            PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake, double Kd, int totalLayers, const double *BD, const double *dz, const double *WaterUptake, const double *Solute, const double *WC);
-double          ShootBiomassPartitioning (const double Stage, const double Po, const double Pf);
+double          ShootBiomassPartitioning (const double Stage, const double Po, const double Pf, int Annual);
 void            RadiationInterception (int y, int doy, comm_struct *Community);
 void            Phenology (int y, int doy, const weather_struct *Weather, comm_struct *Community);
 void            ComputeColdDamage (int y, int doy, crop_struct *Crop, const weather_struct *Weather, const snow_struct *Snow, residue_struct *Residue);
@@ -46,17 +46,17 @@ double          TemperatureLimitation (double T, double T_Min, double T_Threshol
 void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, residue_struct *Residue, ctrl_struct *SimControl, snow_struct *Snow, soil_struct *Soil, soilc_struct *SoilCarbon, weather_struct *Weather, summary_struct *Summary);
 void            GrowingCrop (int y, int d, comm_struct *Community, residue_struct *Residue, const ctrl_struct *SimControl, soil_struct *Soil, soilc_struct *SoilCarbon, cropmgmt_struct *, const weather_struct *Weather, const snow_struct *Snow);
 void CropStage (int d, comm_struct *Community, int last_doy);
-double          FinalHarvestDate (int lastDoy, int d);
+double          FinalHarvestDate (int lastDoy, int d, double, double, double);
 int             ForcedClipping (int d, comm_struct *Community);
 int             ForcedMaturity (int rotationYear, int d, int lastDoy, int nextSeedingYear, int nextSeedingDate, int rotationSize);
 
 /* Fertilization.c */
-void            ApplyFertilizer (op_struct *fixedFertilization, soil_struct *Soil, residue_struct *Residue);
+void            ApplyFertilizer (fixfert_struct *fixedFertilization, soil_struct *Soil, residue_struct *Residue);
 
 /* FieldOperations.c */
 void FieldOperation (int rotationYear, int y, int doy, cropmgmt_struct *CropManagement, comm_struct *Community, soil_struct *Soil, residue_struct *Residue, ctrl_struct *SimControl, soilc_struct *SoilCarbon, weather_struct *Weather);
-int IsOperationToday (int rotationYear, int doy, op_struct *FieldOperation, int numOperation, int *operationIndex);
-void UpdateOperationStatus (op_struct *FieldOperation, int numOperation);
+int IsOperationToday (int rotationYear, int doy, void *FieldOperation, int numOperation, int *operationIndex, int op_type);
+void UpdateOperationStatus (void *FieldOperation, int numOperation, int op_type);
 
 /* Initialize.c */
 void            Initialize (ctrl_struct *SimControl, weather_struct *Weather, soil_struct *Soil, residue_struct *Residue, soilc_struct *SoilCarbon, comm_struct *Community, cropmgmt_struct *CropManagement, snow_struct *Snow, summary_struct *Summary);
@@ -68,6 +68,8 @@ void LastDOY (int y, int simStartYear, int totalLayers, soil_struct *Soil, soilc
 double          FindIrrigationVolume (int opLayer, double opWaterDepletion, const soil_struct *Soil);
 
 /* MiscFunc.c */
+#define Cycles_exit(...)  _Cycles_exit(__FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
+void            _Cycles_exit (const char *, int, const char *, int);
 int             IsLeapYear (int year);
 int             doy (int year, int month, int mday, int leap_year_mode);
 int             t2doy (time_t * rawtime);
@@ -79,6 +81,10 @@ int             GE (double x, double y);
 int             GT (double x, double y);
 
 /* Print.c */
+#define Cycles_printf(...)   _Cycles_printf(__FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
+void            _Cycles_printf (const char *, int, const char *, int,
+    const char *, ...);
+
 void            InitializeOutput (const comm_struct *Community, int layers);
 void            PrintDailyOutput (int y, int doy, int start_year, const weather_struct *Weather, const comm_struct *Community, const soil_struct *Soil, const snow_struct *Snow, const residue_struct *Residue);
 void            PrintSeasonOutput (int y, int doy, int start_year, const weather_struct *Weather, const crop_struct *Crop);
@@ -203,10 +209,10 @@ double          HeatConductivity (double bulkDensity, double volumetricWC, doubl
 double          EstimatedSoilTemperature (double nodeDepth, int doy, double annualAvgTemperature, double yearlyAmplitude, int phase, double dampingDepth);
 
 /* Tillage.c */
-void            ExecuteTillage (double *abgdBiomassInput, const op_struct *Tillage, double *tillageFactor, soil_struct *Soil, residue_struct *Residue);
+void            ExecuteTillage (double *abgdBiomassInput, const tillage_struct *Tillage, double *tillageFactor, soil_struct *Soil, residue_struct *Residue);
 void            TillageFactorSettling (double *tillageFactor, int totalLayers, const double *waterContent, const double *Porosity);
 double          Fraction (double a, double b, double c, double d, double f);
-void            ComputeTillageFactor (const op_struct *Tillage, double *tillageFactor, const soil_struct *Soil, const double *soilLayerBottom, double toolDepth);
+void            ComputeTillageFactor (const tillage_struct *Tillage, double *tillageFactor, const soil_struct *Soil, const double *soilLayerBottom, double toolDepth);
 double          ComputeTextureFactor (double Clay);
 
 /* Weather.c */
@@ -216,7 +222,7 @@ void            CalculateDerivedWeather (weather_struct *Weather, int total_year
 void            PrintSimContrl (ctrl_struct SimControl);
 void            PrintSoil (soil_struct Soil);
 void            PrintCrop (comm_struct Community);
-void            PrintOperation (op_struct *plantedCrops, int NumPlanting, op_struct *Tillage, int NumTillage, op_struct *FixedIrrigation, int NumIrrigation, op_struct *FixedFertilization, int NumFertilization);
+void            PrintOperation (plant_struct *plantedCrops, int NumPlanting, tillage_struct *Tillage, int NumTillage, fixirr_struct *FixedIrrigation, int NumIrrigation, fixfert_struct *FixedFertilization, int NumFertilization);
 void            PrintWeather (weather_struct Weather);
 
 #endif

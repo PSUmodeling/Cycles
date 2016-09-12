@@ -27,7 +27,6 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
      * tempyear		    int
      * i		    int		Loop counter
      * j		    int		Loop counter
-     * q		    op_struct*
      */
     FILE           *operation_file;
     char           *fullname;
@@ -38,7 +37,10 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
     int             fertilization_counter = 0;
     int             auto_irrigation_counter = 0;
     int             i, j;
-    op_struct *q;
+    plant_struct   *planting;
+    tillage_struct *tillage;
+    fixirr_struct  *fixirr;
+    fixfert_struct *fixfert;
 
     /* Open field operation file */
     fullname = (char *)malloc ((strlen (filename) + 7) * sizeof (char));
@@ -47,11 +49,11 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
 
     if (operation_file == NULL)
     {
-        printf ("ERROR: Cannot find the field operation file %s!\n", filename);
-        exit (1);
+        Cycles_printf (VL_ERROR, "ERROR: Cannot find the field operation file %s!\n", filename);
+        Cycles_exit (EXIT_FAILURE);
     }
     else
-        printf ("%-30s input/%s.\n", "Read field operation file:", filename);
+        Cycles_printf (VL_NORMAL, "%-30s input/%s.\n", "Read field operation file:", filename);
 
     free (fullname);
 
@@ -73,16 +75,16 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
 
     /* Allocate memories for field operation classes */
     CropManagement->totalCropsPerRotation = planting_counter;
-    CropManagement->plantingOrder = (op_struct *)malloc (planting_counter * sizeof (op_struct));
+    CropManagement->plantingOrder = (plant_struct *)malloc (planting_counter * sizeof (plant_struct));
 
     CropManagement->numFertilization = fertilization_counter;
-    CropManagement->FixedFertilization = (op_struct *)malloc (fertilization_counter * sizeof (op_struct));
+    CropManagement->FixedFertilization = (fixfert_struct *)malloc (fertilization_counter * sizeof (fixfert_struct));
 
     CropManagement->numIrrigation = irrigation_counter;
-    CropManagement->FixedIrrigation = (op_struct *)malloc (irrigation_counter * sizeof (op_struct));
+    CropManagement->FixedIrrigation = (fixirr_struct *)malloc (irrigation_counter * sizeof (fixirr_struct));
 
     CropManagement->numTillage = tillage_counter;
-    CropManagement->Tillage = (op_struct *)malloc (tillage_counter * sizeof (op_struct));
+    CropManagement->Tillage = (tillage_struct *)malloc (tillage_counter * sizeof (tillage_struct));
 
     CropManagement->numAutoIrrigation = auto_irrigation_counter;
     CropManagement->autoIrrigation = (autoirr_struct *)malloc (auto_irrigation_counter * sizeof (autoirr_struct));
@@ -95,56 +97,56 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
 
         for (i = 0; i < planting_counter; i++)
         {
-            q = &(CropManagement->plantingOrder[i]);
+            planting = &(CropManagement->plantingOrder[i]);
 
             FindLine (operation_file, "PLANTING");
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
-            if (q->opYear > yearsInRotation)
+            ReadKeywordInt (cmdstr, "YEAR", &planting->opYear);
+            if (planting->opYear > yearsInRotation)
             {
-                printf ("ERROR: Operation year is larger than years in rotation!\n");
-                printf ("Please remove this operation and retry.\n");
+                Cycles_printf (VL_ERROR, "ERROR: Operation year is larger than years in rotation!\n");
+                Cycles_printf (VL_ERROR, "Please remove this operation and retry.\n");
             }
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
+            ReadKeywordInt (cmdstr, "DOY", &planting->opDay);
             
             NextLine (operation_file, cmdstr);
-            ReadKeywordStr (cmdstr, "CROP", q->cropName);
+            ReadKeywordStr (cmdstr, "CROP", planting->cropName);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "USE_AUTO_IRR", &q->usesAutoIrrigation);
+            ReadKeywordInt (cmdstr, "USE_AUTO_IRR", &planting->usesAutoIrrigation);
             if (CropManagement->plantingOrder[i].usesAutoIrrigation == 0)
                 CropManagement->plantingOrder[i].usesAutoIrrigation = -1;
             else
                 CropManagement->usingAutoIrr = 1;
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "USE_AUTO_FERT", &q->usesAutoFertilization);
+            ReadKeywordInt (cmdstr, "USE_AUTO_FERT", &planting->usesAutoFertilization);
             if (CropManagement->plantingOrder[i].usesAutoFertilization == 0)
                 CropManagement->plantingOrder[i].usesAutoFertilization = -1;
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "FRACTION", &q->plantingDensity);
+            ReadKeywordDouble (cmdstr, "FRACTION", &planting->plantingDensity);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "CLIPPING_START", &q->clippingStart);
-            if (q->clippingStart > 366 || q->clippingStart < 1)
+            ReadKeywordInt (cmdstr, "CLIPPING_START", &planting->clippingStart);
+            if (planting->clippingStart > 366 || planting->clippingStart < 1)
             {
-                printf ("ERROR: Please specify valid DOY for clipping start date!\n");
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Please specify valid DOY for clipping start date!\n");
+                Cycles_exit (EXIT_FAILURE);
             }
             
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "CLIPPING_END", &q->clippingEnd);
-            if (q->clippingEnd > 366 || q->clippingEnd < 1)
+            ReadKeywordInt (cmdstr, "CLIPPING_END", &planting->clippingEnd);
+            if (planting->clippingEnd > 366 || planting->clippingEnd < 1)
             {
-                printf ("ERROR: Please specify valid DOY for clipping end date!\n");
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Please specify valid DOY for clipping end date!\n");
+                Cycles_exit (EXIT_FAILURE);
             }
 
-            q->status = 0;
+            planting->status = 0;
 
             /* Link planting order and crop description */
             for (j = 0; j < Community->NumCrop; j++)
@@ -157,8 +159,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             }
             if (j >= Community->NumCrop)
             {
-                printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->plantingOrder[i].cropName);
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->plantingOrder[i].cropName);
+                Cycles_exit (EXIT_FAILURE);
             }
         }
     }
@@ -170,58 +172,58 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
 
         for (i = 0; i < tillage_counter; i++)
         {
-            q = &(CropManagement->Tillage[i]);
+            tillage = &(CropManagement->Tillage[i]);
 
             FindLine (operation_file, "TILLAGE");
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
-            if (q->opYear > yearsInRotation)
+            ReadKeywordInt (cmdstr, "YEAR", &tillage->opYear);
+            if (tillage->opYear > yearsInRotation)
             {
-                printf ("ERROR: Operation year is larger than years in rotation!\n");
-                printf ("Please remove this operation and retry.\n");
+                Cycles_printf (VL_ERROR, "ERROR: Operation year is larger than years in rotation!\n");
+                Cycles_printf (VL_ERROR, "Please remove this operation and retry.\n");
             }
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
+            ReadKeywordInt (cmdstr, "DOY", &tillage->opDay);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordStr (cmdstr, "TOOL", q->opToolName);
+            ReadKeywordStr (cmdstr, "TOOL", tillage->opToolName);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "DEPTH", &q->opDepth);
+            ReadKeywordDouble (cmdstr, "DEPTH", &tillage->opDepth);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "SOIL_DISTURB_RATIO", &q->opSDR);
+            ReadKeywordDouble (cmdstr, "SOIL_DISTURB_RATIO", &tillage->opSDR);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "MIXING_EFFICIENCY", &q->opMixingEfficiency);
+            ReadKeywordDouble (cmdstr, "MIXING_EFFICIENCY", &tillage->opMixingEfficiency);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordStr (cmdstr, "CROP_NAME", q->cropNameT);
+            ReadKeywordStr (cmdstr, "CROP_NAME", tillage->cropNameT);
 
             /* Check if the specified crop exists */
-            if (strcasecmp (q->cropNameT, "N/A") != 0 &&
-                strcasecmp (q->cropNameT, "All") != 0 &&
-                !CropExist (q->cropNameT, Community))
+            if (strcasecmp (tillage->cropNameT, "N/A") != 0 &&
+                strcasecmp (tillage->cropNameT, "All") != 0 &&
+                !CropExist (tillage->cropNameT, Community))
             {
-                printf ("ERROR: Crop name %s not recognized!\n", q->cropNameT);
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Crop name %s not recognized!\n", tillage->cropNameT);
+                Cycles_exit (EXIT_FAILURE);
             }
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "FRAC_THERMAL_TIME", &q->fractionThermalTime);
+            ReadKeywordDouble (cmdstr, "FRAC_THERMAL_TIME", &tillage->fractionThermalTime);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "KILL_EFFICIENCY", &q->killEfficiency);
+            ReadKeywordDouble (cmdstr, "KILL_EFFICIENCY", &tillage->killEfficiency);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "GRAIN_HARVEST", &q->grainHarvest);
+            ReadKeywordInt (cmdstr, "GRAIN_HARVEST", &tillage->grainHarvest);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "FORAGE_HARVEST", &q->forageHarvest);
+            ReadKeywordDouble (cmdstr, "FORAGE_HARVEST", &tillage->forageHarvest);
 
-            q->status = 0;
+            tillage->status = 0;
         }
     }
 
@@ -233,25 +235,25 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
 
         for (i = 0; i < irrigation_counter; i++)
         {
-            q = &(CropManagement->FixedIrrigation[i]);
+            fixirr = &(CropManagement->FixedIrrigation[i]);
 
             FindLine (operation_file, "FIXED_IRRIGATION");
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
-            if (q->opYear > yearsInRotation)
+            ReadKeywordInt (cmdstr, "YEAR", &fixirr->opYear);
+            if (fixirr->opYear > yearsInRotation)
             {
-                printf ("ERROR: Operation year is larger than years in rotation!\n");
-                printf ("Please remove this operation and retry.\n");
+                Cycles_printf (VL_ERROR, "ERROR: Operation year is larger than years in rotation!\n");
+                Cycles_printf (VL_ERROR, "Please remove this operation and retry.\n");
             }
             
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
+            ReadKeywordInt (cmdstr, "DOY", &fixirr->opDay);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "VOLUME", &q->opVolume);
+            ReadKeywordDouble (cmdstr, "VOLUME", &fixirr->opVolume);
 
-            q->status = 0;
+            fixirr->status = 0;
         }
     }
 
@@ -263,79 +265,79 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
 
         for (i = 0; i < fertilization_counter; i++)
         {
-            q = &(CropManagement->FixedFertilization[i]);
+            fixfert = &(CropManagement->FixedFertilization[i]);
 
             FindLine (operation_file, "FIXED_FERTILIZATION");
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "YEAR", &q->opYear);
-            if (q->opYear > yearsInRotation)
+            ReadKeywordInt (cmdstr, "YEAR", &fixfert->opYear);
+            if (fixfert->opYear > yearsInRotation)
             {
-                printf ("ERROR: Operation year is larger than years in rotation!\n");
-                printf ("Please remove this operation and retry.\n");
+                Cycles_printf (VL_ERROR, "ERROR: Operation year is larger than years in rotation!\n");
+                Cycles_printf (VL_ERROR, "Please remove this operation and retry.\n");
             }
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "DOY", &q->opDay);
+            ReadKeywordInt (cmdstr, "DOY", &fixfert->opDay);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordStr (cmdstr, "SOURCE", q->opSource);
+            ReadKeywordStr (cmdstr, "SOURCE", fixfert->opSource);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "MASS", &q->opMass);
+            ReadKeywordDouble (cmdstr, "MASS", &fixfert->opMass);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordStr (cmdstr, "FORM", q->opForm);
+            ReadKeywordStr (cmdstr, "FORM", fixfert->opForm);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordStr (cmdstr, "METHOD", q->opMethod);
+            ReadKeywordStr (cmdstr, "METHOD", fixfert->opMethod);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordInt (cmdstr, "LAYER", &q->opLayer);
+            ReadKeywordInt (cmdstr, "LAYER", &fixfert->opLayer);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "C_ORGANIC", &q->opC_Organic);
+            ReadKeywordDouble (cmdstr, "C_ORGANIC", &fixfert->opC_Organic);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "C_CHARCOAL", &q->opC_Charcoal);
+            ReadKeywordDouble (cmdstr, "C_CHARCOAL", &fixfert->opC_Charcoal);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "N_ORGANIC", &q->opN_Organic);
+            ReadKeywordDouble (cmdstr, "N_ORGANIC", &fixfert->opN_Organic);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "N_CHARCOAL", &q->opN_Charcoal);
+            ReadKeywordDouble (cmdstr, "N_CHARCOAL", &fixfert->opN_Charcoal);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "N_NH4", &q->opN_NH4);
+            ReadKeywordDouble (cmdstr, "N_NH4", &fixfert->opN_NH4);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "N_NO3", &q->opN_NO3);
+            ReadKeywordDouble (cmdstr, "N_NO3", &fixfert->opN_NO3);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "P_ORGANIC", &q->opP_Organic);
+            ReadKeywordDouble (cmdstr, "P_ORGANIC", &fixfert->opP_Organic);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "P_CHARCOAL", &q->opP_Charcoal);
+            ReadKeywordDouble (cmdstr, "P_CHARCOAL", &fixfert->opP_Charcoal);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "P_INORGANIC", &q->opP_Inorganic);
+            ReadKeywordDouble (cmdstr, "P_INORGANIC", &fixfert->opP_Inorganic);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "K", &q->opK);
+            ReadKeywordDouble (cmdstr, "K", &fixfert->opK);
 
             NextLine (operation_file, cmdstr);
-            ReadKeywordDouble (cmdstr, "S", &q->opS);
+            ReadKeywordDouble (cmdstr, "S", &fixfert->opS);
 
-            q->status = 0;
+            fixfert->status = 0;
 
-            if (q->opC_Organic + q->opC_Charcoal + q->opN_Organic + q->opN_Charcoal + q->opN_NH4 + q->opN_NO3 + q->opP_Organic + q->opP_Charcoal + q->opP_Inorganic + q->opK + q->opS <= 1.0)
+            if (fixfert->opC_Organic + fixfert->opC_Charcoal + fixfert->opN_Organic + fixfert->opN_Charcoal + fixfert->opN_NH4 + fixfert->opN_NO3 + fixfert->opP_Organic + fixfert->opP_Charcoal + fixfert->opP_Inorganic + fixfert->opK + fixfert->opS <= 1.0)
             {
-                q->opMass /= 1000.0;
+                fixfert->opMass /= 1000.0;
             }
             else
             {
-                printf ("ERROR: Added fertilization fractions must be <= 1\n");
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Added fertilization fractions must be <= 1\n");
+                Cycles_exit (EXIT_FAILURE);
             }
         }
     }
@@ -381,8 +383,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             }
             if (j >= auto_irrigation_counter)
             {
-                printf ("ERROR: Cannot find the description of auto irrigation for %s!\n", CropManagement->plantingOrder[i].cropName);
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Cannot find the description of auto irrigation for %s!\n", CropManagement->plantingOrder[i].cropName);
+                Cycles_exit (EXIT_FAILURE);
             }
         }
         else
