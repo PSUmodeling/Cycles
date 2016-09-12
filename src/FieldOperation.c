@@ -28,9 +28,8 @@ void FieldOperation (int rotationYear, int y, int doy,
     {
         plantingOrder = &CropManagement->plantingOrder[operation_index];
         PlantingCrop (Community, CropManagement, operation_index);
-        if (verbose_mode)
-            printf ("DOY %3.3d %-20s %s\n", doy, "Planting",
-                plantingOrder->cropName);
+        Cycles_printf (VL_VERBOSE,
+            "DOY %3.3d %-20s %s\n", doy, "Planting", plantingOrder->cropName);
     }
     UpdateOperationStatus (CropManagement->plantingOrder,
         CropManagement->totalCropsPerRotation, PLANT_OP);
@@ -44,9 +43,9 @@ void FieldOperation (int rotationYear, int y, int doy,
     {
         FixedFertilization =
             &CropManagement->FixedFertilization[operation_index];
-        if (verbose_mode)
-            printf ("DOY %3.3d %-20s %s\n", doy, "Fixed Fertilization",
-                FixedFertilization->opSource);
+        Cycles_printf (VL_VERBOSE,
+            "DOY %3.3d %-20s %s\n", doy, "Fixed Fertilization",
+            FixedFertilization->opSource);
 
         ApplyFertilizer (FixedFertilization, Soil, Residue);
     }
@@ -61,9 +60,9 @@ void FieldOperation (int rotationYear, int y, int doy,
             &operation_index, TILLAGE_OP))
     {
         Tillage = &(CropManagement->Tillage[operation_index]);
-        if (verbose_mode)
-            printf ("DOY %3.3d %-20s %s\n", doy, "Tillage",
-                Tillage->opToolName);
+        Cycles_printf (VL_VERBOSE,
+            "DOY %3.3d %-20s %s\n", doy, "Tillage",
+            Tillage->opToolName);
 
         if (strcasecmp (Tillage->opToolName, "Kill_Crop") == 0 ||
             Tillage->grainHarvest || Tillage->forageHarvest)
@@ -153,9 +152,9 @@ void FieldOperation (int rotationYear, int y, int doy,
             &operation_index, FIXIRR_OP))
     {
         FixedIrrigation = &(CropManagement->FixedIrrigation[operation_index]);
-        if (verbose_mode)
-            printf ("DOY %3.3d %-20s %lf\n", doy, "Irrigation",
-                FixedIrrigation->opVolume);
+        Cycles_printf (VL_VERBOSE,
+            "DOY %3.3d %-20s %lf\n", doy, "Irrigation",
+            FixedIrrigation->opVolume);
 
         Soil->irrigationVol += FixedIrrigation->opVolume;
     }
@@ -182,9 +181,9 @@ void FieldOperation (int rotationYear, int y, int doy,
                         Crop->autoIrrigationWaterDepletion, Soil);
                     if (irrigation_vol > 0.0)
                     {
-                        if (verbose_mode)
-                            printf ("DOY %3.3d %-20s %lf\n", doy,
-                                "Auto Irrigation", irrigation_vol);
+                        Cycles_printf (VL_VERBOSE,
+                            "DOY %3.3d %-20s %lf\n", doy,
+                            "Auto Irrigation", irrigation_vol);
                     }
                     Soil->irrigationVol += irrigation_vol;
                 }
@@ -200,9 +199,9 @@ void FieldOperation (int rotationYear, int y, int doy,
                         Crop->autoIrrigationWaterDepletion, Soil);
                     if (irrigation_vol > 0.0)
                     {
-                        if (verbose_mode)
-                            printf ("DOY %3.3d %-20s %lf\n", doy,
-                                "Auto Irrigation", irrigation_vol);
+                        Cycles_printf (VL_VERBOSE,
+                            "DOY %3.3d %-20s %lf\n", doy,
+                            "Auto Irrigation", irrigation_vol);
                     }
                     Soil->irrigationVol += irrigation_vol;
                 }

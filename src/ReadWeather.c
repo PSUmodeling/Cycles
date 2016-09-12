@@ -36,11 +36,11 @@ void ReadWeather (char *filename, weather_struct *Weather, int start_year, int t
 
     if (weather_file == NULL)
     {
-        printf ("\nError: Cannot find the weather file %s!\n", filename);
-        exit (1);
+        Cycles_printf (VL_ERROR, "\nError: Cannot find the weather file %s!\n", filename);
+        Cycles_exit (EXIT_FAILURE);
     }
     else
-        printf ("%-30s input/%s.\n", "Read weather file:", filename);
+        Cycles_printf (VL_NORMAL, "%-30s input/%s.\n", "Read weather file:", filename);
 
     free (fullname);
 
@@ -112,8 +112,8 @@ void ReadWeather (char *filename, weather_struct *Weather, int start_year, int t
                         Weather->lastDoy[y] = 365;
                     else
                     {
-                        printf ("ERROR: Please check your weather input file near YEAR: %4.4d, DOY: %-d, expecting %4.4d-%-d, eof status %d\n", temp_year, temp_doy, y, doy, feof (weather_file));
-                        exit (1);
+                        Cycles_printf (VL_ERROR, "ERROR: Please check your weather input file near YEAR: %4.4d, DOY: %-d, expecting %4.4d-%-d, eof status %d\n", temp_year, temp_doy, y, doy, feof (weather_file));
+                        Cycles_exit (EXIT_FAILURE);
                     }
                 }
             }

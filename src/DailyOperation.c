@@ -512,10 +512,8 @@ void FirstDOY (int *rotationYear, int yearsInRotation, int totalLayers,
         *rotationYear = 1;
     }
 
-    if (debug_mode)
-    {
-        printf ("*%-15s = %-d\n", "Rotation year", *rotationYear);
-    }
+    Cycles_printf (VL_VERBOSE,
+            "*%-15s = %-d\n", "Rotation year", *rotationYear);
 
     /* Initialize annual variables */
     for (i = 0; i < totalLayers; i++)

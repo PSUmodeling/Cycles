@@ -49,11 +49,11 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
 
     if (operation_file == NULL)
     {
-        printf ("ERROR: Cannot find the field operation file %s!\n", filename);
-        exit (1);
+        Cycles_printf (VL_ERROR, "ERROR: Cannot find the field operation file %s!\n", filename);
+        Cycles_exit (EXIT_FAILURE);
     }
     else
-        printf ("%-30s input/%s.\n", "Read field operation file:", filename);
+        Cycles_printf (VL_NORMAL, "%-30s input/%s.\n", "Read field operation file:", filename);
 
     free (fullname);
 
@@ -105,8 +105,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             ReadKeywordInt (cmdstr, "YEAR", &planting->opYear);
             if (planting->opYear > yearsInRotation)
             {
-                printf ("ERROR: Operation year is larger than years in rotation!\n");
-                printf ("Please remove this operation and retry.\n");
+                Cycles_printf (VL_ERROR, "ERROR: Operation year is larger than years in rotation!\n");
+                Cycles_printf (VL_ERROR, "Please remove this operation and retry.\n");
             }
 
             NextLine (operation_file, cmdstr);
@@ -134,16 +134,16 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             ReadKeywordInt (cmdstr, "CLIPPING_START", &planting->clippingStart);
             if (planting->clippingStart > 366 || planting->clippingStart < 1)
             {
-                printf ("ERROR: Please specify valid DOY for clipping start date!\n");
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Please specify valid DOY for clipping start date!\n");
+                Cycles_exit (EXIT_FAILURE);
             }
             
             NextLine (operation_file, cmdstr);
             ReadKeywordInt (cmdstr, "CLIPPING_END", &planting->clippingEnd);
             if (planting->clippingEnd > 366 || planting->clippingEnd < 1)
             {
-                printf ("ERROR: Please specify valid DOY for clipping end date!\n");
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Please specify valid DOY for clipping end date!\n");
+                Cycles_exit (EXIT_FAILURE);
             }
 
             planting->status = 0;
@@ -159,8 +159,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             }
             if (j >= Community->NumCrop)
             {
-                printf ("ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->plantingOrder[i].cropName);
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Cannot find the plant description of %s, please check your input file\n", CropManagement->plantingOrder[i].cropName);
+                Cycles_exit (EXIT_FAILURE);
             }
         }
     }
@@ -180,8 +180,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             ReadKeywordInt (cmdstr, "YEAR", &tillage->opYear);
             if (tillage->opYear > yearsInRotation)
             {
-                printf ("ERROR: Operation year is larger than years in rotation!\n");
-                printf ("Please remove this operation and retry.\n");
+                Cycles_printf (VL_ERROR, "ERROR: Operation year is larger than years in rotation!\n");
+                Cycles_printf (VL_ERROR, "Please remove this operation and retry.\n");
             }
 
             NextLine (operation_file, cmdstr);
@@ -207,8 +207,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
                 strcasecmp (tillage->cropNameT, "All") != 0 &&
                 !CropExist (tillage->cropNameT, Community))
             {
-                printf ("ERROR: Crop name %s not recognized!\n", tillage->cropNameT);
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Crop name %s not recognized!\n", tillage->cropNameT);
+                Cycles_exit (EXIT_FAILURE);
             }
 
             NextLine (operation_file, cmdstr);
@@ -243,8 +243,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             ReadKeywordInt (cmdstr, "YEAR", &fixirr->opYear);
             if (fixirr->opYear > yearsInRotation)
             {
-                printf ("ERROR: Operation year is larger than years in rotation!\n");
-                printf ("Please remove this operation and retry.\n");
+                Cycles_printf (VL_ERROR, "ERROR: Operation year is larger than years in rotation!\n");
+                Cycles_printf (VL_ERROR, "Please remove this operation and retry.\n");
             }
             
             NextLine (operation_file, cmdstr);
@@ -273,8 +273,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             ReadKeywordInt (cmdstr, "YEAR", &fixfert->opYear);
             if (fixfert->opYear > yearsInRotation)
             {
-                printf ("ERROR: Operation year is larger than years in rotation!\n");
-                printf ("Please remove this operation and retry.\n");
+                Cycles_printf (VL_ERROR, "ERROR: Operation year is larger than years in rotation!\n");
+                Cycles_printf (VL_ERROR, "Please remove this operation and retry.\n");
             }
 
             NextLine (operation_file, cmdstr);
@@ -336,8 +336,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             }
             else
             {
-                printf ("ERROR: Added fertilization fractions must be <= 1\n");
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Added fertilization fractions must be <= 1\n");
+                Cycles_exit (EXIT_FAILURE);
             }
         }
     }
@@ -383,8 +383,8 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
             }
             if (j >= auto_irrigation_counter)
             {
-                printf ("ERROR: Cannot find the description of auto irrigation for %s!\n", CropManagement->plantingOrder[i].cropName);
-                exit (1);
+                Cycles_printf (VL_ERROR, "ERROR: Cannot find the description of auto irrigation for %s!\n", CropManagement->plantingOrder[i].cropName);
+                Cycles_exit (EXIT_FAILURE);
             }
         }
         else

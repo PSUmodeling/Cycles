@@ -933,9 +933,10 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
 
     if (fabs (NFinal - NInitial) > 0.00001)
     {
-        printf ("ERROR: Soil nitrogen balance error!\n");
-        printf ("NInitial = %lf, NFinal = %lf\n", NInitial, NFinal);
-        exit (1);
+        Cycles_printf (VL_ERROR, "Error: Soil nitrogen balance error.\n");
+        Cycles_printf (VL_ERROR, "NInitial = %lf, NFinal = %lf\n",
+            NInitial, NFinal);
+        Cycles_exit (EXIT_FAILURE);
     }
 }
 
@@ -1536,9 +1537,10 @@ void ComputeSoilCarbonBalance (soilc_struct *SoilCarbon, int y,
 
     if (fabs (NFinal - NInitial) > 0.00001)
     {
-        printf ("ERROR: Soil nitrogen balance error!\n");
-        printf ("NInitial = %lf, NFinal = %lf\n", NInitial, NFinal);
-        exit (1);
+        Cycles_printf (VL_ERROR, "Error: Soil nitrogen balance error!\n");
+        Cycles_printf (VL_ERROR, "NInitial = %lf, NFinal = %lf\n",
+            NInitial, NFinal);
+        Cycles_exit (EXIT_FAILURE);
     }
 }
 

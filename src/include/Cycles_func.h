@@ -68,6 +68,8 @@ void LastDOY (int y, int simStartYear, int totalLayers, soil_struct *Soil, soilc
 double          FindIrrigationVolume (int opLayer, double opWaterDepletion, const soil_struct *Soil);
 
 /* MiscFunc.c */
+#define Cycles_exit(...)  _Cycles_exit(__FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
+void            _Cycles_exit (const char *, int, const char *, int);
 int             IsLeapYear (int year);
 int             doy (int year, int month, int mday, int leap_year_mode);
 int             t2doy (time_t * rawtime);
@@ -79,6 +81,10 @@ int             GE (double x, double y);
 int             GT (double x, double y);
 
 /* Print.c */
+#define Cycles_printf(...)   _Cycles_printf(__FILE__, __LINE__, __FUNCTION__, __VA_ARGS__)
+void            _Cycles_printf (const char *, int, const char *, int,
+    const char *, ...);
+
 void            InitializeOutput (const comm_struct *Community, int layers);
 void            PrintDailyOutput (int y, int doy, int start_year, const weather_struct *Weather, const comm_struct *Community, const soil_struct *Soil, const snow_struct *Snow, const residue_struct *Residue);
 void            PrintSeasonOutput (int y, int doy, int start_year, const weather_struct *Weather, const crop_struct *Crop);

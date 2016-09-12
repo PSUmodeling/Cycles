@@ -1,5 +1,36 @@
 #include "Cycles.h"
 
+void _Cycles_printf (const char *fn, int lineno, const char *func,
+    int verbosity, const char *fmt, ...)
+{
+    va_list         va;
+
+    va_start (va, fmt);
+
+    if (VL_ERROR == verbosity)
+    {
+        vfprintf (stderr, fmt, va);
+        if (debug_mode)
+        {
+            fprintf (stderr, "Printed from %s", func);
+            fprintf (stderr, " (%s, Line %d.\n)", fn, lineno);
+        }
+        fflush (stderr);
+    }
+    else if (verbosity <= verbose_mode)
+    {
+        vfprintf (stdout, fmt, va);
+        if (debug_mode)
+        {
+            printf ("Printed from %s", func);
+            printf (" (%s, Line %d.\n)", fn, lineno);
+        }
+        fflush (stderr);
+    }
+
+    va_end (va);
+}
+
 void InitializeOutput (const comm_struct *Community, int layers)
 {
     char            filename[150];

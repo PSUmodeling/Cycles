@@ -33,14 +33,21 @@ int main (int argc, char *argv[])
 
     Cycles = (CyclesStruct)malloc (sizeof (*Cycles));
 
-    printf ("\n\n");
-    printf ("\t\t ######  ##    ##  ######  ##       ########  ######\n");
-    printf ("\t\t##    ##  ##  ##  ##    ## ##       ##       ##    ##\n");
-    printf ("\t\t##         ####   ##       ##       ##       ##\n");
-    printf ("\t\t##          ##    ##       ##       ######    ######\n");
-    printf ("\t\t##          ##    ##       ##       ##             ##\n");
-    printf ("\t\t##    ##    ##    ##    ## ##       ##       ##    ##\n");
-    printf ("\t\t ######     ##     ######  ######## ########  ######\n\n\n");
+    Cycles_printf (VL_NORMAL, "\n\n");
+    Cycles_printf (VL_NORMAL,
+        "\t\t ######  ##    ##  ######  ##       ########  ######\n");
+    Cycles_printf (VL_NORMAL,
+        "\t\t##    ##  ##  ##  ##    ## ##       ##       ##    ##\n");
+    Cycles_printf (VL_NORMAL,
+        "\t\t##         ####   ##       ##       ##       ##\n");
+    Cycles_printf (VL_NORMAL,
+        "\t\t##          ##    ##       ##       ######    ######\n");
+    Cycles_printf (VL_NORMAL,
+        "\t\t##          ##    ##       ##       ##             ##\n");
+    Cycles_printf (VL_NORMAL,
+        "\t\t##    ##    ##    ##    ## ##       ##       ##    ##\n");
+    Cycles_printf (VL_NORMAL,
+        "\t\t ######     ##     ######  ######## ########  ######\n\n\n");
 
     verbose_mode = 0;
     ncs_mode = C_SAT;
@@ -67,21 +74,21 @@ int main (int argc, char *argv[])
         {
             case 'v':
                 verbose_mode = 1;
-                printf ("Verbose mode turned on.\n");
+                Cycles_printf (VL_NORMAL, "Verbose mode turned on.\n");
                 break;
             case 'd':
                 debug_mode = 1;
-                printf ("Debug mode turned on.\n");
+                Cycles_printf (VL_NORMAL, "Debug mode turned on.\n");
                 break;
             case 'n':
                 ncs_mode = DPTH_CSTR;
-                printf ("Running Cycles without carbon saturation.\n");
-                printf ("Decomposition is constrained by depth.\n");
+                Cycles_printf (VL_NORMAL, "Running Cycles without carbon saturation.\n");
+                Cycles_printf (VL_NORMAL, "Decomposition is constrained by depth.\n");
                 break;
             case 'o':
                 ncs_mode = NO_CSTR;
-                printf ("Running Cycles without carbon saturation.\n");
-                printf ("Decomposition is not constrained by depth.\n");
+                Cycles_printf (VL_NORMAL, "Running Cycles without carbon saturation.\n");
+                Cycles_printf (VL_NORMAL, "Decomposition is not constrained by depth.\n");
                 break;
             case '?':
                 /* getopt_long already printed an error message. */
@@ -93,18 +100,18 @@ int main (int argc, char *argv[])
 
     if (optind >= argc)
     {
-        printf ("ERROR: Please specify the name of project!\n");
-        printf ("\nUsage: ./Cycles [-v] [-d] <project name>\n");
-        printf ("\t-v Verbose mode\n");
-        printf ("\t-d Ddebug mode\n");
-        exit (1);
+        Cycles_printf (VL_ERROR, "ERROR: Please specify the name of project!\n");
+        Cycles_printf (VL_ERROR, "\nUsage: ./Cycles [-v] [-d] <project name>\n");
+        Cycles_printf (VL_ERROR, "\t-v Verbose mode\n");
+        Cycles_printf (VL_ERROR, "\t-d Ddebug mode\n");
+        Cycles_exit (EXIT_FAILURE);
     }
     else
     {
         strcpy (project, argv[optind]);
     }
 
-    printf ("\nNow running the %s simulation.\n\n", project);
+    Cycles_printf (VL_NORMAL, "\nNow running the %s simulation.\n\n", project);
 
     /*
      * Read input files
@@ -143,17 +150,17 @@ int main (int argc, char *argv[])
     /*
      * Daily Cycles simulation
      */
-    printf ("\nSimulation running ...\n");
+    Cycles_printf (VL_NORMAL, "\nSimulation running ...\n");
 
     for (y = 0; y < Cycles->SimControl.totalYears; y++)
     {
-        printf ("Year %4d (%4d)\n", y + 1, Cycles->SimControl.simStartYear + y);
+        Cycles_printf (VL_NORMAL, "Year %4d (%4d)\n", y + 1, Cycles->SimControl.simStartYear + y);
 
         /* Daily operations */
         for (doy = 1; doy < Cycles->Weather.lastDoy[y] + 1; doy++)
         {
             if (debug_mode)
-                printf ("DOY %3.3d\n", doy);
+                Cycles_printf (VL_NORMAL, "DOY %3.3d\n", doy);
 
             DailyOperations (y, doy, &Cycles->CropManagement, &Cycles->Community, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, &Cycles->Summary);
             PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Community, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue);
@@ -168,7 +175,7 @@ int main (int argc, char *argv[])
 
     time (&end_t);
 
-    printf ("\nSimulation time: %-d seconds.\n", (int)(end_t - begin_t));
+    Cycles_printf (VL_NORMAL, "\nSimulation time: %-d seconds.\n", (int)(end_t - begin_t));
 
-    return (0);
+    return (EXIT_SUCCESS);
 }

@@ -28,11 +28,11 @@ void ReadSoil (char *filename, soil_struct *Soil)
 
     if (soil_file == NULL)
     {
-        printf ("\nERROR: Cannot find the soil file %s!\n", filename);
-        exit (1);
+        Cycles_printf (VL_ERROR, "\nERROR: Cannot find the soil file %s!\n", filename);
+        Cycles_exit (EXIT_FAILURE);
     }
     else
-        printf ("%-30s input/%s.\n", "Read soil initialization file:", filename);
+        Cycles_printf (VL_NORMAL, "%-30s input/%s.\n", "Read soil initialization file:", filename);
 
     free (fullname);
 
@@ -70,28 +70,28 @@ void ReadSoil (char *filename, soil_struct *Soil)
 
         if (Soil->Clay[i] > 100.0 || Soil->Clay[i] < 0.0)
         {
-            printf ("ERROR: Clay out of range (0--100) in %s!\n", filename);
-            exit (1);
+            Cycles_printf (VL_ERROR, "ERROR: Clay out of range (0--100) in %s!\n", filename);
+            Cycles_exit (EXIT_FAILURE);
         }
         if (Soil->Sand[i] > 100.0 || Soil->Sand[i] < 0.0)
         {
-            printf ("ERROR: Sand out of range (0--100) in %s!\n", filename);
-            exit (1);
+            Cycles_printf (VL_ERROR, "ERROR: Sand out of range (0--100) in %s!\n", filename);
+            Cycles_exit (EXIT_FAILURE);
         }
         if (Soil->IOM[i] > 100.0 || Soil->IOM[i] < 0.0)
         {
-            printf ("ERROR: IOM out of range (0--100) in %s!\n", filename);
-            exit (1);
+            Cycles_printf (VL_ERROR, "ERROR: IOM out of range (0--100) in %s!\n", filename);
+            Cycles_exit (EXIT_FAILURE);
         }
         if (Soil->FC[i] > 1.0 || (Soil->FC[i] < 0.0 && (int)Soil->FC[i] != -999))
         {
-            printf ("ERROR: Field capacity out of range (0--1.0) in %s!\n", filename);
-            exit (1);
+            Cycles_printf (VL_ERROR, "ERROR: Field capacity out of range (0--1.0) in %s!\n", filename);
+            Cycles_exit (EXIT_FAILURE);
         }
         if (Soil->PWP[i] > 1.0 || (Soil->PWP[i] < 0.0 && (int)Soil->PWP[i] != -999))
         {
-            printf ("ERROR: Permanent wilting point out of range (0--1.0) in %s!\n", filename);
-            exit (1);
+            Cycles_printf (VL_ERROR, "ERROR: Permanent wilting point out of range (0--1.0) in %s!\n", filename);
+            Cycles_exit (EXIT_FAILURE);
         }
     }
 

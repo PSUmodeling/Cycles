@@ -5,6 +5,11 @@
 #define MAXSTRING       1024
 #define BADVAL          -999
 
+/* Verbosity level */
+#define VL_ERROR    -1
+#define VL_NORMAL   0
+#define VL_VERBOSE  1
+
 #define REMOVE_CLIPPING     0
 #define RETURN_CLIPPING     1
 #define GRAZING_CLIPPING    2

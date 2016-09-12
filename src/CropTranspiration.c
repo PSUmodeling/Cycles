@@ -326,9 +326,9 @@ void WaterUptake (int y, int doy, comm_struct *Community, soil_struct *Soil,
 
         if (Soil->waterContent[i] < 0.0)
         {
-            fprintf (stderr,
+            Cycles_printf (VL_ERROR,
                 "Error: Soil water content at Layer is lower than 0.\n");
-            exit (1);
+            Cycles_exit (EXIT_FAILURE);
         }
 #endif
     }

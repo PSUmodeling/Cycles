@@ -33,11 +33,11 @@ void ReadCrop (char *filename, comm_struct *Community)
 
     if (crop_file == NULL)
     {
-        printf ("\nError: Cannot find the crop description file %s!\n", filename);
-        exit (1);
+        Cycles_printf (VL_ERROR, "\nError: Cannot find the crop description file %s!\n", filename);
+        Cycles_exit (EXIT_FAILURE);
     }
     else
-        printf ("%-30s input/%s.\n", "Read crop description file:", filename);
+        Cycles_printf (VL_ERROR, "%-30s input/%s.\n", "Read crop description file:", filename);
 
     /* Read crop description file */
     /* First count how many crop types are there in the description file */
@@ -107,8 +107,8 @@ void ReadCrop (char *filename, comm_struct *Community)
             Crop->userClippingDestiny = GRAZING_CLIPPING;
         else
         {
-            printf ("Option %s not recoganized!\n", temp);
-            exit (1);
+            Cycles_printf (VL_ERROR, "Option %s not recoganized!\n", temp);
+            Cycles_exit (EXIT_FAILURE);
         }
 
         NextLine (crop_file, cmdstr);

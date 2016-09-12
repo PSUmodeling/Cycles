@@ -18,12 +18,12 @@ void ReadSimControl (char *filename, ctrl_struct *SimControl, cropmgmt_struct *C
 
     /* Open simulation control file */
     simctrl_file = fopen (filename, "r");
-    printf ("%-30s %s.\n", "Read simulation control file:", filename);
+    Cycles_printf (VL_NORMAL, "%-30s %s.\n", "Read simulation control file:", filename);
 
     if (simctrl_file == NULL)
     {
-        printf ("ERROR: Cannot find the simulation control file %s!\n", filename);
-        exit (1);
+        Cycles_printf (VL_ERROR, "ERROR: Cannot find the simulation control file %s!\n", filename);
+        Cycles_exit (EXIT_FAILURE);
     }
 
     /* Read simulation control file */
