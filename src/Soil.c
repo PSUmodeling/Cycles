@@ -231,6 +231,25 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
         Soil->PAW[i] = Soil->FC[i] - Soil->PWP[i];
         Soil->waterContent[i] = (Soil->FC[i] + Soil->PWP[i]) / 2.0;
     }
+
+#ifndef _PIHM_
+    /* Initializes soil temperature in first day of simulation */
+    Soil->dampingDepth = 2.0;
+
+    if (Weather->siteLatitude >= 0.0)
+        Soil->annualTemperaturePhase = 100.0;
+    else
+        Soil->annualTemperaturePhase = 280.0;
+
+    for (i = 0; i < n + 1; i++)
+    {
+        Soil->soilTemperature[i] =
+            EstimatedSoilTemperature (Soil->nodeDepth[i], 1,
+            Weather->annualAverageTemperature[0], Weather->yearlyAmplitude[0],
+            Soil->annualTemperaturePhase, Soil->dampingDepth);
+    }
+#endif
+
 }
 
 double SoilWaterPotential (double SaturationWC, double AirEntryPot,
