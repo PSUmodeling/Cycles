@@ -250,6 +250,11 @@ void InitializeSoil (soil_struct *Soil, weather_struct *Weather)
     }
 #endif
 
+    Soil->NH4_Nitrification = 0.0;
+    Soil->N2O_Nitrification = 0.0;
+    Soil->NO3_Denitrification = 0.0;
+    Soil->N2O_Denitrification = 0.0;
+    Soil->NH4_Volatilization = 0.0;
 }
 
 double SoilWaterPotential (double SaturationWC, double AirEntryPot,
