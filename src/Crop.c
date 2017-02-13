@@ -76,7 +76,7 @@ void PlantingCrop (comm_struct *Community,
 
     Community->NumActiveCrop++;
 
-    if (plantingOrder->usesAutoIrrigation > 0)
+    if (plantingOrder->usesAutoIrrigation >= 0)
     {
         autoIrrigation =
             &(CropManagement->

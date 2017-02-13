@@ -115,6 +115,10 @@ void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement,
     GrowingCrop (y, doy, Community, Residue, SimControl, Soil, SoilCarbon,
         CropManagement, Weather, Snow);
 
+    /*Evaporation needs to come before Field Operation in order to maintain soil saturation with auto irrigation */
+    Evaporation (Soil, Community, Residue, Weather->ETref[y][doy - 1],
+        Snow->snowCover);
+
     FieldOperation (CropManagement->rotationYear, y, doy, CropManagement,
         Community, Soil, Residue, SimControl, SoilCarbon, Weather);
 
@@ -134,8 +138,7 @@ void DailyOperations (int y, int doy, cropmgmt_struct *CropManagement,
     ResidueEvaporation (Residue, Soil, Community, Weather->ETref[y][doy - 1],
         Snow->snowCover);
 
-    Evaporation (Soil, Community, Residue, Weather->ETref[y][doy - 1],
-        Snow->snowCover);
+
 
     Temperature (y, doy, Snow->snowCover, Community->svRadiationInterception,
         Soil, Weather, Residue);
@@ -187,9 +190,11 @@ void GrowingCrop (int y, int d, comm_struct *Community,
         return;
     }
 
+    Phenology (y, d, Weather, Community);  //Phenology has to come first, otherwise the harvest date will not get set properly and the forced clipping flag will get triggered.
+
     CropStage (d, Community, Weather->lastDoy[y]);
 
-    Phenology (y, d, Weather, Community);
+
 
     RadiationInterception (y, d, Community);
 
@@ -358,7 +363,7 @@ void CropStage (int d, comm_struct *Community, int last_doy)
 double FinalHarvestDate (int lastDoy, int d, double CumulativeTT,
     double MaturityTT, double clippingTiming)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -565,8 +570,8 @@ void LastDOY (int y, int simStartYear, int totalLayers, soil_struct *Soil,
 #ifndef _PIHM_
     PrintAnnualOutput (y, simStartYear, Soil, SoilCarbon);
 
-    PrintCarbonEvolution (y, simStartYear, totalLayers, Soil, SoilCarbon,
-        Residue);
+//    PrintCarbonEvolution (y, simStartYear, totalLayers, Soil, SoilCarbon,
+//        Residue);
 
     StoreSummary (Summary, SoilCarbon, Residue, totalLayers, y);
 #endif

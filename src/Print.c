@@ -31,18 +31,18 @@ void _Cycles_printf (const char *fn, int lineno, const char *func,
     va_end (va);
 }
 
-void InitializeOutput (const comm_struct *Community, int layers)
+void InitializeOutput (const comm_struct *Community, int layers, const ctrl_struct *SimControl, print_struct *filenames)
 {
-    char            filename[150];
+    char            filename[256];
     char           *output_dir;
-    FILE           *output_file;
+    FILE           **temp_output_file=NULL, *output_file;
     int             i;
 
     output_dir = (char *)malloc ((strlen (project) + 8) * sizeof (char));
 
-    mkdir ("output", 0755);
+    mkdir ("output");
     sprintf (output_dir, "output/%s", project);
-    mkdir (output_dir, 0755);
+    mkdir (output_dir);
 
     /* Initialize season output files */
     sprintf (filename, "output/%s/season.dat", project);
@@ -54,162 +54,338 @@ void InitializeOutput (const comm_struct *Community, int layers)
     fclose (output_file);
 
     /* Initialize daily output files */
-    sprintf (filename, "output/%s/weather.dat", project);
-    output_file = fopen (filename, "w");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\n", "DATE", "AVG TMP", "REFERENCE ET", "PRECIPITATION");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "C", "mm/day", "MM");
-    fflush (output_file);
-    fclose (output_file);
 
+if (SimControl->weatherDailyOutput)
+{
+    sprintf (filename, "output/%s/weather.dat", project);
+    filenames->weather_out = fopen (filename, "w");
+    temp_output_file = &filenames->weather_out;
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "MIN TMP", "MAX TMP", "AVG TMP", "REFERENCE ET", "PRECIPITATION");
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "C", "C", "C", "mm/day", "mm");
+    fflush (*temp_output_file);
+    //fclose (output_file);
+}
+
+if (SimControl->cropDailyOutput)
+{
+    filenames->crop_out = (FILE **)malloc (Community->NumCrop * sizeof (FILE));
     for (i = 0; i < Community->NumCrop; i++)
     {
+        if (Community->Crop[i].cropUsed)
+        {
         sprintf (filename, "output/%s/%s.dat", project, Community->Crop[i].cropName);
-        output_file = fopen (filename, "w");
-        fprintf (output_file, "%-10s\t%-15s\t%-23s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", " DATE", "CROP", "STAGE", "THERMAL TIME", "CUM. BIOMASS", "AG BIOMASS", "ROOT BIOMASS", "FRAC INTERCEP", "TOTAL N", "AG N", "ROOT N", "AG N CONCN", "N FIXATION", "N ADDED", "N STRESS", " WATER STRESS", "POTENTIAL TR");
-        fprintf (output_file, "%-10s\t%-15s\t%-23s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "-", "C-day", "Mg/ha", "Mg/ha", "Mg/ha", "-", "kg/ha", "kg/ha", "kg/ha", "g/kg", "kg/ha", "kg/ha", "%", "%", "mm/day");
-        fflush (output_file);
-        fclose (output_file);
+        filenames->crop_out[i] = fopen (filename, "w");
+        temp_output_file = &filenames->crop_out[i];
+
+        fprintf (*temp_output_file, "%-10s\t%-15s\t%-23s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", " DATE", "CROP", "STAGE", "THERMAL TIME", "CUM. BIOMASS", "AG BIOMASS", "ROOT BIOMASS", "FRAC INTERCEP", "TOTAL N", "AG N", "ROOT N", "AG N CONCN", "N FIXATION", "N ADDED", "N STRESS", " WATER STRESS", "POTENTIAL TR");
+        fprintf (*temp_output_file, "%-10s\t%-15s\t%-23s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "-", "C-day", "Mg/ha", "Mg/ha", "Mg/ha", "-", "kg/ha", "kg/ha", "kg/ha", "g/kg", "kg/ha", "kg/ha", "%", "%", "mm/day");
+        fflush (*temp_output_file);
+        //fclose (*temp_output_file);
+        }
+    }
+}
+
+if (SimControl->waterDailyOutput)
+    {
+    sprintf (filename, "output/%s/water.dat", project);
+    filenames->water_out = fopen (filename, "w");
+    temp_output_file = &filenames->water_out;
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "IRRIGATION", "RUNOFF", "INFILTRATION", "DRAINAGE", "SOIL EVAP", "RES EVAP", "SNOW SUB", "TRANSPIRATION");
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "mm/day", "mm/day", "mm/day", "mm/day", "mm/day", "mm/day", "mm/day", "mm/day");
+    fflush (*temp_output_file);
+    //fclose (*temp_output_file);
     }
 
-    sprintf (filename, "output/%s/water.dat", project);
-    output_file = fopen (filename, "w");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "IRRIGARTION", "RUNOFF", "INFILTRATION", "DRAINAGE", "SOIL EVAP", "RES EVAP", "SNOW SUB", "TRANSPIRATION");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "mm/day", "mm/day", "mm/day", "mm/day", "mm/day", "mm/day", "mm/day", "mm/day");
-    fflush (output_file);
-    fclose (output_file);
-
+if (SimControl->nitrogenDailyOutput)
+    {
     sprintf (filename, "output/%s/N.dat", project);
-    output_file = fopen (filename, "w");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "ORG SOIL N", "PROF SOIL NO3", "PROF SOIL NH4", "MINERALIZATION", "IMMOBILIZATION", "NET MINERALIZ", "NH4 NITRIFICAT", "N2O FROM NITRIF", "NH4 VOLATILIZ", "NO3 DENITRIF", "N2O FROM DENIT", "NO3 LEACHING", "NO4 LEACHING");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha");
-    fflush (output_file);
-    fclose (output_file);
+    filenames->nitrogen_out = fopen (filename, "w");
+    temp_output_file = &filenames->nitrogen_out;
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "ORG SOIL N", "PROF SOIL NO3", "PROF SOIL NH4", "MINERALIZATION", "IMMOBILIZATION", "NET MINERALIZ", "NH4 NITRIFICAT", "N2O FROM NITRIF", "NH4 VOLATILIZ", "NO3 DENITRIF", "N2O FROM DENIT", "NO3 LEACHING", "NH4 LEACHING");
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha", "kg N/ha");
+    fflush (*temp_output_file);
+    //fclose (*temp_output_file);
+    }
 
+if (SimControl->residueDailyOutput)
+    {
     sprintf (filename, "output/%s/residue.dat", project);
-    output_file = fopen (filename, "w");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "FRAC INTERCEP", "AG RES BIOMASS", "BG RES BIOMASS", "ROOT RES BIOMAS", "SFC MANURE C", "AG RES N", "BG RES N", "ROOT RES N", "SFC MANURE N", "STD RES MOIST", "FLAT RES MOIST");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "kg/ha", "kg/ha", "kg/ha", "Mg/ha", "kg/kg", "kg/kg");
-    fflush (output_file);
-    fclose (output_file);
+    filenames->residue_out = fopen (filename, "w");
+    temp_output_file = &filenames->residue_out;
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "FRAC INTERCEP", "AG RES BIOMASS", "BG RES BIOMASS", "ROOT RES BIOMAS", "SFC MANURE C", "AG RES N", "BG RES N", "ROOT RES N", "SFC MANURE N", "STD RES MOIST", "FLAT RES MOIST");
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "-", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha", "kg/ha", "kg/ha", "kg/ha", "Mg/ha", "kg/kg", "kg/kg");
+    fflush (*temp_output_file);
+    //fclose (*temp_output_file);
+    }
 
+if (SimControl->soilCarbonDailyOutput)
+    {
     sprintf (filename, "output/%s/soilC.dat", project);
-    output_file = fopen (filename, "w");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "SOIL ORG C", "HUMIFIED C", "RES RESPIRED C", "SOM RESPIRED C");
-    fprintf (output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha");
-    fflush (output_file);
-    fclose (output_file);
+    filenames->carbon_out = fopen (filename, "w");
+    temp_output_file = &filenames->carbon_out;
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\n", "DATE", "SOIL ORG C", "HUMIFIED C", "RES RESPIRED C", "SOM RESPIRED C");
+    fprintf (*temp_output_file, "%-10s\t%-15s\t%-15s\t%-15s\t%-15s\n", "YYYY-MM-DD", "Mg/ha", "Mg/ha", "Mg/ha", "Mg/ha");
+    fflush (*temp_output_file);
+    //fclose (*temp_output_file);
+    }
+
+
+    /* Initialize soil layers file */
+if (SimControl->soilDailyOutput)
+{
+    sprintf (filename, "output/%s/soilLayersCN.dat", project);
+    filenames->layers_out = fopen (filename, "w");
+    temp_output_file = &filenames->layers_out;
+    fprintf (*temp_output_file, "%-10s", "DATE");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "NO3");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "NH4");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "FACTOR COMP.");
+        fprintf (*temp_output_file, "\t");
+    fprintf (*temp_output_file, "\t%-15s", "STAND. RESID. C");
+    fprintf (*temp_output_file, "\t%-15s", "FLAT RESID. C");
+    fprintf (*temp_output_file, "\t%-15s", "MANURE RESID. C");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "RESIDUE C");
+        fprintf (*temp_output_file, "\t");
+    fprintf (*temp_output_file, "\t%-15s", "STAND. RESID. C:N");
+    fprintf (*temp_output_file, "\t%-15s", "FLAT RESID. C:N");
+    fprintf (*temp_output_file, "\t%-15s", "MANURE RESID. C:N");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "RESIDUE C:N");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "MIC C");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "MIC C:N");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "SOIL ORG C");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "SOIL ORG C:N");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "WATER CONTENT");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "THICKNESS");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "BULK DENSITY");
+    fprintf (*temp_output_file, "\n");
+
+    fprintf (*temp_output_file, "%-10s", "-");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    fprintf (*temp_output_file, "\t%-15s", "SURFACE");
+    fprintf (*temp_output_file, "\t%-15s", "SURFACE");
+    fprintf (*temp_output_file, "\t%-15s", "SURFACE");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    fprintf (*temp_output_file, "\t%-15s", "SURFACE");
+    fprintf (*temp_output_file, "\t%-15s", "SURFACE");
+    fprintf (*temp_output_file, "\t%-15s", "SURFACE");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\tLAYER %-9d", i + 1);
+    fprintf (*temp_output_file, "\n");
+
+    fprintf (*temp_output_file, "%-10s", "YYYY-MM-DD");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "mg/kg");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "mg/kg");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "-/-");
+        fprintf (*temp_output_file, "\t");
+    fprintf (*temp_output_file, "\t%-15s", "Mg/ha");
+    fprintf (*temp_output_file, "\t%-15s", "Mg/ha");
+    fprintf (*temp_output_file, "\t%-15s", "Mg/ha");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "Mg/ha");
+        fprintf (*temp_output_file, "\t");
+    fprintf (*temp_output_file, "\t%-15s", "g:g");
+    fprintf (*temp_output_file, "\t%-15s", "g:g");
+    fprintf (*temp_output_file, "\t%-15s", "g:g");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "g:g");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "Mg/ha");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "g:g");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "Mg/ha");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "g:g");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "m3/m3");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "m");
+        fprintf (*temp_output_file, "\t");
+    for (i = 0; i < layers; i++)
+        fprintf (*temp_output_file, "\t%-15s", "Mg/m3");
+    fprintf (*temp_output_file, "\n");
+
+    fflush (*temp_output_file);
+    //fclose (*temp_output_file);
+}
+
 
     sprintf (filename, "output/%s/summary.dat", project);
     output_file = fopen (filename, "w");
     fclose (output_file);
 
     /* Initialize annual output files */
-    sprintf (filename, "output/%s/annualSoilC.dat", project);
-    output_file = fopen (filename, "w");
-    fprintf (output_file, "%-7s", "YEAR");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "THICKNESS");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "BULK DENSITY");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "CLAY");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "COMP DECOMP FAC");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "SOIL C DECOMP R");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "INIT SOIL C");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "SOIL C DECOMP");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "C INPUT / LYR");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "HUMIFIED / LYR");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "HUMIFICAT COEF");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "EST SAT CONCN");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "EST SAT CONT");
-    fprintf (output_file, "\n");
 
-    fprintf (output_file, "%-7s", "-");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    fprintf (output_file, "\n");
+//    sprintf (filename, "output/%s/annualSoilC.dat", project);
+//    output_file = fopen (filename, "w");
+//    fprintf (output_file, "%-7s", "YEAR");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "THICKNESS");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "BULK DENSITY");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "CLAY");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "COMP DECOMP FAC");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "SOIL C DECOMP R");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "INIT SOIL C");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "SOIL C DECOMP");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "C INPUT / LYR");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "HUMIFIED / LYR");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "HUMIFICAT COEF");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "EST SAT CONCN");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "EST SAT CONT");
+//    fprintf (output_file, "\n");
+//
+//    fprintf (output_file, "%-7s", "-");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    fprintf (output_file, "\n");
+//
+//    fprintf (output_file, "%-7s", "YYYY");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "m");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "Mg/m3");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "%");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "-");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "1/year");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "Mg/ha");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "Mg C/year");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "Mg C/year");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "Mg C/ year");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "-");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "g C /kg soil");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "Mg C/ha");
+//    fprintf (output_file, "\n");
+//
+//    fflush (output_file);
+//    fclose (output_file);
+//
+//
+//    /* Initialize annual output files */
+//    sprintf (filename, "output/%s/annualSoilCEvol.dat", project);
+//    output_file = fopen (filename, "w");
+//    fprintf (output_file, "%-7s\t%-15s", "YEAR", "Profile");
+//    fprintf (output_file, "\t%-15s\t%-15s", "ABOVE 30 cm", "BELOW 30 cm");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\tLAYER %-9d", i + 1);
+//    fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "RES BIOMASS", "ROOT BIOMASS", "RES BIOMASS IN", "ROOT BIOMASS IN", "INIT PROF C", "RES C INPUT", "ROOT C INPUT", "HUMIFIED C", "RESPIRED C", "FINAL PROF C", "YEAR C DIFF", "N GROSS MINERAL", "N IMMOBIL", "N NET MINERAL", "NH4 NITRIFICAT", "N2O FROM NITRIF", "NH3 VOLATIL", "NO3 DENITRIF", "N2O FROM DENIT", "NO3 LEACHING", "NH4 LEACHING");
+//
+//    fprintf (output_file, "%-7s\t%-15s", "YYYY", "Mg C/ha");
+//    for (i = 0; i < layers; i++)
+//        fprintf (output_file, "\t%-15s", "Mg C/ha");
+//    fprintf (output_file, "\t%-15s\t%-15s", "Mg C/ha", "Mg C/ha");
+//
+//    fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s", "Mg/year", "Mg/year", "Mg/year", "Mg/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year");
+//    fprintf (output_file, "\n");
+//    fflush (output_file);
+//    fclose (output_file);
 
-    fprintf (output_file, "%-7s", "YYYY");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "m");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "Mg/m3");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "%");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "-");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "1/year");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "Mg/ha");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "Mg C/year");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "Mg C/year");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "Mg C/ year");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "-");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "g C /kg soil");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "Mg C/ha");
-    fprintf (output_file, "\n");
-
-    fflush (output_file);
-    fclose (output_file);
-
-    /* Initialize annual output files */
-    sprintf (filename, "output/%s/SoilCEvol.dat", project);
-    output_file = fopen (filename, "w");
-    fprintf (output_file, "%-7s\t%-15s", "YEAR", "Profile");
-    fprintf (output_file, "\t%-15s\t%-15s", "ABOVE 30 cm", "BELOW 30 cm");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\tLAYER %-9d", i + 1);
-    fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\n", "RES BIOMASS", "ROOT BIOMASS", "RES BIOMASS IN", "ROOT BIOMASS IN", "INIT PROF C", "RES C INPUT", "ROOT C INPUT", "HUMIFIED C", "RESPIRED C", "FINAL PROF C", "YEAR C DIFF", "N GROSS MINERAL", "N IMMOBIL", "N NET MINERAL", "NH4 NITRIFICAT", "N2O FROM NITRIF", "NH3 VOLATIL", "NO3 DENITRIF", "N2O FROM DENIT", "NO3 LEACHING", "NH4 LEACHING");
-
-    fprintf (output_file, "%-7s\t%-15s", "YYYY", "Mg C/ha");
-    for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "Mg C/ha");
-    fprintf (output_file, "\t%-15s\t%-15s", "Mg C/ha", "Mg C/ha");
-
-    fprintf (output_file, "\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s\t%-15s", "Mg/year", "Mg/year", "Mg/year", "Mg/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "Mg C/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year", "kg N/year");
-    fprintf (output_file, "\n");
-    fflush (output_file);
-    fclose (output_file);
-
-    sprintf (filename, "output/%s/annualSoilProfile.dat", project);
+    sprintf (filename, "output/%s/annualSoilProfileC.dat", project);
     output_file = fopen (filename, "w");
     fprintf (output_file, "%-7s", "YEAR");
     for (i = 0; i < layers; i++)
@@ -217,9 +393,9 @@ void InitializeOutput (const comm_struct *Community, int layers)
     for (i = 0; i < layers; i++)
         fprintf (output_file, "\t%-15s", "ROOT BIOMASS IN");
     for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "RES C INPUT");
+        fprintf (output_file, "\t%-15s", "RES C DECOMP");
     for (i = 0; i < layers; i++)
-        fprintf (output_file, "\t%-15s", "ROOT C INPUT");
+        fprintf (output_file, "\t%-15s", "ROOT C DECOMP");
     for (i = 0; i < layers; i++)
         fprintf (output_file, "\t%-15s", "INIT C MASS");
     for (i = 0; i < layers; i++)
@@ -286,9 +462,14 @@ void InitializeOutput (const comm_struct *Community, int layers)
         fprintf (output_file, "\t%-15s", "BULK DENSITY");
     for (i = 0; i < layers; i++)
         fprintf (output_file, "\t%-15s", "SOIL C");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\t%-15s", "C SAT. RATIO");
+
     fprintf (output_file, "\n");
 
     fprintf (output_file, "%-7s", "-");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
         fprintf (output_file, "\tLAYER %-9d", i + 1);
     for (i = 0; i < layers; i++)
@@ -304,6 +485,8 @@ void InitializeOutput (const comm_struct *Community, int layers)
         fprintf (output_file, "\t%-15s", "Mg/m3");
     for (i = 0; i < layers; i++)
         fprintf (output_file, "\t%-15s", "%");
+    for (i = 0; i < layers; i++)
+        fprintf (output_file, "\t%-15s", "Cs/Cx");
     fprintf (output_file, "\n");
 
     fflush (output_file);
@@ -312,13 +495,13 @@ void InitializeOutput (const comm_struct *Community, int layers)
 
 }
 
-void PrintDailyOutput (int y, int doy, int start_year, const weather_struct *Weather, const comm_struct *Community, const soil_struct *Soil, const snow_struct *Snow, const residue_struct *Residue)
+void PrintDailyOutput (int y, int doy, int start_year, const weather_struct *Weather, const comm_struct *Community, const soil_struct *Soil, const snow_struct *Snow, const residue_struct *Residue, const ctrl_struct *SimControl, const soilc_struct *SoilCarbon, print_struct *filenames)
 {
-    char            filename[50];
-    FILE           *output_file;
+    char            filename[256];
+    FILE           **output_file=NULL;
     int             month, mday;
     int             i;
-    double          sum;
+    double          sum, sumResidueC[Soil->totalLayers], sumResidueN[Soil->totalLayers];
     int             leap_year = 0;
     crop_struct     *Crop;
 
@@ -330,199 +513,307 @@ void PrintDailyOutput (int y, int doy, int start_year, const weather_struct *Wea
     /*
      * Print weather output
      */
-    sprintf (filename, "output/%s/weather.dat", project);
-    output_file = fopen (filename, "a");
+if (SimControl->weatherDailyOutput)
+{
+    //sprintf (filename, "output/%s/weather.dat", project);
+    //output_file = fopen (filename, "a");
+    output_file = &filenames->weather_out;
+    fprintf (*output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+    fprintf (*output_file, "%-15.2lf\t", Weather->tMin[y][doy - 1]);
+    fprintf (*output_file, "%-15.2lf\t", Weather->tMax[y][doy - 1]);
+    fprintf (*output_file, "%-15.2lf\t", 0.5 * Weather->tMin[y][doy - 1] + 0.5 * Weather->tMax[y][doy - 1]);
+    fprintf (*output_file, "%-15.3lf\t", Weather->ETref[y][doy - 1]);
+    fprintf (*output_file, "%-15.2lf\n", Weather->precipitation[y][doy - 1]);
 
-    fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-15.2lf\t", 0.5 * Weather->tMin[y][doy - 1] + 0.5 * Weather->tMax[y][doy - 1]);
-    fprintf (output_file, "%-15.3lf\t", Weather->ETref[y][doy - 1]);
-    fprintf (output_file, "%-15.2lf\n", Weather->precipitation[y][doy - 1]);
+    fflush (*output_file);
 
-    fflush (output_file);
-    fclose (output_file);
-
+    if (y==(SimControl->totalYears-1) && doy==Weather->lastDoy[y])
+        fclose (*output_file);
+}
     /*
      * Print crop output
      */
+
+if (SimControl->cropDailyOutput)
+{
     for (i = 0; i < Community->NumCrop; i++)
     {
+        if (Community->Crop[i].cropUsed)
+        {
         Crop = &Community->Crop[i];
-        sprintf (filename, "output/%s/%s.dat", project, Crop->cropName);
-        output_file = fopen (filename, "a");
+        //sprintf (filename, "output/%s/%s.dat", project, Crop->cropName);
+        //output_file = fopen (filename, "a");
 
-        fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+        output_file = &filenames->crop_out[i];
+
+        fprintf (*output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
         if (Community->NumActiveCrop <= 0)
         {
-            fprintf (output_file, "%-15s\t", "FALLOW");
-            fprintf (output_file, "%-23s\t", "N/A");
+            fprintf (*output_file, "%-15s\t", "FALLOW");
+            fprintf (*output_file, "%-23s\t", "N/A");
         }
         else if (Crop->stageGrowth == NO_CROP)
         {
-            fprintf (output_file, "%-15s\t", "NO_CROP");
-            fprintf (output_file, "%-23s\t", "N/A");
+            fprintf (*output_file, "%-15s\t", "NO_CROP");
+            fprintf (*output_file, "%-23s\t", "N/A");
         }
         else
         {
-            fprintf (output_file, "%-15s\t", Crop->cropName);
+            fprintf (*output_file, "%-15s\t", Crop->cropName);
             switch (Crop->stageGrowth)
             {
                 case NO_CROP:
                     /* Do nothing */
                     break;
                 case PRE_EMERGENCE:
-                    fprintf (output_file, "%-23s\t", "PRE_EMERGENCE");
+                    fprintf (*output_file, "%-23s\t", "PRE_EMERGENCE");
                     break;
                 case VEGETATIVE_GROWTH:
-                    fprintf (output_file, "%-23s\t", "VEGETATIVE_GROWTH");
+                    fprintf (*output_file, "%-23s\t", "VEGETATIVE_GROWTH");
                     break;
                 case PERENNIAL:
-                    fprintf (output_file, "%-23s\t", "PERENNIAL");
+                    fprintf (*output_file, "%-23s\t", "PERENNIAL");
                     break;
                 case REPRODUCTIVE_GROWTH:
-                    fprintf (output_file, "%-23s\t", "REPRODUCTIVE_GROWTH");
+                    fprintf (*output_file, "%-23s\t", "REPRODUCTIVE_GROWTH");
                     break;
                 case MATURITY:
-                    fprintf (output_file, "%-23s\t", "MATURITY");
+                    fprintf (*output_file, "%-23s\t", "MATURITY");
                     break;
                 case CLIPPING:
-                    fprintf (output_file, "%-23s\t", "CLIPPING");
+                    fprintf (*output_file, "%-23s\t", "CLIPPING");
                     break;
                 case PLANTING:
-                    fprintf (output_file, "%-23s\t", "PLANTING");
+                    fprintf (*output_file, "%-23s\t", "PLANTING");
                     break;
             }
         }
 
-        fprintf (output_file, "%-15.6lf\t", Crop->svTT_Cumulative);
-        fprintf (output_file, "%-15.6lf\t", Crop->svBiomass);
-        fprintf (output_file, "%-15.6lf\t", Crop->svShoot);
-        fprintf (output_file, "%-15.6lf\t", Crop->svRoot);
-        fprintf (output_file, "%-15.6lf\t", Crop->svRadiationInterception);
-        fprintf (output_file, "%-15.6lf\t", (Crop->svN_Shoot + Crop->svN_Root) * 1000.);
-        fprintf (output_file, "%-15.6lf\t", Crop->svN_Shoot * 1000.);
-        fprintf (output_file, "%-15.6lf\t", Crop->svN_Root * 1000.);
+
+        fprintf (*output_file, "%-15.6lf\t", Crop->svTT_Cumulative);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svBiomass);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svShoot);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svRoot);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svRadiationInterception);
+        fprintf (*output_file, "%-15.6lf\t", (Crop->svN_Shoot + Crop->svN_Root) * 1000.);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svN_Shoot * 1000.);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svN_Root * 1000.);
         if (Crop->svShoot > 0.)
-            fprintf (output_file, "%-15.6lf\t", (Crop->svN_Shoot / Crop->svShoot) * 1000.);
+            fprintf (*output_file, "%-15.6lf\t", (Crop->svN_Shoot / Crop->svShoot) * 1000.);
         else
-            fprintf (output_file, "%-15.6lf\t", 0.);
-        fprintf (output_file, "%-15.6lf\t", Crop->svN_Fixation * 1000.);
-        fprintf (output_file, "%-15.6lf\t", Crop->svN_AutoAdded * 1000.);
-        fprintf (output_file, "%-15.6lf\t", Crop->svN_StressFactor);
-        fprintf (output_file, "%-15.6lf\t", Crop->svWaterStressFactor);
-        fprintf (output_file, "%-15.6lf\n", Crop->svTranspirationPotential);
+            fprintf (*output_file, "%-15.6lf\t", 0.);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svN_Fixation * 1000.);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svN_AutoAdded * 1000.);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svN_StressFactor);
+        fprintf (*output_file, "%-15.6lf\t", Crop->svWaterStressFactor);
+        fprintf (*output_file, "%-15.6lf\n", Crop->svTranspirationPotential);
 
-        fflush (output_file);
-        fclose (output_file);
-    }
+        fflush (*output_file);
+        if (y==(SimControl->totalYears-1) && doy==Weather->lastDoy[y])
+            fclose (*output_file);
+     }
+   //if (y==(SimControl->totalYears-1) && doy==Weather->lastDoy[y])
+   //     free (filenames->crop_out[i]);
 
+}
+if (y==(SimControl->totalYears-1) && doy==Weather->lastDoy[y])
+        free (filenames->crop_out);
+}
     /*
      * Print Water output
      */
+if (SimControl->waterDailyOutput)
+{
     sprintf (filename, "output/%s/water.dat", project);
-    output_file = fopen (filename, "a");
+    output_file = &filenames->water_out;
 
-    fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-15.6lf\t", Soil->irrigationVol);
-    fprintf (output_file, "%-15.6lf\t", Soil->runoffVol);
-    fprintf (output_file, "%-15.6lf\t", Soil->infiltrationVol);
-    fprintf (output_file, "%-15.6lf\t", Soil->drainageVol);
-    fprintf (output_file, "%-15.6lf\t", Soil->evaporationVol);
-    fprintf (output_file, "%-15.6lf\t", Soil->residueEvaporationVol);
-    fprintf (output_file, "%-15.6lf\t", Snow->snowEvaporationVol);
-    fprintf (output_file, "%-15.6lf\n", Community->svTranspiration);
+    fprintf (*output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+    fprintf (*output_file, "%-15.6lf\t", Soil->irrigationVol);
+    fprintf (*output_file, "%-15.6lf\t", Soil->runoffVol);
+    fprintf (*output_file, "%-15.6lf\t", Soil->infiltrationVol);
+    fprintf (*output_file, "%-15.6lf\t", Soil->drainageVol);
+    fprintf (*output_file, "%-15.6lf\t", Soil->evaporationVol);
+    fprintf (*output_file, "%-15.6lf\t", Soil->residueEvaporationVol);
+    fprintf (*output_file, "%-15.6lf\t", Snow->snowEvaporationVol);
+    fprintf (*output_file, "%-15.6lf\n", Community->svTranspiration);
 
-    fflush (output_file);
-    fclose (output_file);
-
+    fflush (*output_file);
+    if (y==(SimControl->totalYears-1) && doy==Weather->lastDoy[y])
+        fclose (*output_file);
+}
     /*
      * Print Nitrogen Output
      */
+if (SimControl->nitrogenDailyOutput)
+{
     sprintf (filename, "output/%s/N.dat", project);
-    output_file = fopen (filename, "a");
+    output_file = &filenames->nitrogen_out;
 
-    fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-15.6lf\t", Soil->SONProfile * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->NO3Profile * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->NH4Profile * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->N_Mineralization * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->N_Immobilization * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->N_NetMineralization * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->NH4_Nitrification * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->N2O_Nitrification * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->NH4_Volatilization * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->NO3_Denitrification * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->N2O_Denitrification * 1000.);
-    fprintf (output_file, "%-15.6lf\t", Soil->NO3Leaching * 1000.);
-    fprintf (output_file, "%-15.6lf\n", Soil->NH4Leaching * 1000.);
+    fprintf (*output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+    fprintf (*output_file, "%-15.6lf\t", Soil->SONProfile * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->NO3Profile * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->NH4Profile * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->N_Mineralization * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->N_Immobilization * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->N_NetMineralization * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->NH4_Nitrification * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->N2O_Nitrification * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->NH4_Volatilization * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->NO3_Denitrification * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->N2O_Denitrification * 1000.);
+    fprintf (*output_file, "%-15.6lf\t", Soil->NO3Leaching * 1000.);
+    fprintf (*output_file, "%-15.6lf\n", Soil->NH4Leaching * 1000.);
 
-    fflush (output_file);
-    fclose (output_file);
+    fflush (*output_file);
+    if (y==(SimControl->totalYears-1) && doy==Weather->lastDoy[y])
+        fclose (*output_file);
 
+}
     /*
      * Print Carbon Output
      */
+if (SimControl->soilCarbonDailyOutput)
+{
     sprintf (filename, "output/%s/soilC.dat", project);
-    output_file = fopen (filename, "a");
+    output_file = &filenames->carbon_out;
 
-    fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-15.6lf\t", Soil->SOCProfile);
-    fprintf (output_file, "%-15.6lf\t", Soil->C_Humified);
-    fprintf (output_file, "%-15.6lf\t", Soil->C_ResidueRespired);
-    fprintf (output_file, "%-15.6lf\n", Soil->C_SoilRespired);
+    fprintf (*output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+    fprintf (*output_file, "%-15.6lf\t", Soil->SOCProfile);
+    fprintf (*output_file, "%-15.6lf\t", Soil->C_Humified);
+    fprintf (*output_file, "%-15.6lf\t", Soil->C_ResidueRespired);
+    fprintf (*output_file, "%-15.6lf\n", Soil->C_SoilRespired);
 
-    fflush (output_file);
-    fclose (output_file);
+    fflush (*output_file);
+    if (y==(SimControl->totalYears-1) && doy==Weather->lastDoy[y])
+        fclose (*output_file);
+
+}
 
     /*
      * Print residue output
      */
-    sprintf (filename, "output/%s/residue.dat", project);
-    output_file = fopen (filename, "a");
 
-    fprintf (output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
-    fprintf (output_file, "%-15.6lf\t", Residue->residueInterception);
-    fprintf (output_file, "%-15.6lf\t", Residue->stanResidueMass + Residue->flatResidueMass);
+if (SimControl->residueDailyOutput)
+{
+    sprintf (filename, "output/%s/residue.dat", project);
+    output_file = &filenames->residue_out;
+
+    fprintf (*output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+    fprintf (*output_file, "%-15.6lf\t", Residue->residueInterception);
+    fprintf (*output_file, "%-15.6lf\t", Residue->stanResidueMass + Residue->flatResidueMass);
     sum = 0.0;
     for (i = 0; i < Soil->totalLayers; i++)
         sum = sum + Residue->residueAbgd[i];
-    fprintf (output_file, "%-15.6lf\t", sum);
+    fprintf (*output_file, "%-15.6lf\t", sum);
     sum = 0.0;
     for (i = 0; i < Soil->totalLayers; i++)
         sum = sum + Residue->residueRt[i] + Residue->residueRz[i];
-    fprintf (output_file, "%-15.6lf\t", sum);
-    fprintf (output_file, "%-15.6lf\t", Residue->manureSurfaceC);
-    fprintf (output_file, "%-15.6lf\t", Residue->stanResidueN + Residue->flatResidueN);
+    fprintf (*output_file, "%-15.6lf\t", sum);
+    fprintf (*output_file, "%-15.6lf\t", Residue->manureSurfaceC);
+    fprintf (*output_file, "%-15.6lf\t", Residue->stanResidueN + Residue->flatResidueN);
     sum = 0.0;
     for (i = 0; i < Soil->totalLayers; i++)
         sum = sum + Residue->residueAbgdN[i];
-    fprintf (output_file, "%-15.6lf\t", sum);
+    fprintf (*output_file, "%-15.6lf\t", sum);
     sum = 0.0;
     for (i = 0; i < Soil->totalLayers; i++)
         sum = sum + Residue->residueRtN[i] + Residue->residueRzN[i];
-    fprintf (output_file, "%-15.6lf\t", sum);
-    fprintf (output_file, "%-15.6lf\t", Residue->manureSurfaceN);
+    fprintf (*output_file, "%-15.6lf\t", sum);
+    fprintf (*output_file, "%-15.6lf\t", Residue->manureSurfaceN);
     if (Residue->stanResidueMass > 0.0)
-        fprintf (output_file, "%-15.6lf\t", Residue->stanResidueWater / (Residue->stanResidueWater + Residue->stanResidueMass / 10.0));
+        fprintf (*output_file, "%-15.6lf\t", Residue->stanResidueWater / (Residue->stanResidueWater + Residue->stanResidueMass / 10.0));
     else
-        fprintf (output_file, "%-15.6lf\t", 0.0);
+        fprintf (*output_file, "%-15.6lf\t", 0.0);
     if (Residue->flatResidueMass > 0.0)
-        fprintf (output_file, "%-15.6lf\n", Residue->flatResidueWater / (Residue->flatResidueWater + Residue->flatResidueMass / 10.0));
+        fprintf (*output_file, "%-15.6lf\n", Residue->flatResidueWater / (Residue->flatResidueWater + Residue->flatResidueMass / 10.0));
     else
-        fprintf (output_file, "%-15.6lf\n", 0.0);
+        fprintf (*output_file, "%-15.6lf\n", 0.0);
 
-    fflush (output_file);
-    fclose (output_file);
+    fflush (*output_file);
+    if (y==(SimControl->totalYears-1) && doy==Weather->lastDoy[y])
+        fclose (*output_file);
+}
+//Print soil layer C and N output;
+if (SimControl->soilDailyOutput)
+    {
+    sprintf (filename, "output/%s/soilLayersCN.dat", project);
+    output_file = &filenames->layers_out;
+
+    fprintf (*output_file, "%4.4d-%2.2d-%2.2d\t", y + start_year, month, mday);
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", (Soil->NO3[i]*1000000)/(Soil->BD[i]*Soil->layerThickness[i]*10000));
+        fprintf (*output_file, "\t");
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", (Soil->NH4[i]*1000000)/(Soil->BD[i]*Soil->layerThickness[i]*10000));
+        fprintf (*output_file, "\t");
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", SoilCarbon->factorComposite[i]);
+        fprintf (*output_file, "\t");
+    fprintf (*output_file, "%-15.6lf\t", Residue->stanResidueMass*0.43);
+    fprintf (*output_file, "%-15.6lf\t", Residue->flatResidueMass*0.43);
+    fprintf (*output_file, "%-15.6lf\t", Residue->manureSurfaceC);
+    for (i = 0; i < Soil->totalLayers; i++)
+        {
+        sumResidueC[i] = Residue->residueRt[i]*0.43 + Residue->residueRz[i]*0.43 + Residue->residueAbgd[i]*0.43 + Residue->manureC[i];
+        sumResidueN[i] = Residue->residueRtN[i] + Residue->residueRzN[i] + Residue->residueAbgdN[i] + Residue->manureN[i];
+        fprintf (*output_file, "%-15.6lf\t", sumResidueC[i]);
+        }
+        fprintf (*output_file, "\t");
+    fprintf (*output_file, "%-15.6lf\t", Residue->stanResidueMass*0.43/Residue->stanResidueN);
+    fprintf (*output_file, "%-15.6lf\t", Residue->flatResidueMass*0.43/Residue->flatResidueN);
+    fprintf (*output_file, "%-15.6lf\t", Residue->manureSurfaceC/Residue->manureSurfaceN);
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", sumResidueC[i]/sumResidueN[i]);
+        fprintf (*output_file, "\t");
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", Soil->MBC_Mass[i]);
+        fprintf (*output_file, "\t");
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", Soil->MBC_Mass[i]/Soil->MBN_Mass[i]);
+        fprintf (*output_file, "\t");
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", Soil->SOC_Mass[i]);
+        fprintf (*output_file, "\t");
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", Soil->SOC_Mass[i]/Soil->SON_Mass[i]);
+        fprintf (*output_file, "\t");
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", Soil->waterContent[i]);
+        fprintf (*output_file, "\t");
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", Soil->layerThickness[i]);
+        fprintf (*output_file, "\t");
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (*output_file, "%-15.6lf\t", Soil->BD[i]);
+    fprintf(*output_file, "\n");
+
+    fflush (*output_file);
+    if (y==(SimControl->totalYears-1) && doy==Weather->lastDoy[y])
+        fclose (*output_file);
+    }
 }
 
 void PrintSeasonOutput (int y, int doy, int start_year, const weather_struct *Weather, const crop_struct *Crop)
 {
-    char            filename[50];
+    char            filename[256];
     FILE           *output_file;
     int             month, mday;
     int             leap_year = 0;
 
     if (Weather->lastDoy[y] == 366)
         leap_year = 1;
+
+
+
+//    NextLine (simctrl_file, cmdstr);
+//    ReadKeywordInt (cmdstr, "ANNUAL_SOIL_OUT", &SimControl->annualSoilOutput);
+//
+//    NextLine (simctrl_file, cmdstr);
+//    ReadKeywordInt (cmdstr, "ANNUAL_PROFILE_OUT", &SimControl->profileOutput);
+//
+//    NextLine (simctrl_file, cmdstr);
+//    ReadKeywordInt (cmdstr, "SEASON_OUT", &SimControl->seasonOutput);
+
 
     sprintf (filename, "output/%s/season.dat", project);
     output_file = fopen (filename, "a");
@@ -556,7 +847,7 @@ void PrintSeasonOutput (int y, int doy, int start_year, const weather_struct *We
 
 void PrintAnnualOutput (int y, int start_year, const soil_struct *Soil, const soilc_struct *SoilCarbon)
 {
-    char            filename[50];
+    char            filename[256];
     FILE           *output_file;
     int             i;
 
@@ -570,51 +861,53 @@ void PrintAnnualOutput (int y, int start_year, const soil_struct *Soil, const so
         fprintf (output_file, "\t%-15.6lf", Soil->BD[i]);
     for (i = 0; i < Soil->totalLayers; i++)
         fprintf (output_file, "\t%-15.6lf", Soil->SOC_Mass[i] / Soil->layerThickness[i] / Soil->BD[i] / 100.0);
+    for (i = 0; i < Soil->totalLayers; i++)
+        fprintf (output_file, "\t%-15.6lf", (Soil->SOC_Mass[i] / Soil->layerThickness[i] / Soil->BD[i] / 100.0)/(2.11 + 0.0375 * Soil->Clay[i] * 100.0));
 
     fprintf (output_file, "\n");
     fflush (output_file);
     fclose (output_file);
 
-    sprintf (filename, "output/%s/annualSoilC.dat", project);
-    output_file = fopen (filename, "a");
+//    sprintf (filename, "output/%s/annualSoilC.dat", project);
+//    output_file = fopen (filename, "a");
+//
+//    fprintf (output_file, "%4.4d", y + start_year);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", Soil->layerThickness[i]);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", Soil->BD[i]);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", Soil->Clay[i] * 100.0);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualDecompositionFactor[i]);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualSoilCarbonDecompositionRate[i]);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", Soil->SOC_Mass[i]);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualRespiredCarbonMass[i]);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualCarbonInputByLayer[i]);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i]);
+//    for (i = 0; i < Soil->totalLayers; i++)
+//    {
+//        if (SoilCarbon->annualCarbonInputByLayer[i] > 0)
+//            fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i] / SoilCarbon->annualCarbonInputByLayer[i]);
+//        else
+//            fprintf (output_file, "\t%-15.6lf", 0.0);
+//    }
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", 10.0 * (2.11 + 0.0375 * Soil->Clay[i] * 100.0));
+//    for (i = 0; i < Soil->totalLayers; i++)
+//        fprintf (output_file, "\t%-15.6lf", 10000.0 * Soil->layerThickness[i] * Soil->BD[i] * (10.0 * (2.11 + 0.0375 * Soil->Clay[i] * 100.0)) / 1000.0);
+//
+//    fprintf (output_file, "\n");
+//    fflush (output_file);
+//    fclose (output_file);
 
-    fprintf (output_file, "%4.4d", y + start_year);
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", Soil->layerThickness[i]);
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", Soil->BD[i]);
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", Soil->Clay[i] * 100.0);
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualDecompositionFactor[i]);
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualSoilCarbonDecompositionRate[i]);
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", Soil->SOC_Mass[i]);
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualRespiredCarbonMass[i]);
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualCarbonInputByLayer[i]);
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i]);
-    for (i = 0; i < Soil->totalLayers; i++)
-    {
-        if (SoilCarbon->annualCarbonInputByLayer[i] > 0)
-            fprintf (output_file, "\t%-15.6lf", SoilCarbon->annualHumifiedCarbonMass[i] / SoilCarbon->annualCarbonInputByLayer[i]);
-        else
-            fprintf (output_file, "\t%-15.6lf", 0.0);
-    }
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", 10.0 * (2.11 + 0.0375 * Soil->Clay[i] * 100.0));
-    for (i = 0; i < Soil->totalLayers; i++)
-        fprintf (output_file, "\t%-15.6lf", 10000.0 * Soil->layerThickness[i] * Soil->BD[i] * (10.0 * (2.11 + 0.0375 * Soil->Clay[i] * 100.0)) / 1000.0);
 
-    fprintf (output_file, "\n");
-    fflush (output_file);
-    fclose (output_file);
-
-
-    sprintf (filename, "output/%s/annualSoilProfile.dat", project);
+    sprintf (filename, "output/%s/annualSoilProfileC.dat", project);
     output_file = fopen (filename, "a");
 
     fprintf (output_file, "%4.4d", y + start_year);
@@ -643,7 +936,7 @@ void PrintAnnualOutput (int y, int start_year, const soil_struct *Soil, const so
 
 void PrintCarbonEvolution (int y, int start_year, int total_layers, const soil_struct *Soil, const soilc_struct *SoilCarbon, const residue_struct *Residue)
 {
-    char            filename[50];
+    char            filename[256];
     FILE           *output_file;
     int             i;
 
@@ -652,7 +945,7 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const soil_s
     double          layerSplit;
     double          sumProfile[18];
 
-    sprintf (filename, "output/%s/SoilCEvol.dat", project);
+    sprintf (filename, "output/%s/annualSoilCEvol.dat", project);
     output_file = fopen (filename, "a");
 
     for (i = 0; i < 18; i++)
@@ -740,7 +1033,7 @@ void PrintCarbonEvolution (int y, int start_year, int total_layers, const soil_s
 
 void PrintSummary (const summary_struct *Summary, int totalYears)
 {
-    char            filename[50];
+    char            filename[256];
     FILE           *output_file;
 
     sprintf (filename, "output/%s/summary.dat", project);

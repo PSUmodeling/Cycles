@@ -54,6 +54,7 @@ void ReadCrop (char *filename, comm_struct *Community)
     for (i = 0; i < Community->NumCrop; i++)
     {
         Crop = &(Community->Crop[i]);
+        Crop->cropUsed=0;
 
         NextLine (crop_file, cmdstr);
         ReadKeywordStr (cmdstr, "NAME", Crop->cropName);
@@ -107,7 +108,7 @@ void ReadCrop (char *filename, comm_struct *Community)
             Crop->userClippingDestiny = GRAZING_CLIPPING;
         else
         {
-            Cycles_printf (VL_ERROR, "Option %s not recoganized!\n", temp);
+            Cycles_printf (VL_ERROR, "Option %s not recognized!\n", temp);
             Cycles_exit (EXIT_FAILURE);
         }
 

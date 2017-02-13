@@ -168,6 +168,9 @@ void FieldOperation (int rotationYear, int y, int doy,
     for (i = 0; i < Community->NumCrop; i++)
     {
         Crop = &Community->Crop[i];
+        if (Crop->stageGrowth > NO_CROP)
+        {
+
         if (Crop->autoIrrigationUsed)
         {
             if (Crop->autoIrrigationStartDay < Crop->autoIrrigationStopDay)
@@ -179,6 +182,7 @@ void FieldOperation (int rotationYear, int y, int doy,
                         FindIrrigationVolume
                         (Crop->autoIrrigationLastSoilLayer,
                         Crop->autoIrrigationWaterDepletion, Soil);
+
                     if (irrigation_vol > 0.0)
                     {
                         Cycles_printf (VL_VERBOSE,
@@ -197,6 +201,8 @@ void FieldOperation (int rotationYear, int y, int doy,
                         FindIrrigationVolume
                         (Crop->autoIrrigationLastSoilLayer,
                         Crop->autoIrrigationWaterDepletion, Soil);
+
+
                     if (irrigation_vol > 0.0)
                     {
                         Cycles_printf (VL_VERBOSE,
@@ -206,6 +212,7 @@ void FieldOperation (int rotationYear, int y, int doy,
                     Soil->irrigationVol += irrigation_vol;
                 }
             }
+        }
         }
     }
 }

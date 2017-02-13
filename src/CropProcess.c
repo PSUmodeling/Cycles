@@ -8,7 +8,7 @@ void Processes (int y, int doy, int autoNitrogen, comm_struct *Community,
     residue_struct *Residue, const weather_struct *Weather, soil_struct *Soil,
     soilc_struct *SoilCarbon)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -125,7 +125,7 @@ void Processes (int y, int doy, int autoNitrogen, comm_struct *Community,
 void CropGrowth (int y, int doy, double *DailyGrowth, double Stage,
     crop_struct *Crop, residue_struct *Residue, const weather_struct *Weather)
 {
-    /* 
+    /*
      * LOCAL VARIABLES
      *
      * Variable             Type        Description
@@ -380,7 +380,7 @@ void CropNitrogenConcentration (double *N_AbgdConcReq, double *N_RootConcReq,
 void CropNitrogenStress (double NaAbgd, double NcAbgd, double NnAbgd,
     crop_struct *Crop)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -678,7 +678,7 @@ void PotentialSoluteUptakeOption2 (double *SoluteSupply, double *SoluteUptake,
 double ShootBiomassPartitioning (double Stage, double Po, double Pf,
     int Annual)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -703,7 +703,7 @@ double ShootBiomassPartitioning (double Stage, double Po, double Pf,
 
 void RadiationInterception (int y, int doy, comm_struct *Community)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -971,7 +971,7 @@ void ComputeColdDamage (int y, int doy, crop_struct *Crop,
     const weather_struct *Weather, const snow_struct *Snow,
     residue_struct *Residue)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -1052,7 +1052,7 @@ void ComputeColdDamage (int y, int doy, crop_struct *Crop,
 
 double ColdDamage (double T, double Crop_Tn, double Crop_Tth)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -1075,7 +1075,7 @@ double ColdDamage (double T, double Crop_Tn, double Crop_Tth)
 double TemperatureFunctionGrowth (double tMax, double tOpt, double tMin,
     double T)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *

@@ -63,7 +63,7 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
 
     FindLine (operation_file, "BOF");
     tillage_counter = CountOccurance (operation_file, "TILLAGE");
-    
+
     FindLine (operation_file, "BOF");
     irrigation_counter = CountOccurance (operation_file, "FIXED_IRRIGATION");
 
@@ -111,7 +111,7 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
 
             NextLine (operation_file, cmdstr);
             ReadKeywordInt (cmdstr, "DOY", &planting->opDay);
-            
+
             NextLine (operation_file, cmdstr);
             ReadKeywordStr (cmdstr, "CROP", planting->cropName);
 
@@ -137,7 +137,7 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
                 Cycles_printf (VL_ERROR, "ERROR: Please specify valid DOY for clipping start date!\n");
                 Cycles_exit (EXIT_FAILURE);
             }
-            
+
             NextLine (operation_file, cmdstr);
             ReadKeywordInt (cmdstr, "CLIPPING_END", &planting->clippingEnd);
             if (planting->clippingEnd > 366 || planting->clippingEnd < 1)
@@ -154,6 +154,7 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
                 if (strcmp (CropManagement->plantingOrder[i].cropName, Community->Crop[j].cropName) == 0)
                 {
                     CropManagement->plantingOrder[i].plantID = j;
+                    Community->Crop[j].cropUsed=1;
                     break;
                 }
             }
@@ -246,7 +247,7 @@ void ReadOperation (char *filename, cropmgmt_struct *CropManagement, const comm_
                 Cycles_printf (VL_ERROR, "ERROR: Operation year is larger than years in rotation!\n");
                 Cycles_printf (VL_ERROR, "Please remove this operation and retry.\n");
             }
-            
+
             NextLine (operation_file, cmdstr);
             ReadKeywordInt (cmdstr, "DOY", &fixirr->opDay);
 

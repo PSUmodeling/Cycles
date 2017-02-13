@@ -61,12 +61,12 @@ int main (int argc, char *argv[])
             {"ncs1",	no_argument, 0, 'o'},
             {0, 0, 0, 0}
         };
-        /* getopt_long stores the option index here. */
+         /*getopt_long stores the option index here.*/
         int             option_index = 0;
 
         c = getopt_long_only (argc, argv, "vdno", long_options, &option_index);
 
-        /* Detect the end of the options. */
+        /* Detect the end of the options.*/
         if (c == -1)
             break;
 
@@ -91,12 +91,13 @@ int main (int argc, char *argv[])
                 Cycles_printf (VL_NORMAL, "Decomposition is not constrained by depth.\n");
                 break;
             case '?':
-                /* getopt_long already printed an error message. */
+                 /*getopt_long already printed an error message.*/
                 break;
             default:
                 abort ();
         }
     }
+
 
     if (optind >= argc)
     {
@@ -108,6 +109,7 @@ int main (int argc, char *argv[])
     }
     else
     {
+
         strcpy (project, argv[optind]);
     }
 
@@ -135,14 +137,14 @@ int main (int argc, char *argv[])
     /*
      * Initialize output files
      */
-    InitializeOutput (&Cycles->Community, Cycles->Soil.totalLayers);
+    InitializeOutput (&Cycles->Community, Cycles->Soil.totalLayers, &Cycles->SimControl, &Cycles->daily_output);
 
-    /* 
+    /*
      * Initialize model variables and parameters
      */
     Initialize (&Cycles->SimControl, &Cycles->Weather, &Cycles->Soil, &Cycles->Residue, &Cycles->SoilCarbon, &Cycles->Community, &Cycles->CropManagement, &Cycles->Snow, &Cycles->Summary);
 
-    /* 
+    /*
      * Compute crop thermal time
      */
     //ComputeThermalTime (Cycles->SimControl.totalYears, &Cycles->Community, &Cycles->Weather);
@@ -163,7 +165,7 @@ int main (int argc, char *argv[])
                 Cycles_printf (VL_NORMAL, "DOY %3.3d\n", doy);
 
             DailyOperations (y, doy, &Cycles->CropManagement, &Cycles->Community, &Cycles->Residue, &Cycles->SimControl, &Cycles->Snow, &Cycles->Soil, &Cycles->SoilCarbon, &Cycles->Weather, &Cycles->Summary);
-            PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Community, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue);
+            PrintDailyOutput (y, doy, Cycles->SimControl.simStartYear, &Cycles->Weather, &Cycles->Community, &Cycles->Soil, &Cycles->Snow, &Cycles->Residue, &Cycles->SimControl, &Cycles->SoilCarbon, &Cycles->daily_output);
         }
     }
 

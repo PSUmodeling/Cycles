@@ -82,7 +82,7 @@ void InitializeSoilCarbon (soilc_struct *SoilCarbon, int totalLayers)
 void ComputeFactorComposite (soilc_struct *SoilCarbon, int doy, int y,
     int last_doy, soil_struct *Soil)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -139,7 +139,7 @@ void ComputeFactorComposite (soilc_struct *SoilCarbon, int doy, int y,
 void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
     residue_struct *Residue, soil_struct *Soil, double *tillageFactor)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -689,6 +689,7 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
         /* Acceleration of microbial * turnover if > 3% of SOC */
         aux1 = (Soil->MBC_Mass[i] / Soil->SOC_Mass[i]) / 0.03;
         aux2 = exp (10.0 * (aux1 - 1.0));
+        aux2 = 1;  /* Set to 1 to prevent acceleration of microbial turnover */
 
         /* Charlie's steady state km so that Cm = 0.03 of organic carbon
          * km = 0.97ks / 0.03(ex(1-Cs/Cx))1/2.
@@ -701,6 +702,8 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
         micrDecompositionRate =
             SoilCarbon->factorComposite[i] * (1.0 + tillageFactor[i]) * aux3;
         xx9 = micrDecompositionRate * Soil->MBC_Mass[i];
+
+//Should this line be sending the somCNratio to the NitrogenMineralization sub??
         if (xx9 > 0.0)
             nm9 =
                 NitrogenMineralization (micrCNRatio, micrCNRatio,
@@ -943,7 +946,7 @@ void ComputeSoilCarbonBalanceMB (soilc_struct *SoilCarbon, int y,
 void ComputeSoilCarbonBalance (soilc_struct *SoilCarbon, int y,
     residue_struct *Residue, soil_struct *Soil, double *tillageFactor)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -1547,7 +1550,7 @@ void ComputeSoilCarbonBalance (soilc_struct *SoilCarbon, int y,
 void StoreOutput (soilc_struct *SoilCarbon, int y, int totalLayers,
     double *SOCMass)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -1563,7 +1566,7 @@ void StoreOutput (soilc_struct *SoilCarbon, int y, int totalLayers,
 
 double Aeration (double AC)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -1581,7 +1584,7 @@ double Aeration (double AC)
 
 double Moisture (double wp)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -1599,7 +1602,7 @@ double Moisture (double wp)
 
 double TemperatureFunction (double T)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
@@ -1684,7 +1687,7 @@ double PoolNitrogenMineralization (double NmineralConc,
     double CNRatioDecomposing, double humRate, double decomposedMass,
     double carbonConc)
 {
-    /* 
+    /*
      * -----------------------------------------------------------------------
      * LOCAL VARIABLES
      *
