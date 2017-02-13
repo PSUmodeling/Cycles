@@ -18,7 +18,7 @@
  *                                        infiltration is used
  *  automaticNitrogen       int         Flag to indicate whether automatic
  *                                        Nitrogen is used
- *  automaticPhosphorus     int             
+ *  automaticPhosphorus     int
  *  automaticSulfur         int         Flag to indicate
  *  cropDailyOutput         int         Flag to control daily crop output
  *  soilDailyOutput         int         Flag to control daily soil output
@@ -214,6 +214,7 @@ typedef struct crop_struct
     /* Crop Status Flags */
     int             cropGrowing;
     int             cropMature;
+    int             cropUsed;
 
     /* State Variables */
     double          svTT_Daily;
@@ -245,7 +246,7 @@ typedef struct crop_struct
     double          svN_StressCumulative;
 
     double          svRadiationInterception_nc;
-    
+
     double          userMaximumSoilCoverage;
     double          userMaximumRootingDepth;
     double          userExpectedYieldAvg;
@@ -556,6 +557,14 @@ typedef struct print_struct
     char	    var_name[16];
     char	    unit[16];
     double	   *print_var;
+    FILE        *weather_out;
+    FILE        **crop_out;
+    FILE        *residue_out;
+    FILE        *water_out;
+    FILE        *nitrogen_out;
+    FILE        *carbon_out;
+    FILE        *layers_out;
+
 } print_struct;
 
 typedef struct summary_struct
@@ -594,7 +603,7 @@ typedef struct CyclesStruct
     snow_struct     Snow;
     summary_struct  Summary;
 
-    print_struct   *daily_output;
+    print_struct   daily_output;
     print_struct   *annual_output;
 } *CyclesStruct;
 #endif

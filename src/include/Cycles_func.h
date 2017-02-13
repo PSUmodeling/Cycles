@@ -85,8 +85,8 @@ int             GT (double x, double y);
 void            _Cycles_printf (const char *, int, const char *, int,
     const char *, ...);
 
-void            InitializeOutput (const comm_struct *Community, int layers);
-void            PrintDailyOutput (int y, int doy, int start_year, const weather_struct *Weather, const comm_struct *Community, const soil_struct *Soil, const snow_struct *Snow, const residue_struct *Residue);
+void            InitializeOutput (const comm_struct *Community, int layers, const ctrl_struct *SimControl, print_struct *filenames);
+void            PrintDailyOutput (int y, int doy, int start_year, const weather_struct *Weather, const comm_struct *Community, const soil_struct *Soil, const snow_struct *Snow, const residue_struct *Residue, const ctrl_struct *SimControl, const soilc_struct *SoilCarbon, print_struct *filenames);
 void            PrintSeasonOutput (int y, int doy, int start_year, const weather_struct *Weather, const crop_struct *Crop);
 void            PrintAnnualOutput (int y, int start_year, const soil_struct *Soil, const soilc_struct *SoilCarbon);
 void            PrintCarbonEvolution (int y, int start_year, int total_layers, const soil_struct *Soil, const soilc_struct *SoilCarbon, const residue_struct *Residue);
