@@ -1,56 +1,10 @@
 Cycles
 ======
-The model Cycles is a multi-year, multi-crop, multi-layered (soil), one-dimensional, daily or sub-daily time step simulation platform that simulates water, carbon and nitrogen balance of the soil-crop system subject to climate conditions and a large array of management constraints.
+Cycles is a daily time-step agroecosystem model that simulates the biophysical processes and management practices occurring within cropping systems and other landuses.
+Processes include fluxes in the water and energy balance, the coupled cycling of carbon and nitrogen, and plant growth. The model can simulate a wide range of agricultural management practices such as tillage, organic and inorganic nutrient additions, annual and perennial crops, crop harvests as grain or forages, polycultures and relay cropping, grazing, and irrigation.
+Crop growth is represented with a generalizable framework such that a nearly limitless variety of agricultural crop species can be specified by the user.
+A *user reference guide* for Cycles is provided at [PSUModeling.GitHub.io/Cycles/](https://psumodeling.github.io/Cycles/).
 
-![cycles image](http://plantscience.psu.edu/research/labs/kemanian/models-and-tools/cycles/leadImage_galleryzoom)
-
-Cycles simulates crop growth and nutrient cycling and predicts a range of variables for agricultural yield (grain and forage) of annual and perennial crops, and nitrogen losses.
-Many modules in Cycles are related to the model CropSyst (Stöckle and Nelson, 2003), and the fundamental heat and water transport equations and algorithms are adapted from Campbell (1985) *Soil Physics with Basic* landmark book.
-Cycles modules are modularized and easily unplugged from the main interface and which permits efficient addition / removal of algorithms and coupling with watershed simulation models.
-
-Cycles has unique solutions to the coupled cycling of carbon, nitrogen and water in the soil-plant-atmospheric system.
-Among the original components in Cycles are new developments in carbon and nitrogen saturation theory (soil), and an old but robust implementation of stomatal optimization theory (vegetation) to simulate plant growth, water use efficiency, and the response of crops to increasing carbon dioxide.
-
-This is the C version of Cycles.
-
-INSTALLATION
-------------
-Download the code to your work directory. Enter the `Cycles` directory and run
-
-```shell
-$ make
-```
-
-to install Cycles.
-
-RUN CYCLES
-----------
-The syntax is
-
-```shell
-$ ./Cycles [-v] [-d] <project name>
-```
-
-The optional -v parameter will turn on the verbose mode.
-The optional -d parameter will turn on the debug mode.
-
-INPUT FILES
------------
-The Cycles requires XX input files: `.crop`, `.ctrl`, `.operation`, `.soil`, and `.weather` files.
-
-PLOTTING TOOLS
---------------
-The Cycles provides simple plotting tools to visualize model results using gnuplot script.
-To check the output variables of a project, please use the `preview` shell script:
-
-```shell
-$ ./preview <project name>
-```
-
-You can then choose the variable to be plotted.
-
-You can also compare the model results between two projects using `preview`:
-
-```shell
-$ ./preview <project name A> <project name B>
-```
+This repository is used to release Cycles executables and track issues.
+All versions of Cycles releases can be found at the [release page](https://github.com/PSUmodeling/Cycles/releases).
+Please submit all bug reports and feature requests using the [Issues tab](https://github.com/PSUmodeling/Cycles/issues).
