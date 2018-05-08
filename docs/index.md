@@ -1035,4 +1035,7 @@ Please describe how to reproduce the bug, what is the expected result, and what 
 Include important information such as in which output file, on what simulation day does the bug appear.
 If the bug is specific to your simulation, please attach your input files to the issue.
 
+The Cycles team will get back to you immediately.
+Meanwhile check if your question has been already posted and resolved.
+
 [(Back to top)](#contents)
