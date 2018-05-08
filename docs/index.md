@@ -44,11 +44,11 @@ to install Cycles.
 
 **Windows users**
 
-To get started running the model, download and decompress the latest `Cycles_win.zip` package [release page](https://github.com/PSUmodeling/Cycles/releases) to a working directory of your choice.
+To get started running the model, download and decompress the latest `Cycles_win.zip` package from the [release page](https://github.com/PSUmodeling/Cycles/releases) to a working directory of your choice.
 
 The input directory is where you store the various input files needed to drive each simulation.
 Each simulation needs a control file (\*.ctrl), an operation file (\*.operation), a soil profile description file (\*.soil), a crop description file (\*.crop), and a weather file (\*.weather).
-Each simulation you run should have uniquely named control and operation files, but it is possible to share a single soil description file, crop description file, or weather file across multiple simulations.
+Each simulation you run should have a uniquely named control file, but it is possible to share a single operation file, soil description file, crop description file, or weather file across multiple simulations.
 
 Each of the input files is described in more detail below, but assuming that the input files are prepared and located in the ‘input’ directory, Cycles is launched as follows.
 
@@ -79,27 +79,27 @@ Each of the input files is described in more detail below, but assuming that the
    .\Cycles_win TestSimulation
    ```
    
-   You can also specify whether to run the model in verbose mode, or debugging mode, by adding -v or -d, respectively, as in:
+   You can also specify whether to run the model in verbose mode, or debugging mode, by adding -v or -d parameters, respectively, as in:
 
    ```shell
-   ./Cycles -v -d <simulation name>
+   ./Cycles -vd <simulation name>
    ```
    
    or, in Windows:
    
    ```shell
-   .\Cycles_win -v -d <simulation name>
+   .\Cycles_win -vd <simulation name>
    ```
 
    Verbose mode prints a notification to the terminal with the day each crop management operation is executed in the simulation and debugging mode provides output with error codes if the simulation fails due to a bug in the code.
 
-Outputs from the model are written to files located in a subdirectory named `Output`.
-If the Output subdirectory does not already exist within your working directory, the program will create it.
-To keep your outputs organized, the program creates a new subdirectory within the `Output` directory with the same name as the simulation control file.
+Outputs from the model are written to files located in a subdirectory named `output`.
+If the `output` subdirectory does not already exist within your working directory, the program will create it.
+To keep your outputs organized, the program creates a new subdirectory within the `output` directory with the same name as the simulation control file.
 If you run the same simulation control file multiple times, the program will **overwrite** output files in the folder each time.
 
 **Windows users:** It is important to note that if any of the output files are open in a spreadsheet software when a new simulation is run, those files will not be overwritten successfully.
-To save an existing output file within the output subdirectory and prevent the results from being overwritten by subsequent simulation runs, you can manually change the name of the file in Windows Explorer, for instance by appending a keyword of your choice to the filename.
+To save an existing output file within the `output` subdirectory and prevent the results from being overwritten by subsequent simulation runs, you can manually change the name of the file in Windows Explorer, for instance by appending a keyword of your choice to the filename.
 
 The remainder of the manual will describe the structure of the input files needed to run a simulation and provide documentation of the results printed to the various output files.
 
@@ -122,7 +122,7 @@ To create input files for a new simulation, it’s easiest to make a copy of exi
 
 The simulation control files have a suffix of `.ctrl`.
 For each simulation, the name of the control file is submitted when invoking Cycles at the command prompt and is also used as the directory name where output files are stored following each simulation.
-In the control file, keyword tags are on the left and the value for each tag is separated by spaces or a tab on the right.
+In the control file, keyword tags are on the left and the value for each tag is separated by spaces or tabs on the right.
 The control file contains information about the starting and ending years of the simulation, simulation options, including the specific output files to be written, and the names of other input files.
 Simulation options are represented as on/off switches, where `0` stands for off and `1` stands for on.
 The meaning of each keyword in the control file is described below.
@@ -143,6 +143,12 @@ There must be records in the weather file through December 31 of this year.
 
 The number of years in the crop rotation specified in the operation input file.
 The specified rotation will automatically repeat itself as many times as needed over the duration of the simulation spanning from `SIMULATION_START_YEAR` to `SIMULATION_END_YEAR`.
+
+#### `USE_REINITIALIZATION`
+
+Set to `1` if reintialization of soil CN pools are desired on a specific day of rotation year.
+A reinitialization file is required in this case.
+Set to `0` if reinitialization is not needed.
 
 #### `ADJUSTED_YIELDS`
 
@@ -233,6 +239,13 @@ This file must be located in a directory titled `Input` that is within the `Cycl
 
 The name of the weather file.
 This file must be located in a directory titled `Input` that is within the `Cycles` working directory.
+
+#### `REINIT_FILE`
+
+The name of the reinitialization file.
+This file must be located in a directory titled `Input` that is within the `Cycles` working directory.
+Note that it cannot be left as blank, even if reinitialization is not needed.
+Use `N/A` if reinitialization is not needed.
 
 [(Back to top)](#contents)
 
