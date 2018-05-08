@@ -1026,7 +1026,7 @@ The summary file provides a summarized output of total C inputs over the duratio
 
 ## Bug Report Guidelines
 
-All bug reports and feature requests **must** be submitted as an issue at the [Cycles Issues page](https://github.com/PSUmodeling/Cycles/issues).
+All bug reports and feature requests **must** be submitted as issues at the [Cycles Issues page](https://github.com/PSUmodeling/Cycles/issues).
 
 Before reporting the bug, please download the latest version of Cycles at the [Cycles release page](https://github.com/PSUmodeling/Cycles/releases) and test if the bug has already been fixed.
 
