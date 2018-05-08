@@ -17,6 +17,8 @@ Prepared by Charles White, Yuning Shi, and Armen Kemanian
 
 [Output Files](#output-files)
 
+[Bug Report Guidelines](#bug-report-guidelines)
+
 ## Introduction to Using Cycles
 
 Cycles is a daily time-step agroecosystem model that simulates the biophysical processes and management practices occurring within cropping systems and other landuses.
@@ -1032,3 +1034,5 @@ or, in Windows
 Please describe how to reproduce the bug, what is the expected result, and what is the actual result.
 Include important information such as in which output file, on what simulation day does the bug appear.
 If the bug is specific to your simulation, please attach your input files to the issue.
+
+[(Back to top)](#contents)
