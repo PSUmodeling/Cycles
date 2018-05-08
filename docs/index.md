@@ -29,7 +29,8 @@ A release for Windows users is also provided, which can be run with an executabl
 Text-based input files that specify the simulation control parameters, a soil profile description, crop descriptions, the sequence of management operations, and weather drive each user-defined simulation.
 Outputs for various pools and fluxes in the agroecosystem are written to tab-delimited text files that can be opened by most spreadsheet programs.
 
-### Unix users
+**Unix users**
+
 To get started running the model, download and decompress the latest source code package from the [release page](https://github.com/PSUmodeling/Cycles/releases) to your work directory.
 Within this working directory, run
 
@@ -39,7 +40,7 @@ $ make
 
 to install Cycles.
 
-### Windows users
+**Windows users**
 
 To get started running the model, download and decompress the latest `Cycles_win.zip` package [release page](https://github.com/PSUmodeling/Cycles/releases) to a working directory of your choice.
 
@@ -57,6 +58,12 @@ Each of the input files is described in more detail below, but assuming that the
    ./Cycles <simulation name>
    ```
 
+   or, in Windows:
+   
+   ```shell
+   .\Cycles_win <simulation name>
+   ```
+   
    The string `<simulation name>` should correspond to the filename of the simulation control file, not including the .ctrl suffix.
    For instance, the command used to run the simulation specified by the `TestSimulation.ctrl` file is
 
@@ -64,10 +71,22 @@ Each of the input files is described in more detail below, but assuming that the
    ./Cycles TestSimulation
    ```
 
+   or in Windows,
+   
+   ```shell
+   .\Cycles_win TestSimulation
+   ```
+   
    You can also specify whether to run the model in verbose mode, or debugging mode, by adding -v or -d, respectively, as in:
 
    ```shell
    ./Cycles -v -d <simulation name>
+   ```
+   
+   or, in Windows:
+   
+   ```shell
+   .\Cycles_win -v -d <simulation name>
    ```
 
    Verbose mode prints a notification to the terminal with the day each crop management operation is executed in the simulation and debugging mode provides output with error codes if the simulation fails due to a bug in the code.
@@ -989,3 +1008,27 @@ The summary file provides a summarized output of total C inputs over the duratio
 | AVG TOT N2O EMI	| kg N/yr       | Average total nitrous oxide emissions over the duration of the simulation. |
 
 [(Back to top)](#contents)
+
+## Bug Report Guidelines
+
+All bug reports and feature requests **must** be submitted as an issue at the [Cycles Issues page](https://github.com/PSUmodeling/Cycles/issues).
+
+Before reporting the bug, please download the latest version of Cycles at the [Cycles release page](https://github.com/PSUmodeling/Cycles/releases) and test if the bug has already been fixed.
+
+When reporting a bug, describe the bug briefly in the title of the issue.
+In the comment section, include the Cycles version you have tested.
+To check the version of Cycles you are using, please run
+
+```shell
+./Cycles -V
+```
+
+or, in Windows
+
+```shell
+.\Cycles_win -V
+```
+
+Please describe how to reproduce the bug, what is the expected result, and what is the actual result.
+Include important information such as in which output file, on what simulation day does the bug appear.
+If the bug is specific to your simulation, please attach your input files to the issue.
