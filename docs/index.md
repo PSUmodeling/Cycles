@@ -1,6 +1,5 @@
-## Cycles: An Agroecosystems Simulation Model
-
-# User Reference Guide
+# Cycles: An Agroecosystems Simulation Model
+# *User Reference Guide*
 
 Prepared by Charles White, Yuning Shi, and Armen Kemanian
 
@@ -23,26 +22,20 @@ Prepared by Charles White, Yuning Shi, and Armen Kemanian
 
 ## Introduction to Using Cycles
 
-Cycles is a daily time-step agroecosystem model that simulates the biophysical processes and management practices occurring within cropping systems and other landuses.
+Cycles is a daily time-step agro-ecosystem model that simulates the biophysical processes and management practices occurring within cropping systems and other land uses.
 Processes include fluxes in the water and energy balance, the coupled cycling of carbon and nitrogen, and plant growth.
 The model can simulate a wide range of agricultural management practices such as tillage, organic and inorganic nutrient additions, annual and perennial crops, crop harvests as grain or forages, polycultures and relay cropping, grazing, and irrigation.
 Crop growth is represented with a generalizable framework such that a nearly limitless variety of agricultural crop species can be specified by the user.
 
-Cycles is run in the Linux or Unix environment.
-A release for Windows users is also provided, which can be run with an executable program in the Windows command prompt terminal.
+Cycles is written in C.
+A release for Windows users is provided, which can be run with an executable program in the Windows command prompt terminal.
 Text-based input files that specify the simulation control parameters, a soil profile description, crop descriptions, the sequence of management operations, and weather drive each user-defined simulation.
-Outputs for various pools and fluxes in the agroecosystem are written to tab-delimited text files that can be opened by most spreadsheet programs.
+An optional re-initialization file can be used to reset model variables to desired values as described in the re-initialization file.
+Outputs for various pools and fluxes in the agro-ecosystem are written to tab-delimited text files that can be opened by most spreadsheet programs.
 
 **Unix users**
 
-To get started running the model, download and decompress the latest source code package from the [release page](https://github.com/PSUmodeling/Cycles/releases) to your work directory.
-Within this working directory, run
-
-```shell
-$ make
-```
-
-to install Cycles.
+To get access to the C source code of Cycles, please contact [Dr. Armen Kemanian](mailto:kxa15@psu.edu).
 
 **Windows users**
 
@@ -50,7 +43,8 @@ To get started running the model, download and decompress the latest `Cycles_win
 
 The input directory is where you store the various input files needed to drive each simulation.
 Each simulation needs a control file (\*.ctrl), an operation file (\*.operation), a soil profile description file (\*.soil), a crop description file (\*.crop), and a weather file (\*.weather).
-Each simulation you run should have a uniquely named control file, but it is possible to share a single operation file, soil description file, crop description file, or weather file across multiple simulations.
+A re-initialization file (\*.reinit) is optional.
+Each simulation you run should have a uniquely-named control file, but it is possible to share a single operation file, soil description file, crop description file, or weather file across multiple simulations.
 
 Each of the input files is described in more detail below, but assuming that the input files are prepared and located in the ‘input’ directory, Cycles is launched as follows.
 
@@ -59,38 +53,32 @@ Each of the input files is described in more detail below, but assuming that the
 2. Once you are in the directory, type the following into the command line and hit enter:
 
    ```shell
-   ./Cycles <simulation name>
+   $ ./Cycles <simulation name>
    ```
 
    or, in Windows:
 
    ```shell
-   .\Cycles_win <simulation name>
+   > Cycles_win.exe <simulation name>
    ```
 
    The string `<simulation name>` should correspond to the filename of the simulation control file, not including the .ctrl suffix.
    For instance, the command used to run the simulation specified by the `TestSimulation.ctrl` file is
-
    ```shell
-   ./Cycles TestSimulation
+   $ ./Cycles TestSimulation
    ```
-
    or in Windows,
-
    ```shell
-   .\Cycles_win TestSimulation
+   > Cycles_win.exe TestSimulation
    ```
 
    You can also specify whether to run the model in verbose mode, or debugging mode, by adding -v or -d parameters, respectively, as in:
-
    ```shell
-   ./Cycles [-vd] <simulation name>
+   $ ./Cycles [-vd] <simulation name>
    ```
-
    or, in Windows:
-
    ```shell
-   .\Cycles_win [-vd] <simulation name>
+   > Cycles_win.exe [-vd] <simulation name>
    ```
 
    Verbose mode prints a notification to the terminal with the day each crop management operation is executed in the simulation and debugging mode provides output with error codes if the simulation fails due to a bug in the code.
@@ -98,20 +86,47 @@ Each of the input files is described in more detail below, but assuming that the
 3. Cycles includes a "multi-mode" feature that enables users to run batch simulations.
    In multi-mode, a master control file (or [multi-mode file](#multi-mode-file)) in the input folder is required.
    To start batch simulation as described in the multi-mode file:
-
    ```shell
-   ./Cycles -m <multi-mode file name>
+   $ ./Cycles -m <multi-mode file name>
    ```
-
    or, in Windows:
-
    ```shell
-   .\Cycles_win -m <multi-mode file name>
+   > Cycles_win.exe -m <multi-mode file name>
    ```
+
+4. Cycles includes a spin-up feature that enables users to run the model to equilibrium.
+   In spin-up mode, the model recycles the weather forcing and operations between the specified simulation start year and end year, until the model reaches equilibrium (i.e., the change in total soil organic carbon before and after the simulation is below 1%).
+   The spin-up is followed by a simulation starting from equilibrium.
+   No output file is written during the spin-up.
+   Only the last simulation from equilibrium produces model output.
+   The spin-up simulation also generates a `<soil file name>.ss` file in the `input` directory, which contains the soil conditions at equilibrium, and can be used to drive other simulations.
+   To start a simulation with spin-up:
+   ```shell
+   $ ./Cycles -s <simulation name>
+   ```
+   or, in Windows:
+   ```shell
+   > Cycles_win.exe -s <simulation name>
+   ```
+
+5. Cycles includes a "baseline simulation" mode.
+   The baseline simulation generates a re-initialization file at specified day of year (DOY) when it runs.
+   The generated re-initialization file can be used to for other simulations, resetting model variables to the "baseline" values.
+   To start a baseline simulation that generates re-initialization for a specified DOY:
+   ```shell
+   $ ./Cycles -l <DOY> <simulation name>
+   ```
+   or, in Windows:
+   ```shell
+   > Cycles_win.exe -l <DOY> <simulation name>
+   ```
+   The baseline simulation can also spin-up.
+   Only the equilibrium simulation will generate re-initialization variables.
 
 Outputs from the model are written to files located in a subdirectory named `output`.
 If the `output` subdirectory does not already exist within your working directory, the program will create it.
 To keep your outputs organized, the program creates a new subdirectory within the `output` directory with the same name as the simulation control file.
+In baseline mode the generated re-initialization file can be found in the output directory as `reinit.dat`.
 If you run the same simulation control file multiple times, the program will **overwrite** output files in the folder each time.
 
 **Windows users:** It is important to note that if any of the output files are open in a spreadsheet software when a new simulation is run, those files will not be overwritten successfully.
@@ -162,9 +177,9 @@ The specified rotation will automatically repeat itself as many times as needed 
 
 #### `USE_REINITIALIZATION`
 
-Set to `1` if reinitialization of carbon, nitrogen or water variables are desired on a specific day of rotation year.
-A reinitialization file is required in this case.
-Set to `0` if reinitialization is not needed.
+Set to `1` if reinitialization of carbon, nitrogen or water variables are desired on a specific day of simulation year.
+A re-initialization file is required in this case.
+Set to `0` if re-initialization is not needed.
 
 #### `ADJUSTED_YIELDS`
 
@@ -173,7 +188,7 @@ Enter `0`.
 
 #### `HOURLY_INFILTRATION`
 
-Controls whether water infiltration and redistribution between soil layers is calculated using the daily cascade method (set value to `0`) or a finite difference numerical integration at an hourly timestep (set value to `1`).
+Controls whether water infiltration and redistribution between soil layers is calculated using the daily cascade method (set value to `0`) or a finite difference numerical integration at an hourly time-step (set value to `1`).
 The cascade method is the most computationally efficient, but does not allow for water contents greater than field capacity or soil wetting from the bottom up.
 Cascade method can miss denitrification badly, but do a good job with the water balance.
 
@@ -239,27 +254,27 @@ Annual output files are printed by default.
 #### `CROP_FILE`
 
 The name of the crop description file.
-This file must be located in a directory titled `Input` that is within the `Cycles` working directory.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
 
 #### `OPERATION_FILE`
 
 The name of the operation file.
-This file must be located in a directory titled `Input` that is within the `Cycles` working directory.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
 
 #### `SOIL_FILE`
 
 The name of the soil profile description file.
-This file must be located in a directory titled `Input` that is within the `Cycles` working directory.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
 
 #### `WEATHER_FILE`
 
 The name of the weather file.
-This file must be located in a directory titled `Input` that is within the `Cycles` working directory.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
 
 #### `REINIT_FILE`
 
 The name of the reinitialization file.
-This file must be located in a directory titled `Input` that is within the `Cycles` working directory.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
 Note that it cannot be left as blank, even if reinitialization is not needed.
 Use `N/A` if reinitialization is not needed.
 
@@ -274,11 +289,11 @@ Altitude and screening height values should be entered in meters.
 Screening height is the height of the weather station instruments above the land surface.
 Following these three lines is a row of tab-delimited column headers in the order `YEAR`, `DOY`, `PP`, `TX`, `TN`, `SOLAR`, `RHX`, `RHN`, `WIND`, with daily values for each weather variable listed in rows below.
 `YEAR` and `DOY` are the year and numerical day of the year, respectively, for each daily weather record.
-`PP` is precipitation in mm/d.
+`PP` is precipitation in mm day<sup>-1</sup>.
 `TX` and `TN` are the maximum and minimum daily temperatures in degrees Celsius.
-`SOLAR` is the daily solar radiation in MJ/m<sup>2</sup>/d.
+`SOLAR` is the daily solar radiation in MJ m<sup>-2</sup> day<sup>-1</sup>.
 `RHX` and `RHN` are the maximum and minimum relative humidity in %.
-`WIND` is the average wind speed in m/s.
+`WIND` is the average wind speed in m s<sup>-1</sup>.
 
 [(Back to top)](#contents)
 
@@ -567,6 +582,21 @@ The year in the rotation in which the planting operation is to be performed.
 ##### `DOY`
 
 The numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed.
+If conditional planting is activated (i.e., `MIN_SMC` and `MIN_SOIL_TEMP` are not `-999`), this is the beginning of the planting window.
+
+#### `END_DOY`
+
+The last numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed when conditional planting is activated.
+
+#### `MIN_SMC`
+
+Minimum volumetric soil moisture required to perform planting in m<sup>3</sup> m<sup>-3</sup>.
+Set the value to `-999` to disable soil moisture control on conditional planting.
+
+#### `MIN_SOIL_TEMP`
+
+Minimum soil temperature required to perform planting in degree Celsius.
+Set the value to `-999` to disable soil temperature control on conditional planting.
 
 ##### `CROP`
 
@@ -801,18 +831,15 @@ The bottom soil layer that will be used in the determination of auto irrigation 
 
 ### Reinitialization File (\*.reinit)
 
-Reinitialization files are optional, and typically have a suffix of `.reinit`, but any naming convention can be used as long as it matches the reinitialization file name listed in the control file.
-
+Re-initialization files are optional, and typically have a suffix of `.reinit`, but any naming convention can be used as long as it matches the reinitialization file name listed in the control file.
 When reinitialization option is used, the model variables of choice will be replaced by the values specified in the reinitialization file.
 
-The reinitialization file starts with a row of column headers in the order of `ROT_YEAR`, `DOY`, `VARIABLE`, and `VALUE`.
-Each line that follows describes the reinitialization of one model variable.
-
-`ROT_YEAR` and `DOY` set the year in the rotation and the numerical day of the year that reinitialization occurs.
-
-`VARIABLE` determines the variable that needs to be reinitialized.
+The reinitialization file starts with a row specifying `YEAR`, and `DOY`.
+`YEAR` and `DOY` set the simulation year and the numerical day of the year that reinitialization occurs.
+The re-reinitialization variables are organized in a table-like fashion.
+The header lines describe the names of the variables, and the values follow.
 Currently, the following options are available:
- SMC (soil moisture; m3/m3),
+ SMC (m3/m3),
  NO3 (kg/ha),
  NH4 (kg/ha),
  SOC (Mg/ha),
@@ -823,20 +850,22 @@ Currently, the following options are available:
  RESIDUEABGDN (Mg/ha),
  RESIDUERTN (Mg/ha),
  RESIDUERZN (Mg/ha),
- MANUREC (Mg/ha), and
- MANUREN (Mg/ha)
+ MANUREC (Mg/ha),
+ MANUREN (Mg/ha), and
+ SATURATION (100%)
 of different soil layers; and
  STANRESIDUEMASS (Mg/ha),
  FLATRESIDUEMASS (Mg/ha),
  STANRESIDUEN (Mg/ha),
  FLATRESIDUEN (Mg/ha),
- MANURESURFACEC (Mg/ha), and
+ MANURESURFACEC (Mg/ha),
  MANURESURFACEN (Mg/ha),
+ STANRESIDUEWATER (mm),
+ FLATRESIDUEWATER (mm), and
+ INFILTRATION (mm/day).
 
-To specify soil layers, use `_LX` after the variable name.
-For example, for soil moisture at soil layer 1, use `SMC_L1`.
-
-The `VALUE` column sets the value of the desired reinitialized variables.
+ The structure described above can repeat to specify re-initialization for as many days as needed.
+ To disable the re-initialization of certain variables, use `-999` as their values.
 
 [(Back to top)](#contents)
 
@@ -1102,13 +1131,13 @@ In the comment section, include the Cycles version you have tested.
 To check the version of Cycles you are using, please run
 
 ```shell
-./Cycles -V
+$ ./Cycles -V
 ```
 
 or, in Windows
 
 ```shell
-.\Cycles_win -V
+> Cycles_win.exe -V
 ```
 
 Please describe how to reproduce the bug, what is the expected result, and what is the actual result.
