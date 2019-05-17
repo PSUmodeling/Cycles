@@ -863,6 +863,16 @@ of different soil layers; and
  STANRESIDUEWATER (mm),
  FLATRESIDUEWATER (mm), and
  INFILTRATION (mm/day).
+ 
+ YEAR | yyyy |  DOY | xxx | | | | | | | | | | | | |
+--- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---| --- | --- | ---
+STANRESIDUEMASS | FLATRESIDUEMASS | STANRESIDUEN | FLATRESIDUEN | MANURESURFACEC | MANURESURFACEN 
+...
+LAYER | SMC | NO3 | NH4 | SOC | SON | MBC | MBN | RESIDUEABGD | RESIDUERT | RESIDUERZ | RESIDUEABGDN | RESIDUERTN | RESIDUERZN | MANUREC | MANUREN
+1 | ...
+2 | ...
+3 | ...
+...
 
  The structure described above can repeat to specify re-initialization for as many days as needed.
  To disable the re-initialization of certain variables, use `-999` as their values.
