@@ -53,32 +53,38 @@ Each of the input files is described in more detail below, but assuming that the
 2. Once you are in the directory, type the following into the command line and hit enter:
 
    ```shell
-   $ ./Cycles <simulation name>
+   ./Cycles <simulation name>
    ```
 
    or, in Windows:
 
    ```shell
-   > Cycles_win.exe <simulation name>
+   Cycles_win.exe <simulation name>
    ```
 
    The string `<simulation name>` should correspond to the filename of the simulation control file, not including the .ctrl suffix.
    For instance, the command used to run the simulation specified by the `TestSimulation.ctrl` file is
+
    ```shell
-   $ ./Cycles TestSimulation
+   ./Cycles TestSimulation
    ```
+
    or in Windows,
+
    ```shell
-   > Cycles_win.exe TestSimulation
+   Cycles_win.exe TestSimulation
    ```
 
    You can also specify whether to run the model in verbose mode, or debugging mode, by adding -v or -d parameters, respectively, as in:
+
    ```shell
-   $ ./Cycles [-vd] <simulation name>
+   ./Cycles [-vd] <simulation name>
    ```
+
    or, in Windows:
+
    ```shell
-   > Cycles_win.exe [-vd] <simulation name>
+   Cycles_win.exe [-vd] <simulation name>
    ```
 
    Verbose mode prints a notification to the terminal with the day each crop management operation is executed in the simulation and debugging mode provides output with error codes if the simulation fails due to a bug in the code.
@@ -86,12 +92,15 @@ Each of the input files is described in more detail below, but assuming that the
 3. Cycles includes a "multi-mode" feature that enables users to run batch simulations.
    In multi-mode, a master control file (or [multi-mode file](#multi-mode-file)) in the input folder is required.
    To start batch simulation as described in the multi-mode file:
+
    ```shell
-   $ ./Cycles -m <multi-mode file name>
+   ./Cycles -m <multi-mode file name>
    ```
+
    or, in Windows:
+
    ```shell
-   > Cycles_win.exe -m <multi-mode file name>
+   Cycles_win.exe -m <multi-mode file name>
    ```
 
 4. Cycles includes a spin-up feature that enables users to run the model to equilibrium.
@@ -99,27 +108,33 @@ Each of the input files is described in more detail below, but assuming that the
    The spin-up is followed by a simulation starting from equilibrium.
    No output file is written during the spin-up.
    Only the last simulation from equilibrium produces model output.
-   The spin-up simulation also generates a `<soil file name>.ss` file in the `input` directory, which contains the soil conditions at equilibrium, and can be used to drive other simulations.
+   The spin-up simulation also generates a `<simulation name>.ss` file in the `input` directory, which contains the soil conditions at equilibrium, and can be used to drive other simulations.
    To start a simulation with spin-up:
+
    ```shell
-   $ ./Cycles -s <simulation name>
+   ./Cycles -s <simulation name>
    ```
+
    or, in Windows:
+
    ```shell
-   > Cycles_win.exe -s <simulation name>
+   Cycles_win.exe -s <simulation name>
    ```
 
 5. Cycles includes a "baseline simulation" mode.
    The baseline simulation generates a re-initialization file at specified day of year (DOY) when it runs.
    The generated re-initialization file can be used to for other simulations, resetting model variables to the "baseline" values.
    To start a baseline simulation that generates re-initialization for a specified DOY:
+
    ```shell
-   $ ./Cycles -l <DOY> <simulation name>
+   ./Cycles -l <DOY> <simulation name>
    ```
    or, in Windows:
+
    ```shell
-   > Cycles_win.exe -l <DOY> <simulation name>
+   Cycles_win.exe -l <DOY> <simulation name>
    ```
+
    The baseline simulation can also spin-up.
    Only the equilibrium simulation will generate re-initialization variables.
 
@@ -584,18 +599,25 @@ The year in the rotation in which the planting operation is to be performed.
 The numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed.
 If conditional planting is activated (i.e., `MIN_SMC` and `MIN_SOIL_TEMP` are not `-999`), this is the beginning of the planting window.
 
-#### `END_DOY`
+##### `END_DOY`
 
 The last numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed when conditional planting is activated.
 
-#### `MIN_SMC`
+##### `MAX_SMC`
+
+Maximum volumetric soil moisture allowed to perform planting in m<sup>3</sup> m<sup>-3</sup>.
+Set the value to `-999` to disable maximum soil moisture control on conditional planting.
+
+##### `MIN_SMC`
 
 Minimum volumetric soil moisture required to perform planting in m<sup>3</sup> m<sup>-3</sup>.
-Set the value to `-999` to disable soil moisture control on conditional planting.
+Keyword `FC` can be used for the `MAX_SMC` value, which represents field capacity.
+Set the value to `-999` to disable minimum soil moisture control on conditional planting.
 
-#### `MIN_SOIL_TEMP`
+##### `MIN_SOIL_TEMP`
 
 Minimum soil temperature required to perform planting in degree Celsius.
+Keyword `PWP` can be used for the `MIN_SMC` value, which represents permanent wilting point.
 Set the value to `-999` to disable soil temperature control on conditional planting.
 
 ##### `CROP`
@@ -623,6 +645,7 @@ This feature allows for the planting of multiple species in a plant community at
 ##### `CLIPPING_START`
 
 The numerical day of the year on which the clipping time window begins.
+Set the value to `-999` to disable harvesting of the corresponding crop.
 
 ##### `CLIPPING_END`
 
