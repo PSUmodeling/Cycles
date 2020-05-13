@@ -13,7 +13,7 @@ Prepared by Charles White, Yuning Shi, and Armen Kemanian
 - [Soil File](#soil-file-soil)
 - [Crop Description File](#crop-description-file-crop)
 - [Management Operations File](#management-operations-file-operation)
-- [Reinitialization File](#reinitialization-file-reinit)
+- [Re-initialization File](#reinitialization-file-reinit)
 - [Multi-mode File](#multi-mode-file)
 
 [Output Files](#output-files)
@@ -1194,13 +1194,13 @@ In the comment section, include the Cycles version you have tested.
 To check the version of Cycles you are using, please run
 
 ```shell
-$ ./Cycles -V
+./Cycles -V
 ```
 
 or, in Windows
 
 ```shell
-> Cycles_win.exe -V
+Cycles_win.exe -V
 ```
 
 Please describe how to reproduce the bug, what is the expected result, and what is the actual result.
