@@ -28,25 +28,20 @@ The model can simulate a wide range of agricultural management practices such as
 Crop growth is represented with a generalizable framework such that a nearly limitless variety of agricultural crop species can be specified by the user.
 
 Cycles is written in C.
-A release for Windows users is provided, which can be run with an executable program in the Windows command prompt terminal.
+The release page contains compiled executables for different operating system.
 Text-based input files that specify the simulation control parameters, a soil profile description, crop descriptions, the sequence of management operations, and weather drive each user-defined simulation.
 An optional re-initialization file can be used to reset model variables to desired values as described in the re-initialization file.
 Outputs for various pools and fluxes in the agro-ecosystem are written to tab-delimited text files that can be opened by most spreadsheet programs.
 
-**Unix users**
-
-To get access to the C source code of Cycles, please contact [Dr. Armen Kemanian](mailto:kxa15@psu.edu).
-
-**Windows users**
-
-To get started running the model, download and decompress the latest `Cycles_win.zip` package from the [release page](https://github.com/PSUmodeling/Cycles/releases) to a working directory of your choice.
+To get started running the model, download the package based on your operating system from the [release page](https://github.com/PSUmodeling/Cycles/releases) under the "Assets" menu and decompress the package to a working directory of your choice.
+For Windows users, please use `Cycles_win_vXXX.zip`, Mac users `Cycles_macos_vXXX.zip`, and Unix users `Cycles_debian_vXXX.zip`.
 
 The input directory is where you store the various input files needed to drive each simulation.
 Each simulation needs a control file (\*.ctrl), an operation file (\*.operation), a soil profile description file (\*.soil), a crop description file (\*.crop), and a weather file (\*.weather).
 A re-initialization file (\*.reinit) is optional.
 Each simulation you run should have a uniquely-named control file, but it is possible to share a single operation file, soil description file, crop description file, or weather file across multiple simulations.
 
-Each of the input files is described in more detail below, but assuming that the input files are prepared and located in the ‘input’ directory, Cycles is launched as follows.
+Each of the input files is described in more detail below, but assuming that the input files are prepared and located in the `input` directory, Cycles is launched as follows.
 
 1. Navigate to the `Cycles` working directory.
 
@@ -75,19 +70,21 @@ Each of the input files is described in more detail below, but assuming that the
    Cycles_win.exe TestSimulation
    ```
 
-   You can also specify whether to run the model in verbose mode, or debugging mode, by adding -v or -d parameters, respectively, as in:
+   You can also specify whether to run the model in brief mode, verbose mode, or debugging mode, by adding `-b`, `-v` or `-d` parameters, respectively, as in:
 
    ```shell
-   ./Cycles [-vd] <simulation name>
+   ./Cycles [-bvd] <simulation name>
    ```
 
    or, in Windows:
 
    ```shell
-   Cycles_win.exe [-vd] <simulation name>
+   Cycles_win.exe [-bvd] <simulation name>
    ```
 
-   Verbose mode prints a notification to the terminal with the day each crop management operation is executed in the simulation and debugging mode provides output with error codes if the simulation fails due to a bug in the code.
+   Brief mode has minimal screen output.
+   Verbose mode has verbose screen output for users to understand the simulation processes.
+   Debugging mode is the most useful in Unix operating system, stopping the simulation when NAN or overflow errors occur.
 
 3. Cycles includes a "multi-mode" feature that enables users to run batch simulations.
    In multi-mode, a master control file (or [multi-mode file](#multi-mode-file)) in the input folder is required.
@@ -253,18 +250,15 @@ Included are nitrate and ammonium concentrations, the composite environmental fa
 
 #### `ANNUAL_SOIL_OUT`
 
-This keyword tag is not currently activated as a switch.
-Annual output files are printed by default.
+Set to `1` to write an output file named `annualSOM.dat` with annual values for soil carbon pool sizes and carbon saturation ratios by soil layer.
 
 #### `ANNUAL_PROFILE_OUT`
 
-This keyword tag is not currently activated as a switch.
-Annual output files are printed by default.
+Set to `1` to write an output file named `annualSoilProfileC.dat` with annual values of carbon pools by soil layer.
 
-#### `SEASON_OUT`
+#### `ANNUAL_NFLUX_OUT`
 
-This keyword tag is not currently activated as a switch.
-Annual output files are printed by default.
+Set to `1` to write and output file named `annualN.dat` with annual values of nitrogen fluxes, including fertilization, fixation, leaching, denitrification, nitrification, and volatilization.
 
 #### `CROP_FILE`
 
@@ -329,7 +323,7 @@ The curve number rating will affect the water budget in a simulation, which can 
 The `SLOPE` value is in %, or units of rise per 100 units of run.
 The `TOTAL_LAYERS` value is simply the total number of soil layers described in the profile.
 
-Below the first three keyword tags is a row of column headers for soil properties in the order `LAYER`, `THICK`, `CLAY`, `SAND`, `ORGANIC`, `BD`, `FC`, `PWP`, `NO3`, and `NH4`.
+Below the first three keyword tags is a row of column headers for soil properties in the order `LAYER`, `THICK`, `CLAY`, `SAND`, `ORGANIC`, `BD`, `FC`, `PWP`, `NO3`, `NH4`, `BYP_H`, and `BYP_V`.
 The values of each soil property are listed below in a separate row for each soil layer.
 The variable `LAYER` is simply the layer number, starting at `1` and increasing by one unit for each additional layer.
 `THICK` is the thickness of each soil layer in meters.
@@ -347,6 +341,8 @@ The microbial biomass C and N pools are also initialized as 3% of the pool sizes
 If any of these values are not known for a soil layer, you can enter -999 and the model will estimate the values using pedotransfer functions.
 
 `NO3` and `NH4` are the nitrate and ammonium masses in kg/ha for each soil layer (important: the values are absolute masses, not concentrations).
+
+`BYP_H` and `BYP_V` are the fractions of horizontal and vertical bypass flows in each soil layer.
 
 [(Back to top)](#contents)
 
@@ -436,6 +432,12 @@ A value of `-999` can be entered to trigger a default value of 101, which will r
 Interactions: The `CLIPPING_BIOMASS_THRESHOLD_UPPER` value also controls if and when a crop will be clipped.
 If the `HARVEST_TIMING` value is greater than 100, indicating a desire to harvest the crop for grain, but the `CLIPPING_BIOMASS_THRESHOLD_UPPER` value is set within a range of biomass production levels that will be achieved during growth of the crop, the crop will get clipped as a forage.
 Therefore, when programming a crop to be grown as a grain crop, the `CLIPPING_BIOMASS_THRESHOLD_UPPER` value should be set to a very high value, such as `999`, so that clipping will not be triggered before physiological maturity is reached.
+
+#### `KILL_AFTER_HARVEST`
+
+Whether to kill the crop after automatic grain or forage harvests.
+Note that crops will not be killed after the scheduled harvests in the operation files.
+To kill the crops after the scheduled harvests, `KILL_CROP` tillage operations need to be scheduled.
 
 #### `CLIPPING_BIOMASS_DESTINY`
 
@@ -602,6 +604,7 @@ If conditional planting is activated (i.e., `MIN_SMC` and `MIN_SOIL_TEMP` are no
 ##### `END_DOY`
 
 The last numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed when conditional planting is activated.
+Set the value to `-999` to disable conditional planting.
 
 ##### `MAX_SMC`
 
@@ -668,7 +671,12 @@ The numerical day of the year (0 to 365) on which the tillage operation is to be
 ##### `TOOL`
 
 A descriptive name of the tillage tool described by the operation entry.
-This can be any user defined string of text and does not affect the simulation, with the exception of the specific string `Kill_Crop` which is used to kill a crop without harvesting any residues.
+This can be any user defined string of text and does not affect the simulation, with some exceptions.
+The string `Kill_Crop` is used to kill a crop without harvesting any residues;
+the string `Grain_Harvest` is used to perform a grain harvest;
+and the string `Forage_Harvest` is used to perform a forage harvest.
+Note that scheduled grain harvest does not kill crops.
+To kill a crop after a harvest, a `Kill_Crop` tillage operation should be used.
 
 ##### `DEPTH`
 
@@ -700,14 +708,6 @@ In future versions, this keyword will be used to program tillage events at speci
 
 This keyword is not activated in the current version of Cycles, so leave the value as 0.
 In future versions, this keyword will be used to generate an incomplete kill of a crop in order to simulate the effect of competition from a crop previous crop that was not completely killed.
-
-##### `GRAIN_HARVEST`
-
-If switched to 1, this keyword triggers a grain harvest event for the crop listed under `CROP_NAME`.
-
-##### `FORAGE_HARVEST`
-
-If switched to 1, this keyword triggers a grain harvest event for the crop listed under `CROP_NAME`.
 
 #### `FIXED_FERTILIZATION`
 
@@ -992,6 +992,28 @@ One column will be created for each layer in the soil profile for the variables 
 
 [(Back to top)](#contents)
 
+### annualN.dat
+
+Note: This file provides annualized measurements of nitrogen fluxes for the sum of all layers in the soil profile.
+
+| Column Heading  | Units   | Description |
+| ----------------| --------| ----------- |
+| YEAR            | YYYY    | Year of the simulation. |
+| FERTILIZATION   | m       | Total mass of N added as fertilizer. |
+| AUTO ADDED      | kg N/ha | Total mass of N added to compensate N limitation. |
+| FIXATION        | kg N/ha | Total N fixation by legume crops. |
+| NO3 LEACHING    | kg N/ha | Nitrate leaching in drainage water at the bottom of the soil profile. |
+| NH4 LEACHING    | kg N/ha | Ammonium leaching in drainage water at the bottom of the soil profile. |
+| NO3 BYPASS      | kg N/ha | Nitrate leaching in drainage water due to horizontal bypass flow. |
+| NH4 BYPASS      | kg N/ha | Ammonium leaching in drainage water due to horizontal bypass flow.. |
+| DENITRIFICATION | kg N/ha | Denitrification of nitrate. |
+| NITRIFICATION   | kg N/ha | Nitrification of ammonium. |
+| VOLATILIZATION  | kg N/ha | Ammonia volatilization. |
+| N2O EMISSION    | kg N/ha | Total nitrous oxide emissions from nitrification and denitrification. |
+| N IN HARVEST    | kg N/ha | N content in removed biomass, which is the sum of grain, forage, and/or removed residues.. |
+
+[(Back to top)](#contents)
+
 ### soilC.dat
 
 Note: Results in this file are for the sum of all layers in the soil profile, including surface residues.
@@ -1026,6 +1048,8 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 | N2O FROM DENIT    | kg N/ha       | Nitrous oxide emissions from denitrification. |
 | NO3 LEACHING      | kg N/ha       | Nitrate leaching in drainage water at the bottom of the soil profile. |
 | NH4 LEACHING      | kg N/ha       | Ammonium leaching in drainage water at the bottom of the soil profile. |
+| NO3 BYPASS        | kg N/ha       | Nitrate leaching in drainage water due to horizontal bypass flow. |
+| NH4 BYPASS        | kg N/ha       | Ammonium leaching in drainage water due to horizontal bypass flow. |
 
 [(Back to top)](#contents)
 
@@ -1059,6 +1083,7 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 | RUNOFF            | mm/day        | Water runoff from the soil surface. |
 | INFILTRATION      | mm/day        | Water infiltration into the soil. |
 | DRAINAGE          | mm/day        | Water drainage from the bottom of the soil profile. |
+| BYPASS            | mm/day        | Water drainage due to horizontal bypass flow. |
 | SOIL EVAP         | mm/day        | Evaporation from the soil surface. |
 | RES EVAP          | mm/day        | Evaporation from the surface residue. |
 | SNOW SUB          | mm/day        | Sublimation from snow cover. |
@@ -1074,6 +1099,7 @@ The season.dat file provides information about each crop harvest.
 | ----------------- | ------------- | ----------- |
 | DATE              | YYYY-MM-DD    | Calendar date in the simulation. |
 | CROP              | -             | Crop that was harvested. |
+| PLANT DATE        | -             | Calendar date when the crop was planted. |
 | TOTAL BIOMASS     | Mg/ha         | Total biomass (roots + aboveground) accumulated by the crop at harvest. |
 | ROOT BIOMASS      | Mg/ha         | Root biomass accumulated by the crop at harvest. |
 | GRAIN YIELD       | Mg/ha         | Grain yield at harvest. |
@@ -1091,6 +1117,8 @@ The season.dat file provides information about each crop harvest.
 | N IN HARVEST      | kg/ha         | N content in removed biomass, which is the sum of grain, forage, and/or removed residues. |
 | N IN RESIDUE      | kg/ha         | N content in residues left in the field at harvest. |
 | N CONCN FORAGE    | %             | The N concentration in forage or removed residues at harvest. |
+| N FIXATION        | kg/ha         | Cumulative N fixation by legume crops. |
+| N ADDED           | kg/ha         | Cumulative N added to crop biomass to sustain growth in autofertilize mode. |
 
 [(Back to top)](#contents)
  
