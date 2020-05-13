@@ -27,8 +27,8 @@ Processes include fluxes in the water and energy balance, the coupled cycling of
 The model can simulate a wide range of agricultural management practices such as tillage, organic and inorganic nutrient additions, annual and perennial crops, crop harvests as grain or forages, polycultures and relay cropping, grazing, and irrigation.
 Crop growth is represented with a generalizable framework such that a nearly limitless variety of agricultural crop species can be specified by the user.
 
-Cycles is written in C.
-The release page contains compiled executables for different operating system.
+Cycles is written in C and the source code is released from the [Cycles GitHub repository](https://github.com/PSUmodeling/Cycles).
+The [release page](https://github.com/PSUmodeling/Cycles/releases) contains compiled executables for different operating systems.
 Text-based input files that specify the simulation control parameters, a soil profile description, crop descriptions, the sequence of management operations, and weather drive each user-defined simulation.
 An optional re-initialization file can be used to reset model variables to desired values as described in the re-initialization file.
 Outputs for various pools and fluxes in the agro-ecosystem are written to tab-delimited text files that can be opened by most spreadsheet programs.
@@ -57,17 +57,17 @@ Each of the input files is described in more detail below, but assuming that the
    Cycles_win.exe <simulation name>
    ```
 
-   The string `<simulation name>` should correspond to the filename of the simulation control file, not including the .ctrl suffix.
-   For instance, the command used to run the simulation specified by the `TestSimulation.ctrl` file is
+   The string `<simulation name>` should correspond to the file name of the simulation control file, not including the `.ctrl` suffix.
+   For instance, the command used to run the simulation specified by the `ContinuousCorn.ctrl` file is
 
    ```shell
-   ./Cycles TestSimulation
+   ./Cycles ContinuousCorn
    ```
 
    or in Windows,
 
    ```shell
-   Cycles_win.exe TestSimulation
+   Cycles_win.exe ContinuousCorn
    ```
 
    You can also specify whether to run the model in brief mode, verbose mode, or debugging mode, by adding `-b`, `-v` or `-d` parameters, respectively, as in:
@@ -84,7 +84,7 @@ Each of the input files is described in more detail below, but assuming that the
 
    Brief mode has minimal screen output.
    Verbose mode has verbose screen output for users to understand the simulation processes.
-   Debugging mode is the most useful in Unix operating system, stopping the simulation when NAN or overflow errors occur.
+   Debugging mode is the most useful in Unix operating systems, stopping the simulation when NAN or overflow errors occur.
 
 3. Cycles includes a "multi-mode" feature that enables users to run batch simulations.
    In multi-mode, a master control file (or [multi-mode file](#multi-mode-file)) in the input folder is required.
@@ -243,7 +243,7 @@ Set to `1` to write an output file named `N.dat` with daily values for pools and
 
 Set to `1` to write an output file named `soilC.dat` with daily values for pools and fluxes in the C cycle, including soil profile stocks of organic C, the C from decomposed organic matter that becomes humified in microbial and stabilized C pools, and C respired from decomposed residues or soil organic matter.
 
-#### `DAILY_SOIL_CN_LYR_OUT`
+#### `DAILY_SOIL_LYR_CN_OUT`
 
 Set to `1` to write an output file named `soilLayersCN.dat` with daily values for C and N pool sizes by soil layer.
 Included are nitrate and ammonium concentrations, the composite environmental factor regulating decomposition rates, residue C and C:N ratio, microbial biomass C and C:N ratio, stabilized organic C and C:N ratio, soil water content, and soil layer thickness and bulk density.
@@ -436,8 +436,8 @@ Therefore, when programming a crop to be grown as a grain crop, the `CLIPPING_BI
 #### `KILL_AFTER_HARVEST`
 
 Whether to kill the crop after automatic grain or forage harvests.
-Note that crops will not be killed after the scheduled harvests in the operation files.
-To kill the crops after the scheduled harvests, `KILL_CROP` tillage operations need to be scheduled.
+Note that crops will not be killed after scheduled harvests in the operation files.
+To kill the crops after scheduled harvests, `KILL_CROP` tillage operations need to be scheduled.
 
 #### `CLIPPING_BIOMASS_DESTINY`
 
@@ -675,7 +675,7 @@ This can be any user defined string of text and does not affect the simulation, 
 The string `Kill_Crop` is used to kill a crop without harvesting any residues;
 the string `Grain_Harvest` is used to perform a grain harvest;
 and the string `Forage_Harvest` is used to perform a forage harvest.
-Note that scheduled grain harvest does not kill crops.
+Note that scheduled grain harvests do not kill crops.
 To kill a crop after a harvest, a `Kill_Crop` tillage operation should be used.
 
 ##### `DEPTH`
@@ -996,21 +996,21 @@ One column will be created for each layer in the soil profile for the variables 
 
 Note: This file provides annualized measurements of nitrogen fluxes for the sum of all layers in the soil profile.
 
-| Column Heading  | Units   | Description |
-| ----------------| --------| ----------- |
-| YEAR            | YYYY    | Year of the simulation. |
-| FERTILIZATION   | m       | Total mass of N added as fertilizer. |
-| AUTO ADDED      | kg N/ha | Total mass of N added to compensate N limitation. |
-| FIXATION        | kg N/ha | Total N fixation by legume crops. |
-| NO3 LEACHING    | kg N/ha | Nitrate leaching in drainage water at the bottom of the soil profile. |
-| NH4 LEACHING    | kg N/ha | Ammonium leaching in drainage water at the bottom of the soil profile. |
-| NO3 BYPASS      | kg N/ha | Nitrate leaching in drainage water due to horizontal bypass flow. |
-| NH4 BYPASS      | kg N/ha | Ammonium leaching in drainage water due to horizontal bypass flow.. |
-| DENITRIFICATION | kg N/ha | Denitrification of nitrate. |
-| NITRIFICATION   | kg N/ha | Nitrification of ammonium. |
-| VOLATILIZATION  | kg N/ha | Ammonia volatilization. |
-| N2O EMISSION    | kg N/ha | Total nitrous oxide emissions from nitrification and denitrification. |
-| N IN HARVEST    | kg N/ha | N content in removed biomass, which is the sum of grain, forage, and/or removed residues.. |
+| Column Heading  | Units | Description |
+| ----------------| ------| ----------- |
+| YEAR            | YYYY  | Year of the simulation. |
+| FERTILIZATION   | kg/ha | Total mass of N added as fertilizer. |
+| AUTO ADDED      | kg/ha | Total mass of N added to crop biomass to sustain growth in autofertilize mode. |
+| FIXATION        | kg/ha | Total N fixation by legume crops. |
+| NO3 LEACHING    | kg/ha | Nitrate leaching in drainage water at the bottom of the soil profile. |
+| NH4 LEACHING    | kg/ha | Ammonium leaching in drainage water at the bottom of the soil profile. |
+| NO3 BYPASS      | kg/ha | Nitrate leaching in drainage water due to horizontal bypass flow. |
+| NH4 BYPASS      | kg/ha | Ammonium leaching in drainage water due to horizontal bypass flow. |
+| DENITRIFICATION | kg/ha | Denitrification of nitrate. |
+| NITRIFICATION   | kg/ha | Nitrification of ammonium. |
+| VOLATILIZATION  | kg/ha | Ammonia volatilization. |
+| N2O EMISSION    | kg/ha | Total nitrous oxide emissions from nitrification and denitrification. |
+| N IN HARVEST    | kg/ha | N content in removed biomass, which is the sum of grain, forage, and/or removed residues. |
 
 [(Back to top)](#contents)
 
@@ -1076,18 +1076,19 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 
 ### Water.dat
 
-| Column Header     | Units         | Description |
-| ----------------- | ------------- | ----------- |
-| DATE              | YYYY-MM-DD    | Calendar date in the simulation. |
-| IRRIGATION        | mm/day        | Water added as irrigation. |
-| RUNOFF            | mm/day        | Water runoff from the soil surface. |
-| INFILTRATION      | mm/day        | Water infiltration into the soil. |
-| DRAINAGE          | mm/day        | Water drainage from the bottom of the soil profile. |
-| BYPASS            | mm/day        | Water drainage due to horizontal bypass flow. |
-| SOIL EVAP         | mm/day        | Evaporation from the soil surface. |
-| RES EVAP          | mm/day        | Evaporation from the surface residue. |
-| SNOW SUB          | mm/day        | Sublimation from snow cover. |
-| TRANSPIRATION     | mm/day        | Transpiration by the crop canopy. |
+| Column Header     |               | Units         | Description |
+| ----------------- | --------------| ------------- | ----------- |
+| DATE              | -             | YYYY-MM-DD    | Calendar date in the simulation. |
+| IRRIGATION        | -             | mm/day        | Water added as irrigation. |
+| RUNOFF            | -             | mm/day        | Water runoff from the soil surface. |
+| INFILTRATION      | -             | mm/day        | Water infiltration into the soil. |
+| DRAINAGE          | -             | mm/day        | Water drainage from the bottom of the soil profile. |
+| BYPASS            | -             | mm/day        | Water drainage due to horizontal bypass flow. |
+| SOIL EVAP         | -             | mm/day        | Evaporation from the soil surface. |
+| RES EVAP          | -             | mm/day        | Evaporation from the surface residue. |
+| SNOW SUB          | -             | mm/day        | Sublimation from snow cover. |
+| TRANSPIRATION     | -             | mm/day        | Transpiration by the crop canopy. |
+| SMC               | LAYER 1..x    | m3/m3         | Soil moisture content. |
 
 [(Back to top)](#contents)
  
@@ -1133,13 +1134,13 @@ One column will be created for each layer in the soil profile for the variables 
 | NO3               | LAYER 1..x    | mg/kg        | Nitrate concentration. |
 | NH4               | LAYER 1..x    | mg/kg        | Ammonium concentration. |
 | FACTOR COMP.      | LAYER 1..x    | -/-          | The composite environmental factor downregulating the maximum decomposition rate of each C pool; a function of temperature, moisture, and aeration in each soil layer. |
-| STAND. RESID. C   | SURFACE       | Mg/ha        | The C content of standing residue on the soil surface. |
-| FLAT RESID. C     | SURFACE       | Mg/ha        | The C content of flattened residue on the soil surface. |
-| MANURE RESID. C   | SURFACE       | Mg/ha        | The C content of manure on the soil surface. |
+| STAND RESID C     | SURFACE       | Mg/ha        | The C content of standing residue on the soil surface. |
+| FLAT RESID C      | SURFACE       | Mg/ha        | The C content of flattened residue on the soil surface. |
+| MANURE RESID C    | SURFACE       | Mg/ha        | The C content of manure on the soil surface. |
 | RESIDUE C         | LAYER 1..x    | Mg/ha        | The total C content of residues in each soil layer, including aboveground crop residues, root residues and rhizodeposits, and manure. |
-| STAND. RESID. C:N | SURFACE       | g:g          | The C:N ratio of standing residue on the soil surface. |
-| FLAT RESID. C:N   | SURFACE       | g:g          | The C:N ratio of flattened residue on the soil surface. |
-| MANURE RESID. C:N | SURFACE       | g:g          | The C:N ratio of manure on the soil surface. |
+| STAND RESID C:N   | SURFACE       | g:g          | The C:N ratio of standing residue on the soil surface. |
+| FLAT RESID C:N    | SURFACE       | g:g          | The C:N ratio of flattened residue on the soil surface. |
+| MANURE RES C:N    | SURFACE       | g:g          | The C:N ratio of manure on the soil surface. |
 | RESIDUE C:N       | LAYER 1..x    | g:g          | The C:N ratio of residues in each soil layer, including aboveground crop residues, root residues and rhizodeposits, and manure. |
 | MIC C             | LAYER 1..x    | Mg/ha        | The C content of microbial biomass in each soil layer. |
 | MIC C:N           | LAYER 1..x    | g:g          | The C:N ratio of microbial biomass in each soil layer. |
