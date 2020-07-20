@@ -27,8 +27,7 @@ Processes include fluxes in the water and energy balance, the coupled cycling of
 The model can simulate a wide range of agricultural management practices such as tillage, organic and inorganic nutrient additions, annual and perennial crops, crop harvests as grain or forages, polycultures and relay cropping, grazing, and irrigation.
 Crop growth is represented with a generalizable framework such that a nearly limitless variety of agricultural crop species can be specified by the user.
 
-Cycles is written in C and the source code is released from the [Cycles GitHub repository](https://github.com/PSUmodeling/Cycles).
-The [release page](https://github.com/PSUmodeling/Cycles/releases) contains compiled executables for different operating systems.
+Cycles is written in C and the executables for different operating systems are released from the [Cycles GitHub repository release page](https://github.com/PSUmodeling/Cycles/releases).
 Text-based input files that specify the simulation control parameters, a soil profile description, crop descriptions, the sequence of management operations, and weather drive each user-defined simulation.
 An optional re-initialization file can be used to reset model variables to desired values as described in the re-initialization file.
 Outputs for various pools and fluxes in the agro-ecosystem are written to tab-delimited text files that can be opened by most spreadsheet programs.
@@ -37,8 +36,8 @@ To get started running the model, download the package based on your operating s
 For Windows users, please use `Cycles_win_vXXX.zip`, Mac users `Cycles_macos_vXXX.zip`, and Unix users `Cycles_debian_vXXX.zip`.
 
 The input directory is where you store the various input files needed to drive each simulation.
-Each simulation needs a control file (\*.ctrl), an operation file (\*.operation), a soil profile description file (\*.soil), a crop description file (\*.crop), and a weather file (\*.weather).
-A re-initialization file (\*.reinit) is optional.
+Each simulation needs a control file (`*.ctrl`), an operation file (`*.operation`), a soil profile description file (`*.soil`), a crop description file (`*.crop`), and a weather file (`*.weather`).
+A re-initialization file (`*.reinit`) is optional.
 Each simulation you run should have a uniquely-named control file, but it is possible to share a single operation file, soil description file, crop description file, or weather file across multiple simulations.
 
 Each of the input files is described in more detail below, but assuming that the input files are prepared and located in the `input` directory, Cycles is launched as follows.
@@ -100,12 +99,14 @@ Each of the input files is described in more detail below, but assuming that the
    Cycles_win.exe -m <multi-mode file name>
    ```
 
+   Note that when running a multi-mode file, the suffix should be included in the command line.
+
 4. Cycles includes a spin-up feature that enables users to run the model to equilibrium.
    In spin-up mode, the model recycles the weather forcing and operations between the specified simulation start year and end year, until the model reaches equilibrium (i.e., the change in total soil organic carbon before and after the simulation is below 1%).
    The spin-up is followed by a simulation starting from equilibrium.
    No output file is written during the spin-up.
    Only the last simulation from equilibrium produces model output.
-   The spin-up simulation also generates a `<simulation name>.ss` file in the `input` directory, which contains the soil conditions at equilibrium, and can be used to drive other simulations.
+   The spin-up simulation also generates a `<simulation name>_ss` file in the `input` directory, which contains the soil conditions at equilibrium, and can be used to drive other simulations.
    To start a simulation with spin-up:
 
    ```shell
@@ -323,7 +324,7 @@ The curve number rating will affect the water budget in a simulation, which can 
 The `SLOPE` value is in %, or units of rise per 100 units of run.
 The `TOTAL_LAYERS` value is simply the total number of soil layers described in the profile.
 
-Below the first three keyword tags is a row of column headers for soil properties in the order `LAYER`, `THICK`, `CLAY`, `SAND`, `ORGANIC`, `BD`, `FC`, `PWP`, `NO3`, `NH4`, `BYP_H`, and `BYP_V`.
+Below the first three keyword tags is a row of column headers for soil properties in the order `LAYER`, `THICK`, `CLAY`, `SAND`, `ORGANIC`, `BD`, `FC`, `PWP`, `SON`, `NO3`, `NH4`, `BYP_H`, and `BYP_V`.
 The values of each soil property are listed below in a separate row for each soil layer.
 The variable `LAYER` is simply the layer number, starting at `1` and increasing by one unit for each additional layer.
 `THICK` is the thickness of each soil layer in meters.
@@ -338,7 +339,10 @@ The organic matter concentration of each layer is converted to C and N concentra
 The microbial biomass C and N pools are also initialized as 3% of the pool sizes of stabilized soil C and N.
 
 `BD` is bulk density in Mg/m<sup>3</sup>, and `FC` and `PWP` are the field capacity and permanent wilting point volumetric water contents, respectively, in m<sup>3</sup>/m<sup>3</sup>.
-If any of these values are not known for a soil layer, you can enter -999 and the model will estimate the values using pedotransfer functions.
+If any of these values are not known for a soil layer, you can enter `-999` and the model will estimate the values using pedotransfer functions.
+
+`SON` is the soil organic nitrogen mass in kg/ha for each soil layer.
+You can also enter `-999` for `SON`, in which case the model starts with a fixed C:N ratio of 9.
 
 `NO3` and `NH4` are the nitrate and ammonium masses in kg/ha for each soil layer (important: the values are absolute masses, not concentrations).
 
@@ -696,8 +700,8 @@ The mixing efficiency will also flatten a fraction of the standing crop residue 
 ##### `CROP_NAME`
 
 If the TILLAGE operation is being used to harvest or kill a crop, this tag indicates the crop name to be harvested or killed.
-To harvest or kill all the crops in a planted community, use `All` or `N/A`.
-To harvest a single crop, use the crop name exactly as written in the `PLANTING` operation and crop description file.
+To kill all the crops in a planted community, use `All` or `N/A`.
+To harvest a crop, use the crop name exactly as written in the `PLANTING` operation and crop description file.
 
 ##### `FRAC_THERMAL_TIME`
 
@@ -867,39 +871,41 @@ Currently, the following options are available:
  NH4 (kg/ha),
  SOC (Mg/ha),
  SON (Mg/ha),
- RESIDUEABGD (Mg/ha),
- RESIDUERT (Mg/ha),
- RESIDUERZ (Mg/ha),
- RESIDUEABGDN (Mg/ha),
- RESIDUERTN (Mg/ha),
- RESIDUERZN (Mg/ha),
- MANUREC (Mg/ha),
- MANUREN (Mg/ha), and
+ MBC (Mg/ha),
+ MBN (Mg/ha),
+ RESIDUE ABGD C (Mg/ha),
+ RESIDUE ROOT C (Mg/ha),
+ RESIDUE RHIZO C (Mg/ha),
+ RESIDUE ABGD N (Mg/ha),
+ RESIDUE ROOT N (Mg/ha),
+ RESIDUE RHIZO N (Mg/ha),
+ MANURE C (Mg/ha),
+ MANURE N (Mg/ha), and
  SATURATION (100%)
 of different soil layers; and
- STANRESIDUEMASS (Mg/ha),
- FLATRESIDUEMASS (Mg/ha),
- STANRESIDUEN (Mg/ha),
- FLATRESIDUEN (Mg/ha),
- MANURESURFACEC (Mg/ha),
- MANURESURFACEN (Mg/ha),
- STANRESIDUEWATER (mm),
- FLATRESIDUEWATER (mm), and
+ STANRESIDUE C (Mg/ha),
+ FLATRESIDUE C (Mg/ha),
+ STANRESIDUE N (Mg/ha),
+ FLATRESIDUE N (Mg/ha),
+ MANURE SURFACE C (Mg/ha),
+ MANURESURFACE N (Mg/ha),
+ STAN RESIDUE hWATER (mm),
+ FLAT RESIDUE WATER (mm), and
  INFILTRATION (mm/day).
 
  YEAR | yyyy |  DOY | xxx
 --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---| --- | --- | --- | ---
-STANRESIDUEMASS | FLATRESIDUEMASS | STANRESIDUEN | FLATRESIDUEN | MANURESURFACEC | MANURESURFACEN | INFILTRATION
+STANRESIDUEC | FLATRESIDUEC | STANRESIDUEN | FLATRESIDUEN | MANURESURFACEC | MANURESURFACEN | STANRESIDUEWATER | FLATRESIDUEWATER | INFILTRATION
 ...| | | | | |
-LAYER | SMC | NO3 | NH4 | SOC | SON | MBC | MBN | RESIDUEABGD | RESIDUERT | RESIDUERZ | RESIDUEABGDN | RESIDUERTN | RESIDUERZN | MANUREC | MANUREN | SATURATION
+LAYER | SMC | NO3 | NH4 | SOC | SON | MBC | MBN | RESABGDC | RESRTC | RESRZC | RESIDUEABGDN | RESIDUERTN | RESIDUERZN | MANUREC | MANUREN | SATURATION
 1 | ... | | | | | | | | | | | | | | |
 2 | ... | | | | | | | | | | | | | | |
 3 | ... | | | | | | | | | | | | | | |
 ... | ... | | | | | | | | | | | | | | |
 
 
- The structure described above can repeat to specify re-initialization for as many dates as needed.
- To disable the re-initialization of certain variables, use `-999` as their values.
+The structure described above can repeat to specify re-initialization for as many dates as needed.
+To disable the re-initialization of certain variables, use `-999` as their values.
 
 [(Back to top)](#contents)
 
@@ -1043,7 +1049,7 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 | NET MINERALIZ     | kg N/ha       | Net N mineralization. |
 | NH4 NITRIFICAT    | kg N/ha       | Nitrification of ammonium. |
 | N2O FROM NITRIF   | kg N/ha       | Nitrous oxide emissions from nitrification. |
-| NH4 VOLATILIZ     | kg N/ha       | Ammonia volatilization. |
+| NH3 VOLATILIZ     | kg N/ha       | Ammonia volatilization. |
 | NO3 DENITRIF      | kg N/ha       | Denitrification of nitrate. |
 | N2O FROM DENIT    | kg N/ha       | Nitrous oxide emissions from denitrification. |
 | NO3 LEACHING      | kg N/ha       | Nitrate leaching in drainage water at the bottom of the soil profile. |
@@ -1110,6 +1116,7 @@ The season.dat file provides information about each crop harvest.
 | POTENTIAL TR      | mm            | Potential water transpiration of the crop under non-limiting soil moisture conditions. |
 | ACTUAL TR         | mm            | Actual water transpiration of the crop given soil moisture conditions in the simulation. |
 | SOIL EVAP         | mm            | Water evaporation from the soil. |
+| IRRIGATION        | mm            | Water added as irrigation. |
 | TOTAL N           | Mg/ha         | Total biomass N (roots + aboveground) content accumulated by the crop at harvest. |
 | ROOT N            | Mg/ha         | Root biomass N accumulated by the crop at harvest. |
 | GRAIN N           | Mg/ha         | Grain N content at harvest. |
