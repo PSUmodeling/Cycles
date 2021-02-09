@@ -33,7 +33,7 @@ An optional re-initialization file can be used to reset model variables to desir
 Outputs for various pools and fluxes in the agro-ecosystem are written to tab-delimited text files that can be opened by most spreadsheet programs.
 
 To get started running the model, download the package based on your operating system from the [release page](https://github.com/PSUmodeling/Cycles/releases) under the "Assets" menu and decompress the package to a working directory of your choice.
-For Windows users, please use `Cycles_win_vXXX.zip`, Mac users `Cycles_macos_vXXX.zip`, and Unix users `Cycles_debian_vXXX.zip`.
+For Windows users, please use `Cycles_win_XXX.zip`, Mac users `Cycles_macos_XXX.zip`, and Unix users `Cycles_debian_XXX.zip`.
 
 The input directory is where you store the various input files needed to drive each simulation.
 Each simulation needs a control file (`*.ctrl`), an operation file (`*.operation`), a soil profile description file (`*.soil`), a crop description file (`*.crop`), and a weather file (`*.weather`).
@@ -127,6 +127,7 @@ Each of the input files is described in more detail below, but assuming that the
    ```shell
    ./Cycles -l <DOY> <simulation name>
    ```
+
    or, in Windows:
 
    ```shell
@@ -612,19 +613,17 @@ Set the value to `-999` to disable conditional planting.
 
 ##### `MAX_SMC`
 
-Maximum volumetric soil moisture allowed to perform planting in m<sup>3</sup> m<sup>-3</sup>.
+Maximum soil moisture (fraction between PWP and FC) allowed to perform planting.
 Set the value to `-999` to disable maximum soil moisture control on conditional planting.
 
 ##### `MIN_SMC`
 
-Minimum volumetric soil moisture required to perform planting in m<sup>3</sup> m<sup>-3</sup>.
-Keyword `FC` can be used for the `MAX_SMC` value, which represents field capacity.
+Minimum soil moisture (fraction between PWP and FC) required to perform planting.
 Set the value to `-999` to disable minimum soil moisture control on conditional planting.
 
 ##### `MIN_SOIL_TEMP`
 
-Minimum soil temperature required to perform planting in degree Celsius.
-Keyword `PWP` can be used for the `MIN_SMC` value, which represents permanent wilting point.
+Minimum 7-day moving average soil temperature required to perform planting in degree Celsius.
 Set the value to `-999` to disable soil temperature control on conditional planting.
 
 ##### `CROP`
@@ -652,7 +651,8 @@ This feature allows for the planting of multiple species in a plant community at
 ##### `CLIPPING_START`
 
 The numerical day of the year on which the clipping time window begins.
-Set the value to `-999` to disable harvesting of the corresponding crop.
+Set the value to `-999` to disable automated harvesting of the corresponding crop.
+A value of `-999`, however, cannot disable scheduled harvests.
 
 ##### `CLIPPING_END`
 
@@ -679,7 +679,9 @@ This can be any user defined string of text and does not affect the simulation, 
 The string `Kill_Crop` is used to kill a crop without harvesting any residues;
 the string `Grain_Harvest` is used to perform a grain harvest;
 and the string `Forage_Harvest` is used to perform a forage harvest.
-Note that scheduled grain harvests do not kill crops.
+Note that scheduled grain harvests do not kill crops,
+and scheduled harvests are performed even if `CLIPPING_START` is set to `-999`.
+
 To kill a crop after a harvest, a `Kill_Crop` tillage operation should be used.
 
 ##### `DEPTH`
@@ -925,16 +927,18 @@ Cycles offers a number of pre-formatted output files to inspect the agroecosyste
 The following pages provide documentation for the values printed in each output file.
 To obtain customized outputs not included here, please contact a member of the Cycles development team.
 
-### Weather.dat
+### environ.dat
 
-| Column Heading    | Units         | Description |
-| ----------------- | ------------- | ----------- |
-| DATE              | YYYY-MM-DD    | Calendar date of the simulation. |
-| MIN TMP           | C             | Minimum temperature. |
-| MAX TMP           | C             | Maximum temperature. |
-| AVG TMP           | C             | Average temperature. |
-| REFERENCE ET      | mm/day        | Reference evapotranspiration calculated using the Penman-Monteith equation. |
-| PRECIPITATION     | mm            | Precipitation. |
+| Column Heading |            | Units      | Description |
+| -------------- | -----------| ---------- | ----------- |
+| DATE           | -          | YYYY-MM-DD | Calendar date of the simulation. |
+| MIN TMP        | -          | C          | Minimum temperature. |
+| MAX TMP        | -          | C          | Maximum temperature. |
+| AVG TMP        | -          | C          | Average temperature. |
+| SOIL TMP       | LAYER 1..x | C          | Soil temperature. |
+| VPD            | -          | kPa        | Vapor pressure deficit. |
+| REFERENCE ET   | -          | mm/day     | Reference evapotranspiration calculated using the Penman-Monteith equation. |
+| PRECIPITATION  | -          | mm         | Precipitation. |
 
 [(Back to top)](#contents)
 
@@ -942,25 +946,25 @@ To obtain customized outputs not included here, please contact a member of the C
 
 Note: [crop] in the file name will be replaced by the name of each crop planted in the rotation as specified in the operation file (e.g., Maize.dat).
 
-| Column Header    | Units            | Description |
-| ------------- | ------------- | ----------- |
-| DATE          | YYYY-MM-DD    | Calendar date in the simulation. |
-| CROP          | -             | The crop name. |
-| STAGE         | -             | The phenological stage.|
-| THERMAL TIME  | C-day         | The cumulative thermal time since the crop was planted. |
-| CUM. BIOMASS  | Mg/ha         | The cumulative total crop biomass, sum of aboveground and roots. |
-| AG BIOMASS    | Mg/ha         | Aboveground dry biomass. |
-| ROOT BIOMASS  | Mg/ha         | Crop root dry biomass. |
-| FRAC INTERCEP | -             | The fraction of solar radiation intercepted by the crop canopy. |
-| TOTAL N       | kg/ha         | The total crop N content, sum of aboveground and roots. |
-| AG N          | kg/ha         | Aboveground biomass N content. |
-| ROOT N        | kg/ha         | Crop root N content. |
-| AG N CONCN    | g/kg          | Aboveground biomass N concentration. |
-| N FIXATION    | kg/ha         | Cumulative N fixation by legume crops. |
-| N ADDED       | kg/ha         | Cumulative N added to crop biomass to sustain growth in autofertilize mode. |
-| N STRESS      | %             | Daily N stress value of the crop. |
-| WATER STRESS  | %             | Daily water stress value of the crop. |
-| POTENTIAL TR  | mm/day        | Potential transpiration of the crop. |
+| Column Header | Units      | Description |
+| ------------- | ---------- | ----------- |
+| DATE          | YYYY-MM-DD | Calendar date in the simulation. |
+| CROP          | -          | The crop name. |
+| STAGE         | -          | The phenological stage.|
+| THERMAL TIME  | C-day      | The cumulative thermal time since the crop was planted. |
+| CUM. BIOMASS  | Mg/ha      | The cumulative total crop biomass, sum of aboveground and roots. |
+| AG BIOMASS    | Mg/ha      | Aboveground dry biomass. |
+| ROOT BIOMASS  | Mg/ha      | Crop root dry biomass. |
+| FRAC INTERCEP | -          | The fraction of solar radiation intercepted by the crop canopy. |
+| TOTAL N       | kg/ha      | The total crop N content, sum of aboveground and roots. |
+| AG N          | kg/ha      | Aboveground biomass N content. |
+| ROOT N        | kg/ha      | Crop root N content. |
+| AG N CONCN    | g/kg       | Aboveground biomass N concentration. |
+| N FIXATION    | kg/ha      | Cumulative N fixation by legume crops. |
+| N ADDED       | kg/ha      | Cumulative N added to crop biomass to sustain growth in autofertilize mode. |
+| N STRESS      | %          | Daily N stress value of the crop. |
+| WATER STRESS  | %          | Daily water stress value of the crop. |
+| POTENTIAL TR  | mm/day     | Potential transpiration of the crop. |
 
 [(Back to top)](#contents)
 
@@ -968,18 +972,18 @@ Note: [crop] in the file name will be replaced by the name of each crop planted 
 
 Note: This file provides annualized measurements of various carbon pools by soil layer.  One column will be created for each layer in the soil profile for the variables where the column heading indicates `LAYER 1..x`.
 
-| Column Header     |               | Units       | Description |
-| ----------------- | ------------- | ----------- | ----------- |
-| YEAR              | -             | YYYY        | Year of the simulation. |
-| RES BIOMASS IN    | LAYER 1..x    | Mg/ha       | Aboveground crop residue biomass added to the residue pool during the year. |
-| ROOT BIOMASS IN   | LAYER 1..x    | Mg/ha       | Crop root and rhizodeposit biomass added to the residue pools during the year. |
-| RES C DECOMP      | LAYER 1..x    | Mg/ha       | Quantity of C from the aboveground crop residue pool decomposed during the year. (Layer 1 includes decomposed surface residues, standing and flattened) |
-| ROOT C DECOMP     | LAYER 1..x    | Mg/ha       | Quantity of C from the crop root and rhizodeposit residue pools decomposed during the year. |
-| INIT C MASS       | LAYER 1..x    | Mg C/year   | The pool size of stabilized soil C at the beginning of the year. |
-| HUMIFIED C        | LAYER 1..x    | Mg C/year   | Quantity of decomposed C added to microbial and stabilized C pools. |
-| RESPIRED C        | LAYER 1..x    | Mg C/year   | Quantity of C respired from the decomposition of microbial biomass and stabilized soil C. |
-| FINAL C           | LAYER 1..x    | Mg C/year   | The pool size of stabilized soil C at the end of the year. |
-| C DIFF            | LAYER 1..x    | Mg C/year   | The change in the stabilized soil C pool size between the beginning and end of the year. |
+| Column Header   |            | Units     | Description |
+| --------------- | ---------- | --------- | ----------- |
+| YEAR            | -          | YYYY      | Year of the simulation. |
+| RES BIOMASS IN  | LAYER 1..x | Mg/ha     | Aboveground crop residue biomass added to the residue pool during the year. |
+| ROOT BIOMASS IN | LAYER 1..x | Mg/ha     | Crop root and rhizodeposit biomass added to the residue pools during the year. |
+| RES C DECOMP    | LAYER 1..x | Mg/ha     | Quantity of C from the aboveground crop residue pool decomposed during the year. (Layer 1 includes decomposed surface residues, standing and flattened) |
+| ROOT C DECOMP   | LAYER 1..x | Mg/ha     | Quantity of C from the crop root and rhizodeposit residue pools decomposed during the year. |
+| INIT C MASS     | LAYER 1..x | Mg C/year | The pool size of stabilized soil C at the beginning of the year. |
+| HUMIFIED C      | LAYER 1..x | Mg C/year | Quantity of decomposed C added to microbial and stabilized C pools. |
+| RESPIRED C      | LAYER 1..x | Mg C/year | Quantity of C respired from the decomposition of microbial biomass and stabilized soil C. |
+| FINAL C         | LAYER 1..x | Mg C/year | The pool size of stabilized soil C at the end of the year. |
+| C DIFF          | LAYER 1..x | Mg C/year | The change in the stabilized soil C pool size between the beginning and end of the year. |
 
 [(Back to top)](#contents)
 
@@ -988,13 +992,13 @@ Note: This file provides annualized measurements of various carbon pools by soil
 Note: This file provides annualized measurements of the carbon concentration and saturation ratio by soil layer.
 One column will be created for each layer in the soil profile for the variables where the column heading indicates `LAYER 1..x`.
 
-| Column Heading    |               | Units | Description |
-| ----------------- | ------------- | ----- | ----------- |
-| YEAR              | -             | YYYY  | Year of the simulation. |
-| THICKNESS         | LAYER 1..x    | m     | Thickness of the soil layer. |
-| BULK DENSITY      | LAYER 1..x    | Mg/m3 | Bulk density of the soil layer. |
-| SOIL C            | LAYER 1..x    | %     | Carbon concentration of the soil layer, only including the stabilized soil C pool. |
-| C SAT. RATIO      | LAYER 1..x    | Cs/Cx | The saturation ratio of the soil layer, defined as the C content (or concentration) of the stabilized soil C pool (Cs) divided by the maximum capacity for C stabilization (Cx). |
+| Column Heading |            | Units | Description |
+| -------------- | ---------- | ----- | ----------- |
+| YEAR           | -          | YYYY  | Year of the simulation. |
+| THICKNESS      | LAYER 1..x | m     | Thickness of the soil layer. |
+| BULK DENSITY   | LAYER 1..x | Mg/m3 | Bulk density of the soil layer. |
+| SOIL C         | LAYER 1..x | %     | Carbon concentration of the soil layer, only including the stabilized soil C pool. |
+| C SAT. RATIO   | LAYER 1..x | Cs/Cx | The saturation ratio of the soil layer, defined as the C content (or concentration) of the stabilized soil C pool (Cs) divided by the maximum capacity for C stabilization (Cx). |
 
 [(Back to top)](#contents)
 
@@ -1024,13 +1028,13 @@ Note: This file provides annualized measurements of nitrogen fluxes for the sum 
 
 Note: Results in this file are for the sum of all layers in the soil profile, including surface residues.
 
-| Column Header     | Units         | Description |
-| ----------------- | ------------- | ----------- |
-| DATE              | YYYY-MM-DD    | Calendar date in the simulation. |
-| SOIL ORG C        | Mg/ha         | The sum of microbial biomass C and stabilized soil C pools. |
-| HUMIFIED C        | Mg/ha         | The C from all decomposed substrates, including residues, microbial biomass C, and stabilized soil C that becomes humified in microbial biomass C or stabilized soil C pools. |
-| RES RESPIRED C    | Mg/ha         | The C from all decomposed residues, including crop residues, manure, and rhizodeposits, that is respired by microbes. |
-| SOM RESPIRED C    | Mg/ha         | The C from decomposed microbial biomass C and stabilized soil C that is respired by microbes. |
+| Column Header  | Units      | Description |
+| -------------- | ---------- | ----------- |
+| DATE           | YYYY-MM-DD | Calendar date in the simulation. |
+| SOIL ORG C     | Mg/ha      | The sum of microbial biomass C and stabilized soil C pools. |
+| HUMIFIED C     | Mg/ha      | The C from all decomposed substrates, including residues, microbial biomass C, and stabilized soil C that becomes humified in microbial biomass C or stabilized soil C pools. |
+| RES RESPIRED C | Mg/ha      | The C from all decomposed residues, including crop residues, manure, and rhizodeposits, that is respired by microbes. |
+| SOM RESPIRED C | Mg/ha      | The C from decomposed microbial biomass C and stabilized soil C that is respired by microbes. |
 
 [(Back to top)](#contents)
 
@@ -1038,24 +1042,24 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 
 Note: Results in this file are for the sum of all layers in the soil profile, including surface residues.
 
-| Column Header     | Units         | Description |
-| ----------------- | ------------- | ----------- |
-| DATE              | YYYY-MM-DD    | Calendar date in the simulation. |
-| ORG SOIL N        | kg N/ha       | The sum of microbial biomass N and stabilized soil organic N pools. |
-| PROF SOIL NO3     | kg N/ha       | Soil profile nitrate-N content. |
-| PROF SOIL NH4     | kg N/ha       | Soil profile ammonium-N content. |
-| MINERALIZATION    | kg N/ha       | Gross N mineralization from all decomposing organic substrates. |
-| IMMOBILIZATION    | kg N/ha       | Gross N immobilization in microbial biomass or stabilized soil organic N pools. |
-| NET MINERALIZ     | kg N/ha       | Net N mineralization. |
-| NH4 NITRIFICAT    | kg N/ha       | Nitrification of ammonium. |
-| N2O FROM NITRIF   | kg N/ha       | Nitrous oxide emissions from nitrification. |
-| NH3 VOLATILIZ     | kg N/ha       | Ammonia volatilization. |
-| NO3 DENITRIF      | kg N/ha       | Denitrification of nitrate. |
-| N2O FROM DENIT    | kg N/ha       | Nitrous oxide emissions from denitrification. |
-| NO3 LEACHING      | kg N/ha       | Nitrate leaching in drainage water at the bottom of the soil profile. |
-| NH4 LEACHING      | kg N/ha       | Ammonium leaching in drainage water at the bottom of the soil profile. |
-| NO3 BYPASS        | kg N/ha       | Nitrate leaching in drainage water due to horizontal bypass flow. |
-| NH4 BYPASS        | kg N/ha       | Ammonium leaching in drainage water due to horizontal bypass flow. |
+| Column Header   | Units      | Description |
+| --------------- | ---------- | ----------- |
+| DATE            | YYYY-MM-DD | Calendar date in the simulation. |
+| ORG SOIL N      | kg N/ha    | The sum of microbial biomass N and stabilized soil organic N pools. |
+| PROF SOIL NO3   | kg N/ha    | Soil profile nitrate-N content. |
+| PROF SOIL NH4   | kg N/ha    | Soil profile ammonium-N content. |
+| MINERALIZATION  | kg N/ha    | Gross N mineralization from all decomposing organic substrates. |
+| IMMOBILIZATION  | kg N/ha    | Gross N immobilization in microbial biomass or stabilized soil organic N pools. |
+| NET MINERALIZ   | kg N/ha    | Net N mineralization. |
+| NH4 NITRIFICAT  | kg N/ha    | Nitrification of ammonium. |
+| N2O FROM NITRIF | kg N/ha    | Nitrous oxide emissions from nitrification. |
+| NH3 VOLATILIZ   | kg N/ha    | Ammonia volatilization. |
+| NO3 DENITRIF    | kg N/ha    | Denitrification of nitrate. |
+| N2O FROM DENIT  | kg N/ha    | Nitrous oxide emissions from denitrification. |
+| NO3 LEACHING    | kg N/ha    | Nitrate leaching in drainage water at the bottom of the soil profile. |
+| NH4 LEACHING    | kg N/ha    | Ammonium leaching in drainage water at the bottom of the soil profile. |
+| NO3 BYPASS      | kg N/ha    | Nitrate leaching in drainage water due to horizontal bypass flow. |
+| NH4 BYPASS      | kg N/ha    | Ammonium leaching in drainage water due to horizontal bypass flow. |
 
 [(Back to top)](#contents)
 
@@ -1063,38 +1067,38 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 
 Note: Results in this file are for the sum of all layers in the soil profile, including surface residues.
 
-| Column Header     | Units         | Description |
-| ----------------- | ------------- | ----------- |
-| DATE              | YYYY-MM-DD    | Calendar date in the simulation. |
-| FRAC INTERCEP     | -             | The fraction of solar radiation intercepted by standing and flattened crop residues on the soil surface. |
-| AG RES BIOMASS    | Mg/ha         | The biomass of standing and flattened crop residues remaining on the soil surface. |
-| BG RES BIOMASS    | Mg/ha         | The remaining biomass of crop residue shoots that were incorporated into the soil profile. |
-| ROOT RES BIOMAS   | Mg/ha         | The remaining biomass of crop residue roots and rhizodeposits in the soil profile. |
-| SFC MANURE C      | Mg/ha         | The C content of manure remaining on the soil surface. |
-| AG RES N          | kg/ha         | The N content of standing and flattened crop residues remaining on the soil surface. |
-| BG RES N          | kg/ha         | The remaining N content of crop residue shoots that were incorporated into the soil profile. |
-| ROOT RES N        | kg/ha         | The remaining N content of crop residue roots and rhizodeposits in the soil profile. |
-| SFC MANURE N      | Mg/ha         | The N content of manure remaining on the soil surface. |
-| STD RES MOIST     | kg/kg         | Standing surface residue moisture content defined as: `water mass/(water mass+residue dry mass)` |
-| FLAT RES MOIST    | kg/kg         | Flattened surface residue moisture content defined as: `water mass/(water mass+residue dry mass)` |
+| Column Header   | Units      | Description |
+| --------------- | ---------- | ----------- |
+| DATE            | YYYY-MM-DD | Calendar date in the simulation. |
+| FRAC INTERCEP   | -          | The fraction of solar radiation intercepted by standing and flattened crop residues on the soil surface. |
+| AG RES BIOMASS  | Mg/ha      | The biomass of standing and flattened crop residues remaining on the soil surface. |
+| BG RES BIOMASS  | Mg/ha      | The remaining biomass of crop residue shoots that were incorporated into the soil profile. |
+| ROOT RES BIOMAS | Mg/ha      | The remaining biomass of crop residue roots and rhizodeposits in the soil profile. |
+| SFC MANURE C    | Mg/ha      | The C content of manure remaining on the soil surface. |
+| AG RES N        | kg/ha      | The N content of standing and flattened crop residues remaining on the soil surface. |
+| BG RES N        | kg/ha      | The remaining N content of crop residue shoots that were incorporated into the soil profile. |
+| ROOT RES N      | kg/ha      | The remaining N content of crop residue roots and rhizodeposits in the soil profile. |
+| SFC MANURE N    | Mg/ha      | The N content of manure remaining on the soil surface. |
+| STD RES MOIST   | kg/kg      | Standing surface residue moisture content defined as: `water mass/(water mass+residue dry mass)` |
+| FLAT RES MOIST  | kg/kg      | Flattened surface residue moisture content defined as: `water mass/(water mass+residue dry mass)` |
 
 [(Back to top)](#contents)
 
 ### Water.dat
 
-| Column Header     |               | Units         | Description |
-| ----------------- | --------------| ------------- | ----------- |
-| DATE              | -             | YYYY-MM-DD    | Calendar date in the simulation. |
-| IRRIGATION        | -             | mm/day        | Water added as irrigation. |
-| RUNOFF            | -             | mm/day        | Water runoff from the soil surface. |
-| INFILTRATION      | -             | mm/day        | Water infiltration into the soil. |
-| DRAINAGE          | -             | mm/day        | Water drainage from the bottom of the soil profile. |
-| BYPASS            | -             | mm/day        | Water drainage due to horizontal bypass flow. |
-| SOIL EVAP         | -             | mm/day        | Evaporation from the soil surface. |
-| RES EVAP          | -             | mm/day        | Evaporation from the surface residue. |
-| SNOW SUB          | -             | mm/day        | Sublimation from snow cover. |
-| TRANSPIRATION     | -             | mm/day        | Transpiration by the crop canopy. |
-| SMC               | LAYER 1..x    | m3/m3         | Soil moisture content. |
+| Column Header |            | Units      | Description |
+| ------------- | ---------- | ---------- | ----------- |
+| DATE          | -          | YYYY-MM-DD | Calendar date in the simulation. |
+| IRRIGATION    | -          | mm/day     | Water added as irrigation. |
+| RUNOFF        | -          | mm/day     | Water runoff from the soil surface. |
+| INFILTRATION  | -          | mm/day     | Water infiltration into the soil. |
+| DRAINAGE      | -          | mm/day     | Water drainage from the bottom of the soil profile. |
+| BYPASS        | -          | mm/day     | Water drainage due to horizontal bypass flow. |
+| SOIL EVAP     | -          | mm/day     | Evaporation from the soil surface. |
+| RES EVAP      | -          | mm/day     | Evaporation from the surface residue. |
+| SNOW SUB      | -          | mm/day     | Sublimation from snow cover. |
+| TRANSPIRATION | -          | mm/day     | Transpiration by the crop canopy. |
+| SMC           | LAYER 1..x | m3/m3      | Soil moisture content. |
 
 [(Back to top)](#contents)
  
@@ -1102,31 +1106,31 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 
 The season.dat file provides information about each crop harvest.
 
-| Column Header     | Units         | Description |
-| ----------------- | ------------- | ----------- |
-| DATE              | YYYY-MM-DD    | Calendar date in the simulation. |
-| CROP              | -             | Crop that was harvested. |
-| PLANT DATE        | -             | Calendar date when the crop was planted. |
-| TOTAL BIOMASS     | Mg/ha         | Total biomass (roots + aboveground) accumulated by the crop at harvest. |
-| ROOT BIOMASS      | Mg/ha         | Root biomass accumulated by the crop at harvest. |
-| GRAIN YIELD       | Mg/ha         | Grain yield at harvest. |
-| FORAGE YIELD      | Mg/ha         | Forage yield or removed residue biomass at harvest. |
-| AG RESIDUE        | Mg/ha         | Aboveground residue biomass left in the field at harvest. |
-| HARVEST INDEX     | Mg/Mg         | Fraction of aboveground biomass harvested as grain. |
-| POTENTIAL TR      | mm            | Potential water transpiration of the crop under non-limiting soil moisture conditions. |
-| ACTUAL TR         | mm            | Actual water transpiration of the crop given soil moisture conditions in the simulation. |
-| SOIL EVAP         | mm            | Water evaporation from the soil. |
-| IRRIGATION        | mm            | Water added as irrigation. |
-| TOTAL N           | Mg/ha         | Total biomass N (roots + aboveground) content accumulated by the crop at harvest. |
-| ROOT N            | Mg/ha         | Root biomass N accumulated by the crop at harvest. |
-| GRAIN N           | Mg/ha         | Grain N content at harvest. |
-| FORAGE N          | Mg/ha         | Forage or removed residue N content at harvest. |
-| CUM. N STRESS     | -             | Cumulative N stress over the duration of crop growth, calculated as the sum of each daily N stress weighted by the daily fraction of thermal time accumulated to maturity. |
-| N IN HARVEST      | kg/ha         | N content in removed biomass, which is the sum of grain, forage, and/or removed residues. |
-| N IN RESIDUE      | kg/ha         | N content in residues left in the field at harvest. |
-| N CONCN FORAGE    | %             | The N concentration in forage or removed residues at harvest. |
-| N FIXATION        | kg/ha         | Cumulative N fixation by legume crops. |
-| N ADDED           | kg/ha         | Cumulative N added to crop biomass to sustain growth in autofertilize mode. |
+| Column Header  | Units      | Description |
+| -------------- | ---------- | ----------- |
+| DATE           | YYYY-MM-DD | Calendar date in the simulation. |
+| CROP           | -          | Crop that was harvested. |
+| PLANT DATE     | -          | Calendar date when the crop was planted. |
+| TOTAL BIOMASS  | Mg/ha      | Total biomass (roots + aboveground) accumulated by the crop at harvest. |
+| ROOT BIOMASS   | Mg/ha      | Root biomass accumulated by the crop at harvest. |
+| GRAIN YIELD    | Mg/ha      | Grain yield at harvest. |
+| FORAGE YIELD   | Mg/ha      | Forage yield or removed residue biomass at harvest. |
+| AG RESIDUE     | Mg/ha      | Aboveground residue biomass left in the field at harvest. |
+| HARVEST INDEX  | Mg/Mg      | Fraction of aboveground biomass harvested as grain. |
+| POTENTIAL TR   | mm         | Potential water transpiration of the crop under non-limiting soil moisture conditions. |
+| ACTUAL TR      | mm         | Actual water transpiration of the crop given soil moisture conditions in the simulation. |
+| SOIL EVAP      | mm         | Water evaporation from the soil. |
+| IRRIGATION     | mm         | Water added as irrigation. |
+| TOTAL N        | Mg/ha      | Total biomass N (roots + aboveground) content accumulated by the crop at harvest. |
+| ROOT N         | Mg/ha      | Root biomass N accumulated by the crop at harvest. |
+| GRAIN N        | Mg/ha      | Grain N content at harvest. |
+| FORAGE N       | Mg/ha      | Forage or removed residue N content at harvest. |
+| CUM. N STRESS  | -          | Cumulative N stress over the duration of crop growth, calculated as the sum of each daily N stress weighted by the daily fraction of thermal time accumulated to maturity. |
+| N IN HARVEST   | kg/ha      | N content in removed biomass, which is the sum of grain, forage, and/or removed residues. |
+| N IN RESIDUE   | kg/ha      | N content in residues left in the field at harvest. |
+| N CONCN FORAGE | %          | The N concentration in forage or removed residues at harvest. |
+| N FIXATION     | kg/ha      | Cumulative N fixation by legume crops. |
+| N ADDED        | kg/ha      | Cumulative N added to crop biomass to sustain growth in autofertilize mode. |
 
 [(Back to top)](#contents)
  
@@ -1135,27 +1139,27 @@ The season.dat file provides information about each crop harvest.
 Note: This file provides outputs needed to calculate selected C and N pool sizes or elemental concentrations by soil layer.
 One column will be created for each layer in the soil profile for the variables where the column heading indicates `LAYER 1..x`.
 
-| Column Heading    |               | Units        | Description |
-| ----------------- | ------------- | ------------ | ----------- |
-| DATE              | -             | YYYY-MM-DD   | Calendar date of the simulation. |
-| NO3               | LAYER 1..x    | mg/kg        | Nitrate concentration. |
-| NH4               | LAYER 1..x    | mg/kg        | Ammonium concentration. |
-| FACTOR COMP.      | LAYER 1..x    | -/-          | The composite environmental factor downregulating the maximum decomposition rate of each C pool; a function of temperature, moisture, and aeration in each soil layer. |
-| STAND RESID C     | SURFACE       | Mg/ha        | The C content of standing residue on the soil surface. |
-| FLAT RESID C      | SURFACE       | Mg/ha        | The C content of flattened residue on the soil surface. |
-| MANURE RESID C    | SURFACE       | Mg/ha        | The C content of manure on the soil surface. |
-| RESIDUE C         | LAYER 1..x    | Mg/ha        | The total C content of residues in each soil layer, including aboveground crop residues, root residues and rhizodeposits, and manure. |
-| STAND RESID C:N   | SURFACE       | g:g          | The C:N ratio of standing residue on the soil surface. |
-| FLAT RESID C:N    | SURFACE       | g:g          | The C:N ratio of flattened residue on the soil surface. |
-| MANURE RES C:N    | SURFACE       | g:g          | The C:N ratio of manure on the soil surface. |
-| RESIDUE C:N       | LAYER 1..x    | g:g          | The C:N ratio of residues in each soil layer, including aboveground crop residues, root residues and rhizodeposits, and manure. |
-| MIC C             | LAYER 1..x    | Mg/ha        | The C content of microbial biomass in each soil layer. |
-| MIC C:N           | LAYER 1..x    | g:g          | The C:N ratio of microbial biomass in each soil layer. |
-| SOIL ORG C        | LAYER 1..x    | Mg/ha        | The C content of stabilized soil organic matter in each soil layer. |
-| SOIL ORG C:N      | LAYER 1..x    | g:g          | The C:N ratio of stabilized soil organic matter in each soil layer. |
-| WATER CONTENT     | LAYER 1..x    | m3/m3        | The volumetric water content in each soil layer. |
-| THICKNESS         | LAYER 1..x    | m            | The thickness of each soil layer. |
-| BULK DENSITY      | LAYER 1..x    | Mg/m3        | The bulk density of each soil layer. |
+| Column Heading  |            | Units      | Description |
+| --------------- | ---------- | ---------- | ----------- |
+| DATE            | -          | YYYY-MM-DD | Calendar date of the simulation. |
+| NO3             | LAYER 1..x | mg/kg      | Nitrate concentration. |
+| NH4             | LAYER 1..x | mg/kg      | Ammonium concentration. |
+| FACTOR COMP.    | LAYER 1..x | -/-        | The composite environmental factor downregulating the maximum decomposition rate of each C pool; a function of temperature, moisture, and aeration in each soil layer. |
+| STAND RESID C   | SURFACE    | Mg/ha      | The C content of standing residue on the soil surface. |
+| FLAT RESID C    | SURFACE    | Mg/ha      | The C content of flattened residue on the soil surface. |
+| MANURE RESID C  | SURFACE    | Mg/ha      | The C content of manure on the soil surface. |
+| RESIDUE C       | LAYER 1..x | Mg/ha      | The total C content of residues in each soil layer, including aboveground crop residues, root residues and rhizodeposits, and manure. |
+| STAND RESID C:N | SURFACE    | g:g        | The C:N ratio of standing residue on the soil surface. |
+| FLAT RESID C:N  | SURFACE    | g:g        | The C:N ratio of flattened residue on the soil surface. |
+| MANURE RES C:N  | SURFACE    | g:g        | The C:N ratio of manure on the soil surface. |
+| RESIDUE C:N     | LAYER 1..x | g:g        | The C:N ratio of residues in each soil layer, including aboveground crop residues, root residues and rhizodeposits, and manure. |
+| MIC C           | LAYER 1..x | Mg/ha      | The C content of microbial biomass in each soil layer. |
+| MIC C:N         | LAYER 1..x | g:g        | The C:N ratio of microbial biomass in each soil layer. |
+| SOIL ORG C      | LAYER 1..x | Mg/ha      | The C content of stabilized soil organic matter in each soil layer. |
+| SOIL ORG C:N    | LAYER 1..x | g:g        | The C:N ratio of stabilized soil organic matter in each soil layer. |
+| WATER CONTENT   | LAYER 1..x | m3/m3      | The volumetric water content in each soil layer. |
+| THICKNESS       | LAYER 1..x | m          | The thickness of each soil layer. |
+| BULK DENSITY    | LAYER 1..x | Mg/m3      | The bulk density of each soil layer. |
 
 [(Back to top)](#contents)
  
@@ -1163,30 +1167,30 @@ One column will be created for each layer in the soil profile for the variables 
 
 The summary file provides a summarized output of total C inputs over the duration of the simulation and average annual rates for N cycling processes.
 
-| Column Header     | Units         | Description |
-| ----------------- | ------------- | ----------- |
-| INIT PROF C       | Mg C          | The C content in the stabilized soil C pool at the beginning of the simulation. |
-| FINAL PROF C      | Mg C          | The C content in the stabilized soil C pool at the end of the simulation. |
-| PROF C DIFF       | Mg C          | The change in C content of the stabilized soil C pool from the beginning to end of the simulation. |
-| RES C INPUT       | Mg C          | The total quantity of aboveground crop residues decomposed over the duration of the simulation. |
-| ROOT C INPUT      | Mg C          | The total quantity of roots and rhizodeposits decomposed over the duration of the simulation. |
-| HUMIFIED C        | Mg C          | The total quantity of decomposed C added to microbial and soil C pools over the duration of the simulation. |
-| RESP SOIL C       | Mg C          | The total quantity of C respired during decomposition of the microbial biomass and stabilized soil C pools over the duration of the simulation. |
-| RESP RES C        | Mg/ha         | The total quantity of C respired during decomposition of the residue pools over the duration of the simulation. |
-| RETAINED RES      | Mg/ha         | The total quantity of aboveground crop residues retained in the field over the duration of the simulation. |
-| PRODUCED ROOT     | Mg/ha         | The total quantity of roots and rhizodeposits produced over the duration of the simulation. |
-| SOIL C CHG/YR     | kg C          | The difference in the stabilized soil C pool size from the beginning to the end of the simulation divided by the number of years of the simulation. |
-| AVG GROSS N MIN   | kg N/yr       | Average gross N mineralization rate over the duration of the simulation. |
-| AVG N IMMOB       | kg N/yr       | Average gross N immobilization rate over the duration of the simulation. |
-| AVG NET N MIN     | kg N/yr       | Average net N mineralization rate over the duration of the simulation. |
-| AVG NH4 NITRIF    | kg N/yr       | Average nitrification rate over the duration of the simulation. |
-| AVG N2O FR NIT    | kg N/yr       | Average nitrous oxide emission rate from nitrification over the duration of the simulation. |
-| AVG NH3 VOLATIL   | kg N/yr       | Average ammonia volatilization rate over the duration of the experiment. |
-| AVG NO3 DENIT     | kg N/yr       | Average denitrification rate over the duration of the simulation. |
-| AVG N2O FR DENI   | kg N/yr       | Average nitrous oxide emission rate from denitrification over the duration of the simulation. |
-| AVG NO3 LEACH     | kg N/yr       | Average nitrate leaching rate over the duration of the simulation. |
-| AVG NH4 LEACH     | kg N/yr       | Average ammonium leaching rate over the duration of the simulation. |
-| AVG TOT N2O EMI   | kg N/yr       | Average total nitrous oxide emissions over the duration of the simulation. |
+| Column Header   | Units   | Description |
+| --------------- | ------- | ----------- |
+| INIT PROF C     | Mg C    | The C content in the stabilized soil C pool at the beginning of the simulation. |
+| FINAL PROF C    | Mg C    | The C content in the stabilized soil C pool at the end of the simulation. |
+| PROF C DIFF     | Mg C    | The change in C content of the stabilized soil C pool from the beginning to end of the simulation. |
+| RES C INPUT     | Mg C    | The total quantity of aboveground crop residues decomposed over the duration of the simulation. |
+| ROOT C INPUT    | Mg C    | The total quantity of roots and rhizodeposits decomposed over the duration of the simulation. |
+| HUMIFIED C      | Mg C    | The total quantity of decomposed C added to microbial and soil C pools over the duration of the simulation. |
+| RESP SOIL C     | Mg C    | The total quantity of C respired during decomposition of the microbial biomass and stabilized soil C pools over the duration of the simulation. |
+| RESP RES C      | Mg/ha   | The total quantity of C respired during decomposition of the residue pools over the duration of the simulation. |
+| RETAINED RES    | Mg/ha   | The total quantity of aboveground crop residues retained in the field over the duration of the simulation. |
+| PRODUCED ROOT   | Mg/ha   | The total quantity of roots and rhizodeposits produced over the duration of the simulation. |
+| SOIL C CHG/YR   | kg C    | The difference in the stabilized soil C pool size from the beginning to the end of the simulation divided by the number of years of the simulation. |
+| AVG GROSS N MIN | kg N/yr | Average gross N mineralization rate over the duration of the simulation. |
+| AVG N IMMOB     | kg N/yr | Average gross N immobilization rate over the duration of the simulation. |
+| AVG NET N MIN   | kg N/yr | Average net N mineralization rate over the duration of the simulation. |
+| AVG NH4 NITRIF  | kg N/yr | Average nitrification rate over the duration of the simulation. |
+| AVG N2O FR NIT  | kg N/yr | Average nitrous oxide emission rate from nitrification over the duration of the simulation. |
+| AVG NH3 VOLATIL | kg N/yr | Average ammonia volatilization rate over the duration of the experiment. |
+| AVG NO3 DENIT   | kg N/yr | Average denitrification rate over the duration of the simulation. |
+| AVG N2O FR DENI | kg N/yr | Average nitrous oxide emission rate from denitrification over the duration of the simulation. |
+| AVG NO3 LEACH   | kg N/yr | Average nitrate leaching rate over the duration of the simulation. |
+| AVG NH4 LEACH   | kg N/yr | Average ammonium leaching rate over the duration of the simulation. |
+| AVG TOT N2O EMI | kg N/yr | Average total nitrous oxide emissions over the duration of the simulation. |
 
 [(Back to top)](#contents)
 
