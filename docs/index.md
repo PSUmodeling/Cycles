@@ -449,7 +449,7 @@ To kill the crops after scheduled harvests, `KILL_CROP` tillage operations need 
 This value controls the destiny of biomass cut by clipping events, with options of `REMOVE`, `RETURN`, or `GRAZING`.
 `REMOVE` will treat the clipped biomass as a harvested crop.
 `RETURN` will treat the clipped biomass as a residue returned to the soil surface, with the allocation to standing versus flattened residue pools controlled by the `STANDING_RESIDUE_AT_HARVEST` value.
-`GRAZING` will treat the clipped biomass as being consumed by livestock, with 50% of the carbon in clipped biomass returned to the soil surface manure C pool and 50% of the carbon respired by livestock as CO2, and with 50% of the nitrogen in clipped biomass returned to the soil surface in the manure N pool and 50% of the nitrogen returned as urine to the NH4+ pool of the first soil layer.
+`GRAZING` will treat the clipped biomass as being consumed by livestock, with 50% of the carbon in clipped biomass returned to the soil surface manure C pool and 50% of the carbon respired by livestock as CO<sub>2</sub>, and with 50% of the nitrogen in clipped biomass returned to the soil surface in the manure N pool and 50% of the nitrogen returned as urine to the NH<sub>4</sub><sup>+</sup> pool of the first soil layer.
 
 #### `MIN_TEMPERATURE_FOR_TRANSPIRATION`
 
