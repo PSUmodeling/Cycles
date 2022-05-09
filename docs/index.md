@@ -1,7 +1,7 @@
 # Cycles: An Agroecosystems Simulation Model
 # *User Reference Guide*
 
-Prepared by Charles White, Yuning Shi, and Armen Kemanian
+Prepared by Charles M. White, Yuning Shi, and Armen R. Kemanian
 
 ## Contents
 [Introduction to Using Cycles](#introduction-to-using-cycles)
@@ -22,9 +22,8 @@ Prepared by Charles White, Yuning Shi, and Armen Kemanian
 
 ## Introduction to Using Cycles
 
-Cycles is a daily time-step agro-ecosystem model that simulates the biophysical processes and management practices occurring within cropping systems and other land uses.
-Processes include fluxes in the water and energy balance, the coupled cycling of carbon and nitrogen, and plant growth.
-The model can simulate a wide range of agricultural management practices such as tillage, organic and inorganic nutrient additions, annual and perennial crops, crop harvests as grain or forages, polycultures and relay cropping, grazing, and irrigation.
+Cycles is a daily time-step agroecosystem model that simulates the biophysical processes and management practices occurring in a conceptual field that subtends a sequence of crops and operations or cropping system. 
+Processes include fluxes in the water and energy balance and the coupled cycling of carbon and nitrogen including vegetation growth. The model can simulate a wide range of agricultural management practices such as tillage, inorganic and organic nutrient additions, annual and perennial crops, crop harvests as grain or forages, polycultures and relay cropping, grazing, and irrigation.
 Crop growth is represented with a generalizable framework such that a nearly limitless variety of agricultural crop species can be specified by the user.
 
 Cycles is written in C and the executables for different operating systems are released from the [Cycles GitHub repository release page](https://github.com/PSUmodeling/Cycles/releases).
@@ -204,12 +203,13 @@ Enter `0`.
 
 Controls whether water infiltration and redistribution between soil layers is calculated using the daily cascade method (set value to `0`) or a finite difference numerical integration at an hourly time-step (set value to `1`).
 The cascade method is the most computationally efficient, but does not allow for water contents greater than field capacity or soil wetting from the bottom up.
-Cascade method can miss denitrification badly, but do a good job with the water balance.
+Cascade method can miss denitrification badly, but does a good job with the water balance.
 
 #### `AUTOMATIC_NITROGEN`
 
-Set to `1` for all crops in the simulation to be grown without nitrogen limitations.
-Set to `0` for crops to be grown based on N available from N cycling processes.
+Set to `0` for crops to be grown based on N available from N fertilizer additions and N cycling processes.
+Set to `1` for all crops in the simulation to be grown without nitrogen limitations. For this selection to work, the autoN flag in the planting operation of a given crop (operation file) needs to be set to 1. This allows running crops with and without N limitation in the same simulation. 
+
 
 #### `AUTOMATIC_PHOSPHORUS`
 
@@ -239,7 +239,7 @@ Set to `1` to write an output file named `water.dat` with daily values for the w
 
 #### `DAILY_NITROGEN_OUT`
 
-Set to `1` to write an output file named `N.dat` with daily values for pools and fluxes in the N cycle, including soil profile stocks of organic N, nitrate N, and ammonium N, and rates of mineralization and immobilization, nitrification, gaseous N losses, and leaching losses.
+Set to `1` to write an output file named `N.dat` with daily values for pools and fluxes in the N cycle, including soil profile stocks of organic N, nitrate N, and ammonium N, and rates of N mineralization and immobilization, nitrification, gaseous N losses, and N leaching losses.
 
 #### `DAILY_SOIL_CARBON_OUT`
 
