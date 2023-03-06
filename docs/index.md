@@ -22,7 +22,7 @@ Prepared by Charles M. White, Yuning Shi, and Armen R. Kemanian
 
 ## Introduction to Using Cycles
 
-Cycles is a daily time-step agroecosystem model that simulates the biophysical processes and management practices occurring in a conceptual field that subtends a sequence of crops and operations or cropping system. 
+Cycles is a daily time-step agroecosystem model that simulates the biophysical processes and management practices occurring in a conceptual field that subtends a sequence of crops and operations or cropping system.
 Processes include fluxes in the water and energy balance and the coupled cycling of carbon and nitrogen including vegetation growth. The model can simulate a wide range of agricultural management practices such as tillage, inorganic and organic nutrient additions, annual and perennial crops, crop harvests as grain or forages, polycultures and relay cropping, grazing, and irrigation.
 Crop growth is represented with a generalizable framework such that a nearly limitless variety of agricultural crop species can be specified by the user.
 
@@ -139,7 +139,7 @@ Each of the input files is described in more detail below, but assuming that the
 Outputs from the model are written to files located in a subdirectory named `output`.
 If the `output` subdirectory does not already exist within your working directory, the program will create it.
 To keep your outputs organized, the program creates a new subdirectory within the `output` directory with the same name as the simulation control file.
-In baseline mode the generated re-initialization file can be found in the output directory as `reinit.dat`.
+In baseline mode the generated re-initialization file can be found in the output directory as `reinit.txt`.
 If you run the same simulation control file multiple times, the program will **overwrite** output files in the folder each time.
 
 **Windows users:** It is important to note that if any of the output files are open in a spreadsheet software when a new simulation is run, those files will not be overwritten successfully.
@@ -208,7 +208,7 @@ Cascade method can miss denitrification badly, but does a good job with the wate
 #### `AUTOMATIC_NITROGEN`
 
 Set to `0` for crops to be grown based on N available from N fertilizer additions and N cycling processes.
-Set to `1` for all crops in the simulation to be grown without nitrogen limitations. For this selection to work, the autoN flag in the planting operation of a given crop (operation file) needs to be set to 1. This allows running crops with and without N limitation in the same simulation. 
+Set to `1` for all crops in the simulation to be grown without nitrogen limitations. For this selection to work, the autoN flag in the planting operation of a given crop (operation file) needs to be set to 1. This allows running crops with and without N limitation in the same simulation.
 
 
 #### `AUTOMATIC_PHOSPHORUS`
@@ -223,44 +223,44 @@ Crops grow with no sulfur limitations.
 
 #### `DAILY_WEATHER_OUT`
 
-Set to `1` to write an output file named `weather.dat` with the average temperature, reference evapotranspiration, and precipitation for each day of the simulation.
+Set to `1` to write an output file named `weather.txt` with the average temperature, reference evapotranspiration, and precipitation for each day of the simulation.
 
 #### `DAILY_CROP_OUT`
 
-Set to `1` to write an output file named for each crop used in the rotation (e.g., `Maize.dat`) with daily values for growing degree day accumulation, crop biomass production, biomass N content, crop N stress and water stress, and potential transpiration.
+Set to `1` to write an output file named for each crop used in the rotation (e.g., `Maize.txt`) with daily values for growing degree day accumulation, crop biomass production, biomass N content, crop N stress and water stress, and potential transpiration.
 
 #### `DAILY_RESIDUE_OUT`
 
-Set to `1` to write an output file named `residue.dat` with daily values associated with the residue pools, including radiation interception by surface residues, surface residue moisture content, shoot and root residue biomass and N content in the entire soil profile, and manure C and N content at the surface and in the soil profile.
+Set to `1` to write an output file named `residue.txt` with daily values associated with the residue pools, including radiation interception by surface residues, surface residue moisture content, shoot and root residue biomass and N content in the entire soil profile, and manure C and N content at the surface and in the soil profile.
 
 #### `DAILY_WATER_OUT`
 
-Set to `1` to write an output file named `water.dat` with daily values for the water budget, including inputs from irrigation and rainfall, and outputs of drainage, runoff, evaporation, transpiration, and sublimation.
+Set to `1` to write an output file named `water.txt` with daily values for the water budget, including inputs from irrigation and rainfall, and outputs of drainage, runoff, evaporation, transpiration, and sublimation.
 
 #### `DAILY_NITROGEN_OUT`
 
-Set to `1` to write an output file named `N.dat` with daily values for pools and fluxes in the N cycle, including soil profile stocks of organic N, nitrate N, and ammonium N, and rates of N mineralization and immobilization, nitrification, gaseous N losses, and N leaching losses.
+Set to `1` to write an output file named `N.txt` with daily values for pools and fluxes in the N cycle, including soil profile stocks of organic N, nitrate N, and ammonium N, and rates of N mineralization and immobilization, nitrification, gaseous N losses, and N leaching losses.
 
 #### `DAILY_SOIL_CARBON_OUT`
 
-Set to `1` to write an output file named `soilC.dat` with daily values for pools and fluxes in the C cycle, including soil profile stocks of organic C, the C from decomposed organic matter that becomes humified in microbial and stabilized C pools, and C respired from decomposed residues or soil organic matter.
+Set to `1` to write an output file named `soilC.txt` with daily values for pools and fluxes in the C cycle, including soil profile stocks of organic C, the C from decomposed organic matter that becomes humified in microbial and stabilized C pools, and C respired from decomposed residues or soil organic matter.
 
 #### `DAILY_SOIL_LYR_CN_OUT`
 
-Set to `1` to write an output file named `soilLayersCN.dat` with daily values for C and N pool sizes by soil layer.
+Set to `1` to write an output file named `soilLayersCN.txt` with daily values for C and N pool sizes by soil layer.
 Included are nitrate and ammonium concentrations, the composite environmental factor regulating decomposition rates, residue C and C:N ratio, microbial biomass C and C:N ratio, stabilized organic C and C:N ratio, soil water content, and soil layer thickness and bulk density.
 
 #### `ANNUAL_SOIL_OUT`
 
-Set to `1` to write an output file named `annualSOM.dat` with annual values for soil carbon pool sizes and carbon saturation ratios by soil layer.
+Set to `1` to write an output file named `annualSOM.txt` with annual values for soil carbon pool sizes and carbon saturation ratios by soil layer.
 
 #### `ANNUAL_PROFILE_OUT`
 
-Set to `1` to write an output file named `annualSoilProfileC.dat` with annual values of carbon pools by soil layer.
+Set to `1` to write an output file named `annualSoilProfileC.txt` with annual values of carbon pools by soil layer.
 
 #### `ANNUAL_NFLUX_OUT`
 
-Set to `1` to write and output file named `annualN.dat` with annual values of nitrogen fluxes, including fertilization, fixation, leaching, denitrification, nitrification, and volatilization.
+Set to `1` to write and output file named `annualN.txt` with annual values of nitrogen fluxes, including fertilization, fixation, leaching, denitrification, nitrification, and volatilization.
 
 #### `CROP_FILE`
 
@@ -927,7 +927,7 @@ Cycles offers a number of pre-formatted output files to inspect the agroecosyste
 The following pages provide documentation for the values printed in each output file.
 To obtain customized outputs not included here, please contact a member of the Cycles development team.
 
-### environ.dat
+### environ.txt
 
 | Column Heading |            | Units      | Description |
 | -------------- | -----------| ---------- | ----------- |
@@ -942,9 +942,9 @@ To obtain customized outputs not included here, please contact a member of the C
 
 [(Back to top)](#contents)
 
-### [crop].dat
+### [crop].txt
 
-Note: [crop] in the file name will be replaced by the name of each crop planted in the rotation as specified in the operation file (e.g., Maize.dat).
+Note: [crop] in the file name will be replaced by the name of each crop planted in the rotation as specified in the operation file (e.g., Maize.txt).
 
 | Column Header | Units      | Description |
 | ------------- | ---------- | ----------- |
@@ -968,7 +968,7 @@ Note: [crop] in the file name will be replaced by the name of each crop planted 
 
 [(Back to top)](#contents)
 
-### annualSoilProfileC.dat
+### annualSoilProfileC.txt
 
 Note: This file provides annualized measurements of various carbon pools by soil layer.  One column will be created for each layer in the soil profile for the variables where the column heading indicates `LAYER 1..x`.
 
@@ -987,7 +987,7 @@ Note: This file provides annualized measurements of various carbon pools by soil
 
 [(Back to top)](#contents)
 
-### AnnualSOM.dat
+### AnnualSOM.txt
 
 Note: This file provides annualized measurements of the carbon concentration and saturation ratio by soil layer.
 One column will be created for each layer in the soil profile for the variables where the column heading indicates `LAYER 1..x`.
@@ -1002,7 +1002,7 @@ One column will be created for each layer in the soil profile for the variables 
 
 [(Back to top)](#contents)
 
-### annualN.dat
+### annualN.txt
 
 Note: This file provides annualized measurements of nitrogen fluxes for the sum of all layers in the soil profile.
 
@@ -1024,7 +1024,7 @@ Note: This file provides annualized measurements of nitrogen fluxes for the sum 
 
 [(Back to top)](#contents)
 
-### soilC.dat
+### soilC.txt
 
 Note: Results in this file are for the sum of all layers in the soil profile, including surface residues.
 
@@ -1038,7 +1038,7 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 
 [(Back to top)](#contents)
 
-### N.dat
+### N.txt
 
 Note: Results in this file are for the sum of all layers in the soil profile, including surface residues.
 
@@ -1063,7 +1063,7 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 
 [(Back to top)](#contents)
 
-### Residue.dat
+### Residue.txt
 
 Note: Results in this file are for the sum of all layers in the soil profile, including surface residues.
 
@@ -1084,7 +1084,7 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 
 [(Back to top)](#contents)
 
-### Water.dat
+### Water.txt
 
 | Column Header |            | Units      | Description |
 | ------------- | ---------- | ---------- | ----------- |
@@ -1102,9 +1102,9 @@ Note: Results in this file are for the sum of all layers in the soil profile, in
 
 [(Back to top)](#contents)
  
-### Season.dat
+### Season.txt
 
-The season.dat file provides information about each crop harvest.
+The season.txt file provides information about each crop harvest.
 
 | Column Header  | Units      | Description |
 | -------------- | ---------- | ----------- |
@@ -1134,7 +1134,7 @@ The season.dat file provides information about each crop harvest.
 
 [(Back to top)](#contents)
  
-### soilLayersCN.dat
+### soilLayersCN.txt
 
 Note: This file provides outputs needed to calculate selected C and N pool sizes or elemental concentrations by soil layer.
 One column will be created for each layer in the soil profile for the variables where the column heading indicates `LAYER 1..x`.
@@ -1163,7 +1163,7 @@ One column will be created for each layer in the soil profile for the variables 
 
 [(Back to top)](#contents)
  
-### Summary.dat
+### Summary.txt
 
 The summary file provides a summarized output of total C inputs over the duration of the simulation and average annual rates for N cycling processes.
 
