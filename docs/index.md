@@ -514,7 +514,7 @@ Units in MJ of solar radiation (not PAR).
 
 #### `TRANSPIRATION_USE_EFFICIENCY`
 
-The transpiration use efficiency of the crop in g/kg of water when the VPD = 1 kPa..
+The transpiration use efficiency of the crop in g/kg of water when the VPD = 1 kPa.
 
 #### `MAXIMUM_HARVEST_INDEX`
 
@@ -528,14 +528,14 @@ The minimum harvest index possible (H<sub>n</sub>), used in the calculation of a
 It has some semblance to the fraction of water soluble carbohydrates at flowering or in the first week after flowering in grain crops.
 Values range from 0 to 0.3.
 
-#### `HARVEST_INDEX`
+#### `HARVEST_INDEX_SLOPE_MULTIPLIER`
 
-A coefficient (H<sub>k</sub>), used in the calculation of actual harvest index.
-The actual harvest index is calculated based on the proportion of aboveground crop biomass growth occurring post-anthesis relative to total aboveground growth over the entire duration of crop development (fG) as follows:
+A slope multiplier (m) between 0.01 and 1 used in the calculation of harvest index.
+The harvest index is calculated based on the proportion of aboveground crop biomass growth occurring post-anthesis relative to total aboveground growth over the entire duration of crop development (f<sub>G</sub>) as follows:
 
-`HI actual = Hx - (Hx - Hn) * exp(-Hk * fG)`.
+`HI = Hx - (Hx - Hn) * exp(-Hk * fG)`,
 
-A quick estimate is `k = (1 - Hn) / (Hx - Hn)` (never above this value).
+where `Hk = m * (1 - Hn) / (Hx - Hn)`.
 
 #### `THERMAL_TIME_TO_EMERGENCE`
 
@@ -643,7 +643,7 @@ If automatic irrigation is activated, there must be an associated `AUTO_IRRIGATI
 Whether or not the crop should be grown with automatic fertilization (growth unrestricted by nutrient limitations).
 Yes = 1, No = 0.
 
-##### `FRACTION`
+##### `DENSITY`
 
 The planting density (0 to 1), where 1 is a monoculture planting rate and < 1 indicates a proportionally reduced seeding rate.
 This feature allows for the planting of multiple species in a plant community at different initial densities.
