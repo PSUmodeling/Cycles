@@ -15,6 +15,7 @@ Prepared by Charles M. White, Yuning Shi, and Armen R. Kemanian
 - [Management Operations File](#management-operations-file-operation)
 - [Re-initialization File](#reinitialization-file-reinit)
 - [Multi-mode File](#multi-mode-file)
+- [Calibration File](#calibration-file-nudge)
 
 [Output Files](#output-files)
 
@@ -29,14 +30,15 @@ Crop growth is represented with a generalizable framework such that a nearly lim
 Cycles is written in C and the executables for different operating systems are released from the [Cycles GitHub repository release page](https://github.com/PSUmodeling/Cycles/releases).
 Text-based input files that specify the simulation control parameters, a soil profile description, crop descriptions, the sequence of management operations, and weather drive each user-defined simulation.
 An optional re-initialization file can be used to reset model variables to desired values as described in the re-initialization file.
+An optional calibration file can be used in calibration mode to provide an interface for calibrating hard-coded model variables.
 Outputs for various pools and fluxes in the agro-ecosystem are written to tab-delimited text files that can be opened by most spreadsheet programs.
 
 To get started running the model, download the package based on your operating system from the [release page](https://github.com/PSUmodeling/Cycles/releases) under the "Assets" menu and decompress the package to a working directory of your choice.
-For Windows users, please use `Cycles_win_XXX.zip`, Mac users `Cycles_macos_XXX.zip`, and Unix users `Cycles_debian_XXX.zip`.
+For Windows users, please use `Cycles_win_XXX.zip`, Mac users `Cycles_macos_XXX.zip`, and Linux/Unix users `Cycles_debian_XXX.zip`.
 
 The input directory is where you store the various input files needed to drive each simulation.
 Each simulation needs a control file (`*.ctrl`), an operation file (`*.operation`), a soil profile description file (`*.soil`), a crop description file (`*.crop`), and a weather file (`*.weather`).
-A re-initialization file (`*.reinit`) is optional.
+A re-initialization file (`*.reinit`) and a calibration file (`*.nudge`) are optional.
 Each simulation you run should have a uniquely-named control file, but it is possible to share a single operation file, soil description file, crop description file, or weather file across multiple simulations.
 
 Each of the input files is described in more detail below, but assuming that the input files are prepared and located in the `input` directory, Cycles is launched as follows.
@@ -136,11 +138,52 @@ Each of the input files is described in more detail below, but assuming that the
    The baseline simulation can also spin-up.
    Only the equilibrium simulation will generate re-initialization variables.
 
+6. Cycles includes a "calibration" mode.
+   In calibration mode, a [calibration file](#calibration-file) named `<simulation name>.nudge` in the input folder is required.
+   The calibration multipliers and parameters are used to nudge the hard-coded parameter values in Cycles.
+   To run Cycles in calibration mode:
+
+   ```shell
+   ./Cycles -c <simulation name>
+   ```
+
+   or, in Windows:
+   ```shell
+   Cycles_win.exe -c <simulation name>
+   ```
+
+7. Cycles output file extension is defaulted to `.txt`, but can be customized by users using the `-e` command line option.
+    For example, to change the output file extension to `.dat`:
+
+   ```shell
+   ./Cycles -e dat <simulation name>
+   ```
+
+   or, in Windows:
+   ```shell
+   Cycles_win.exe -e dat <simulation name>
+   ```
+
+   The option can be useful if a simulation needs to be run multiple times without overwriting previous results.
+   For example, running first with "-e 1.txt", and then "-e 2.txt" will give generate `*.1.txt` and `*.2.txt` in the same directory without overwriting.
+
+Multiple command line options can be used at the same time.
+For example, to run a simulation in verbose mode with spin-up and output extension `.dat`:
+
+```shell
+./Cycles -vse dat <simulation name>
+```
+
+or, in Windows:
+```shell
+Cycles_win.exe -vse dat <simulation name>
+```
+
 Outputs from the model are written to files located in a subdirectory named `output`.
 If the `output` subdirectory does not already exist within your working directory, the program will create it.
 To keep your outputs organized, the program creates a new subdirectory within the `output` directory with the same name as the simulation control file.
 In baseline mode the generated re-initialization file can be found in the output directory as `reinit.txt`.
-If you run the same simulation control file multiple times, the program will **overwrite** output files in the folder each time.
+If you run the same simulation control file multiple times, the program will **overwrite** output files in the folder each time, unless the `-e` option is used to customize the output file extension.
 
 **Windows users:** It is important to note that if any of the output files are open in a spreadsheet software when a new simulation is run, those files will not be overwritten successfully.
 To save an existing output file within the `output` subdirectory and prevent the results from being overwritten by subsequent simulation runs, you can manually change the name of the file in Windows Explorer, for instance by appending a keyword of your choice to the filename.
@@ -362,6 +405,11 @@ Each crop entry begins with the keyword tag `NAME` and is followed by the keywor
 The name of the crop.
 This entry is used as the reference for crop management practices listed in the operation file, such as planting and harvesting.
 
+
+#### `THERMAL_TIME_TO_EMERGENCE`
+
+The thermal time accumulates between when a crop is planted and when it emerges from the soil and begins intercepting radiation, transpiring, accruing biomass, etc.
+
 #### `FLOWERING_TT`
 
 The thermal time to flowering, in growing degree C days, calculated using the base, optimum, and maximum temperatures for development listed in `BASE_TEMPERATURE_FOR_DEVELOPMENT`, `OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT`, and `MAX_TEMPERATURE_FOR_DEVELOPMENT`.
@@ -369,118 +417,6 @@ The thermal time to flowering, in growing degree C days, calculated using the ba
 #### `MATURITY_TT`
 
 The thermal time to maturity in growing degree C days.
-
-#### `MAXIMUM_SOIL_COVERAGE`
-
-The maximum crop cover in % is a proxy for light interception potential given by row spacing and other features.
-This value can be set to less than 100% if the crop canopy does not have the potential to provide full cover, or if the crop is planted with a row spacing such that there will be bare ground present between crop rows (e.g., horticultural production or dry areas).
-
-#### `MAXIMUM_ROOTING_DEPTH`
-
-The maximum depth to which crop roots can grow in meters.
-
-#### `AVERAGE_EXPECTED_YIELD`
-
-This parameter is not currently used.
-Leave at `1.0`.
-
-#### `MAXIMUM_EXPECTED_YIELD`
-
-This parameter is not currently used.
-Leave at `1.0`.
-
-#### `MINIMUM_EXPECTED_YIELD`
-
-This parameter is not currently used.
-Leave at `1.0`.
-
-#### `COMMERCIAL_YIELD_MOISTURE`
-
-This parameter is not currently used.
-Leave at `0.0`.
-
-#### `STANDING_RESIDUE_AT_HARVEST`
-
-The percent of aboveground crop residues remaining in the field that are left in the standing position (i.e., in minimal contact with the soil surface and therefore decomposing at a slower rate).
-The reminder of the reside will lay flat on the ground.
-
-#### `RESIDUE_REMOVED`
-
-For crops harvested as grain, the percent of non-grain crop biomass that is removed with the harvested grain.
-For crops harvested as forages or grazed through the clipping controls, the percent of harvestable aboveground plant biomass that is removed by the harvest.
-For clipping events, this value also controls the fraction of root biomass that is killed at each clipping event and the extent to which the thermal time of crop development is set back at each clipping event.
-
-Interactions: The harvestable aboveground plant biomass is the biomass quantity above the `CLIPPING_BIOMASS_THRESHOLD_LOWER` value.
-
-#### `CLIPPING_BIOMASS_THRESHOLD_UPPER`
-
-The aboveground plant biomass threshold (in Mg/ha) that will trigger a clipping event or forage harvest.
-
-Interactions: Clipping will only be allowed if the clipping date window for the crop, which is defined in the operation file, is open.
-The `HARVEST_TIMING` value also controls clipping events, and clipping will occur when either the biomass threshold or the `HARVEST TIMING` threshold is reached, whichever occurs first.
-The destination of clippings, either returned to the soil surface, harvested, or grazed is controlled by the `CLIPPING_BIOMASS_DESTINY` option.
-The percent of aboveground biomass that is clipped is controlled by the `RESIDUE_REMOVED` value.
-
-#### `CLIPPING_BIOMASS_THRESHOLD_LOWER`
-
-The aboveground plant biomass threshold (in Mg/ha), which remains un-harvestable during clipping events.
-This value represents the mass of living plant biomass that would remain in the field after a clipping event with a `RESIDUE_REMOVED` value of 100.
-
-#### `HARVEST_TIMING`
-
-The percent of thermal time to crop maturity that will trigger a clipping event or grain harvest.
-As an example, if `HARVEST_TIMING` is set to 90, and the `MATURITY_TT` is 1000, the crop will be clipped when the cumulative thermal time of crop development reaches 900 growing degree days.
-If the harvest timing is less than 100, the crop will be clipped as a forage and will continue to regrow.
-If the harvest timing is greater than 100, the crop will have reached physiological maturity and will be harvested as a grain crop and killed after harvested.
-A value of `-999` can be entered to trigger a default value of 101, which will result in the crop being harvested for grain on the first day after it reaches physiological maturity.
-
-Interactions: The `CLIPPING_BIOMASS_THRESHOLD_UPPER` value also controls if and when a crop will be clipped.
-If the `HARVEST_TIMING` value is greater than 100, indicating a desire to harvest the crop for grain, but the `CLIPPING_BIOMASS_THRESHOLD_UPPER` value is set within a range of biomass production levels that will be achieved during growth of the crop, the crop will get clipped as a forage.
-Therefore, when programming a crop to be grown as a grain crop, the `CLIPPING_BIOMASS_THRESHOLD_UPPER` value should be set to a very high value, such as `999`, so that clipping will not be triggered before physiological maturity is reached.
-
-#### `KILL_AFTER_HARVEST`
-
-Whether to kill the crop after automatic grain or forage harvests.
-Note that crops will not be killed after scheduled harvests in the operation files.
-To kill the crops after scheduled harvests, `KILL_CROP` tillage operations need to be scheduled.
-
-#### `CLIPPING_BIOMASS_DESTINY`
-
-This value controls the destiny of biomass cut by clipping events, with options of `REMOVE`, `RETURN`, or `GRAZING`.
-`REMOVE` will treat the clipped biomass as a harvested crop.
-`RETURN` will treat the clipped biomass as a residue returned to the soil surface, with the allocation to standing versus flattened residue pools controlled by the `STANDING_RESIDUE_AT_HARVEST` value.
-`GRAZING` will treat the clipped biomass as being consumed by livestock, with 50% of the carbon in clipped biomass returned to the soil surface manure C pool and 50% of the carbon respired by livestock as CO<sub>2</sub>, and with 50% of the nitrogen in clipped biomass returned to the soil surface in the manure N pool and 50% of the nitrogen returned as urine to the NH<sub>4</sub><sup>+</sup> pool of the first soil layer.
-
-#### `MIN_TEMPERATURE_FOR_TRANSPIRATION`
-
-The air temperature (daily average, degree C) below which transpiration by the plant virtually ceases (transpiration is 1% of potential transpiration).
-This value can constrain crop growth at low temperatures because crop growth is calculated as the minimum of `Transpiration Use Efficiency * Transpiration` or `Radiation Use Efficiency * Radiation Interception`.
-Therefore, if transpiration does not occur, plant biomass accrual does not occur.
-
-#### `THRESHOLD_TEMPERATURE_FOR_TRANSPIRATION`
-
-The threshold temperature (daily average, degree C) below which potential transpiration is multiplied by a linear temperature reduction factor, where the reduction factor is calculated as:
-`(daily average temperature – MIN_TEMPERATURE_FOR_TRANSPIRATION)/ (THRESHOLD_TEMPERATURE_FOR_TRANSPIRATION – MIN_TEMPERATURE_FOR_TRANSPIRATION)`.
-
-#### `MIN_TEMPERATURE_FOR_COLD_DAMAGE`
-
-The minimum temperature (degree C) used in the calculation of the cold damage factor described below.
-If the daily minimum temperature is below this value, the cold damage factor is set to 0.99.
-
-#### `THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE`
-
-The threshold temperature (degree C) used in the calculation of the cold damage factor.
-If the daily minimum temperature falls below this threshold value, a cold damage factor is calculated as:
-
-`1 – (daily minimum temperature – MIN_TEMPERATURE_FOR_COLD_DAMAGE) / (THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE - MIN_TEMPERATURE_FOR_COLD_DAMAGE)`
-
-The cold damage factor reduces the aboveground crop biomass (moving it to the surface residue pools), reduces radiation interception by the canopy, and delays phenology development.
-Aboveground biomass and radiation interception is reduced by a factor calculated as `1 – cold damage factor^3`.
-As an example, a daily minimum temperature below the `MIN_TEMPERATURE_FOR_COLD_DAMAGE` will cause the existing aboveground biomass and radiation interception to be multiplied by 0.03 (1-0.99<sup>3</sup>), with the 97% of existing biomass that was killed added to the residue pools.
-So for a crop with an aboveground biomass of 1000 kg/ha, a day in the simulation with a minimum temperature below the `MIN_TEMPERATURE_FOR_COLD_DAMAGE` will reduce the aboveground biomass to 30 kg/ha and add 970 kg/ha of biomass to the residue pools.
-
-Important Note:  The `THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE` value can also trigger a grain harvest of a growing crop.
-If the crop is an annual species and the cumulative thermal time of crop development is greater than the `FLOWERING_TT` value, the crop will be automatically harvested as a grain crop.
 
 #### `BASE_TEMPERATURE_FOR_DEVELOPMENT`
 
@@ -496,6 +432,7 @@ When air temperatures are above this value (degree C) and below `MAX_TEMPERATURE
 
 Air temperatures above this value (degree C) will not add to cumulative thermal time.
 
+
 #### `INITIAL_PARTITIONING_TO_SHOOT`
 
 The fraction of growth partitioned to aboveground biomass (as opposed to roots) at the beginning of crop phenological development (seedling emergence).
@@ -506,15 +443,6 @@ Perennials have lower values than annuals.
 
 The fraction of growth partitioned to aboveground biomass (as opposed to roots) at the end of crop phenological development (physiological maturity). Values can range from 0 to 1.
 Perennials have lower values than annuals.
-
-#### `RADIATION_USE_EFFICIENCY`
-
-The radiation use efficiency of the crop in g/MJ.
-Units in MJ of solar radiation (not PAR).
-
-#### `TRANSPIRATION_USE_EFFICIENCY`
-
-The transpiration use efficiency of the crop in g/kg of water when the VPD = 1 kPa.
 
 #### `MAXIMUM_HARVEST_INDEX`
 
@@ -537,9 +465,70 @@ The harvest index is calculated based on the proportion of aboveground crop biom
 
 where `Hk = m * (1 - Hn) / (Hx - Hn)`.
 
-#### `THERMAL_TIME_TO_EMERGENCE`
 
-The thermal time accumulates between when a crop is planted and when it emerges from the soil and begins intercepting radiation, transpiring, accruing biomass, etc.
+#### `MAXIMUM_ROOTING_DEPTH`
+
+The maximum depth to which crop roots can grow in meters.
+
+
+#### `RADIATION_USE_EFFICIENCY`
+
+The radiation use efficiency of the crop in g/MJ.
+Units in MJ of solar radiation (not PAR).
+
+#### `TRANSPIRATION_USE_EFFICIENCY`
+
+The transpiration use efficiency of the crop in g/kg of water when the VPD = 1 kPa.
+
+
+#### `MIN_TEMPERATURE_FOR_TRANSPIRATION`
+
+The air temperature (daily average, degree C) below which transpiration by the plant virtually ceases (transpiration is 1% of potential transpiration).
+This value can constrain crop growth at low temperatures because crop growth is calculated as the minimum of `Transpiration Use Efficiency * Transpiration` or `Radiation Use Efficiency * Radiation Interception`.
+Therefore, if transpiration does not occur, plant biomass accrual does not occur.
+
+#### `THRESHOLD_TEMPERATURE_FOR_TRANSPIRATION`
+
+The threshold temperature (daily average, degree C) below which potential transpiration is multiplied by a linear temperature reduction factor, where the reduction factor is calculated as:
+`(daily average temperature – MIN_TEMPERATURE_FOR_TRANSPIRATION)/ (THRESHOLD_TEMPERATURE_FOR_TRANSPIRATION – MIN_TEMPERATURE_FOR_TRANSPIRATION)`.
+
+#### `KC`
+
+The crop transpiration coefficient, used to convert reference evapotranspiration based on environmental conditions into crop transpiration.
+
+
+#### `LWP_STRESS_ONSET`
+
+The leaf water potential (J/kg) threshold for the onset of stress, below which stomatal closure begins, reducing transpiration rates.
+
+#### `LWP_WILTING_POINT`
+
+The leaf water potential (J/kg) at wilting point, where transpiration stops.
+
+#### `TRANSPIRATION_MAX`
+
+The maximum crop transpiration rate in mm/day.
+
+
+#### `MIN_TEMPERATURE_FOR_COLD_DAMAGE`
+
+The minimum temperature (degree C) used in the calculation of the cold damage factor described below.
+If the daily minimum temperature is below this value, the cold damage factor is set to 0.99.
+
+#### `THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE`
+
+The threshold temperature (degree C) used in the calculation of the cold damage factor.
+If the daily minimum temperature falls below this threshold value, a cold damage factor is calculated as:
+
+`1 – (daily minimum temperature – MIN_TEMPERATURE_FOR_COLD_DAMAGE) / (THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE - MIN_TEMPERATURE_FOR_COLD_DAMAGE)`
+
+The cold damage factor reduces the aboveground crop biomass (moving it to the surface residue pools), reduces radiation interception by the canopy, and delays phenology development.
+Aboveground biomass and radiation interception is reduced by a factor calculated as `1 – cold damage factor^3`.
+As an example, a daily minimum temperature below the `MIN_TEMPERATURE_FOR_COLD_DAMAGE` will cause the existing aboveground biomass and radiation interception to be multiplied by 0.03 (1-0.99<sup>3</sup>), with the 97% of existing biomass that was killed added to the residue pools.
+So for a crop with an aboveground biomass of 1000 kg/ha, a day in the simulation with a minimum temperature below the `MIN_TEMPERATURE_FOR_COLD_DAMAGE` will reduce the aboveground biomass to 30 kg/ha and add 970 kg/ha of biomass to the residue pools.
+
+Important Note:  The `THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE` value can also trigger a grain harvest of a growing crop.
+If the crop is an annual species and the cumulative thermal time of crop development is greater than the `FLOWERING_TT` value, the crop will be automatically harvested as a grain crop.
 
 #### `N_MAX_CONCENTRATION`
 
@@ -549,9 +538,6 @@ The maximum N concentration in crop tissue (g/g), a feature that regulates the N
 
 A parameter that controls the slope of the N dilution curve, which regulates crop N requirements as biomass accrues.
 
-#### `KC`
-
-The crop transpiration coefficient, used to convert reference evapotranspiration based on environmental conditions into crop transpiration.
 
 #### `ANNUAL`
 
@@ -565,17 +551,65 @@ Whether the crop is a legume (value = 1) or a non-legume (value = 0).
 
 Whether the crop has a C3 photosynthetic pathway (value = 1) or a C4 pathway (value = 0).
 
-#### `LWP_STRESS_ONSET`
 
-The leaf water potential (J/kg) threshold for the onset of stress, below which stomatal closure begins, reducing transpiration rates.
+#### `MAXIMUM_SOIL_COVERAGE`
 
-#### `LWP_WILTING_POINT`
+The maximum crop cover in % is a proxy for light interception potential given by row spacing and other features.
+This value can be set to less than 100% if the crop canopy does not have the potential to provide full cover, or if the crop is planted with a row spacing such that there will be bare ground present between crop rows (e.g., horticultural production or dry areas).
 
-The leaf water potential (J/kg) at wilting point, where transpiration stops.
 
-#### `TRANSPIRATION_MAX`
+#### `STANDING_RESIDUE_AT_HARVEST`
 
-The maximum crop transpiration rate in mm/day.
+The percent of aboveground crop residues remaining in the field that are left in the standing position (i.e., in minimal contact with the soil surface and therefore decomposing at a slower rate).
+The reminder of the reside will lay flat on the ground.
+
+#### `RESIDUE_REMOVED`
+
+For crops harvested as grain, the percent of non-grain crop biomass that is removed with the harvested grain.
+For crops harvested as forages or grazed through the clipping controls, the percent of harvestable aboveground plant biomass that is removed by the harvest.
+For clipping events, this value also controls the fraction of root biomass that is killed at each clipping event and the extent to which the thermal time of crop development is set back at each clipping event.
+
+Interactions: The harvestable aboveground plant biomass is the biomass quantity above the `CLIPPING_BIOMASS_THRESHOLD_LOWER` value.
+
+
+#### `CLIPPING_BIOMASS_THRESHOLD_LOWER`
+
+The aboveground plant biomass threshold (in Mg/ha), which remains un-harvestable during clipping events.
+This value represents the mass of living plant biomass that would remain in the field after a clipping event with a `RESIDUE_REMOVED` value of 100.
+
+#### `CLIPPING_BIOMASS_THRESHOLD_UPPER`
+
+The aboveground plant biomass threshold (in Mg/ha) that will trigger a clipping event or forage harvest.
+
+Interactions: Clipping will only be allowed if the clipping date window for the crop, which is defined in the operation file, is open.
+The `HARVEST_TIMING` value also controls clipping events, and clipping will occur when either the biomass threshold or the `HARVEST TIMING` threshold is reached, whichever occurs first.
+The destination of clippings, either returned to the soil surface, harvested, or grazed is controlled by the `CLIPPING_BIOMASS_DESTINY` option.
+The percent of aboveground biomass that is clipped is controlled by the `RESIDUE_REMOVED` value.
+
+#### `CLIPPING_BIOMASS_DESTINY`
+
+This value controls the destiny of biomass cut by clipping events, with options of `REMOVE`, `RETURN`, or `GRAZING`.
+`REMOVE` will treat the clipped biomass as a harvested crop.
+`RETURN` will treat the clipped biomass as a residue returned to the soil surface, with the allocation to standing versus flattened residue pools controlled by the `STANDING_RESIDUE_AT_HARVEST` value.
+`GRAZING` will treat the clipped biomass as being consumed by livestock, with 50% of the carbon in clipped biomass returned to the soil surface manure C pool and 50% of the carbon respired by livestock as CO<sub>2</sub>, and with 50% of the nitrogen in clipped biomass returned to the soil surface in the manure N pool and 50% of the nitrogen returned as urine to the NH<sub>4</sub><sup>+</sup> pool of the first soil layer.
+
+#### `HARVEST_TIMING`
+
+The percent of thermal time to crop maturity that will trigger a clipping event or grain harvest.
+As an example, if `HARVEST_TIMING` is set to 90, and the `MATURITY_TT` is 1000, the crop will be clipped when the cumulative thermal time of crop development reaches 900 growing degree days.
+If the harvest timing is less than 100, the crop will be clipped as a forage and will continue to regrow.
+If the harvest timing is greater than 100, the crop will have reached physiological maturity and will be harvested as a grain crop and killed after harvested.
+A value of `-999` can be entered to trigger a default value of 101, which will result in the crop being harvested for grain on the first day after it reaches physiological maturity.
+
+Interactions: The `CLIPPING_BIOMASS_THRESHOLD_UPPER` value also controls if and when a crop will be clipped.
+If the `HARVEST_TIMING` value is greater than 100, indicating a desire to harvest the crop for grain, but the `CLIPPING_BIOMASS_THRESHOLD_UPPER` value is set within a range of biomass production levels that will be achieved during growth of the crop, the crop will get clipped as a forage.
+Therefore, when programming a crop to be grown as a grain crop, the `CLIPPING_BIOMASS_THRESHOLD_UPPER` value should be set to a very high value, such as `999`, so that clipping will not be triggered before physiological maturity is reached.
+
+#### `KILL_AFTER_HARVEST`
+
+Whether to kill the crop after automatic grain or forage harvests.
+Note that crops will not be killed after scheduled harvests in the operation files.
+To kill the crops after scheduled harvests, `KILL_CROP` tillage operations need to be scheduled.
 
 [(Back to top)](#contents)
 
@@ -614,17 +648,24 @@ Set the value to `-999` to disable conditional planting.
 ##### `MAX_SMC`
 
 Maximum soil moisture (fraction between PWP and FC) allowed to perform planting.
+A value of 0 represents PWP and a value of 1 represents FC.
 Set the value to `-999` to disable maximum soil moisture control on conditional planting.
 
 ##### `MIN_SMC`
 
 Minimum soil moisture (fraction between PWP and FC) required to perform planting.
+A value of 0 represents PWP and a value of 1 represents FC.
 Set the value to `-999` to disable minimum soil moisture control on conditional planting.
+
+##### `MAX_SOIL_TEMP`
+
+Maximum 7-day moving average soil temperature required to perform planting in degree Celsius.
+Set the value to `-999` to disable maximum soil temperature control on conditional planting.
 
 ##### `MIN_SOIL_TEMP`
 
 Minimum 7-day moving average soil temperature required to perform planting in degree Celsius.
-Set the value to `-999` to disable soil temperature control on conditional planting.
+Set the value to `-999` to disable minimum soil temperature control on conditional planting.
 
 ##### `CROP`
 
@@ -678,9 +719,11 @@ A descriptive name of the tillage tool described by the operation entry.
 This can be any user defined string of text and does not affect the simulation, with some exceptions.
 The string `Kill_Crop` is used to kill a crop without harvesting any residues;
 the string `Grain_Harvest` is used to perform a grain harvest;
-and the string `Forage_Harvest` is used to perform a forage harvest.
+the string `Forage_Harvest` is used to perform a forage harvest;
+and the string `Burn_Residue` is used to burn residue that is aboveground.
 Note that scheduled grain harvests do not kill crops,
 and scheduled harvests are performed even if `CLIPPING_START` is set to `-999`.
+When burning residue, the `MIXING_EFFICIENCY` parameter is used to determine the fraction burned.
 
 To kill a crop after a harvest, a `Kill_Crop` tillage operation should be used.
 
@@ -698,6 +741,8 @@ A factor used to control the extent to which soil layers and residue pools mix w
 The `MIXING_EFFICIENCY` value specifies the mass fraction of the soil mineral and organic pools in each soil layer within the depth range of the operation that will be mixed together and redeposited in each soil layer.
 Pools that are mixed include clay and sand fractions, stabilized soil C and N, microbial biomass C and N, crop residue biomass and N, manure C and N, nitrate and ammonium, water content, and surface residues.
 The mixing efficiency will also flatten a fraction of the standing crop residue equal to the square root of the mixing efficiency.
+
+When using the `Burn_Residue` option, the `MIXING_EFFICIENCY` value specifies the fraction of aboveground residue that is burned.
 
 ##### `CROP_NAME`
 
@@ -747,9 +792,9 @@ Enter any string.
 This keyword is not currently activated.
 Enter any string.
 
-##### `LAYER`
+##### `DEPTH`
 
-The soil layer to which the fertilizer input is added.
+The soil depth (in meters) to which the fertilizer input is added.
 To specify surface applied fertilizer applications, use a value of 0.
 Organic components of surface applied fertilizer inputs will be added to the surface manure C and N pools, while inorganic components of the surface applied inputs will be added to the nitrate or ammonium pools of the first soil layer.
 
@@ -868,32 +913,32 @@ The reinitialization file starts with a row specifying `YEAR`, and `DOY`.
 The re-reinitialization variables are organized in a table-like fashion.
 The header lines describe the names of the variables, and the values follow.
 Currently, the following options are available:
- SMC (m3/m3),
- NO3 (kg/ha),
- NH4 (kg/ha),
- SOC (Mg/ha),
- SON (Mg/ha),
- MBC (Mg/ha),
- MBN (Mg/ha),
- RESIDUE ABGD C (Mg/ha),
- RESIDUE ROOT C (Mg/ha),
- RESIDUE RHIZO C (Mg/ha),
- RESIDUE ABGD N (Mg/ha),
- RESIDUE ROOT N (Mg/ha),
- RESIDUE RHIZO N (Mg/ha),
- MANURE C (Mg/ha),
- MANURE N (Mg/ha), and
- SATURATION (100%)
+`SMC` (m3/m3),
+`NO3` (kg/ha),
+`NH4` (kg/ha),
+`SOC` (Mg/ha),
+`SON` (Mg/ha),
+`MBC` (Mg/ha),
+`MBN` (Mg/ha),
+`RESIDUE ABGD C` (Mg/ha),
+`RESIDUE ROOT C` (Mg/ha),
+`RESIDUE RHIZO C` (Mg/ha),
+`RESIDUE ABGD N` (Mg/ha),
+`RESIDUE ROOT N` (Mg/ha),
+`RESIDUE RHIZO N` (Mg/ha),
+`MANURE C` (Mg/ha),
+`MANURE N` (Mg/ha), and
+`SATURATION` (100%)
 of different soil layers; and
- STANRESIDUE C (Mg/ha),
- FLATRESIDUE C (Mg/ha),
- STANRESIDUE N (Mg/ha),
- FLATRESIDUE N (Mg/ha),
- MANURE SURFACE C (Mg/ha),
- MANURESURFACE N (Mg/ha),
- STAN RESIDUE hWATER (mm),
- FLAT RESIDUE WATER (mm), and
- INFILTRATION (mm/day).
+`STANRESIDUE C` (Mg/ha),
+`FLATRESIDUE C` (Mg/ha),
+`STANRESIDUE N` (Mg/ha),
+`FLATRESIDUE N` (Mg/ha),
+`MANURE SURFACE C` (Mg/ha),
+`MANURESURFACE N` (Mg/ha),
+`STAN RESIDUE hWATER` (mm),
+`FLAT RESIDUE WATER` (mm), and
+`INFILTRATION` (mm/day).
 
  YEAR | yyyy |  DOY | xxx
 --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---| --- | --- | --- | ---
@@ -908,6 +953,31 @@ LAYER | SMC | NO3 | NH4 | SOC | SON | MBC | MBN | RESABGDC | RESRTC | RESRZC | R
 
 The structure described above can repeat to specify re-initialization for as many dates as needed.
 To disable the re-initialization of certain variables, use `-999` as their values.
+
+### Calibration File (\*.nudge)
+
+Calibration files are optional, and are only required when running Cycles in the calibration mode (with the `-c` command line option).
+When the calibration mode is used, a calibration file named `<simulation name>.nudge` should be provided in the `input` directory.
+
+The calibration files contain calibration multipliers for 12 model parameters, and values of two model parameters.
+When running in the calibration mode, the corresponding parameters will be multiplied by the calibration multipliers.
+A calibration multiplier of 1 means the default hard-coded parameter value will be used.
+
+Currently, the following options are available for calibration multiplier:
+`SOC_DECOMP_RATE` (soil organic carbon decomposition rate),
+`RESIDUE_DECOMP_RATE` (residue decomposition rate),
+`ROOT_DECOMP_RATE` (root decomposition rate),
+`RHIZO_DECOMP_RATE` (rhizome decomposition rate),
+`MANURE_DECOMP_RATE` (manure decomposition rate),
+`MICROB_DECOMP_RATE` (microbe decomposition rate),
+`SOC_HUMIF_POWER` (soil organic carbon humification exponent),
+`NITRIF_RATE` (nitrification rate),
+`POT_DENITRIF_RATE` (potential denitrification rate),
+`DENITRIF_HALF_RATE` (half saturation constant for denitrification),
+`DECOMP_HALF_RESP` (decomposition half response to saturation, default value 0.22),
+`DECOMP_RESP_POWER` (decomposition exponential response to saturation, default value 3.0).
+
+Parameter values for `KD_NO3` (adsorption coefficient for NO<sub>3</sub>, default value 0.0 cm<sup>3</sup> g<sup>-1</sup>) and `KD_NH4` (adsorption coefficient for NH<sub>4</sub>, default value 5.6 cm<sup>3</sup> g<sup>-1</sup>) should also be provided in calibration files.
 
 [(Back to top)](#contents)
 
