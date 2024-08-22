@@ -120,7 +120,20 @@ Each of the input files is described in more detail below, but assuming that the
    Cycles_win.exe -s <simulation name>
    ```
 
-5. Cycles includes a "baseline simulation" mode.
+5. Cycles includes a grain growth model.
+   To use the grain growth model:
+
+   ```shell
+   ./Cycles -g <simulation name>
+   ```
+
+   or, in Windows:
+
+   ```shell
+   Cycles_win.exe -g <simulation name>
+   ```
+
+6. Cycles includes a "baseline simulation" mode.
    The baseline simulation generates a re-initialization file at specified day of year (DOY) when it runs.
    The generated re-initialization file can be used to for other simulations, resetting model variables to the "baseline" values.
    To start a baseline simulation that generates re-initialization for a specified DOY:
@@ -138,7 +151,7 @@ Each of the input files is described in more detail below, but assuming that the
    The baseline simulation can also spin-up.
    Only the equilibrium simulation will generate re-initialization variables.
 
-6. Cycles includes a "calibration" mode.
+7. Cycles includes a "calibration" mode.
    In calibration mode, a [calibration file](#calibration-file) named `<simulation name>.nudge` in the input folder is required.
    The calibration multipliers and parameters are used to nudge the hard-coded parameter values in Cycles.
    To run Cycles in calibration mode:
@@ -152,7 +165,7 @@ Each of the input files is described in more detail below, but assuming that the
    Cycles_win.exe -c <simulation name>
    ```
 
-7. Cycles output file extension is defaulted to `.txt`, but can be customized by users using the `-e` command line option.
+8. Cycles output file extension is defaulted to `.txt`, but can be customized by users using the `-e` command line option.
     For example, to change the output file extension to `.dat`:
 
    ```shell
@@ -231,6 +244,38 @@ There must be records in the weather file through December 31 of this year.
 The number of years in the crop rotation specified in the operation input file.
 The specified rotation will automatically repeat itself as many times as needed over the duration of the simulation spanning from `SIMULATION_START_YEAR` to `SIMULATION_END_YEAR`.
 
+#### `CROP_FILE`
+
+The name of the crop description file.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
+
+#### `OPERATION_FILE`
+
+The name of the operation file.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
+
+#### `SOIL_FILE`
+
+The name of the soil profile description file.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
+
+#### `WEATHER_FILE`
+
+The name of the weather file.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
+
+#### `REINIT_FILE`
+
+The name of the reinitialization file.
+This file must be located in a directory titled `input` that is within the `Cycles` working directory.
+Note that it cannot be left as blank, even if reinitialization is not needed.
+Use `N/A` if reinitialization is not needed.
+
+#### `CO2_LEVEL`
+
+Atmospheric CO<sub>2</sub> concentration (ppm).
+Set to `-999` to use annual CO<sub>2</sub> concentrations in the `co2.txt` file.
+
 #### `USE_REINITIALIZATION`
 
 Set to `1` if reinitialization of carbon, nitrogen or water variables are desired on a specific day of simulation year.
@@ -252,7 +297,6 @@ Cascade method can miss denitrification badly, but does a good job with the wate
 
 Set to `0` for crops to be grown based on N available from N fertilizer additions and N cycling processes.
 Set to `1` for all crops in the simulation to be grown without nitrogen limitations. For this selection to work, the autoN flag in the planting operation of a given crop (operation file) needs to be set to 1. This allows running crops with and without N limitation in the same simulation.
-
 
 #### `AUTOMATIC_PHOSPHORUS`
 
@@ -305,32 +349,6 @@ Set to `1` to write an output file named `annualSoilProfileC.txt` with annual va
 
 Set to `1` to write and output file named `annualN.txt` with annual values of nitrogen fluxes, including fertilization, fixation, leaching, denitrification, nitrification, and volatilization.
 
-#### `CROP_FILE`
-
-The name of the crop description file.
-This file must be located in a directory titled `input` that is within the `Cycles` working directory.
-
-#### `OPERATION_FILE`
-
-The name of the operation file.
-This file must be located in a directory titled `input` that is within the `Cycles` working directory.
-
-#### `SOIL_FILE`
-
-The name of the soil profile description file.
-This file must be located in a directory titled `input` that is within the `Cycles` working directory.
-
-#### `WEATHER_FILE`
-
-The name of the weather file.
-This file must be located in a directory titled `input` that is within the `Cycles` working directory.
-
-#### `REINIT_FILE`
-
-The name of the reinitialization file.
-This file must be located in a directory titled `input` that is within the `Cycles` working directory.
-Note that it cannot be left as blank, even if reinitialization is not needed.
-Use `N/A` if reinitialization is not needed.
 
 [(Back to top)](#contents)
 
@@ -368,7 +386,7 @@ The curve number rating will affect the water budget in a simulation, which can 
 The `SLOPE` value is in %, or units of rise per 100 units of run.
 The `TOTAL_LAYERS` value is simply the total number of soil layers described in the profile.
 
-Below the first three keyword tags is a row of column headers for soil properties in the order `LAYER`, `THICK`, `CLAY`, `SAND`, `ORGANIC`, `BD`, `FC`, `PWP`, `SON`, `NO3`, `NH4`, `BYP_H`, and `BYP_V`.
+Below the first three keyword tags is a row of column headers for soil properties in the order `LAYER`, `THICK`, `CLAY`, `SAND`, `SOC`, `BD`, `FC`, `PWP`, `SON`, `NO3`, `NH4`, `BYP_H`, and `BYP_V`.
 The values of each soil property are listed below in a separate row for each soil layer.
 The variable `LAYER` is simply the layer number, starting at `1` and increasing by one unit for each additional layer.
 `THICK` is the thickness of each soil layer in meters.
@@ -378,8 +396,8 @@ Below the topsoil layers, we suggest that soil layers be defined based on depth 
 
 The keyword tags `CLAY` and `SAND` are the clay particle size fraction and sand particle size fraction of each soil layer in %.
 
-`ORGANIC` is the organic matter concentration of each layer in %.
-The organic matter concentration of each layer is converted to C and N concentration to initialize the stabilized soil C and N pools when the simulation is started, using a conversion of 0.58 %C per % organic matter and a soil organic matter C:N ratio of 10:1.
+`SOC` is the soil organic carbon concentration of each layer in %.
+The organic carbon concentration of each layer is used to calculate N concentration to initialize the stabilized soil C and N pools when the simulation is started, using a soil organic C:N ratio of 10:1.
 The microbial biomass C and N pools are also initialized as 3% of the pool sizes of stabilized soil C and N.
 
 `BD` is bulk density in Mg/m<sup>3</sup>, and `FC` and `PWP` are the field capacity and permanent wilting point volumetric water contents, respectively, in m<sup>3</sup>/m<sup>3</sup>.
@@ -464,6 +482,26 @@ The harvest index is calculated based on the proportion of aboveground crop biom
 `HI = Hx - (Hx - Hn) * exp(-Hk * fG)`,
 
 where `Hk = m * (1 - Hn) / (Hx - Hn)`.
+
+#### `N_MAX_CONCENTRATION_GRAIN`
+
+The maximum allowable grain N concentration (%), used in nitrogen harvest index calculation.
+
+#### `N_MIN_CONCENTRATION_GRAIN`
+
+The minimum allowable grain N concentration (%), used in nitrogen harvest index calculation.
+
+#### `N_MAX_CONCENTRATION_STRAW`
+
+The maximum allowable straw N concentration at harvest (%), used in nitrogen harvest index calculation.
+
+#### `N_MIN_CONCENTRATION_STRAW`
+
+The minimum allowable straw N concentration at harvest (%), used in nitrogen harvest index calculation.
+
+#### `N_PARTITIONING_FACTOR`
+
+An empirical constant in N partitioning (-) used in nitrogen harvest index calculation.
 
 
 #### `MAXIMUM_ROOTING_DEPTH`
