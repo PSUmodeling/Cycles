@@ -1,6 +1,7 @@
 site_name: Cycles Agroecosystem Model
 theme:
   name: material
+  logo: imgs/cycles_icon.png
 
 plugins:
   - search
