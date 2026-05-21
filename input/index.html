@@ -1,0 +1,3855 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../output/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Input Files - Cycles Agroecosystem Model</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#input-files" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Cycles Agroecosystem Model" class="md-header__button md-logo" aria-label="Cycles Agroecosystem Model" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Cycles Agroecosystem Model
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Input Files
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Cycles Agroecosystem Model" class="md-nav__button md-logo" aria-label="Cycles Agroecosystem Model" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Cycles Agroecosystem Model
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input Files
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#simulation-control-file-ctrl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation Control File (*.ctrl)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation Control File (*.ctrl)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulation_start_year" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SIMULATION_START_YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulation_end_year" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SIMULATION_END_YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rotation_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROTATION_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crop_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CROP_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operation_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPERATION_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soil_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SOIL_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weather_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WEATHER_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reinit_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REINIT_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soil_layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SOIL_LAYERS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#co2_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CO2_LEVEL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use_reinitialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        USE_REINITIALIZATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adjusted_yields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADJUSTED_YIELDS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hydrology_option" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HYDROLOGY_OPTION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic_nitrogen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTOMATIC_NITROGEN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic_phosphorus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTOMATIC_PHOSPHORUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic_sulfur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTOMATIC_SULFUR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_weather_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_WEATHER_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_crop_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_CROP_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_residue_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_RESIDUE_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_water_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_WATER_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_nitrogen_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_NITROGEN_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_soil_carbon_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_SOIL_CARBON_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_soil_lyr_cn_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_SOIL_LYR_CN_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annual_soil_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ANNUAL_SOIL_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annual_profile_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ANNUAL_PROFILE_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annual_nflux_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ANNUAL_NFLUX_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weather-file-weather" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weather File (*.weather)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#soil-file-soil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soil File (*.soil)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#crop-description-file-crop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Crop Description File (*.crop)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Crop Description File (*.crop)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NAME
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal_time_to_emergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THERMAL_TIME_TO_EMERGENCE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flowering_tt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FLOWERING_TT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maturity_tt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MATURITY_TT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base_temperature_for_development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BASE_TEMPERATURE_FOR_DEVELOPMENT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimum_temperature_for_development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPTIMUM_TEMPERATURE_FOR_DEVELOPMENT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max_temperature_for_development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAX_TEMPERATURE_FOR_DEVELOPMENT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#photoperiod_min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PHOTOPERIOD_MIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#photoperiod_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PHOTOPERIOD_MAX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal_time_vernalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THERMAL_TIME_VERNALIZATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal_time_flowering_at_pmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THERMAL_TIME_FLOWERING_AT_PMAX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal_time_grain_filling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THERMAL_TIME_GRAIN_FILLING
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vernalization_temperature_threshold_lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VERNALIZATION_TEMPERATURE_THRESHOLD_LOWER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vernalization_temperature_threshold_optimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VERNALIZATION_TEMPERATURE_THRESHOLD_OPTIMAL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vernalization_temperature_threshold_upper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VERNALIZATION_TEMPERATURE_THRESHOLD_UPPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature_post_flowering_lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TEMPERATURE_POST_FLOWERING_LOWER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature_post_flowering_optimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TEMPERATURE_POST_FLOWERING_OPTIMAL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature_post_flowering_upper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TEMPERATURE_POST_FLOWERING_UPPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devernalization_temperature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEVERNALIZATION_TEMPERATURE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initial_partitioning_to_shoot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        INITIAL_PARTITIONING_TO_SHOOT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#final_partitioning_to_shoot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FINAL_PARTITIONING_TO_SHOOT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum_harvest_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAXIMUM_HARVEST_INDEX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimum_harvest_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MINIMUM_HARVEST_INDEX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#harvest_index_slope_multiplier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HARVEST_INDEX_SLOPE_MULTIPLIER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_max_concentration_grain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MAX_CONCENTRATION_GRAIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_min_concentration_grain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MIN_CONCENTRATION_GRAIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_max_concentration_straw" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MAX_CONCENTRATION_STRAW
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_min_concentration_straw" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MIN_CONCENTRATION_STRAW
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_partitioning_factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_PARTITIONING_FACTOR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum_rooting_depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAXIMUM_ROOTING_DEPTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#radiation_use_efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RADIATION_USE_EFFICIENCY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transpiration_use_efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TRANSPIRATION_USE_EFFICIENCY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_temperature_for_transpiration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIN_TEMPERATURE_FOR_TRANSPIRATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold_temperature_for_transpiration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THRESHOLD_TEMPERATURE_FOR_TRANSPIRATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lwp_stress_onset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LWP_STRESS_ONSET
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lwp_wilting_point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LWP_WILTING_POINT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transpiration_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TRANSPIRATION_MAX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_temperature_for_cold_damage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIN_TEMPERATURE_FOR_COLD_DAMAGE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold_temperature_for_cold_damage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_max_concentration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MAX_CONCENTRATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_dilution_slope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_DILUTION_SLOPE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annual" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ANNUAL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#legume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LEGUME
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C3
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#management-operations-file-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Management Operations File (*.operation)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Management Operations File (*.operation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#planting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PLANTING
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PLANTING">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#year" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#end_doy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        END_DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CROP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max_smc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAX_SMC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_smc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIN_SMC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max_soil_temp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAX_SOIL_TEMP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_soil_temp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIN_SOIL_TEMP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use_auto_irr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        USE_AUTO_IRR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use_auto_fert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        USE_AUTO_FERT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#density" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DENSITY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_START
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_END
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum_soil_coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAXIMUM_SOIL_COVERAGE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#standing_residue_at_harvest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        STANDING_RESIDUE_AT_HARVEST
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#residue_removed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RESIDUE_REMOVED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_biomass_threshold_lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_BIOMASS_THRESHOLD_LOWER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_biomass_threshold_upper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_BIOMASS_THRESHOLD_UPPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_biomass_destiny" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_BIOMASS_DESTINY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#harvest_timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HARVEST_TIMING
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kill_after_harvest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KILL_AFTER_HARVEST
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tillage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TILLAGE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TILLAGE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#year_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doy_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TOOL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crop_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CROP_NAME
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frac_thermal_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FRAC_THERMAL_TIME
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kill_efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KILL_EFFICIENCY
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed_fertilization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FIXED_FERTILIZATION
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FIXED_FERTILIZATION">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#year_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doy_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SOURCE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MASS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FORM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        METHOD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEPTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed_irrigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FIXED_IRRIGATION
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FIXED_IRRIGATION">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#year_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doy_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VOLUME
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto_irrigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTO_IRRIGATION
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AUTO_IRRIGATION">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#crop_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CROP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start_day" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        START_DAY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stop_day" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        STOP_DAY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#water_depletion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WATER_DEPLETION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#depth_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEPTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reinitialization-file-reinit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reinitialization File (*.reinit)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calibration-file-nudge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calibration File (*.nudge)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Output Files
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bug_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bug Report Guidelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#simulation-control-file-ctrl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation Control File (*.ctrl)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation Control File (*.ctrl)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simulation_start_year" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SIMULATION_START_YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulation_end_year" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SIMULATION_END_YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rotation_size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROTATION_SIZE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crop_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CROP_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operation_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPERATION_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soil_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SOIL_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weather_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WEATHER_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reinit_file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REINIT_FILE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soil_layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SOIL_LAYERS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#co2_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CO2_LEVEL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use_reinitialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        USE_REINITIALIZATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adjusted_yields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADJUSTED_YIELDS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hydrology_option" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HYDROLOGY_OPTION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic_nitrogen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTOMATIC_NITROGEN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic_phosphorus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTOMATIC_PHOSPHORUS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automatic_sulfur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTOMATIC_SULFUR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_weather_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_WEATHER_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_crop_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_CROP_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_residue_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_RESIDUE_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_water_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_WATER_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_nitrogen_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_NITROGEN_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_soil_carbon_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_SOIL_CARBON_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#daily_soil_lyr_cn_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAILY_SOIL_LYR_CN_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annual_soil_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ANNUAL_SOIL_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annual_profile_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ANNUAL_PROFILE_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annual_nflux_out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ANNUAL_NFLUX_OUT
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weather-file-weather" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Weather File (*.weather)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#soil-file-soil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soil File (*.soil)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#crop-description-file-crop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Crop Description File (*.crop)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Crop Description File (*.crop)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NAME
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal_time_to_emergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THERMAL_TIME_TO_EMERGENCE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flowering_tt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FLOWERING_TT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maturity_tt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MATURITY_TT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base_temperature_for_development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BASE_TEMPERATURE_FOR_DEVELOPMENT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimum_temperature_for_development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OPTIMUM_TEMPERATURE_FOR_DEVELOPMENT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max_temperature_for_development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAX_TEMPERATURE_FOR_DEVELOPMENT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#photoperiod_min" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PHOTOPERIOD_MIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#photoperiod_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PHOTOPERIOD_MAX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal_time_vernalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THERMAL_TIME_VERNALIZATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal_time_flowering_at_pmax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THERMAL_TIME_FLOWERING_AT_PMAX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thermal_time_grain_filling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THERMAL_TIME_GRAIN_FILLING
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vernalization_temperature_threshold_lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VERNALIZATION_TEMPERATURE_THRESHOLD_LOWER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vernalization_temperature_threshold_optimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VERNALIZATION_TEMPERATURE_THRESHOLD_OPTIMAL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vernalization_temperature_threshold_upper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VERNALIZATION_TEMPERATURE_THRESHOLD_UPPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature_post_flowering_lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TEMPERATURE_POST_FLOWERING_LOWER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature_post_flowering_optimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TEMPERATURE_POST_FLOWERING_OPTIMAL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature_post_flowering_upper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TEMPERATURE_POST_FLOWERING_UPPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#devernalization_temperature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEVERNALIZATION_TEMPERATURE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initial_partitioning_to_shoot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        INITIAL_PARTITIONING_TO_SHOOT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#final_partitioning_to_shoot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FINAL_PARTITIONING_TO_SHOOT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum_harvest_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAXIMUM_HARVEST_INDEX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimum_harvest_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MINIMUM_HARVEST_INDEX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#harvest_index_slope_multiplier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HARVEST_INDEX_SLOPE_MULTIPLIER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_max_concentration_grain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MAX_CONCENTRATION_GRAIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_min_concentration_grain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MIN_CONCENTRATION_GRAIN
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_max_concentration_straw" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MAX_CONCENTRATION_STRAW
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_min_concentration_straw" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MIN_CONCENTRATION_STRAW
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_partitioning_factor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_PARTITIONING_FACTOR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum_rooting_depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAXIMUM_ROOTING_DEPTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#radiation_use_efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RADIATION_USE_EFFICIENCY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transpiration_use_efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TRANSPIRATION_USE_EFFICIENCY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_temperature_for_transpiration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIN_TEMPERATURE_FOR_TRANSPIRATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold_temperature_for_transpiration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THRESHOLD_TEMPERATURE_FOR_TRANSPIRATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lwp_stress_onset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LWP_STRESS_ONSET
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lwp_wilting_point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LWP_WILTING_POINT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transpiration_max" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TRANSPIRATION_MAX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_temperature_for_cold_damage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIN_TEMPERATURE_FOR_COLD_DAMAGE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold_temperature_for_cold_damage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_max_concentration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_MAX_CONCENTRATION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#n_dilution_slope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        N_DILUTION_SLOPE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#annual" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ANNUAL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#legume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LEGUME
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C3
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#management-operations-file-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Management Operations File (*.operation)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Management Operations File (*.operation)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#planting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PLANTING
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PLANTING">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#year" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#end_doy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        END_DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CROP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max_smc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAX_SMC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_smc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIN_SMC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#max_soil_temp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAX_SOIL_TEMP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_soil_temp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MIN_SOIL_TEMP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use_auto_irr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        USE_AUTO_IRR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use_auto_fert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        USE_AUTO_FERT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#density" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DENSITY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_START
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_END
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maximum_soil_coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAXIMUM_SOIL_COVERAGE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#standing_residue_at_harvest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        STANDING_RESIDUE_AT_HARVEST
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#residue_removed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RESIDUE_REMOVED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_biomass_threshold_lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_BIOMASS_THRESHOLD_LOWER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_biomass_threshold_upper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_BIOMASS_THRESHOLD_UPPER
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clipping_biomass_destiny" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLIPPING_BIOMASS_DESTINY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#harvest_timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HARVEST_TIMING
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kill_after_harvest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KILL_AFTER_HARVEST
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tillage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TILLAGE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TILLAGE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#year_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doy_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TOOL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crop_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CROP_NAME
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frac_thermal_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FRAC_THERMAL_TIME
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kill_efficiency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KILL_EFFICIENCY
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed_fertilization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FIXED_FERTILIZATION
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FIXED_FERTILIZATION">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#year_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doy_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SOURCE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MASS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FORM
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        METHOD
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEPTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed_irrigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FIXED_IRRIGATION
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FIXED_IRRIGATION">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#year_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YEAR
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doy_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DOY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VOLUME
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto_irrigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AUTO_IRRIGATION
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AUTO_IRRIGATION">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#crop_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CROP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start_day" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        START_DAY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stop_day" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        STOP_DAY
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#water_depletion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WATER_DEPLETION
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#depth_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEPTH
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reinitialization-file-reinit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reinitialization File (*.reinit)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calibration-file-nudge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calibration File (*.nudge)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="input-files">Input Files</h1>
+<p>Simulations in Cycles are driven by a series of ASCII-text input files.
+However, the simulation control file (<code>*.ctrl</code>) is the only input file explicitly specified when executing Cycles in the command prompt terminal or command line.
+The names of inputs files for the crop descriptions, management operations, soil profile description, and weather records are specified within the control file.
+Generally speaking, the input files must be written in exactly the same format as the master template.
+Users can write custom annotations within input files, however.
+Any text following a <code>#</code> mark will not be read by the program.
+Blank lines are also not read by the program
+To create input files for a new simulation, it's easiest to make a copy of existing template files, rather than retype each file from scratch.</p>
+<h2 id="simulation-control-file-ctrl">Simulation Control File (*.ctrl)</h2>
+<p>The simulation control files have a suffix of <code>.ctrl</code>.
+For each simulation, the name of the control file is submitted when invoking Cycles at the command prompt and is also used as the directory name where output files are stored following each simulation.
+In the control file, keyword tags are on the left and the value for each tag is separated by spaces or tabs on the right.
+The control file contains information about the starting and ending years of the simulation, simulation options, including the specific output files to be written, and the names of other input files.
+Simulation options are represented as on/off switches, where <code>0</code> stands for off and <code>1</code> stands for on.
+The meaning of each keyword in the control file is described below.</p>
+<h3 id="simulation_start_year"><code>SIMULATION_START_YEAR</code></h3>
+<p>The year to start the simulation.
+All simulations start on January 1 of the given year.
+There must be records in the weather file starting from January 1 of this year.</p>
+<h3 id="simulation_end_year"><code>SIMULATION_END_YEAR</code></h3>
+<p>The year to end the simulation.
+All simulations run to December 31 of the given year.
+There must be records in the weather file through December 31 of this year.</p>
+<h3 id="rotation_size"><code>ROTATION_SIZE</code></h3>
+<p>The number of years in the crop rotation specified in the operation input file.
+The specified rotation will automatically repeat itself as many times as needed over the duration of the simulation spanning from <code>SIMULATION_START_YEAR</code> to <code>SIMULATION_END_YEAR</code>.</p>
+<h3 id="crop_file"><code>CROP_FILE</code></h3>
+<p>The name of the crop description file.
+This file must be located in a directory titled <code>input</code> that is within the <code>Cycles</code> working directory.</p>
+<h3 id="operation_file"><code>OPERATION_FILE</code></h3>
+<p>The name of the operation file.
+This file must be located in a directory titled <code>input</code> that is within the <code>Cycles</code> working directory.</p>
+<h3 id="soil_file"><code>SOIL_FILE</code></h3>
+<p>The name of the soil profile description file.
+This file must be located in a directory titled <code>input</code> that is within the <code>Cycles</code> working directory.</p>
+<h3 id="weather_file"><code>WEATHER_FILE</code></h3>
+<p>The name of the weather file.
+This file must be located in a directory titled <code>input</code> that is within the <code>Cycles</code> working directory.</p>
+<h3 id="reinit_file"><code>REINIT_FILE</code></h3>
+<p>The name of the reinitialization file.
+This file must be located in a directory titled <code>input</code> that is within the <code>Cycles</code> working directory.
+Note that it cannot be left as blank, even if reinitialization is not needed.
+Use <code>N/A</code> if reinitialization is not needed.</p>
+<h3 id="soil_layers"><code>SOIL_LAYERS</code></h3>
+<p>The number of soil layers to be used in the simulation.
+The number of soil layers cannot be greater than the number of soil layers specified in the soil profile description file.</p>
+<h3 id="co2_level"><code>CO2_LEVEL</code></h3>
+<p>Atmospheric CO<sub>2</sub> concentration (<span class="arithmatex">\(\mathrm{ppm}\)</span>).
+Set to <code>-999</code> to use annual CO<sub>2</sub> concentrations in the <code>co2.txt</code> file.</p>
+<h3 id="use_reinitialization"><code>USE_REINITIALIZATION</code></h3>
+<p>Set to <code>1</code> if reinitialization of carbon, nitrogen or water variables are desired on a specific day of simulation year.
+A re-initialization file is required in this case.
+Set to <code>0</code> if re-initialization is not needed.</p>
+<h3 id="adjusted_yields"><code>ADJUSTED_YIELDS</code></h3>
+<p>This keyword is currently not activated.
+Enter <code>0</code>.</p>
+<h3 id="hydrology_option"><code>HYDROLOGY_OPTION</code></h3>
+<p>Controls whether water infiltration and redistribution between soil layers is calculated using</p>
+<ul>
+<li>a daily cascade method (set value to <code>0</code>),</li>
+<li>a finite difference numerical integration at an hourly time-step (set value to <code>1</code>),</li>
+<li>a Crank-Nicolson finite difference numerical integration at a sub-daily time-step (set value to <code>2</code>), or</li>
+<li>a finite difference numerical integration at a sub-daily time-step solved by CVode (set value to <code>3</code>).</li>
+</ul>
+<p>The cascade method is the most computationally efficient, but does not allow for water contents greater than field capacity or soil wetting from the bottom up.
+Cascade method can miss denitrification badly, but does a good job with the water balance.</p>
+<h3 id="automatic_nitrogen"><code>AUTOMATIC_NITROGEN</code></h3>
+<p>Set to <code>0</code> for crops to be grown based on N available from N fertilizer additions and N cycling processes.
+Set to <code>1</code> for all crops in the simulation to be grown without nitrogen limitations.
+For this selection to work, the autoN flag in the planting operation of a given crop (operation file) needs to be set to <code>1</code>.
+This allows running crops with and without N limitation in the same simulation.</p>
+<h3 id="automatic_phosphorus"><code>AUTOMATIC_PHOSPHORUS</code></h3>
+<p>Crops grow with no phosphorus limitations.
+(Note: phosphorus cycling is currently not represented in the model, so this switch does not activate anything.)</p>
+<h3 id="automatic_sulfur"><code>AUTOMATIC_SULFUR</code></h3>
+<p>Crops grow with no sulfur limitations.
+(Note: sulfur cycling is currently not represented in the model, so this switch does not activate anything.)</p>
+<h3 id="daily_weather_out"><code>DAILY_WEATHER_OUT</code></h3>
+<p>Set to <code>1</code> to write an output file named <code>dailyWeather.csv</code> with the average temperature, reference evapotranspiration, and precipitation for each day of the simulation.</p>
+<h3 id="daily_crop_out"><code>DAILY_CROP_OUT</code></h3>
+<p>Set to <code>1</code> to write an output file named for each crop used in the rotation (e.g., <code>dailyMaize.csv</code>) with daily values for growing degree day accumulation, crop biomass production, biomass N content, crop N stress and water stress, and potential transpiration.</p>
+<h3 id="daily_residue_out"><code>DAILY_RESIDUE_OUT</code></h3>
+<p>Set to <code>1</code> to write an output file named <code>dailyResidue.csv</code> with daily values associated with the residue pools, including radiation interception by surface residues, surface residue moisture content, shoot and root residue biomass and N content in the entire soil profile, and manure C and N content at the surface and in the soil profile.</p>
+<h3 id="daily_water_out"><code>DAILY_WATER_OUT</code></h3>
+<p>Set to <code>1</code> to write an output file named <code>dailyWater.csv</code> with daily values for the water budget, including inputs from irrigation and rainfall, and outputs of drainage, runoff, evaporation, transpiration, and sublimation.</p>
+<h3 id="daily_nitrogen_out"><code>DAILY_NITROGEN_OUT</code></h3>
+<p>Set to <code>1</code> to write an output file named <code>dailyN.csv</code> with daily values for pools and fluxes in the N cycle, including soil profile stocks of organic N, nitrate N, and ammonium N, and rates of N mineralization and immobilization, nitrification, gaseous N losses, and N leaching losses.</p>
+<h3 id="daily_soil_carbon_out"><code>DAILY_SOIL_CARBON_OUT</code></h3>
+<p>Set to <code>1</code> to write an output file named <code>dailySoilC.csv</code> with daily values for pools and fluxes in the C cycle, including soil profile stocks of organic C, the C from decomposed organic matter that becomes humified in microbial and stabilized C pools, and C respired from decomposed residues or soil organic matter.</p>
+<h3 id="daily_soil_lyr_cn_out"><code>DAILY_SOIL_LYR_CN_OUT</code></h3>
+<p>Set to <code>1</code> to write an output file named <code>dailySoilLayersCN.csv</code> with daily values for C and N pool sizes by soil layer.
+Included are nitrate and ammonium concentrations, the composite environmental factor regulating decomposition rates, residue C and C:N ratio, microbial biomass C and C:N ratio, stabilized organic C and C:N ratio, soil water content, and soil layer thickness and bulk density.</p>
+<h3 id="annual_soil_out"><code>ANNUAL_SOIL_OUT</code></h3>
+<p>Set to <code>1</code> to write an output file named <code>annualSOM.csv</code> with annual values for soil carbon pool sizes and carbon saturation ratios by soil layer.</p>
+<h3 id="annual_profile_out"><code>ANNUAL_PROFILE_OUT</code></h3>
+<p>Set to <code>1</code> to write an output file named <code>annualSoilProfileC.csv</code> with annual values of carbon pools by soil layer.</p>
+<h3 id="annual_nflux_out"><code>ANNUAL_NFLUX_OUT</code></h3>
+<p>Set to <code>1</code> to write and output file named <code>annualN.csv</code> with annual values of nitrogen fluxes, including fertilization, fixation, leaching, denitrification, nitrification, and volatilization.</p>
+<h2 id="weather-file-weather">Weather File (*.weather)</h2>
+<p>The weather files typically have a suffix of <code>.weather</code>, but any suffix or file naming convention can be used so long as the name of the weather file listed in the control file exactly matches the name of the weather file to be used in the input directory.</p>
+<p>Weather files contain three lines at the beginning with the keyword tags <code>LATITUDE</code>, <code>ALTITUDE</code>, and <code>SCREENING_HEIGHT</code>, each followed by a tab-delimited value.
+Altitude and screening height values should be entered in meters.
+Screening height is the height of the weather station instruments above the land surface.
+Following these three lines is a row of tab-delimited column headers in the order <code>YEAR</code>, <code>DOY</code>, <code>PP</code>, <code>TX</code>, <code>TN</code>, <code>SOLAR</code>, <code>RHX</code>, <code>RHN</code>, <code>WIND</code>, with daily values for each weather variable listed in rows below.
+<code>YEAR</code> and <code>DOY</code> are the year and numerical day of the year, respectively, for each daily weather record.
+<code>PP</code> is precipitation in <span class="arithmatex">\(\mathrm{mm}/\mathrm{day}\)</span>.
+<code>TX</code> and <code>TN</code> are the maximum and minimum daily temperatures in <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>.
+<code>SOLAR</code> is the daily solar radiation in <span class="arithmatex">\(\mathrm{MJ}/\mathrm{m}^{2}/\mathrm{day}\)</span>.
+<code>RHX</code> and <code>RHN</code> are the maximum and minimum relative humidity in <span class="arithmatex">\(\%\)</span>.
+<code>WIND</code> is the average wind speed in <span class="arithmatex">\(\mathrm{m}/\mathrm{s}\)</span>.</p>
+<h2 id="soil-file-soil">Soil File (*.soil)</h2>
+<p>Similar to the weather input file, soil files typically have a suffix of <code>.soil</code>, but any naming convention can be used as long as it matches the soil file name listed in the control file.</p>
+<p>The soil file starts with two lines at the beginning with the keyword tags <code>CURVE_NUMBER</code> and <code>SLOPE</code>, with each keyword followed by a value.</p>
+<p>The <code>CURVE_NUMBER</code> refers to the United States Department of Agriculture Natural Resources Conservation Service Curve Number method to calculate runoff from watersheds.
+The curve number is used in an equation to predict the volume of water from precipitation or irrigation that is necessary to generate runoff from a field.
+Lower values indicate faster infiltration rates, meaning that a greater volume of precipitation is needed to generate runoff.
+The exact value to use in a soil input file for a given simulation depends on the soil texture and crop rotation characteristics, as described in the NRCS technical report TR-55, "<a href="https://www.nrcs.usda.gov/Internet/FSE_DOCUMENTS/stelprdb1044171.pdf">Urban Hydrology for Small Watersheds</a>".
+Table 2.2 in the document suggests curve numbers to use for different hydrologic soil groups (A, B, C, or D) under different crop rotations.
+If the hydrologic soil group is not known for a soil, Appendix A of TR-55 provides qualitative descriptions of the different hydrologic groups and assigns a hydrologic soil group rating to different soil texture classes (i.e., loams, silt loams, sandy loams, etc.).
+The curve number rating will affect the water budget in a simulation, which can affect crop yields and other processes, so its value should be given due consideration, especially if you are attempting to compare simulation outputs with results from a real field experiment.</p>
+<p>The <code>SLOPE</code> value is in <span class="arithmatex">\(\%\)</span>, or units of rise per <span class="arithmatex">\(100\)</span> units of run.</p>
+<p>Below the first three keyword tags is a row of column headers for soil properties in the order <code>LAYER</code>, <code>THICK</code>, <code>CLAY</code>, <code>SAND</code>, <code>SOC</code>, <code>BD</code>, <code>FC</code>, <code>PWP</code>, <code>SON</code>, <code>NO3</code>, <code>NH4</code>, <code>ROCK</code>, <code>BYP_H</code>, <code>BYP_V</code>, and <code>pH</code>.
+The values of each soil property are listed below in a separate row for each soil layer.</p>
+<p>The variable <code>LAYER</code> is simply the layer number, starting at <code>1</code> and increasing by one unit for each additional layer.</p>
+<p><code>THICK</code> is the thickness of each soil layer in meters.
+Because of the important processes occurring in the topsoil layers, such as gas and energy exchange with the atmosphere and incorporation of crop residues, it is necessary to have the topsoil layers simulated with greater depth resolution than the subsoils.
+An optimal depth for the first soil layer is <span class="arithmatex">\(0.05~\mathrm{m}\)</span>, with subsequent topsoil layers entered in increments between <span class="arithmatex">\(0.05~\mathrm{m}\)</span> and <span class="arithmatex">\(0.10~\mathrm{m}\)</span> depth.
+Below the topsoil layers, we suggest that soil layers be defined based on depth segments corresponding to changes in soil horizonation for the soil type to be simulated.</p>
+<p>The keyword tags <code>CLAY</code> and <code>SAND</code> are the clay particle size fraction and sand particle size fraction of each soil layer in <span class="arithmatex">\(\%\)</span>.</p>
+<p><code>SOC</code> is the soil organic carbon concentration of each layer in <span class="arithmatex">\(\%\)</span>.
+The organic carbon concentration of each layer is used to calculate N concentration to initialize the stabilized soil C and N pools when the simulation is started, using a soil organic C:N ratio of <span class="arithmatex">\(10:1\)</span>.
+The microbial biomass C and N pools are also initialized as <span class="arithmatex">\(3\%\)</span> of the pool sizes of stabilized soil C and N.</p>
+<p><code>BD</code> is bulk density in <span class="arithmatex">\(\mathrm{Mg}/\mathrm{m}^3\)</span>, and <code>FC</code> and <code>PWP</code> are the field capacity and permanent wilting point volumetric water contents, respectively, in <span class="arithmatex">\(\mathrm{m}^3/\mathrm{m}^3\)</span>.
+If any of these values are not known for a soil layer, you can enter <code>-999</code> and the model will estimate the values using pedotransfer functions.</p>
+<p><code>SON</code> is the soil organic nitrogen mass in kg/ha for each soil layer.
+You can also enter <code>-999</code> for <code>SON</code>, in which case the model starts with a fixed C:N ratio of <span class="arithmatex">\(9\)</span>.</p>
+<p><code>NO3</code> and <code>NH4</code> are the nitrate and ammonium masses in <span class="arithmatex">\(\mathrm{kg}/\mathrm{ha}\)</span> for each soil layer (important: the values are absolute masses, not concentrations).</p>
+<p><code>ROCK</code> is the fraction of coarse fragment (rock) in each soil layer, expressed in <span class="arithmatex">\(\mathrm{m}^3/\mathrm{m}^3\)</span>.</p>
+<p><code>BYP_H</code> and <code>BYP_V</code> are the fractions of horizontal and vertical bypass flows in each soil layer.</p>
+<p><code>pH</code> is the soil pH of each layer.</p>
+<h2 id="crop-description-file-crop">Crop Description File (*.crop)</h2>
+<p>The crop description file defines physiological and management parameters that control the growth and harvest of crops used in the simulation.
+Each crop used in the simulation must have an entry in the crop description file.
+Each crop entry begins with the keyword tag <code>NAME</code> and is followed by the keywords listed in exactly the order below.</p>
+<h3 id="name"><code>NAME</code></h3>
+<p>The name of the crop.
+This entry is used as the reference for crop management practices listed in the operation file, such as planting and harvesting.</p>
+<h3 id="thermal_time_to_emergence"><code>THERMAL_TIME_TO_EMERGENCE</code></h3>
+<p>The thermal time accumulates between when a crop is planted and when it emerges from the soil and begins intercepting radiation, transpiring, accruing biomass, etc., in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.</p>
+<h3 id="flowering_tt"><code>FLOWERING_TT</code></h3>
+<p>The thermal time to flowering, in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days, calculated using the base, optimum, and maximum temperatures for development listed in <code>BASE_TEMPERATURE_FOR_DEVELOPMENT</code>, <code>OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT</code>, and <code>MAX_TEMPERATURE_FOR_DEVELOPMENT</code>.</p>
+<h3 id="maturity_tt"><code>MATURITY_TT</code></h3>
+<p>The thermal time to maturity in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.</p>
+<h3 id="base_temperature_for_development"><code>BASE_TEMPERATURE_FOR_DEVELOPMENT</code></h3>
+<p>The base temperature (<span class="arithmatex">\(T_{\mathrm{min}}\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) for phenological development and accumulation of thermal time.
+Air temperatures below this value will not add to cumulative thermal time.
+Air temperatures above this value and below <code>OPTIMUM_TEMPERATURE_FOR_DEVELOPMENT</code> will accumulate thermal time according to <span class="arithmatex">\(T_\mathrm{air} – T_\mathrm{min}\)</span>.</p>
+<h3 id="optimum_temperature_for_development"><code>OPTIMUM_TEMPERATURE_FOR_DEVELOPMENT</code></h3>
+<p>When air temperatures are above this value (<span class="arithmatex">\(T_{\mathrm{opt}}\)</span>, degree C) and below <code>MAX_TEMPERATURE_FOR_DEVELOPMENT</code> (<span class="arithmatex">\(T_\mathrm{max}\)</span>), the accumulation of thermal time is calculated as</p>
+<div class="arithmatex">\[\frac{T_{\mathrm{max}} - T_{\mathrm{air}}}{T_{\mathrm{max}} - T_{\mathrm{opt}}}\left(T_\mathrm{opt} - T_\mathrm{min}\right)\]</div>
+<h3 id="max_temperature_for_development"><code>MAX_TEMPERATURE_FOR_DEVELOPMENT</code></h3>
+<p>Air temperatures above this value (<span class="arithmatex">\(T_{\mathrm{max}}\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) will not add to cumulative thermal time.</p>
+<h3 id="photoperiod_min"><code>PHOTOPERIOD_MIN</code></h3>
+<p>Minimum daylength (hours) threshold for pre-flowering thermal time accumulation calculation.
+Part of winter crop phenology parameters.</p>
+<h3 id="photoperiod_max"><code>PHOTOPERIOD_MAX</code></h3>
+<p>Minimum daylength (hours) threshold for pre-flowering thermal time accumulation calculation.
+Part of winter crop phenology parameters.</p>
+<h3 id="thermal_time_vernalization"><code>THERMAL_TIME_VERNALIZATION</code></h3>
+<p>The thermal time to completing vernalization, in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.
+Used to calculate the vernalization factor which affects pre-flowering thermal time accumulation based on vernalization progress.
+Calculated using the base, optimum, and maximum temperatures for vernalization listed in <code>VERNALIZATION_TEMPERATURE_THRESHOLD_LOWER</code>, <code>VERNALIZATION_TEMPERATURE_THRESHOLD_OPTIMAL</code>, and <code>VERNALIZATION_TEMPERATURE_THRESHOLD_UPPER</code>.
+Part of winter crop phenology parameters.</p>
+<h3 id="thermal_time_flowering_at_pmax"><code>THERMAL_TIME_FLOWERING_AT_PMAX</code></h3>
+<p>Thermal time to flowering, in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.
+Calculated using the default base, optimum, and maximum temperatures for development listed in <code>BASE_TEMPERATURE_FOR_DEVELOPMENT</code>, <code>OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT</code>, and <code>MAX_TEMPERATURE_FOR_DEVELOPMENT</code>.
+Part of winter crop phenology parameters.</p>
+<h3 id="thermal_time_grain_filling"><code>THERMAL_TIME_GRAIN_FILLING</code></h3>
+<p>Thermal time post flowering to grain fill completion, in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.
+Calculated using the base, optimum, and maximum temperatures for post-flowering development listed in <code>TEMPERATURE_POST_FLOWERING_LOWER</code>, <code>TEMPERATURE_POST_FLOWERING_OPTIMAL</code>, and <code>TEMPERATURE_POST_FLOWERING_UPPER</code>.
+Part of winter crop phenology parameters.</p>
+<h3 id="vernalization_temperature_threshold_lower"><code>VERNALIZATION_TEMPERATURE_THRESHOLD_LOWER</code></h3>
+<p>The base temperature (<span class="arithmatex">\(T_{v,\mathrm{min}}\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) for accumulation of vernalization thermal time.
+Air temperatures below this value will not add to cumulative thermal time.
+Air temperatures above this value and below <code>VERNALIZATION_TEMPERATURE_THRESHOLD_OPTIMAL</code> will accumulate thermal time according to <span class="arithmatex">\(T_\mathrm{air} – T_{v,\mathrm{min}}\)</span>.
+Part of winter crop phenology parameters.</p>
+<h3 id="vernalization_temperature_threshold_optimal"><code>VERNALIZATION_TEMPERATURE_THRESHOLD_OPTIMAL</code></h3>
+<p>When air temperatures are above this value (<span class="arithmatex">\(T_{v,\mathrm{opt}}\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) and below <code>VERNALIZATION_TEMPERATURE_THRESHOLD_UPPER</code> (<span class="arithmatex">\(T_{v,\mathrm{max}}\)</span>), the accumulation of vernalization thermal time is calculated as</p>
+<div class="arithmatex">\[\frac{T_{v,\mathrm{max}} - T_{\mathrm{air}}}{T_{v,\mathrm{max}} - T_{v,\mathrm{opt}}}\left(T_{v,\mathrm{opt}} - T_{v,\mathrm{min}}\right)\]</div>
+<p>Part of winter crop phenology parameters.</p>
+<h3 id="vernalization_temperature_threshold_upper"><code>VERNALIZATION_TEMPERATURE_THRESHOLD_UPPER</code></h3>
+<p>Air temperatures above this value (<span class="arithmatex">\(T_{v,\mathrm{max}}\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) will not add to cumulative vernalization thermal time.
+Part of winter crop phenology parameters.</p>
+<h3 id="temperature_post_flowering_lower"><code>TEMPERATURE_POST_FLOWERING_LOWER</code></h3>
+<p>The base temperature (<span class="arithmatex">\(T_{p,\mathrm{min}}\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) for phenological development and accumulation of thermal time.
+Air temperatures below this value will not add to cumulative post-flowering thermal time.
+Air temperatures above this value and below <code>TEMPERATURE_POST_FLOWERING_OPTIMAL</code> will accumulate thermal time according to <span class="arithmatex">\(T_\mathrm{air} – T_{p,\mathrm{min}}\)</span>.
+Part of winter crop phenology parameters.</p>
+<h3 id="temperature_post_flowering_optimal"><code>TEMPERATURE_POST_FLOWERING_OPTIMAL</code></h3>
+<p>When air temperatures are above this value (<span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) and below <code>TEMPERATURE_POST_FLOWERING_UPPER</code> (<span class="arithmatex">\(T_{p,\mathrm{max}}\)</span>), the accumulation of post-flowering thermal time is calculated as</p>
+<div class="arithmatex">\[\frac{T_{p,\mathrm{max}} - T_{\mathrm{air}}}{T_{p,\mathrm{max}} - T_{p,\mathrm{opt}}}\left(T_{p,\mathrm{opt}} - T_{p,\mathrm{min}}\right)\]</div>
+<p>Part of winter crop phenology parameters.</p>
+<h3 id="temperature_post_flowering_upper"><code>TEMPERATURE_POST_FLOWERING_UPPER</code></h3>
+<p>Air temperatures above this value (<span class="arithmatex">\(T_{p,\mathrm{max}}\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) will not add to cumulative post-flowering thermal time.
+Part of winter crop phenology parameters.</p>
+<h3 id="devernalization_temperature"><code>DEVERNALIZATION_TEMPERATURE</code></h3>
+<p>The air temperature threshold (<span class="arithmatex">\(T_d\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) above which vernalization progress is reversed.
+When the air temperature exceeds this value, <span class="arithmatex">\(T_{\mathrm{air}} - T_d\)</span> is subtracted from the accumulated vernalization thermal time for that day.
+Part of winter crop phenology parameters.</p>
+<h3 id="initial_partitioning_to_shoot"><code>INITIAL_PARTITIONING_TO_SHOOT</code></h3>
+<p>The fraction of growth partitioned to aboveground biomass (as opposed to roots) at the beginning of crop phenological development (seedling emergence).
+Values can range from <span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(1\)</span>.
+Perennials have lower values than annuals.</p>
+<h3 id="final_partitioning_to_shoot"><code>FINAL_PARTITIONING_TO_SHOOT</code></h3>
+<p>The fraction of growth partitioned to aboveground biomass (as opposed to roots) at the end of crop phenological development (physiological maturity). Values can range from <span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(1\)</span>.
+Perennials have lower values than annuals.</p>
+<h3 id="maximum_harvest_index"><code>MAXIMUM_HARVEST_INDEX</code></h3>
+<p>The maximum harvest index possible (<span class="arithmatex">\(H_{\mathrm{max}}\)</span>), used in the calculation of actual harvest index described below.
+It is an asymptotic value that can be much higher than the actual maximum HI observed (e.g., <span class="arithmatex">\(0.8\)</span> for corn).
+Use default values if needed.</p>
+<h3 id="minimum_harvest_index"><code>MINIMUM_HARVEST_INDEX</code></h3>
+<p>The minimum harvest index possible (<span class="arithmatex">\(H_{\mathrm{min}}\)</span>), used in the calculation of actual harvest index described below.
+It has some semblance to the fraction of water soluble carbohydrates at flowering or in the first week after flowering in grain crops.
+Values range from <span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(0.3\)</span>.</p>
+<h3 id="harvest_index_slope_multiplier"><code>HARVEST_INDEX_SLOPE_MULTIPLIER</code></h3>
+<p>A slope multiplier (<span class="arithmatex">\(m\)</span>) between <span class="arithmatex">\(0.01\)</span> and <span class="arithmatex">\(1\)</span> used in the calculation of harvest index.
+The harvest index is calculated based on the proportion of aboveground crop biomass growth occurring post-anthesis relative to total aboveground growth over the entire duration of crop development (<span class="arithmatex">\(f_G\)</span>) as follows:</p>
+<div class="arithmatex">\[\mathrm{HI} = H_{\mathrm{max}} - \left(H_{\mathrm{max}} - H_{\mathrm{min}}\right) \exp\left(-H_k f_G\right)\]</div>
+<p>where <span class="arithmatex">\(H_k = m\left(1 - H_{\mathrm{min}}\right) / \left(H_{\mathrm{max}} - H_{\mathrm{min}}\right)\)</span>.</p>
+<h3 id="n_max_concentration_grain"><code>N_MAX_CONCENTRATION_GRAIN</code></h3>
+<p>The maximum allowable grain N concentration (<span class="arithmatex">\(\%\)</span>), used in nitrogen harvest index calculation.</p>
+<h3 id="n_min_concentration_grain"><code>N_MIN_CONCENTRATION_GRAIN</code></h3>
+<p>The minimum allowable grain N concentration (<span class="arithmatex">\(\%\)</span>), used in nitrogen harvest index calculation.</p>
+<h3 id="n_max_concentration_straw"><code>N_MAX_CONCENTRATION_STRAW</code></h3>
+<p>The maximum allowable straw N concentration at harvest (<span class="arithmatex">\(\%\)</span>), used in nitrogen harvest index calculation.</p>
+<h3 id="n_min_concentration_straw"><code>N_MIN_CONCENTRATION_STRAW</code></h3>
+<p>The minimum allowable straw N concentration at harvest (<span class="arithmatex">\(\%\)</span>), used in nitrogen harvest index calculation.</p>
+<h3 id="n_partitioning_factor"><code>N_PARTITIONING_FACTOR</code></h3>
+<p>An empirical constant in N partitioning (-) used in nitrogen harvest index calculation.</p>
+<h3 id="maximum_rooting_depth"><code>MAXIMUM_ROOTING_DEPTH</code></h3>
+<p>The maximum depth to which crop roots can grow in meters.</p>
+<h3 id="radiation_use_efficiency"><code>RADIATION_USE_EFFICIENCY</code></h3>
+<p>The radiation use efficiency (<span class="arithmatex">\(\mathrm{RUE}\)</span>) of the crop in <span class="arithmatex">\(\mathrm{g}/\mathrm{MJ}\)</span>.
+Units in <span class="arithmatex">\(\mathrm{MJ}\)</span> of solar radiation (not PAR).</p>
+<h3 id="transpiration_use_efficiency"><code>TRANSPIRATION_USE_EFFICIENCY</code></h3>
+<p>The transpiration use efficiency (<span class="arithmatex">\(\mathrm{TUE}\)</span>) of the crop in <span class="arithmatex">\(\mathrm{g}/\mathrm{kg}\)</span> of water when the <span class="arithmatex">\(\mathrm{VPD} = 1 \mathrm{~kPa}\)</span>.</p>
+<h3 id="min_temperature_for_transpiration"><code>MIN_TEMPERATURE_FOR_TRANSPIRATION</code></h3>
+<p>The air temperature (<span class="arithmatex">\(T_{t,\mathrm{min}}\)</span>, daily average, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) below which transpiration by the plant virtually ceases (transpiration is <span class="arithmatex">\(1\%\)</span> of potential transpiration).
+This value can constrain crop growth at low temperatures because crop growth is calculated as the minimum of <span class="arithmatex">\(\mathrm{TUE}\times T\)</span> or <span class="arithmatex">\(\mathrm{RUE}\times R_i\)</span>,
+where <span class="arithmatex">\(T\)</span> is the transpiration rate and <span class="arithmatex">\(R_i\)</span> is the intercepted radiation.
+Therefore, if transpiration does not occur, plant biomass accrual does not occur.</p>
+<h3 id="threshold_temperature_for_transpiration"><code>THRESHOLD_TEMPERATURE_FOR_TRANSPIRATION</code></h3>
+<p>The threshold temperature (<span class="arithmatex">\(T_{t,\mathrm{thresh}}\)</span>, daily average, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) below which potential transpiration is multiplied by a linear temperature reduction factor, where the reduction factor is calculated as:</p>
+<div class="arithmatex">\[\frac{T_\mathrm{air} - T_{t,\mathrm{min}}}{T_{t,\mathrm{thresh}} - T_{t,\mathrm{min}}}\]</div>
+<h3 id="kc"><code>KC</code></h3>
+<p>The crop transpiration coefficient, used to convert reference evapotranspiration based on environmental conditions into crop transpiration.</p>
+<h3 id="lwp_stress_onset"><code>LWP_STRESS_ONSET</code></h3>
+<p>The leaf water potential (<span class="arithmatex">\(\mathrm{J}/\mathrm{kg}\)</span>) threshold for the onset of stress, below which stomatal closure begins, reducing transpiration rates.</p>
+<h3 id="lwp_wilting_point"><code>LWP_WILTING_POINT</code></h3>
+<p>The leaf water potential (<span class="arithmatex">\(\mathrm{J}/\mathrm{kg}\)</span>) at wilting point, where transpiration stops.</p>
+<h3 id="transpiration_max"><code>TRANSPIRATION_MAX</code></h3>
+<p>The maximum crop transpiration rate in <span class="arithmatex">\(\mathrm{mm}/\mathrm{day}\)</span>.</p>
+<h3 id="min_temperature_for_cold_damage"><code>MIN_TEMPERATURE_FOR_COLD_DAMAGE</code></h3>
+<p>The minimum temperature (<span class="arithmatex">\(T_{c,\mathrm{min}}\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) used in the calculation of the cold damage factor described below.
+If the daily minimum temperature is below this value, the cold damage factor is set to <span class="arithmatex">\(0.99\)</span>.</p>
+<h3 id="threshold_temperature_for_cold_damage"><code>THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE</code></h3>
+<p>The threshold temperature (<span class="arithmatex">\(T_{c,\mathrm{thresh}}\)</span>, <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>) used in the calculation of the cold damage factor.
+If the daily minimum temperature falls below this threshold value, a cold damage factor (<span class="arithmatex">\(f_c\)</span>) is calculated as:</p>
+<div class="arithmatex">\[1 - \frac{T_\mathrm{air} - T_{c,\mathrm{min}}}{T_{c,\mathrm{thresh}} - T_{c,\mathrm{min}}}\]</div>
+<p>The cold damage factor reduces the aboveground crop biomass (moving it to the surface residue pools), reduces radiation interception by the canopy, and delays phenology development.
+Aboveground biomass and radiation interception is reduced by a factor calculated as <span class="arithmatex">\(1 – f_c^3\)</span>.
+As an example, a daily minimum temperature below the <code>MIN_TEMPERATURE_FOR_COLD_DAMAGE</code> will cause the existing aboveground biomass and radiation interception to be multiplied by <span class="arithmatex">\(1-0.99^3=0.03\)</span>, with the <span class="arithmatex">\(97\%\)</span> of existing biomass that was killed added to the residue pools.
+So for a crop with an aboveground biomass of <span class="arithmatex">\(1000 \mathrm{~kg}/\mathrm{ha}\)</span>, a day in the simulation with a minimum temperature below the <code>MIN_TEMPERATURE_FOR_COLD_DAMAGE</code> will reduce the aboveground biomass to <span class="arithmatex">\(30\mathrm{~kg}/\mathrm{ha}\)</span> and add <span class="arithmatex">\(970\mathrm{~kg}/\mathrm{ha}\)</span> of biomass to the residue pools.</p>
+<p>Important Note:  The <code>THRESHOLD_TEMPERATURE_FOR_COLD_DAMAGE</code> value can also trigger a grain harvest of a growing crop.
+If the crop is an annual species and the cumulative thermal time of crop development is greater than the <code>FLOWERING_TT</code> value, the crop will be automatically harvested as a grain crop.</p>
+<h3 id="n_max_concentration"><code>N_MAX_CONCENTRATION</code></h3>
+<p>The maximum N concentration in crop tissue (<span class="arithmatex">\(\mathrm{g}/\mathrm{g}\)</span>), a feature that regulates the N requirements for growth through the N dilution curve.</p>
+<h3 id="n_dilution_slope"><code>N_DILUTION_SLOPE</code></h3>
+<p>A parameter that controls the slope of the N dilution curve, which regulates crop N requirements as biomass accrues.</p>
+<h3 id="annual"><code>ANNUAL</code></h3>
+<p>Whether the crop is annual (<code>1</code>) or perennial (<code>0</code>).</p>
+<h3 id="legume"><code>LEGUME</code></h3>
+<p>Whether the crop is a legume (<code>1</code>) or a non-legume (<code>0</code>).</p>
+<h3 id="c3"><code>C3</code></h3>
+<p>Whether the crop has a C3 photosynthetic pathway (<code>1</code>) or a C4 pathway (<code>0</code>).</p>
+<h2 id="management-operations-file-operation">Management Operations File (*.operation)</h2>
+<p>The management operation file sets the daily management operations to be used in a simulated crop rotation.
+Each operation is indicated by one of five possible headers, <code>PLANTING</code>, <code>TILLAGE</code>, <code>FIXED_FERTILIZATION</code>, <code>FIXED_IRRIGATION</code>, or <code>AUTO_IRRIGATION</code>.
+For each operation type, subsequent keywords tags followed by a tab-delimited value are required in a specific order.
+Each operation includes an entry for the <code>YEAR</code>, and <code>DOY</code> (numerical day of the year) in which the operation is to be performed.
+<code>YEAR</code> refers to a generic year in the rotation cycle, starting with year 1, rather than an actual calendar year.
+The rotation will start in the calendar year specified in the control file under <code>SIMULATION_START_YEAR</code> and will repeat itself as many times as possible until the simulation reaches the end of the calendar year specified under <code>SIMULATION_END_YEAR</code> in the control file.
+In this manner, the rotation in an operation file can be started in any calendar year specified by the control file and can run for as many rotation cycles as desired, given that a weather file with a sufficient time span is available.</p>
+<p>It is important that entries in the operation file are listed in chronological order by <code>YEAR</code> and <code>DOY</code>.
+If operations are listed out of order, they will be read into the management array in the wrong order and may not be executed with the proper timing in the simulation.</p>
+<h3 id="planting"><code>PLANTING</code></h3>
+<p>The <code>PLANTING</code> operation plants a crop.
+The following keyword tags are needed after the <code>PLANTING</code> header.</p>
+<h4 id="year"><code>YEAR</code></h4>
+<p>The year in the rotation in which the planting operation is to be performed.</p>
+<h4 id="doy"><code>DOY</code></h4>
+<p>The numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed.
+If conditional planting is activated (i.e., <code>MIN_SMC</code> and <code>MIN_SOIL_TEMP</code> are not <code>-999</code>), this is the beginning of the planting window.</p>
+<h4 id="end_doy"><code>END_DOY</code></h4>
+<p>The last numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed when conditional planting is activated.
+Set the value to <code>-999</code> to disable conditional planting.</p>
+<h4 id="crop"><code>CROP</code></h4>
+<p>The name of the crop to be planted.
+This must match the name of one of the crops described in the crop description file (<code>*.crop</code>).
+If the automatic irrigation feature is activated below, the crop name here must match the crop name in the <code>AUTO_IRRIGATION</code> operation entry.</p>
+<h4 id="max_smc"><code>MAX_SMC</code></h4>
+<p>Maximum soil moisture (fraction between PWP and FC) allowed to perform planting.
+A value of <span class="arithmatex">\(0\)</span> represents PWP and a value of <span class="arithmatex">\(1\)</span> represents FC.
+Set the value to <code>-999</code> to disable maximum soil moisture control on conditional planting.</p>
+<h4 id="min_smc"><code>MIN_SMC</code></h4>
+<p>Minimum soil moisture (fraction between PWP and FC) required to perform planting.
+A value of <span class="arithmatex">\(0\)</span> represents PWP and a value of <span class="arithmatex">\(1\)</span> represents FC.
+Set the value to <code>-999</code> to disable minimum soil moisture control on conditional planting.</p>
+<h4 id="max_soil_temp"><code>MAX_SOIL_TEMP</code></h4>
+<p>Maximum 7-day moving average soil temperature required to perform planting in <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>.
+Set the value to <code>-999</code> to disable maximum soil temperature control on conditional planting.</p>
+<h4 id="min_soil_temp"><code>MIN_SOIL_TEMP</code></h4>
+<p>Minimum 7-day moving average soil temperature required to perform planting in <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span>.
+Set the value to <code>-999</code> to disable minimum soil temperature control on conditional planting.</p>
+<h4 id="use_auto_irr"><code>USE_AUTO_IRR</code></h4>
+<p>Whether or not the crop should be grown with automatic irrigation.
+Yes = <code>1</code>, No = <code>0</code>.
+If automatic irrigation is activated, there must be an associated <code>AUTO_IRRIGATION</code> entry in the operation file with the same crop name as is used in the <code>CROP</code> keyword here.</p>
+<h4 id="use_auto_fert"><code>USE_AUTO_FERT</code></h4>
+<p>Whether or not the crop should be grown with automatic fertilization (growth unrestricted by nutrient limitations).
+Yes = <code>1</code>, No = <code>0</code>.</p>
+<h4 id="density"><code>DENSITY</code></h4>
+<p>The planting density (<span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(1\)</span>), where <span class="arithmatex">\(1\)</span> is a monoculture planting rate and <span class="arithmatex">\(&lt; 1\)</span> indicates a proportionally reduced seeding rate.
+This feature allows for the planting of multiple species in a plant community at different initial densities.</p>
+<h4 id="clipping_start"><code>CLIPPING_START</code></h4>
+<p>The numerical day of the year on which the clipping time window begins.
+Set the value to <code>-999</code> to disable automated harvesting of the corresponding crop.
+A value of <code>-999</code>, however, cannot disable scheduled harvests.</p>
+<h4 id="clipping_end"><code>CLIPPING_END</code></h4>
+<p>The numerical day of the year on which the clipping time window ends.</p>
+<h4 id="maximum_soil_coverage"><code>MAXIMUM_SOIL_COVERAGE</code></h4>
+<p>The maximum crop cover in <span class="arithmatex">\(\%\)</span> is a proxy for light interception potential given by row spacing and other features.
+This value can be set to less than <span class="arithmatex">\(100\%\)</span> if the crop canopy does not have the potential to provide full cover, or if the crop is planted with a row spacing such that there will be bare ground present between crop rows (e.g., horticultural production or dry areas).</p>
+<h4 id="standing_residue_at_harvest"><code>STANDING_RESIDUE_AT_HARVEST</code></h4>
+<p>The percent of aboveground crop residues remaining in the field that are left in the standing position (i.e., in minimal contact with the soil surface and therefore decomposing at a slower rate).
+The reminder of the reside will lay flat on the ground.</p>
+<h4 id="residue_removed"><code>RESIDUE_REMOVED</code></h4>
+<p>For crops harvested as grain, the percent of non-grain crop biomass that is removed with the harvested grain.
+For crops harvested as forages or grazed through the clipping controls, the percent of harvestable aboveground plant biomass that is removed by the harvest.
+For clipping events, this value also controls the fraction of root biomass that is killed at each clipping event and the extent to which the thermal time of crop development is set back at each clipping event.</p>
+<p>Interactions: The harvestable aboveground plant biomass is the biomass quantity above the <code>CLIPPING_BIOMASS_THRESHOLD_LOWER</code> value.</p>
+<h4 id="clipping_biomass_threshold_lower"><code>CLIPPING_BIOMASS_THRESHOLD_LOWER</code></h4>
+<p>The aboveground plant biomass threshold (in <span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>), which remains un-harvestable during clipping events.
+This value represents the mass of living plant biomass that would remain in the field after a clipping event with a <code>RESIDUE_REMOVED</code> value of <span class="arithmatex">\(100\)</span>.</p>
+<h4 id="clipping_biomass_threshold_upper"><code>CLIPPING_BIOMASS_THRESHOLD_UPPER</code></h4>
+<p>The aboveground plant biomass threshold (in <span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>) that will trigger a clipping event or forage harvest.</p>
+<p>Interactions: Clipping will only be allowed if the clipping date window for the crop, which is defined in the operation file, is open.
+The <code>HARVEST_TIMING</code> value also controls clipping events, and clipping will occur when either the biomass threshold or the <code>HARVEST TIMING</code> threshold is reached, whichever occurs first.
+The destination of clippings, either returned to the soil surface, harvested, or grazed is controlled by the <code>CLIPPING_BIOMASS_DESTINY</code> option.
+The percent of aboveground biomass that is clipped is controlled by the <code>RESIDUE_REMOVED</code> value.</p>
+<h4 id="clipping_biomass_destiny"><code>CLIPPING_BIOMASS_DESTINY</code></h4>
+<p>This value controls the destiny of biomass cut by clipping events, with options of <code>REMOVE</code>, <code>RETURN</code>, or <code>GRAZING</code>.
+<code>REMOVE</code> will treat the clipped biomass as a harvested crop.
+<code>RETURN</code> will treat the clipped biomass as a residue returned to the soil surface, with the allocation to standing versus flattened residue pools controlled by the <code>STANDING_RESIDUE_AT_HARVEST</code> value.
+<code>GRAZING</code> will treat the clipped biomass as being consumed by livestock, with <span class="arithmatex">\(50\%\)</span> of the carbon in clipped biomass returned to the soil surface manure C pool and <span class="arithmatex">\(50\%\)</span> of the carbon respired by livestock as CO<sub>2</sub>, and with <span class="arithmatex">\(50\%\)</span> of the nitrogen in clipped biomass returned to the soil surface in the manure N pool and <span class="arithmatex">\(50\%\)</span> of the nitrogen returned as urine to the NH<sub>4</sub><sup>+</sup> pool of the first soil layer.</p>
+<h4 id="harvest_timing"><code>HARVEST_TIMING</code></h4>
+<p>The percent of thermal time to crop maturity that will trigger a clipping event or grain harvest.
+As an example, if <code>HARVEST_TIMING</code> is set to <span class="arithmatex">\(90\)</span>, and the <code>MATURITY_TT</code> is <span class="arithmatex">\(1000\)</span>, the crop will be clipped when the cumulative thermal time of crop development reaches <span class="arithmatex">\(900\)</span> growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.
+If the harvest timing is less than <span class="arithmatex">\(100\)</span>, the crop will be clipped as a forage and will continue to regrow.
+If the harvest timing is greater than <span class="arithmatex">\(100\)</span>, the crop will have reached physiological maturity and will be harvested as a grain crop and killed after harvested.
+A value of <code>-999</code> can be entered to trigger a default value of <span class="arithmatex">\(101\)</span>, which will result in the crop being harvested for grain on the first day after it reaches physiological maturity.</p>
+<p>Interactions: The <code>CLIPPING_BIOMASS_THRESHOLD_UPPER</code> value also controls if and when a crop will be clipped.
+If the <code>HARVEST_TIMING</code> value is greater than 100, indicating a desire to harvest the crop for grain, but the <code>CLIPPING_BIOMASS_THRESHOLD_UPPER</code> value is set within a range of biomass production levels that will be achieved during growth of the crop, the crop will get clipped as a forage.
+Therefore, when programming a crop to be grown as a grain crop, the <code>CLIPPING_BIOMASS_THRESHOLD_UPPER</code> value should be set to a very high value, such as <code>999</code>, so that clipping will not be triggered before physiological maturity is reached.</p>
+<h4 id="kill_after_harvest"><code>KILL_AFTER_HARVEST</code></h4>
+<p>Whether to kill the crop after automatic grain or forage harvests.
+Note that crops will not be killed after scheduled harvests in the operation files.
+To kill the crops after scheduled harvests, <code>KILL_CROP</code> tillage operations need to be scheduled.</p>
+<h3 id="tillage"><code>TILLAGE</code></h3>
+<p>The tillage operation can cause soil disturbances of varying intensity, for instance ranging from the slight disturbance of disc openers on a no-till planter to full-scale inversion tillage.
+Tillage operations can also be used to harvest or kill planted crops.
+The following keyword tags are needed after the <code>TILLAGE</code> header.</p>
+<h4 id="year_1"><code>YEAR</code></h4>
+<p>The year in the rotation in which the tillage operation is to be performed.</p>
+<h4 id="doy_1"><code>DOY</code></h4>
+<p>The numerical day of the year (0 to 365) on which the tillage operation is to be performed.</p>
+<h4 id="tool"><code>TOOL</code></h4>
+<p>A descriptive name of the tillage tool described by the operation entry.
+The <code>TOOL</code> must be a valid tool described in the <code>input/tillage_tools.txt</code>, with some exceptions:
+The string <code>Kill_Crop</code> is used to kill a crop without harvesting any residues;
+the string <code>Grain_Harvest</code> is used to perform a grain harvest;
+the string <code>Forage_Harvest</code> is used to perform a forage harvest;
+and the string <code>Burn_Residue</code> is used to burn residue that is aboveground.
+Note that scheduled grain harvests do not kill crops, and scheduled harvests are performed even if <code>CLIPPING_START</code> is set to <code>-999</code>.
+When burning residue, the <code>KILL_EFFICIENCY</code> parameter is used to determine the fraction burned.</p>
+<p>To kill a crop after a scheduled harvest, a <code>Kill_Crop</code> tillage operation should be used.</p>
+<p>In the <code>input/tillage_tools.txt</code> file, the <code>TOOL</code> name is followed by a set of parameters that describe the tillage tool:</p>
+<p><code>DEPTH</code>:
+The soil depth (in meters) to which the tillage operation will cause mixing and disturbance induced increases in microbial respiration.</p>
+<p><code>SOIL_DISTURB_RATIO</code>:
+A relative value that indicates the extent to which the tillage operation speeds up decomposition rate of the soil microbial biomass and stabilized soil C pools.</p>
+<p><code>MIXING_EFFICIENCY</code>:
+A factor used to control the extent to which soil layers and residue pools mix with each other during a tillage event (range is <span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(1\)</span>).
+The <code>MIXING_EFFICIENCY</code> value specifies the mass fraction of the soil mineral and organic pools in each soil layer within the depth range of the operation that will be mixed together and redeposited in each soil layer.
+Pools that are mixed include clay and sand fractions, stabilized soil C and N, microbial biomass C and N, crop residue biomass and N, manure C and N, nitrate and ammonium, water content, and surface residues.
+The mixing efficiency will also flatten a fraction of the standing crop residue equal to the square root of the mixing efficiency.</p>
+<h4 id="crop_name"><code>CROP_NAME</code></h4>
+<p>If the <code>TILLAGE</code> operation is being used to harvest or kill a crop, this tag indicates the crop name to be harvested or killed.
+To kill all the crops in a planted community, use <code>All</code> or <code>N/A</code>.
+To harvest a crop, use the crop name exactly as written in the <code>PLANTING</code> operation and crop description file.</p>
+<h4 id="frac_thermal_time"><code>FRAC_THERMAL_TIME</code></h4>
+<p>This keyword is not activated in the current version of Cycles, so leave the value as <code>0</code>.
+In future versions, this keyword will be used to program tillage events at specific times relative to crop phenological development.</p>
+<h4 id="kill_efficiency"><code>KILL_EFFICIENCY</code></h4>
+<p>This keyword is not activated in the current version of Cycles, except for the <code>Burn_Residue</code> option..
+When using the <code>Burn_Residue</code> option, the <code>KILL_EFFICIENCY</code> value specifies the fraction of aboveground residue that is burned.
+In future versions, this keyword will be used to generate an incomplete kill of a crop in order to simulate the effect of competition from a crop previous crop that was not completely killed.</p>
+<h3 id="fixed_fertilization"><code>FIXED_FERTILIZATION</code></h3>
+<p>The fixed fertilization operation is used to apply organic and inorganic soil fertility inputs in a simulation.
+The following keyword tags are needed after the <code>FIXED_FERTILIZATION</code> header.</p>
+<h4 id="year_2"><code>YEAR</code></h4>
+<p>The year in the rotation in which the fixed fertilization operation is to be performed.</p>
+<h4 id="doy_2"><code>DOY</code></h4>
+<p>The numerical day of the year (0 to 365) on which the tillage operation is to be performed.</p>
+<h4 id="source"><code>SOURCE</code></h4>
+<p>A descriptive name of the fertility input described by the entry.
+The <code>SOURCE</code> must be a valid fertilizer described in the <code>input/fertilizers.txt</code>.</p>
+<p>In the <code>input/fertilizers.txt</code> file, the <code>FERTILIZER</code> name is followed by a set of parameters that describe the fertilizer:</p>
+<p><code>C_ORGANIC</code>:
+The fraction of input mass that is organic C.
+This fraction will be added to the manure C pool.</p>
+<p><code>C_CHARCOAL</code>:
+This keyword is not currently activated.</p>
+<p><code>N_ORGANIC</code>:
+The fraction of input mass that is organic N.
+This fraction will be added to the manure N pool.</p>
+<p><code>N_CHARCOAL</code>:
+This keyword is not currently activated.</p>
+<p><code>N_NH4</code>:
+The fraction of input mass that is ammonium N.
+This fraction will be added to the ammonium pool.</p>
+<p><code>N_NO3</code>:
+The fraction of input mass that is nitrate N.
+This fraction will be added to the nitrate pool.</p>
+<p><code>P_ORGANIC</code>:
+This keyword is not currently activated.</p>
+<p><code>P_CHARCOAL</code>:
+This keyword is not currently activated.</p>
+<p><code>P_INORGANIC</code>:
+This keyword is not currently activated.</p>
+<p><code>K</code>:
+This keyword is not currently activated.</p>
+<p><code>S</code>:
+This keyword is not currently activated.</p>
+<h4 id="mass"><code>MASS</code></h4>
+<p>The total mass of the input in <span class="arithmatex">\(\mathrm{kg}/\mathrm{ha}\)</span>.</p>
+<h4 id="form"><code>FORM</code></h4>
+<p>This keyword is not currently activated.
+Enter any string.</p>
+<h4 id="method"><code>METHOD</code></h4>
+<p>This keyword is not currently activated.
+Enter any string.</p>
+<h4 id="depth"><code>DEPTH</code></h4>
+<p>The soil depth (in meters) to which the fertilizer input is added.
+To specify surface applied fertilizer applications, use a value of <span class="arithmatex">\(0\)</span>.
+Organic components of surface applied fertilizer inputs will be added to the surface manure C and N pools, while inorganic components of the surface applied inputs will be added to the nitrate or ammonium pools of the first soil layer.</p>
+<h3 id="fixed_irrigation"><code>FIXED_IRRIGATION</code></h3>
+<p>The fixed irrigation operation is used to provide a one-time application of water to simulate an irrigation event.
+The following keyword tags are needed after the <code>FIXED_IRRIGATION</code> header.</p>
+<h4 id="year_3"><code>YEAR</code></h4>
+<p>The year in the rotation in which the tillage operation is to be performed.</p>
+<h4 id="doy_3"><code>DOY</code></h4>
+<p>The numerical day of the year (0 to 365) on which the tillage operation is to be performed.</p>
+<h4 id="volume"><code>VOLUME</code></h4>
+<p>The volume of water to be added in <span class="arithmatex">\(\mathrm{mm}\)</span>.
+Irrigation water is added to the soil surface and is combined with precipitation and snowmelt in calculating the amount of water infiltration versus runoff.</p>
+<h3 id="auto_irrigation"><code>AUTO_IRRIGATION</code></h3>
+<p>The automatic irrigation operation is used to provide irrigation events triggered by specific water depletion levels.
+The automatic irrigation event will calculate the quantity of water to add that is needed to bring the soil layers within and above the <code>DEPTH</code> to field capacity.
+These operation entries are only read into the simulation controls if one or more crops have the <code>USE_AUTO_IRR</code> keyword set to <code>1</code> in a <code>PLANTING</code> operation entry.
+The following keyword tags are needed after the <code>AUTO_IRRIGATION</code> header.</p>
+<h4 id="crop_1"><code>CROP</code></h4>
+<p>The crop that the <code>AUTO_IRRIGATION</code> operation applies to.
+This entry must match the name entered in the <code>CROP</code> keyword of the <code>PLANTING</code> operation.</p>
+<h4 id="start_day"><code>START_DAY</code></h4>
+<p>The first numerical day of the year at which auto irrigation events can be triggered.</p>
+<h4 id="stop_day"><code>STOP_DAY</code></h4>
+<p>The last numerical day of the year at which auto irrigation events can be triggered.</p>
+<h4 id="water_depletion"><code>WATER_DEPLETION</code></h4>
+<p>The fraction of the plant available water capacity that can be depleted before triggering an automatic irrigation event.
+The fraction of plant available water depleted is integrated across the soil layers including and above the layer specified by <code>LAST_SOIL_LAYER</code>.
+Example: entering a value of 0.05 means that an auto irrigation event will be triggered when the plant available water content (volumetric water content above the permanent wilting point but not greater than field capacity) falls below 95% of the plant available water capacity (the volumetric water content between permanent wilting point water content and field capacity water content).</p>
+<h4 id="depth_1"><code>DEPTH</code></h4>
+<p>The lowest depth that will be used in the determination of auto irrigation requirements and volumes.</p>
+<h2 id="reinitialization-file-reinit">Reinitialization File (*.reinit)</h2>
+<p>Re-initialization files are optional, and typically have a suffix of <code>.reinit</code>, but any naming convention can be used as long as it matches the reinitialization file name listed in the control file.
+When reinitialization option is used, the model variables of choice will be replaced by the values specified in the reinitialization file.</p>
+<p>The reinitialization file starts with a row specifying <code>YEAR</code>, and <code>DOY</code>.
+<code>YEAR</code> and <code>DOY</code> set the simulation year and the numerical day of the year that reinitialization occurs.
+The re-reinitialization variables are organized in a table-like fashion.
+The header lines describe the names of the variables, and the values follow.
+Currently, the following options are available:
+<code>SMC</code> (<span class="arithmatex">\(\mathrm{m}^3/\mathrm{m}^3\)</span>),
+<code>NO3</code> (<span class="arithmatex">\(\mathrm{kg}/\mathrm{ha}\)</span>),
+<code>NH4</code> (<span class="arithmatex">\(\mathrm{kg}/\mathrm{ha}\)</span>),
+<code>SOC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>SON</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>MBC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>MBN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>RESIDUEABGDC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>RESIDUERTC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>RESIDUERZC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>RESIDUEABGDN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>RESIDUERTN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>RESIDUERZN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>MANUREC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>MANUREN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>), and
+<code>FERMENTC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>FERMENTN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>), and
+<code>SATURATION</code> (<span class="arithmatex">\(\mathrm{100\%}\)</span>)
+of different soil layers; and
+<code>STANRESIDUEC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>FLATRESIDUEC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>STANRESIDUEN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>FLATRESIDUEN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>MANURESURFACEC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>MANURESURFACEN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>FERMENTSURFACEC</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>FERMENTSURFACEN</code> (<span class="arithmatex">\(\mathrm{Mg}/\mathrm{ha}\)</span>),
+<code>STANRESIDUEWATER</code> (<span class="arithmatex">\(\mathrm{mm}\)</span>),
+<code>FLATRESIDUEWATER</code> (<span class="arithmatex">\(\mathrm{mm}\)</span>), and
+<code>INFILTRATION</code> (<span class="arithmatex">\(\mathrm{mm}/\mathrm{day}\)</span>).</p>
+<p>Please refer to the <code>input/CornSoyWheatPasture.reinit</code> file for an example of a reinitialization file.
+The structure can repeat to specify re-initialization for as many dates as needed.
+To disable the re-initialization of certain variables, use <code>-999</code> as their values.</p>
+<h2 id="calibration-file-nudge">Calibration File (*.nudge)</h2>
+<p>Calibration files are optional, and are only required when running Cycles in the calibration mode (with the <code>-n</code> command line option).
+When the calibration mode is used, a calibration file named <code>&lt;simulation name&gt;.nudge</code> should be provided in the <code>input</code> directory.</p>
+<p>The calibration files contain calibration multipliers for 12 model parameters, and values of two model parameters.
+When running in the calibration mode, the corresponding parameters will be multiplied by the calibration multipliers.
+A calibration multiplier of 1 means the default hard-coded parameter value will be used.</p>
+<p>Currently, the following options are available for calibration multiplier:
+<code>SOC_DECOMP_RATE</code> (soil organic carbon decomposition rate),
+<code>RESIDUE_DECOMP_RATE</code> (residue decomposition rate),
+<code>ROOT_DECOMP_RATE</code> (root decomposition rate),
+<code>RHIZO_DECOMP_RATE</code> (rhizome decomposition rate),
+<code>MANURE_DECOMP_RATE</code> (manure decomposition rate),
+<code>FERMENT_DECOMP_RATE</code> (ferment decomposition rate),
+<code>MICROB_DECOMP_RATE</code> (microbe decomposition rate),
+<code>SOC_HUMIF_POWER</code> (soil organic carbon humification exponent),
+<code>NITRIF_RATE</code> (nitrification rate),
+<code>POT_DENITRIF_RATE</code> (potential denitrification rate),
+<code>DENITRIF_HALF_RATE</code> (half saturation constant for denitrification),
+<code>DECOMP_HALF_RESP</code> (decomposition half response to saturation, default value 0.22),
+<code>DECOMP_RESP_POWER</code> (decomposition exponential response to saturation, default value 3.0).
+<code>ROOT_PROGRESSION</code> (rooting depth progression rate).
+<code>RADIATION_USE_EFFICIENCY</code> (crop-specific radiation use efficiency).</p>
+<p>Parameter values for <code>KD_NO3</code> (adsorption coefficient for NO<sub>3</sub><sup>-</sup>, default value <span class="arithmatex">\(0.0\mathrm{~cm}^3/\mathrm{g}\)</span>) and <code>KD_NH4</code> (adsorption coefficient for NH<sub>4</sub><sup>+</sup>, default value <span class="arithmatex">\(5.6\mathrm{~cm}^3/\mathrm{g}\)</span>) should also be provided in calibration files.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
