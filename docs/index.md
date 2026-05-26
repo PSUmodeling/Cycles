@@ -1,6 +1,6 @@
 # Cycles: An Agroecosystems Simulation Model<br>User Reference Guide
 <div style="text-align: center;"><p>
-Prepared by Charles M. White, Yuning Shi, and Armen R. Kemanian
+Prepared by Charles M. White, Yuning Shi, Emmy Wwang, and Armen R. Kemanian
 </p></div>
 
 
@@ -56,7 +56,6 @@ Cycles_win.exe ContinuousCorn
 Outputs from the model are written to files located in a subdirectory named `output`.
 If the `output` subdirectory does not already exist within your working directory, the program will create it.
 To keep your outputs organized, the program creates a new subdirectory within the `output` directory with the same name as the simulation control file.
-In baseline mode the generated re-initialization file can be found in the output directory as `reinit.txt`.
 If you run the same simulation control file multiple times, the program will **overwrite** output files in the folder each time, unless the `-e` option is used to customize the output file extension.
 
 **Windows users:** It is important to note that if any of the output files are open in a spreadsheet software when a new simulation is run, those files will not be overwritten successfully.
@@ -110,5 +109,51 @@ To run Cycles in calibration mode:
 
 or, in Windows:
 ```shell
-Cycles_win.exe -c <simulation name>
+Cycles_win.exe -n <simulation name>
 ```
+
+## Break and Resume a Simulation
+
+Cycles includes a feature to break and resume a simulation, which can be coupled with decision support systems to run the model in real-time.
+There are two ways to break a simulation:
+
+The first is by harvesting all planted crops that have been scheduled:
+
+```shell
+./Cycles -b <simulation name>
+```
+
+or, in Windows:
+
+```shell
+Cycles_win.exe -b <simulation name>
+```
+
+The second is by reaching a specified date in the simulation:
+
+```shell
+./Cycles -bYYYYDOY <simulation name>
+```
+
+or, in Windows:
+
+```shell
+Cycles_win.exe -bYYYYDOY <simulation name>
+```
+
+Note that there is no space between the `-b` and the date, which is specified in the format of `YYYYDOY`, where `YYYY` is the year and `DOY` is the day of year (1-365 or 366).
+
+To resume a simulation that has been broken, use the following command:
+
+```shell
+./Cycles -r <simulation name>
+```
+
+or, in Windows:
+
+```shell
+Cycles_win.exe -r <simulation name>
+```
+
+Between the break and resume commands, the control file, soil description file, and crop description file should not be modified.
+But the operation file and weather file can be appended to change the management practices and weather forcing for the remainder of the simulation.

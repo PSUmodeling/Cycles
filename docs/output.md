@@ -229,7 +229,6 @@ Note: This file provides outputs needed to calculate selected C and N pool sizes
 | microbial_C:N.X           | $\mathrm{g}/\mathrm{g}$       | The C:N ratio of microbial biomass in layer X. |
 | soil_organic_carbon.X     | $\mathrm{Mg}/\mathrm{ha}$     | The C content of stabilized soil organic matter in layer X. |
 | soil_organic_C:N          | $\mathrm{g}/\mathrm{g}$       | The C:N ratio of stabilized soil organic matter in layer X. |
-| soil_moisture_content.X   | $\mathrm{m3}/\mathrm{m3}$     | The volumetric soil moisture content in layer X. |
 | soil_thickness.X          | $\mathrm{m}                   | The thickness of layer X. |
 | bulk_density.X            | $\mathrm{Mg}/\mathrm{m}^3$    | The bulk density of layer X. |
  
