@@ -295,6 +295,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#break-and-resume-a-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Break and Resume a Simulation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cycles-utils-python-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cycles-utils Python Package
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -384,6 +406,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="roar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cycles on Roar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -454,6 +503,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#break-and-resume-a-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Break and Resume a Simulation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cycles-utils-python-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cycles-utils Python Package
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -473,7 +544,7 @@
 
 <h1 id="cycles-an-agroecosystems-simulation-modeluser-reference-guide">Cycles: An Agroecosystems Simulation Model<br>User Reference Guide</h1>
 <div style="text-align: center;"><p>
-Prepared by Charles M. White, Yuning Shi, and Armen R. Kemanian
+Prepared by Charles M. White, Yuning Shi, Emmy Wwang, and Armen R. Kemanian
 </p></div>
 
 <p>Cycles is a daily time-step agroecosystem model that simulates the biophysical processes and management practices occurring in a conceptual field that subtends a sequence of crops and operations or cropping system.
@@ -515,7 +586,6 @@ For instance, the command used to run the simulation specified by the <code>Cont
 <p>Outputs from the model are written to files located in a subdirectory named <code>output</code>.
 If the <code>output</code> subdirectory does not already exist within your working directory, the program will create it.
 To keep your outputs organized, the program creates a new subdirectory within the <code>output</code> directory with the same name as the simulation control file.
-In baseline mode the generated re-initialization file can be found in the output directory as <code>reinit.txt</code>.
 If you run the same simulation control file multiple times, the program will <strong>overwrite</strong> output files in the folder each time, unless the <code>-e</code> option is used to customize the output file extension.</p>
 <p><strong>Windows users:</strong> It is important to note that if any of the output files are open in a spreadsheet software when a new simulation is run, those files will not be overwritten successfully.
 To save an existing output file within the <code>output</code> subdirectory and prevent the results from being overwritten by subsequent simulation runs, you can manually change the name of the file in Windows Explorer, for instance by appending a keyword of your choice to the filename.</p>
@@ -548,8 +618,37 @@ To run Cycles in calibration mode:</p>
 <pre><code class="language-shell">./Cycles -n &lt;simulation name&gt;
 </code></pre>
 <p>or, in Windows:</p>
-<pre><code class="language-shell">Cycles_win.exe -c &lt;simulation name&gt;
+<pre><code class="language-shell">Cycles_win.exe -n &lt;simulation name&gt;
 </code></pre>
+<h2 id="break-and-resume-a-simulation">Break and Resume a Simulation</h2>
+<p>Cycles includes a feature to break and resume a simulation, which can be coupled with decision support systems to run the model in real-time.
+There are two ways to break a simulation:</p>
+<p>The first is by harvesting all planted crops that have been scheduled:</p>
+<pre><code class="language-shell">./Cycles -b &lt;simulation name&gt;
+</code></pre>
+<p>or, in Windows:</p>
+<pre><code class="language-shell">Cycles_win.exe -b &lt;simulation name&gt;
+</code></pre>
+<p>The second is by reaching a specified date in the simulation:</p>
+<pre><code class="language-shell">./Cycles -bYYYYDOY &lt;simulation name&gt;
+</code></pre>
+<p>or, in Windows:</p>
+<pre><code class="language-shell">Cycles_win.exe -bYYYYDOY &lt;simulation name&gt;
+</code></pre>
+<p>Note that there is no space between the <code>-b</code> and the date, which is specified in the format of <code>YYYYDOY</code>, where <code>YYYY</code> is the year and <code>DOY</code> is the day of year (1-365 or 366).</p>
+<p>To resume a simulation that has been broken, use the following command:</p>
+<pre><code class="language-shell">./Cycles -r &lt;simulation name&gt;
+</code></pre>
+<p>or, in Windows:</p>
+<pre><code class="language-shell">Cycles_win.exe -r &lt;simulation name&gt;
+</code></pre>
+<p>Between the break and resume commands, the control file, soil description file, and crop description file should not be modified.
+But the operation file and weather file can be appended to change the management practices and weather forcing for the remainder of the simulation.</p>
+<h2 id="cycles-utils-python-package">Cycles-utils Python Package</h2>
+<p>A <a href="https://github.com/PSUmodeling/Cycles-utils"><code>Cycles-utils</code> Python package</a> has been developed to facilitate Cycles agroecosystem model simulations.
+This package provides a number of tools for users to prepare Cycles simulation input files, run Cycles simulations, and post-process Cycles simulation results.
+For basic usage examples, please refer to this <a href="https://github.com/PSUmodeling/Cycles/blob/master/cycles-utils.ipynb">Jupyter notebook</a>.
+For more complex usage examples that uses , please refer to this <a href="https://colab.research.google.com/drive/1d8TFfZR_t6eo-Lgh8ZdR382RUcAXlawf?usp=sharing">Colab notebook</a>.</p>
 
 
 

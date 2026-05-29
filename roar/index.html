@@ -9,10 +9,8 @@
       
       
       
-        <link rel="prev" href="../output/">
+        <link rel="prev" href="../bug_report/">
       
-      
-        <link rel="next" href="../roar/">
       
       
         
@@ -23,7 +21,7 @@
     
     
       
-        <title>Bug Report Guidelines - Cycles Agroecosystem Model</title>
+        <title>Cycles on Roar - Cycles Agroecosystem Model</title>
       
     
     
@@ -64,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#bug-report-guidelines" class="md-skip">
+        <a href="#cycles-on-penn-state-roar-supercomputer" class="md-skip">
           Skip to content
         </a>
       
@@ -99,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Bug Report Guidelines
+              Cycles on Roar
             
           </span>
         </div>
@@ -272,6 +270,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../bug_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bug Report Guidelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -281,6 +306,8 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -289,7 +316,7 @@
   <span class="md-ellipsis">
     
   
-    Bug Report Guidelines
+    Cycles on Roar
   
 
     
@@ -307,7 +334,7 @@
   <span class="md-ellipsis">
     
   
-    Bug Report Guidelines
+    Cycles on Roar
   
 
     
@@ -323,6 +350,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -331,10 +360,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bug-report-guidelines" class="md-nav__link">
+  <a href="#connecting-to-roar" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bug Report Guidelines
+        Connecting to Roar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#downloading-cycles-on-roar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Downloading Cycles on Roar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-cycles-utils-on-roar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing Cycles-utils on Roar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-cycles-on-roar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Cycles on Roar
       
     </span>
   </a>
@@ -345,33 +407,6 @@
   
 </nav>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../roar/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cycles on Roar
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -393,6 +428,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -401,10 +438,43 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bug-report-guidelines" class="md-nav__link">
+  <a href="#connecting-to-roar" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bug Report Guidelines
+        Connecting to Roar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#downloading-cycles-on-roar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Downloading Cycles on Roar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-cycles-utils-on-roar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing Cycles-utils on Roar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-cycles-on-roar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Cycles on Roar
       
     </span>
   </a>
@@ -428,24 +498,62 @@
 
 
 
-  <h1>Bug Report Guidelines</h1>
-
-<h2 id="bug-report-guidelines">Bug Report Guidelines</h2>
-<p>All bug reports and feature requests <strong>must</strong> be submitted as issues at the <a href="https://github.com/PSUmodeling/Cycles/issues">Cycles Issues page</a>.</p>
-<p>Before reporting the bug, please download the latest version of Cycles at the <a href="https://github.com/PSUmodeling/Cycles/releases">Cycles release page</a> and test if the bug has already been fixed.</p>
-<p>When reporting a bug, describe the bug briefly in the title of the issue.
-In the comment section, include the Cycles version you have tested.
-To check the version of Cycles you are using, please run</p>
-<pre><code class="language-shell">./Cycles -V
+<h1 id="cycles-on-penn-state-roar-supercomputer">Cycles on Penn State Roar Supercomputer</h1>
+<p>This is a guide for Penn State users to run Cycles on the Penn State ICDS Roar super computer.
+The Roar supercomputer is a high-performance computing cluster that allows users to run large-scale simulations and analyses.</p>
+<h2 id="connecting-to-roar">Connecting to Roar</h2>
+<p>If you are familiar with using a terminal and Linux/Unix commands, the easiest way to connect to Roar is through the command line using SSH (Secure Shell).
+You can use a terminal application on your local machine to connect to Roar:</p>
+<pre><code class="language-bash">ssh &lt;userid&gt;@submit.hpc.psu.edu
 </code></pre>
-<p>or, in Windows</p>
-<pre><code class="language-shell">Cycles_win.exe -V
+<p>If you are not familiar with using a terminal and prefer a graphical interface, you can use Visual Studio Code Server from the <a href="https://portal.hpc.psu.edu/">Roar web portal</a>.
+To use Visual Studio Code Server, got to the Roar web portal, and choose "Code Server" from the "Interactive Apps" menu.
+You will be prompted to apply for an interactive session.
+You can choose the number of hours you want to run the session, the number of cores, and the size of memory you want to use.
+Click on "Lauch" button.</p>
+<p><img alt="Code server session" src="../imgs/code_server_session.png" /></p>
+<p>Wait for the session to start, and then click on the "Click to Connect to Code Server" button.
+You will be directed to the Visual Studio Code Server interface.</p>
+<p><img alt="Code server interface" src="../imgs/code_server.png" /></p>
+<p>Within the Visual Studio Code Server interface, you can easily navigate your folders and files, and edit your input files with an easy-to-use text editor.
+You can also open a terminal within the Visual Studio Code Server interface to run Cycles simulations.</p>
+<p><img alt="Code server terminal" src="../imgs/terminal.png" /></p>
+<h2 id="downloading-cycles-on-roar">Downloading Cycles on Roar</h2>
+<p>You can directly download the Cycles release package to Roar using the <code>wget</code> command in a terminal.
+Go to the <a href="https://github.com/PSUmodeling/Cycles/releases">Cycles release page</a> and copy the link to the <strong>debian</strong> package under the "Assets" menu.
+Then, in the terminal, use the <code>wget</code> command to download the package to your working directory on Roar:</p>
+<pre><code class="language-bash">wget &lt;link to the debian package&gt;
 </code></pre>
-<p>Please describe how to reproduce the bug, what is the expected result, and what is the actual result.
-Include important information such as in which output file, on what simulation day does the bug appear.
-If the bug is specific to your simulation, please attach your input files to the issue.</p>
-<p>The Cycles team will get back to you immediately.
-Meanwhile check if your question has been already posted and resolved.</p>
+<p>You can then unzip the package using the <code>unzip</code> command:</p>
+<pre><code class="language-bash">unzip Cycles_debian_XXX.zip
+</code></pre>
+<p>You can also download the package to your local machine and then upload it to Roar using the "Upload" option in the Visual Studio Code Server Explore.</p>
+<h2 id="installing-cycles-utils-on-roar">Installing Cycles-utils on Roar</h2>
+<p>The <code>Cycles-utils</code> package is a Python package that provides utility functions for running Cycles simulations and analyzing the output data.
+It is highly recommended to install the <code>Cycles-utils</code> package in a virtual environment to avoid conflicts with other Python packages on Roar.
+To create a virtual environment named <code>cycles_env</code> (or you can pick any name that you prefer), use the following command in the terminal:</p>
+<pre><code class="language-bash">module load anaconda/2023.09
+conda create -n cycles_env
+</code></pre>
+<p>You can now activate the virtual environment and install the <code>Cycles-utils</code> package using the following commands:</p>
+<pre><code class="language-bash">conda activate cycles_env
+conda install numpy pandas
+pip install cycles-utils
+</code></pre>
+<p>Note that the <code>conda install numpy pandas</code> command is needed because there is a package compatibility issue in the conda environment on Roar.
+You may not need this command if you are using a different virtual environment or if the issue has been resolved in the future.</p>
+<p>Now you can use the <code>Cycles-utils</code> package in your Python scripts to run Cycles simulations and analyze the output data.
+Each time you log in to Roar, you will need to activate the virtual environment using</p>
+<pre><code class="language-bash">module load anaconda/2023.09
+conda activate cycles_env
+</code></pre>
+<p>before running your Python scripts.
+You will also need to include these two lines of command in your job submission script if you are running your Python scripts on Roar using a job scheduler.
+When running Jupyter notebooks on Roar, you will also need to select <code>cycles_env</code> as the kernel for your notebook to use the <code>Cycles-utils</code> package.</p>
+<h2 id="running-cycles-on-roar">Running Cycles on Roar</h2>
+<p>You can use <code>vim</code>, <code>emac</code> or <code>nano</code> to edit your input files through the terminal, or use the Visual Studio Code Server interface to edit your input files.
+To run Cycles on Roar, you will need to use the terminal and run the <code>Cycles</code> executable.
+Please refer to the <a href="../#getting-started">Getting Started</a> section for detailed instructions on how to run Cycles simulations, and the <a href="../#cycles-utils-python-package">Cycles-utils</a> section for instructions on how to run Cycles simulations using the <code>Cycles-utils</code> Python package.</p>
 
 
 
