@@ -16,7 +16,7 @@ If you are not familiar with using a terminal and prefer a graphical interface, 
 To use Visual Studio Code Server, got to the Roar web portal, and choose "Code Server" from the "Interactive Apps" menu.
 You will be prompted to apply for an interactive session.
 You can choose the number of hours you want to run the session, the number of cores, and the size of memory you want to use.
-Click on "Lauch" button.
+Click on "Launch" button.
 
 ![Code server session](imgs/code_server_session.png)
 

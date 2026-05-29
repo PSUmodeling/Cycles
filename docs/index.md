@@ -1,6 +1,6 @@
 # Cycles: An Agroecosystems Simulation Model<br>User Reference Guide
 <div style="text-align: center;"><p>
-Prepared by Charles M. White, Yuning Shi, Emmy Wwang, and Armen R. Kemanian
+Prepared by Charles M. White, Yuning Shi, Emmy Wang, and Armen R. Kemanian
 </p></div>
 
 

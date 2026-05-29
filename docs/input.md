@@ -232,7 +232,7 @@ The thermal time accumulates between when a crop is planted and when it emerges 
 
 ### `FLOWERING_TT`
 
-The thermal time to flowering, in growing $^{\circ}\mathrm{C}$ days, calculated using the base, optimum, and maximum temperatures for development listed in `BASE_TEMPERATURE_FOR_DEVELOPMENT`, `OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT`, and `MAX_TEMPERATURE_FOR_DEVELOPMENT`.
+The thermal time to flowering, in growing $^{\circ}\mathrm{C}$ days, calculated using the base, optimum, and maximum temperatures for development listed in `BASE_TEMPERATURE_FOR_DEVELOPMENT`, `OPTIMUM_TEMPERATURE_FOR_DEVELOPMENT`, and `MAX_TEMPERATURE_FOR_DEVELOPMENT`.
 
 ### `MATURITY_TT`
 
@@ -274,7 +274,7 @@ Part of winter crop phenology parameters.
 ### `THERMAL_TIME_FLOWERING_AT_PMAX`
 
 Thermal time to flowering, in growing $^{\circ}\mathrm{C}$ days.
-Calculated using the default base, optimum, and maximum temperatures for development listed in `BASE_TEMPERATURE_FOR_DEVELOPMENT`, `OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT`, and `MAX_TEMPERATURE_FOR_DEVELOPMENT`.
+Calculated using the default base, optimum, and maximum temperatures for development listed in `BASE_TEMPERATURE_FOR_DEVELOPMENT`, `OPTIMUM_TEMPERATURE_FOR_DEVELOPMENT`, and `MAX_TEMPERATURE_FOR_DEVELOPMENT`.
 Part of winter crop phenology parameters.
 
 ### `THERMAL_TIME_GRAIN_FILLING`
@@ -495,7 +495,7 @@ The year in the rotation in which the planting operation is to be performed.
 #### `DOY`
 
 The numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed.
-If conditional planting is activated (i.e., `MIN_SMC` and `MIN_SOIL_TEMP` are not `-999`), this is the beginning of the planting window.
+If conditional planting is activated (i.e., `MAX_SMC`, `MIN_SMC`, `MAX_SOIL_TEMP` or `MIN_SOIL_TEMP` are not `-999`), this is the beginning of the planting window.
 
 #### `END_DOY`
 
@@ -626,6 +626,31 @@ The year in the rotation in which the tillage operation is to be performed.
 #### `DOY`
 
 The numerical day of the year (0 to 365) on which the tillage operation is to be performed.
+
+To accommodate conditional planting, the `DOY` parameter for tillage, fertilization, and irrigation operations can also represent a relative number of days after the scheduled planting event.
+This is indicated by adding a `+` prefix to the number.
+For example, to perform a tillage operation and apply fertilizer on the same day as planting, the `DOY` value for both operations would be set to `+0`:
+
+```
+PLANTING
+YEAR        1
+DOY         120
+END_DOY     135
+...
+
+TILLAGE
+YEAR        1
+DOY         +0
+TOOL        ...
+...
+
+FERTILIZATION
+YEAR        1
+DOY         +0
+SOURCE      ...
+...
+```
+
 
 #### `TOOL`
 
