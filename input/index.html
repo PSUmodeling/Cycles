@@ -3409,7 +3409,7 @@ This entry is used as the reference for crop management practices listed in the 
 <h3 id="thermal_time_to_emergence"><code>THERMAL_TIME_TO_EMERGENCE</code></h3>
 <p>The thermal time accumulates between when a crop is planted and when it emerges from the soil and begins intercepting radiation, transpiring, accruing biomass, etc., in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.</p>
 <h3 id="flowering_tt"><code>FLOWERING_TT</code></h3>
-<p>The thermal time to flowering, in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days, calculated using the base, optimum, and maximum temperatures for development listed in <code>BASE_TEMPERATURE_FOR_DEVELOPMENT</code>, <code>OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT</code>, and <code>MAX_TEMPERATURE_FOR_DEVELOPMENT</code>.</p>
+<p>The thermal time to flowering, in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days, calculated using the base, optimum, and maximum temperatures for development listed in <code>BASE_TEMPERATURE_FOR_DEVELOPMENT</code>, <code>OPTIMUM_TEMPERATURE_FOR_DEVELOPMENT</code>, and <code>MAX_TEMPERATURE_FOR_DEVELOPMENT</code>.</p>
 <h3 id="maturity_tt"><code>MATURITY_TT</code></h3>
 <p>The thermal time to maturity in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.</p>
 <h3 id="base_temperature_for_development"><code>BASE_TEMPERATURE_FOR_DEVELOPMENT</code></h3>
@@ -3434,7 +3434,7 @@ Calculated using the base, optimum, and maximum temperatures for vernalization l
 Part of winter crop phenology parameters.</p>
 <h3 id="thermal_time_flowering_at_pmax"><code>THERMAL_TIME_FLOWERING_AT_PMAX</code></h3>
 <p>Thermal time to flowering, in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.
-Calculated using the default base, optimum, and maximum temperatures for development listed in <code>BASE_TEMPERATURE_FOR_DEVELOPMENT</code>, <code>OPTIMUM_TEMPERATURE_FOR_DEVELOPEMENT</code>, and <code>MAX_TEMPERATURE_FOR_DEVELOPMENT</code>.
+Calculated using the default base, optimum, and maximum temperatures for development listed in <code>BASE_TEMPERATURE_FOR_DEVELOPMENT</code>, <code>OPTIMUM_TEMPERATURE_FOR_DEVELOPMENT</code>, and <code>MAX_TEMPERATURE_FOR_DEVELOPMENT</code>.
 Part of winter crop phenology parameters.</p>
 <h3 id="thermal_time_grain_filling"><code>THERMAL_TIME_GRAIN_FILLING</code></h3>
 <p>Thermal time post flowering to grain fill completion, in growing <span class="arithmatex">\(^{\circ}\mathrm{C}\)</span> days.
@@ -3561,7 +3561,7 @@ The following keyword tags are needed after the <code>PLANTING</code> header.</p
 <p>The year in the rotation in which the planting operation is to be performed.</p>
 <h4 id="doy"><code>DOY</code></h4>
 <p>The numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed.
-If conditional planting is activated (i.e., <code>MIN_SMC</code> and <code>MIN_SOIL_TEMP</code> are not <code>-999</code>), this is the beginning of the planting window.</p>
+If conditional planting is activated (i.e., <code>MAX_SMC</code>, <code>MIN_SMC</code>, <code>MAX_SOIL_TEMP</code> or <code>MIN_SOIL_TEMP</code> are not <code>-999</code>), this is the beginning of the planting window.</p>
 <h4 id="end_doy"><code>END_DOY</code></h4>
 <p>The last numerical day of the year (0 to 365 or 366) on which the planting operation is to be performed when conditional planting is activated.
 Set the value to <code>-999</code> to disable conditional planting.</p>
@@ -3645,6 +3645,27 @@ The following keyword tags are needed after the <code>TILLAGE</code> header.</p>
 <p>The year in the rotation in which the tillage operation is to be performed.</p>
 <h4 id="doy_1"><code>DOY</code></h4>
 <p>The numerical day of the year (0 to 365) on which the tillage operation is to be performed.</p>
+<p>To accommodate conditional planting, the <code>DOY</code> parameter for tillage, fertilization, and irrigation operations can also represent a relative number of days after the scheduled planting event.
+This is indicated by adding a <code>+</code> prefix to the number.
+For example, to perform a tillage operation and apply fertilizer on the same day as planting, the <code>DOY</code> value for both operations would be set to <code>+0</code>:</p>
+<pre><code>PLANTING
+YEAR        1
+DOY         120
+END_DOY     135
+...
+
+TILLAGE
+YEAR        1
+DOY         +0
+TOOL        ...
+...
+
+FERTILIZATION
+YEAR        1
+DOY         +0
+SOURCE      ...
+...
+</code></pre>
 <h4 id="tool"><code>TOOL</code></h4>
 <p>A descriptive name of the tillage tool described by the operation entry.
 The <code>TOOL</code> must be a valid tool described in the <code>input/tillage_tools.txt</code>, with some exceptions:
