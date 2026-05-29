@@ -157,3 +157,10 @@ Cycles_win.exe -r <simulation name>
 
 Between the break and resume commands, the control file, soil description file, and crop description file should not be modified.
 But the operation file and weather file can be appended to change the management practices and weather forcing for the remainder of the simulation.
+
+## Cycles-utils Python Package
+
+A [`Cycles-utils` Python package](https://github.com/PSUmodeling/Cycles-utils) has been developed to facilitate Cycles agroecosystem model simulations.
+This package provides a number of tools for users to prepare Cycles simulation input files, run Cycles simulations, and post-process Cycles simulation results.
+For basic usage examples, please refer to this [Jupyter notebook](https://github.com/PSUmodeling/Cycles/blob/master/cycles-utils.ipynb).
+For more complex usage examples that uses , please refer to this [Colab notebook](https://colab.research.google.com/drive/1d8TFfZR_t6eo-Lgh8ZdR382RUcAXlawf?usp=sharing).
