@@ -63,7 +63,9 @@ You can now activate the virtual environment and install the `Cycles-utils` pack
 
 ```bash
 conda activate cycles_env
-conda install numpy pandas
+conda install -y numpy pandas
+conda install -y ipykernel
+ipython kernel install --user --name=cycles_env
 pip install cycles-utils
 ```
 
